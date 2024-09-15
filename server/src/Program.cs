@@ -4,6 +4,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        // PENDING
+        // TODO: Implement
+        throw new NotImplementedException();
     }
 }
