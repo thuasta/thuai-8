@@ -6,7 +6,7 @@ namespace Thuai.Server.Utility;
 /// <summary>
 /// A collection of utility functions.
 /// </summary>
-public static class Tools
+public static partial class Tools
 {
     /// <summary>
     /// A class for handling logs.
@@ -164,70 +164,6 @@ public static class Tools
                     LogException(logger, ex);
                 }
             };
-        }
-    }
-
-    public static class MessageHandler
-    {
-        // TODO: Implement
-    }
-
-    /// <summary>
-    /// A class for parsing command line arguments.
-    /// </summary>
-    public static class ArgParser
-    {
-        /// <summary>
-        /// Parses command line arguments.
-        /// </summary>
-        /// <param name="args">Argunemts from command line.</param>
-        /// <returns>Corresponding settings.</returns>
-        public static ArgSettings ParseArgs(string[] args)
-        {
-            // TODO: Implement
-            throw new NotImplementedException();
-        }
-    }
-
-    public static class ConfigLoader
-    {
-        //TODO: Implement
-    }
-
-    /// <summary>
-    /// A class for managing tasks.
-    /// </summary>
-    public static class TaskManager
-    {
-        private static int _taskId = 0;                 // The ID of the task.
-
-        /// <summary>
-        /// Creates a task.
-        /// </summary>
-        /// <param name="action">Action to be executed in the task.</param>
-        /// <param name="description">Describes what the task does.</param>
-        /// <returns></returns>
-        public static Task CreateTask(Action action, string description = "")
-        {
-            _taskId++;
-
-            ILogger logger = LogHandler.CreateLogger($"Task {_taskId}");
-            logger.Debug("Task created." + (description == "" ? "" : $" ({description})"));
-
-            return new Task(
-                () =>
-                {
-                    try
-                    {
-                        action();
-                    }
-                    catch (Exception e)
-                    {
-                        logger.Error($"Task crashed:");
-                        LogHandler.LogException(logger, e);
-                    }
-                }
-            );
         }
     }
 }
