@@ -4,7 +4,7 @@ namespace Thuai.Server.Utility;
 
 public static partial class Tools
 {
-    
+
     /// <summary>
     /// A class for managing tasks.
     /// </summary>

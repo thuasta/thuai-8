@@ -2,7 +2,7 @@ namespace Thuai.Server.Utility;
 
 public static partial class Tools
 {
-    
+
     /// <summary>
     /// A class for parsing command line arguments.
     /// </summary>
