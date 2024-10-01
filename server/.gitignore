@@ -41,3 +41,6 @@ msbuild.wrn
 ## Repo Specific
 # Solution file
 *.sln
+
+# Config files
+**/config.json

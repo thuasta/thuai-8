@@ -7,7 +7,7 @@ public class Program
 {
     private static readonly ILogger _logger = Utility.Tools.LogHandler.CreateLogger("Program");
 
-    private static readonly string _configPath = "config.json";
+    private static readonly string _configPath = "config/config.json";
 
     public static void Main(string[] args)
     {
