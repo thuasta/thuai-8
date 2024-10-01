@@ -7,6 +7,16 @@ namespace Thuai.Server.Utility;
 /// </summary>
 public record Config
 {
+
+    [JsonPropertyName("server")]
+    public ServerSettings Server { get; init; } = new();
+
+    [JsonPropertyName("log")]
+    public LogSettings Log { get; init; } = new();
+
+    [JsonPropertyName("game")]
+    public GameSettings Game { get; init; } = new();
+
     /// <summary>
     /// The server settings.
     /// </summary>
@@ -44,6 +54,9 @@ public record Config
         [JsonPropertyName("minimumLevel")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public LogLevel MinimumLevel { get; init; } = LogLevel.Information;
+
+        [JsonPropertyName("targetDirectory")]
+        public string TargetDirectory { get; init; } = "./logs";
     }
 
     /// <summary>

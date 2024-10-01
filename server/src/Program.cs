@@ -5,15 +5,18 @@ namespace Thuai.Server;
 
 public class Program
 {
-    static readonly ILogger _logger = Utility.Tools.LogHandler.CreateLogger("Program");
+    private static readonly ILogger _logger = Utility.Tools.LogHandler.CreateLogger("Program");
+
+    private static readonly string _configPath = "config.json";
 
     public static void Main(string[] args)
     {
         try
         {
-            Utility.Tools.LogHandler.Initialize(
-                Utility.Tools.LogHandler.DefaultLogSettings
-            );
+            // Initialize logger
+            Utility.Tools.LogHandler.Initialize(Utility.Tools.LogHandler.DefaultLogSettings);
+
+            Utility.Config config = Utility.Tools.ConfigLoader.LoadOrCreateConfig(_configPath);
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0, 0, 0);
 
@@ -28,7 +31,11 @@ public class Program
         catch (Exception e)
         {
             _logger.Fatal($"Program crashed with exception:");
-            _logger.Fatal(e.Message);
+            _logger.Fatal(
+                Utility.Tools.LogHandler.Truncate(
+                    e.Message, Utility.Tools.LogHandler.MaximumMessageLength
+                )
+            );
             _logger.Fatal(e.StackTrace ?? "No stack trace available.");
         }
     }

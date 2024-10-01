@@ -13,32 +13,34 @@ public static partial class Tools
     /// </summary>
     public static class LogHandler
     {
+        
+        /// <summary>
+        /// The maximum length of a log message.
+        /// </summary>
+        public const int MaximumMessageLength = 65536;
+
         /// <summary>
         /// The template for Serilog (console).
         /// </summary>
-        const string SerilogTemplate =
+        private const string SerilogTemplate =
             "[{Timestamp:HH:mm:ss.fff} {Level:u3}] " +
-            "{Component,-16:default(No Component)} " +
+            "{Component,-20:default(No Component)} " +
             "{Message:lj}{NewLine}{Exception}";
 
         /// <summary>
         /// The template for Serilog (file output).
         /// </summary>
-        const string SerilogFileOutputTemplate =
+        private const string SerilogFileOutputTemplate =
             "[{Timestamp:HH:mm:ss.fff} {Level:u3}] " +
-            "{Component,-16:default(No Component)} " +
+            "{Component,-20:default(No Component)} " +
             "{Message:lj}{NewLine}{Exception}";
 
         /// <summary>
         /// Default log settings.
         /// </summary>
-        public static Config.LogSettings DefaultLogSettings => new()
-        {
-            Target = Config.LogSettings.LogTarget.Console,
-            MinimumLevel = Config.LogSettings.LogLevel.Information,
-        };
+        public static Config.LogSettings DefaultLogSettings => new();
 
-        static LoggerConfiguration DefaultLogConfig => new LoggerConfiguration()
+        private static LoggerConfiguration DefaultLogConfig => new LoggerConfiguration()
             .WriteTo.Console(outputTemplate: SerilogTemplate)
             .MinimumLevel.Information();
 
@@ -51,6 +53,9 @@ public static partial class Tools
         {
             LoggerConfiguration logConfig = new();
 
+            string logFileName = GetLogFileName();
+            string logFilePath = Path.Combine(logSettings.TargetDirectory, logFileName);
+
             bool isValidLogSettings = true;
 
             switch (logSettings.Target)
@@ -59,11 +64,11 @@ public static partial class Tools
                     logConfig.WriteTo.Console(outputTemplate: SerilogTemplate);
                     break;
                 case Config.LogSettings.LogTarget.File:
-                    logConfig.WriteTo.File("log.txt", outputTemplate: SerilogFileOutputTemplate);
+                    logConfig.WriteTo.File(logFilePath, outputTemplate: SerilogFileOutputTemplate);
                     break;
                 case Config.LogSettings.LogTarget.Both:
                     logConfig.WriteTo.Console(outputTemplate: SerilogTemplate);
-                    logConfig.WriteTo.File("log.txt", outputTemplate: SerilogFileOutputTemplate);
+                    logConfig.WriteTo.File(logFilePath, outputTemplate: SerilogFileOutputTemplate);
                     break;
                 default:
                     isValidLogSettings = false;
@@ -133,9 +138,26 @@ public static partial class Tools
         /// <param name="e">The exception.</param>
         public static void LogException(ILogger logger, Exception e)
         {
-            logger.Error($"An exception occurred: {e.Message}");
+            logger.Error($"An exception occurred: {Truncate(e.Message, MaximumMessageLength)}");
             logger.Debug(e.StackTrace ?? "No stack trace available.");
         }
+
+        /// <summary>
+        /// Truncates a string to a specified length.
+        /// </summary>
+        /// <param name="value">The string.</param>
+        /// <param name="maxLength">Maximum length of the string.</param>
+        /// <returns>Truncated string</returns>
+        public static string Truncate(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+
+            return value.Length <= maxLength ? value : string.Concat(value.AsSpan(0, maxLength), "...");
+        }
+
 
         private static void InitializeFleckLogAction()
         {
@@ -146,16 +168,16 @@ public static partial class Tools
                 switch (level)
                 {
                     case LogLevel.Debug:
-                        logger.Debug(message);
+                        logger.Debug(Truncate(message, MaximumMessageLength));
                         break;
                     case LogLevel.Error:
-                        logger.Error(message);
+                        logger.Error(Truncate(message, MaximumMessageLength));
                         break;
                     case LogLevel.Warn:
-                        logger.Warning(message);
+                        logger.Warning(Truncate(message, MaximumMessageLength));
                         break;
                     default:
-                        logger.Information(message);
+                        logger.Information(Truncate(message, MaximumMessageLength));
                         break;
                 }
 
@@ -164,6 +186,11 @@ public static partial class Tools
                     LogException(logger, ex);
                 }
             };
+        }
+
+        private static string GetLogFileName()
+        {
+            return DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".log";
         }
     }
 }

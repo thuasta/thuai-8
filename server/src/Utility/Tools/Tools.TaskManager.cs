@@ -23,7 +23,9 @@ public static partial class Tools
             _taskId++;
 
             ILogger logger = LogHandler.CreateLogger($"Task {_taskId}");
-            logger.Debug("Task created." + (description == "" ? "" : $" ({description})"));
+            logger.Debug(
+                "Task created." + (description == "" ? "" : $" ({LogHandler.Truncate(description, 256)})")
+            );
 
             return new Task(
                 () =>
