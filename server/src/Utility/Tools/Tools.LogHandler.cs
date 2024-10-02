@@ -40,17 +40,25 @@ public static partial class Tools
         /// </summary>
         public static Config.LogSettings DefaultLogSettings => new();
 
+        private static bool _isInitialized = false;
+
         private static LoggerConfiguration DefaultLogConfig => new LoggerConfiguration()
             .WriteTo.Console(outputTemplate: SerilogTemplate)
             .MinimumLevel.Information();
 
-        private static readonly ILogger _logger = CreateLogger("LogHandler");
+        private static ILogger? _logger = null;     // Should be created in Initialize()
 
         /// <summary>
         /// Initializes logger configuration.
         /// </summary>
         public static void Initialize(Config.LogSettings logSettings)
         {
+            if (_isInitialized)
+            {
+                _logger?.Warning("Logger already initialized.");
+                return;
+            }
+
             LoggerConfiguration logConfig = new();
 
             string logFileName = GetLogFileName();
@@ -107,6 +115,8 @@ public static partial class Tools
 
             Log.Logger = logConfig.CreateLogger();
 
+            _logger = CreateLogger("LogHandler");
+
             if (isValidLogSettings == false)
             {
                 _logger.Warning("Invalid log settings. Using default settings.");
@@ -115,6 +125,8 @@ public static partial class Tools
             _logger.Debug("Initializing Fleck log action...");
             InitializeFleckLogAction();
             _logger.Debug("Fleck log action initialized.");
+
+            _isInitialized = true;
 
             _logger.Debug("Logger initialized.");
             _logger.Debug($"Log target: {logSettings.Target}");
@@ -157,7 +169,6 @@ public static partial class Tools
 
             return value.Length <= maxLength ? value : string.Concat(value.AsSpan(0, maxLength), "...");
         }
-
 
         private static void InitializeFleckLogAction()
         {

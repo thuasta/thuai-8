@@ -5,7 +5,7 @@ namespace Thuai.Server;
 
 public class Program
 {
-    private static readonly ILogger _logger = Utility.Tools.LogHandler.CreateLogger("Program");
+    private static ILogger? _logger = null;    // Should be created after LogHandler.Initialize
 
     private static readonly string _configPath = "config/config.json";
 
@@ -13,23 +13,19 @@ public class Program
     {
         try
         {
-            // Initialize logger
-            Utility.Tools.LogHandler.Initialize(Utility.Tools.LogHandler.DefaultLogSettings);
-
-            Utility.Config config = Utility.Tools.ConfigLoader.LoadOrCreateConfig(_configPath);
-
-            Version version = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0, 0, 0);
-
-            _logger.Information("--------------------------------");
-            _logger.Information($"THUAI8 Server v{version}");
-            _logger.Information("Copyright (c) 2024 THUASTA");
-            _logger.Information("--------------------------------");
+            Initialize();
 
             // TODO: Implement
+            throw new NotImplementedException();
 
         }
         catch (Exception e)
         {
+            if (_logger is null)
+            {
+                return;
+            }
+
             _logger.Fatal($"Program crashed with exception:");
             _logger.Fatal(
                 Utility.Tools.LogHandler.Truncate(
@@ -38,5 +34,21 @@ public class Program
             );
             _logger.Fatal(e.StackTrace ?? "No stack trace available.");
         }
+    }
+
+    private static void Initialize()
+    {
+        Utility.Config config = Utility.Tools.ConfigLoader.LoadOrCreateConfig(_configPath);
+
+        Utility.Tools.LogHandler.Initialize(config.Log);
+
+        _logger = Utility.Tools.LogHandler.CreateLogger("Program");
+
+        Version version = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0, 0, 0);
+
+        _logger.Information("--------------------------------");
+        _logger.Information($"THUAI8 Server v{version}");
+        _logger.Information("Copyright (c) 2024 THUASTA");
+        _logger.Information("--------------------------------");
     }
 }

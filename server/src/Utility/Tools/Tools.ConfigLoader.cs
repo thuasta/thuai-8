@@ -6,15 +6,17 @@ namespace Thuai.Server.Utility;
 
 public static partial class Tools
 {
-    private static readonly JsonSerializerOptions _jsOptions = new()
-    {
-        WriteIndented = true,
-    };
 
-    private static readonly ILogger _logger = LogHandler.CreateLogger("ConfigLoader");
-
+    /// <summary>
+    /// A class for loading and creating configurations.
+    /// </summary>
     public static class ConfigLoader
     {
+        private static readonly JsonSerializerOptions _jsOptions = new()
+        {
+            WriteIndented = true,
+        };
+
         /// <summary>
         /// Load or create a configuration file.
         /// </summary>
@@ -23,9 +25,6 @@ public static partial class Tools
         {
             if (File.Exists(path) == false)
             {
-                _logger.Warning(
-                    $"Config file not found at {LogHandler.Truncate(path, 256)}. Creating new config file."
-                );
                 return CreateConfig(path);
             }
             else
@@ -34,12 +33,8 @@ public static partial class Tools
                 {
                     return LoadConfig(path);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    _logger.Error($"Failed to load config file at {LogHandler.Truncate(path, 256)}");
-                    LogHandler.LogException(_logger, e);
-                    _logger.Error("Creating new config file.");
-
                     return CreateConfig(path);
                 }
             }
@@ -53,7 +48,7 @@ public static partial class Tools
         {
             if (File.Exists(path) == true)
             {
-                _logger.Warning($"Config file already exists at {LogHandler.Truncate(path, 256)}. Overwriting.");
+                throw new Exception($"Config file already exists at {LogHandler.Truncate(path, 256)}.");
             }
 
             string directory =
@@ -63,14 +58,11 @@ public static partial class Tools
             if ((string.IsNullOrEmpty(directory) == false) && (Directory.Exists(directory) == false))
             {
                 Directory.CreateDirectory(directory);
-                _logger.Debug($"Directory created at {LogHandler.Truncate(directory, 256)}.");
             }
 
             Config config = new();
             string jsonString = JsonSerializer.Serialize(config, _jsOptions);
             File.WriteAllText(path, jsonString);
-
-            _logger.Information($"Config file created at {LogHandler.Truncate(path, 256)}.");
 
             return config;
         }
