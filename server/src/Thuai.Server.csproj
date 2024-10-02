@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aether.Physics2D" Version="2.1.0" />
     <PackageReference Include="Fleck" Version="1.2.0" />
 
     <PackageReference Include="Serilog" Version="4.0.1" />
