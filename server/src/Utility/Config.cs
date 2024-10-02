@@ -1,4 +1,7 @@
+using System.ComponentModel.Design.Serialization;
 using System.Text.Json.Serialization;
+
+using Serilog;
 
 namespace Thuai.Server.Utility;
 
@@ -57,6 +60,10 @@ public record Config
 
         [JsonPropertyName("targetDirectory")]
         public string TargetDirectory { get; init; } = "./logs";
+
+        [JsonPropertyName("rollingInterval")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public RollingInterval RollingInterval { get; init; } = RollingInterval.Day;
     }
 
     /// <summary>

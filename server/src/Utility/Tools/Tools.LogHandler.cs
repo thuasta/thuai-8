@@ -71,13 +71,24 @@ public static partial class Tools
                 case Config.LogSettings.LogTarget.Console:
                     logConfig.WriteTo.Console(outputTemplate: SerilogTemplate);
                     break;
+
                 case Config.LogSettings.LogTarget.File:
-                    logConfig.WriteTo.File(logFilePath, outputTemplate: SerilogFileOutputTemplate);
+                    logConfig.WriteTo.File(
+                        logFilePath,
+                        outputTemplate: SerilogFileOutputTemplate,
+                        rollingInterval: logSettings.RollingInterval
+                    );
                     break;
+
                 case Config.LogSettings.LogTarget.Both:
                     logConfig.WriteTo.Console(outputTemplate: SerilogTemplate);
-                    logConfig.WriteTo.File(logFilePath, outputTemplate: SerilogFileOutputTemplate);
+                    logConfig.WriteTo.File(
+                        logFilePath,
+                        outputTemplate: SerilogFileOutputTemplate,
+                        rollingInterval: logSettings.RollingInterval
+                    );
                     break;
+
                 default:
                     isValidLogSettings = false;
                     break;
