@@ -1,7 +1,7 @@
 asyncapi: 3.0.0
 info:
   title: THUAI8 API
-  version: '0.0'
+  version: '0.1'
 channels:
   /competition/Record:
     address: /competition/Record
@@ -194,6 +194,7 @@ components:
         - speed
         - bullet
         - position
+        - turnPosition
       properties:
         tankId:
           type: integer
@@ -212,6 +213,8 @@ components:
             - PIERCING_BULLET
             - ROCKET_BULLET
         position:
+          $ref: '#/components/schemas/Position'
+        turnPosition:
           $ref: '#/components/schemas/Position'
     Powerup:
       type: string
