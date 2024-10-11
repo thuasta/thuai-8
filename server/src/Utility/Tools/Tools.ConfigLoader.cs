@@ -1,7 +1,5 @@
 using System.Text.Json;
 
-using Serilog;
-
 namespace Thuai.Server.Utility;
 
 public static partial class Tools
@@ -35,6 +33,10 @@ public static partial class Tools
                 }
                 catch (Exception)
                 {
+                    if (File.Exists(path) == true)
+                    {
+                        File.Delete(path);
+                    }
                     return CreateConfig(path);
                 }
             }

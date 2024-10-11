@@ -23,6 +23,13 @@ public class Program
         {
             if (_logger is null)
             {
+                Console.WriteLine("FATAL: Program crashed with exception:");
+                Console.WriteLine(
+                    Utility.Tools.LogHandler.Truncate(
+                        e.Message, Utility.Tools.LogHandler.MaximumMessageLength
+                    )
+                );
+                Console.WriteLine(e.StackTrace ?? "No stack trace available.");
                 return;
             }
 

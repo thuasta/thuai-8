@@ -13,7 +13,7 @@ public static partial class Tools
     /// </summary>
     public static class LogHandler
     {
-        
+
         /// <summary>
         /// The maximum length of a log message.
         /// </summary>
