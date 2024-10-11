@@ -19,5 +19,11 @@ public class Player
         Character = character;
     }
 
-    // TODO: Implement
+    /// <summary>
+    /// Unbinds the character from the player.
+    /// </summary>
+    public void Unbind()
+    {
+        Character = null;
+    }
 }

@@ -14,15 +14,4 @@ public class Item
     /// The type of the item.
     /// </summary>
     public ItemType Type { get; }
-
-    /// <summary>
-    /// The collision box of the item.
-    /// </summary>
-    public Geometry.Shapes.Rectangle CollisionBox { get; }
-
-    public Item(ItemType type, Geometry.Shapes.Rectangle collisionBox)
-    {
-        Type = type;
-        CollisionBox = collisionBox;
-    }
 }
