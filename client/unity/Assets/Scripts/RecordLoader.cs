@@ -15,7 +15,6 @@ namespace BattleCity
         private Tank mTanks;
         private Bullet mBullets;
 
-        private readonly string _recordFilePath = null;
         private JArray _recordArray;
         private string _recordFile;
         public RecordInfo _recordInfo;
