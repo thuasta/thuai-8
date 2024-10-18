@@ -1,0 +1,427 @@
+asyncapi: 3.0.0
+info:
+  title: THUAI8 API
+  version: '0.1'
+channels:
+  /competition/Record:
+    address: /competition/Record
+    messages:
+      Error:
+        $ref: '#/components/messages/Error'
+      CompetitionUpdate:
+        $ref: '#/components/messages/CompetitionUpdate'
+      Map:
+        $ref: '#/components/messages/Map'
+      Powerups:
+        $ref: '#/components/messages/Powerups'
+  /competition/SDK:
+    address: /competition/SDK
+    messages:
+      TankPerform:
+        $ref: '#/components/messages/TankPerform'
+      Error:
+        $ref: '#/components/messages/Error'
+      TanksInfo:
+        $ref: '#/components/messages/TanksInfo'
+      Map:
+        $ref: '#/components/messages/Map'
+      Powerups:
+        $ref: '#/components/messages/Powerups'
+operations:
+  /competition/Record.publish:
+    action: receive
+    channel:
+      $ref: '#/channels/~1competition~1Record'
+    messages:
+      - $ref: '#/channels/~1competition~1Record/messages/Error'
+  /competition/Record.subscribe:
+    action: send
+    channel:
+      $ref: '#/channels/~1competition~1Record'
+    messages:
+      - $ref: '#/channels/~1competition~1Record/messages/Error'
+      - $ref: '#/channels/~1competition~1Record/messages/CompetitionUpdate'
+      - $ref: '#/channels/~1competition~1Record/messages/Map'
+  /competition/SDK.publish:
+    action: receive
+    channel:
+      $ref: '#/channels/~1competition~1SDK'
+    messages:
+      - $ref: '#/channels/~1competition~1SDK/messages/TankPerform'
+  /competition/SDK.subscribe:
+    action: send
+    channel:
+      $ref: '#/channels/~1competition~1SDK'
+    messages:
+      - $ref: '#/channels/~1competition~1SDK/messages/Error'
+      - $ref: '#/channels/~1competition~1SDK/messages/TanksInfo'
+      - $ref: '#/channels/~1competition~1SDK/messages/Map'
+      - $ref: '#/channels/~1competition~1SDK/messages/Powerups'
+components:
+  messages:
+    TanksInfo:
+      payload:
+        type: object
+        required:
+          - messagetype
+          - tanks
+        properties:
+          messageType:
+            type: string
+            const: TANKS_INFO
+          tanks:
+            $ref: '#/components/schemas/Tanks'
+    CompetitionUpdate:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - currentTicks
+          - tanks
+          - events
+        properties:
+          messageType:
+            type: string
+            const: COMPETITION_UPDATE
+          currentTicks:
+            type: integer
+          info:
+            type: string
+            additionalProperties: false
+            required:
+              - stage
+            properties:
+              stage:
+                type: string
+                enum:
+                  - READY
+                  - RUNNING
+                  - FINISHED
+                  - ENDED
+          tanks:
+            $ref: '#/components/schemas/Tanks'
+          events:
+            type: array
+            items:
+              oneOf:
+                - $ref: '#/components/schemas/TankAttackEvent'
+                - $ref: '#/components/schemas/TankPickUpEvent'
+                - $ref: '#/components/schemas/TankTurnEvent'
+                - $ref: '#/components/schemas/PowerupUpdateEvent'
+    TankPerform:
+      payload:
+        type: array
+        items:
+          oneOf:
+            - $ref: '#/components/schemas/PerformPickUp'
+            - $ref: '#/components/schemas/PerformMove'
+            - $ref: '#/components/schemas/PerformStop'
+            - $ref: '#/components/schemas/PerformAttack'
+            - $ref: '#/components/schemas/PerformTurn'
+            - $ref: '#/components/schemas/GetTankInfo'
+            - $ref: '#/components/schemas/GetMap'
+            - $ref: '#/components/schemas/ChooseOrigin'
+    Map:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - length
+          - walls
+        properties:
+          messageType:
+            type: string
+            const: MAP
+          length:
+            type: integer
+          walls:
+            type: array
+            items:
+              type: object
+              required:
+                - wallPositions
+              properties:
+                wallPositions:
+                  $ref: '#/components/schemas/PositionInt'
+    Powerups:
+      payload:
+        type: object
+        required:
+          - messageType
+          - powerups
+        properties:
+          messageType:
+            type: string
+            const: POWERUPS
+          powerups:
+            type: array
+            items:
+              type: object
+              required:
+                - powerup
+                - position
+              properties:
+                powerup:
+                  $ref: '#/components/schemas/Powerup'
+                position:
+                  $ref: '#/components/schemas/Position'
+    Error:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - errorCode
+          - message
+        properties:
+          messageType:
+            type: string
+            const: ERROR
+          errorCode:
+            type: integer
+          message:
+            type: string
+  schemas:
+    Tanks:
+      type: array
+      additionalProperties: false
+      required:
+        - tankId
+        - health
+        - amom
+        - speed
+        - bullet
+        - position
+        - turnPosition
+      properties:
+        tankId:
+          type: integer
+        health:
+          type: integer
+        amom:
+          type: integer
+        speed:
+          type: number
+        bullet:
+          type: string
+          enum:
+            - STANDARD_BULLET
+            - LASER_BULLET
+            - TRACKING_BULLET
+            - PIERCING_BULLET
+            - ROCKET_BULLET
+        position:
+          $ref: '#/components/schemas/Position'
+        turnPosition:
+          $ref: '#/components/schemas/Position'
+    Powerup:
+      type: string
+      enum:
+        - LASER_BULLET
+        - TRACKING_BULLET
+        - PIERCING_BULLET
+        - ROCKET_BULLET
+    ChooseOrigin:
+      type: object
+      additionalProperties: false
+      required:
+        - messageType
+        - token
+        - originPosition
+      properties:
+        messageType:
+          type: string
+          const: CHOOSE_ORIGIN
+        token:
+          type: string
+        originPosition:
+          $ref: '#/components/schemas/Position'
+    GetMap:
+      type: object
+      additionalProperties: false
+      required:
+        - messageType
+        - token
+      properties:
+        messageType:
+          type: string
+          const: GET_MAP
+        token:
+          type: string
+    GetTankInfo:
+      type: object
+      additionalProperties: false
+      required:
+        - messageType
+        - token
+      properties:
+        messageType:
+          type: string
+          const: GET_TANK_INFO
+        token:
+          type: string
+    PerformAttack:
+      type: object
+      additionalProperties: false
+      required:
+        - messageType
+        - token
+      properties:
+        messageType:
+          type: string
+          const: PERFORM_ATTACK
+        token:
+          type: string
+    PerformMove:
+      type: object
+      additionalProperties: false
+      required:
+        - messageType
+        - token
+        - destination
+      properties:
+        messageType:
+          type: string
+          const: PERFORM_MOVE
+        token:
+          type: string
+        destination:
+          $ref: '#/components/schemas/Position'
+    PerformTurn:
+      type: object
+      additionalProperties: false
+      required:
+        - messageType
+        - token
+        - destination
+      properties:
+        messageType:
+          type: string
+          const: PERFORM_TURN
+        token:
+          type: string
+        destination:
+          $ref: '#/components/schemas/Position'
+    PerformStop:
+      type: object
+      additionalProperties: false
+      required:
+        - messageType
+        - token
+      properties:
+        messageType:
+          type: string
+          const: PERFORM_STOP
+        token:
+          type: string
+    PerformPickUp:
+      type: object
+      additionalProperties: false
+      required:
+        - messageType
+        - token
+        - targetPowerup
+        - targetPosition
+      properties:
+        messageType:
+          type: string
+          const: PERFORM_PICK_UP
+        token:
+          type: string
+        targetPowerup:
+          $ref: '#/components/schemas/Powerup'
+        targetPosition:
+          $ref: '#/components/schemas/Position'
+    PowerupUpdateEvent:
+      type: object
+      additionalProperties: false
+      required:
+        - eventType
+        - powerups
+      properties:
+        eventType:
+          type: string
+          const: POWERUP_UPDATE
+        powerups:
+          type: array
+          items:
+            type: object
+            required:
+              - powerup
+              - position
+            properties:
+              powerup:
+                $ref: '#/components/schemas/Powerup'
+              position:
+                $ref: '#/components/schemas/Position'
+    TankAttackEvent:
+      type: object
+      additionalProperties: false
+      required:
+        - eventType
+        - tankId
+      properties:
+        eventType:
+          type: string
+          const: TANK_ATTACK
+        TankId:
+          type: integer
+    TankTurnEvent:
+      type: object
+      additionalProperties: false
+      required:
+        - eventType
+        - tankId
+        - targetPosition
+      properties:
+        eventType:
+          type: string
+          const: TANK_ATTACK
+        TankId:
+          type: integer
+        targetPosition:
+          $ref: '#/components/schemas/Position'
+    TankPickUpEvent:
+      type: object
+      additionalProperties: false
+      required:
+        - eventType
+        - tankId
+        - targetPowerup
+        - targetPosition
+      properties:
+        eventType:
+          type: string
+          const: TANK_PICK_UP
+        tankId:
+          type: integer
+        targetPowerup:
+          $ref: '#/components/schemas/Powerup'
+        targetPosition:
+          $ref: '#/components/schemas/Position'
+        numb:
+          type: integer
+    Position:
+      type: object
+      additionalProperties: false
+      required:
+        - x
+        - 'y'
+      properties:
+        x:
+          type: number
+        'y':
+          type: number
+    PositionInt:
+      type: object
+      additionalProperties: false
+      required:
+        - x
+        - 'y'
+      properties:
+        x:
+          type: integer
+        'y':
+          type: integer
