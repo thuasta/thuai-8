@@ -633,6 +633,7 @@ components:
         - $ref: '#/components/schemas/Fence'
         - $ref: '#/components/schemas/Bullet'
         - $ref: '#/components/schemas/Laser'
+        - $ref: '#/components/schemas/SkillName'
     
     AppearEvent:
       type: object
