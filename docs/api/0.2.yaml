@@ -1,0 +1,697 @@
+asyncapi: 3.0.0
+info:
+  title: THUAI8 API
+  version: '0.2'
+# channels:
+# "用于玩家 SDK 与后端的通信频道。"
+channels:
+  /competition/SDK:
+    address: /competition/SDK
+    messages:
+      Error:
+        $ref: '#/components/messages/Error' # 错误信息
+      PlayerInfo:
+        $ref: '#/components/messages/PlayerInfo' # 人物属性
+      EnvironmentInfo:
+        $ref: '#/components/messages/EnvironmentInfo' # 环境属性
+      GameStatistics:
+        $ref: '#/components/messages/GameStatistics' # 游戏统计信息
+      AvailableBuffs:
+        $ref: '#/components/messages/AvailableBuffs' # 可选加成
+      PlayerPerform:
+        $ref: '#/components/messages/PlayerPerform'  # 人物动作
+# 用于前后端记录和管理的频道。
+  /competition/Record:
+    address:  /competition/Record
+    messages:
+      Error:
+        $ref: '#/components/messages/Error' # 错误信息
+      StageChange:
+        $ref: '#/components/messages/StageChange' # 阶段切换
+      BattleUpdate:
+        $ref: '#/components/messages/BattleUpdate' # 战斗信息更新
+      BuffSelect:
+        $ref: '#/components/messages/BuffSelect' # 加成选择
+
+
+operations:
+  /competition/SDK.publish:
+    action: receive
+    channel:
+      $ref: '#/channels/~1competition~1SDK'
+    messages:
+      - $ref: '#/channels/~1competition~1SDK/messages/PlayerPerform'  # 人物动作
+  /competition/SDK.subscribe:
+    action: send
+    channel:
+      $ref: '#/channels/~1competition~1SDK'
+    messages:
+      - $ref: '#/channels/~1competition~1SDK/messages/Error' # 错误信息
+      - $ref: '#/channels/~1competition~1SDK/messages/PlayerInfo' # 人物属性
+      - $ref: '#/channels/~1competition~1SDK/messages/EnvironmentInfo' # 环境属性
+      - $ref: '#/channels/~1competition~1SDK/messages/GameStatistics' # 游戏统计信息
+      - $ref: '#/channels/~1competition~1SDK/messages/AvailableBuffs' # 可选加成
+  /competition/Record.publish:
+    action: receive
+    channel:
+      $ref: '#/channels/~1competition~1Record'
+    messages:
+      - $ref: '#/channels/~1competition~1Record/messages/Error'
+  /competition/Record.subscribe:
+    action: send
+    channel:
+      $ref: '#/channels/~1competition~1Record'
+    messages:
+      - $ref: '#/channels/~1competition~1Record/messages/Error' # 错误信息
+      - $ref: '#/channels/~1competition~1Record/messages/StageChange' # 阶段切换
+      - $ref: '#/channels/~1competition~1Record/messages/BattleUpdate' # 战斗信息更新
+      - $ref: '#/channels/~1competition~1Record/messages/BuffSelect' # 加成选择
+
+# components: 
+components:
+  # ==========================
+  # Messages (消息定义)
+  # ==========================
+  messages:
+    PlayerPerform:
+      summary: "玩家行为"
+      payload:
+        type: array
+        additionalProperties: false
+        items:
+          oneOf:
+            - $ref: '#/components/schemas/PerformMove' # 前后移动
+            - $ref: '#/components/schemas/PerformTurn' # 转向
+            - $ref: '#/components/schemas/PerformAttack' # 攻击
+            - $ref: '#/components/schemas/PerformSkill' # 使用技能
+            - $ref: '#/components/schemas/PerformSelect' # 选择加成
+            - $ref: '#/components/schemas/GetPlayerInfo' # 获取人物属性
+            - $ref: '#/components/schemas/GetEnvironmentInfo' # 获取环境属性
+            - $ref: '#/components/schemas/GetGameStatistics' # 获取统计信息
+            - $ref: '#/components/schemas/GetAvailableBuffs' # 获取可选加成
+
+    GameStatistics:
+      summary: "比赛统计信息"
+      payload:
+        type: object
+        additionalProperties: false
+        properties:
+          currentStage:
+            $ref: '#/components/schemas/Stage'
+            description: "当前阶段"
+          countDown:
+            type: integer
+            description: "阶段倒计时"
+          ticks:
+            type: integer
+            description: "阶段已经过 tick 数"
+          scores:
+            type: array
+            items:
+              type: object
+              additionalProperties: false
+              properties:
+                token:
+                  type: string
+                score:
+                  type: integer
+              required:
+                - token
+                - score
+        required:
+          - currentStage
+          - countDown
+          - ticks
+          - scores
+
+    PlayerInfo:
+      summary: "玩家属性"
+      payload:
+        $ref: '#/components/schemas/Player'
+
+    EnvironmentInfo:
+      summary: "环境属性"
+      payload:
+        additionalProperties: false
+        type: object
+        properties:
+          walls:
+            type: array
+            items:
+              $ref: '#/components/schemas/Wall'  # 所有普通墙体
+          fences:
+            type: array
+            items:
+              $ref: '#/components/schemas/Fence'  # 所有技能墙体
+          bullets:
+            type: array
+            items:
+              $ref: '#/components/schemas/Bullet'  # 所有在场子弹
+          playerPositions:
+            type: array
+            items:
+              type: object
+              properties:
+                token:
+                  type: string
+                position:
+                  $ref: '#/components/schemas/Position'
+              additionalProperties: false
+    
+    AvailableBuffs:
+      summary: "可选加成列表"
+      payload:
+        type: array
+        additionalProperties: false
+        items:
+          $ref: '#/components/schemas/BuffName'
+    
+    StageChange:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - targetStage
+        properties:
+          messageType:
+            type: string
+            const: STAGE_CHANGE
+          targetStage:
+            $ref: '#/components/schemas/Stage'
+
+    BattleUpdate:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - currentTicks
+          - players
+          - events
+        properties:
+          messageType:
+            type: string
+            const: BATTLE_UPDATE
+          currentTicks:
+            type: integer
+          players:
+            type: array
+            items:
+              $ref: '#/components/schemas/Player'
+          events:
+            type: array
+            items:
+              oneOf:
+                - $ref: '#/components/schemas/AppearEvent'
+                - $ref: '#/components/schemas/BobEvent'
+                - $ref: '#/components/schemas/CollisionEvent'
+                - $ref: '#/components/schemas/DestroyEvent'
+    
+    BuffSelect:
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - currentTicks
+          - token
+          - buff
+        properties:
+          messageType:
+            type: string
+            const: BUFF_SELECT
+          currentTicks:
+            type: integer
+          token:
+            type: string
+          buff:
+            $ref: '#/components/schemas/BuffName'
+
+    Error:
+      summary: "错误信息"
+      payload:
+        type: object
+        additionalProperties: false
+        properties:
+          errorCode:
+            type: integer
+          message:
+            type: string
+        required:
+          - errorCode
+          - message
+
+  # ==========================
+  # Schemas (数据结构定义)
+  # ==========================
+  schemas:
+
+    Stage:
+      type: string
+      enum:
+        - REST
+        - BATTLE
+        - END
+
+    Weapon:  # 武器类
+      type: object
+      additionalProperties: false
+      properties:
+        attackSpeed:
+          type: number  # 攻速
+        bulletSpeed:
+          type: number  # 子弹速度
+        isLaser: # 激光
+          type: boolean
+        antiArmor: # 破甲
+          type: boolean
+        damage:
+          type: integer
+        maxBullets:
+          type: integer  # 子弹最大存在数量
+        currentBullets:
+          type: integer  # 当前存在的子弹数量
+      required:
+        - attackSpeed
+        - bulletSpeed
+        - damage
+        - isLaser
+        - antiArmor
+        - weaponType
+        - maxBullets
+        - currentBullets
+
+    Armor: # 护甲类
+      type: object
+      additionalProperties: false
+      properties:
+        canReflect:
+          type: boolean  # 护盾是否可以反弹
+        armorValue:
+          type: integer  # 护盾值
+        health:
+          type: integer  # 血条
+        gravityField:
+          type: boolean  # 重力场
+        knife:
+          type: string  # 名刀
+          enum:
+            - NOT_OWNED
+            - AVAILABLE
+            - ACTIVE
+            - BROKEN
+        dodgeRate:
+          type: number  # 闪避率
+      required:
+        - canReflect
+        - armorValue
+        - health
+        - gravityField
+        - knife
+        - dodgeRate
+
+    BuffName: 
+      type: string
+      additionalProperties: false
+      enum:
+        - BULLET_COUNT # 子弹数量
+        - BULLET_SPEED # 子弹移速
+        - ATTACK_SPEED # 攻速
+        - LASER # 激光
+        - DAMAGE # 伤害
+        - ANTI_ARMOR # 破甲
+        - ARMOR # 护盾
+        - REFLECT # 反弹
+        - DODGE # 闪避
+        - KNIFE # 名刀
+        - GRAVITY # 重力
+        - BLACK_OUT # 视野限制
+        - SPEED_UP # 加速
+        - FLASH # 闪现
+        - DESTROY # 破坏墙体
+        - CONSTRUCT # 建造墙体
+        - TRAP # 陷阱
+        - MISSILE # 导弹
+        - KAMUI # 虚化
+
+    SkillName: 
+      type: string
+      additionalProperties: false
+      enum:
+        - BLACK_OUT # 视野限制
+        - SPEED_UP # 加速
+        - FLASH # 闪现
+        - DESTROY # 破坏墙体
+        - CONSTRUCT # 建造墙体
+        - TRAP # 陷阱
+        - MISSILE # 导弹
+        - KAMUI # 虚化
+
+    Skill: # 技能类
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          $ref: '#/components/schemas/SkillName'
+        maxCooldown:
+          type: integer  # 最大冷却
+        currentCooldown:
+          type: integer  # 当前冷却
+        isActive:
+          type: boolean  # 是否正在生效
+      required:
+        - name
+        - maxCooldown
+        - currentCooldown
+        - isActive
+    
+    Player: # 玩家类
+      type: object
+      additionalProperties: false
+      properties:
+        token:
+          type: string
+        weapon:
+          $ref: '#/components/schemas/Weapon'
+        armor:
+          $ref: '#/components/schemas/Armor'
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/Skill'
+        position:
+          $ref: '#/components/schemas/Position'
+      required:
+        - token
+        - weapon
+        - armor
+        - skills
+        - position
+
+    Wall: # 普通墙体类
+      type: object
+      additionalProperties: false
+      properties:
+        position:
+          type: object
+          properties:
+            x:
+              type: number  # 二维坐标 x
+            y:
+              type: number  # 二维坐标 y
+          required:
+            - x
+            - y
+        direction:
+          type: string  # 方向（x 或 y）
+          enum:
+            - x
+            - y
+      required:
+        - position
+        - direction
+
+    Fence: # 技能墙体类
+      type: object
+      additionalProperties: false
+      properties:
+        position:
+          type: object
+          properties:
+            x:
+              type: number  # 坐标 x
+            y:
+              type: number  # 坐标 y
+          required:
+            - x
+            - y
+        direction:
+          type: string  # 方向
+          enum:
+            - x
+            - y
+        health:
+          type: integer  # 生命值
+      required:
+        - position
+        - direction
+        - health
+
+    Bullet: # 子弹类
+      type: object
+      additionalProperties: false
+      properties:
+        position:
+          $ref: '#/components/schemas/Position'
+        speed:
+          type: number  # 子弹速度
+        damage:
+          type: number  # 子弹伤害
+        traveledDistance:
+          type: number  # 子弹已经过路程
+      required:
+        - position
+        - speed
+        - damage
+        - traveledDistance
+
+    Position: 
+      type: object
+      additionalProperties: false
+      properties:
+        x:
+          type: number
+        y:
+          type: number
+        angle:
+          type: number
+      required:
+        - x
+        - y
+        - angle
+
+    PerformMove:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: PERFORM_MOVE
+        token:
+          type: string
+        direction:
+          type: string
+          enum:
+            - BACK
+            - FORTH
+      required:
+        - messageType
+        - token
+        - direction
+
+    PerformTurn:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: PERFORM_TURN
+        token:
+          type: string
+        direction:
+          type: string
+          enum:
+            - CLOCKWISE
+            - COUNTER_CLOCKWISE
+      required:
+        - messageType
+        - token
+        - direction
+
+    PerformAttack:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: PERFORM_ATTACK
+        token:
+          type: string
+      required:
+        - messageType
+        - token
+
+    PerformSkill:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: PERFORM_SKILL
+        token:
+          type: string
+        skillName:
+          $ref: '#/components/schemas/SkillName'
+      required:
+        - messageType
+        - token
+        - skillName
+
+    PerformSelect:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: PERFORM_SELECT
+        token:
+          type: string
+        skillName:
+          $ref: '#/components/schemas/SkillName'
+      required:
+        - messageType
+        - token
+        - skillName
+
+    GetPlayerInfo:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: GET_PLAYER_INFO
+        token:
+          type: string
+        request: # 获取自身获对面信息
+          type: string
+          enum:
+            - SELF
+            - OPPONENT
+      required:
+        - messageType
+        - token
+        - request
+
+    GetEnvironmentInfo:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: GET_ENVIRONMENT_INFO
+        token:
+          type: string
+      required:
+        - messageType
+        - token
+
+    GetGameStatistics:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: GET_GAME_STATISTICS
+        token:
+          type: string
+      required:
+        - messageType
+        - token
+
+    GetAvailableBuffs:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: GET_AVAILABLE_BUFFS
+        token:
+          type: string
+      required:
+        - messageType
+        - token
+      
+    Laser:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        properties:
+          start:
+            $ref: '#/components/schemas/Position'
+          end:
+            $ref: '#/components/schemas/Position'
+        required:
+          - start
+          - end
+    
+    Object:
+      oneOf:
+        - $ref: '#/components/schemas/Player'
+        - $ref: '#/components/schemas/Wall'
+        - $ref: '#/components/schemas/Fence'
+        - $ref: '#/components/schemas/Bullet'
+        - $ref: '#/components/schemas/Laser'
+    
+    AppearEvent:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: APPEAR_EVENT
+        target:
+          $ref: '#/components/schemas/Object'
+        position:
+          oneOf:
+            - $ref: '#/components/schemas/Object'
+            - $ref: '#/components/schemas/Position'
+      required:
+        - messageType
+        - target
+        - position
+    
+    BobEvent:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: BOB_EVENT
+        target:
+          $ref: '#/components/schemas/Object'
+        end:
+          $ref: '#/components/schemas/Position'
+      required:
+        - messageType
+        - target
+        - end
+    
+    CollisionEvent:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: COLLISION_EVENT
+        targets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Object'
+      required:
+        - messageType
+        - targets
+    
+    DestroyEvent:
+      type: object
+      additionalProperties: false
+      properties:
+        messageType:
+          type: string
+          const: DESTROY_EVENT
+        target:
+          $ref: '#/components/schemas/Object'
+      required:
+        - messageType
+        - target
