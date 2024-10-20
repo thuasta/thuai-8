@@ -390,52 +390,18 @@ components:
         - position
 
     Wall: # 普通墙体类
-      type: object
-      additionalProperties: false
-      properties:
-        position:
-          type: object
-          properties:
-            x:
-              type: number  # 二维坐标 x
-            y:
-              type: number  # 二维坐标 y
-          required:
-            - x
-            - y
-        direction:
-          type: string  # 方向（x 或 y）
-          enum:
-            - x
-            - y
-      required:
-        - position
-        - direction
+      $ref: '#/components/schemas/Position'
 
     Fence: # 技能墙体类
       type: object
       additionalProperties: false
       properties:
         position:
-          type: object
-          properties:
-            x:
-              type: number  # 坐标 x
-            y:
-              type: number  # 坐标 y
-          required:
-            - x
-            - y
-        direction:
-          type: string  # 方向
-          enum:
-            - x
-            - y
+          $ref: '#/components/schemas/Position'
         health:
           type: integer  # 生命值
       required:
         - position
-        - direction
         - health
 
     Bullet: # 子弹类
@@ -547,12 +513,12 @@ components:
           const: PERFORM_SELECT
         token:
           type: string
-        skillName:
-          $ref: '#/components/schemas/SkillName'
+        buffName:
+          $ref: '#/components/schemas/BuffName'
       required:
         - messageType
         - token
-        - skillName
+        - buffName
 
     GetPlayerInfo:
       type: object
@@ -633,7 +599,7 @@ components:
         - $ref: '#/components/schemas/Fence'
         - $ref: '#/components/schemas/Bullet'
         - $ref: '#/components/schemas/Laser'
-        - $ref: '#/components/schemas/SkillName'
+        - $ref: '#/components/schemas/BuffName'
     
     AppearEvent:
       type: object
