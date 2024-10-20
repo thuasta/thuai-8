@@ -1,9 +1,9 @@
 on:
-    push:
-        paths:
-            - server/**
-    pull_request:
-    workflow_dispatch:
+  push:
+    paths:
+      - server/**
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   build-server:
