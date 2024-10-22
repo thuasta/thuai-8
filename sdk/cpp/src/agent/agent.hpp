@@ -6,10 +6,9 @@
 #include <hv/EventLoop.h>
 #include <hv/WebSocketClient.h>
 
-#include <functional>
 #include <memory>
 #include <optional>
-#include <span>
+#include <string>
 #include <string_view>
 #include <vector>
 
@@ -44,23 +43,19 @@ class Agent {
 
   [[nodiscard]] auto IsConnected() const -> bool;
 
-  [[nodiscard]] auto token() const -> std::string;
+  [[nodiscard]] auto token() const -> std::string_view;
 
   // Methods for interacting with the game
 
   [[nodiscard]] auto IsGameReady() const -> bool;
 
-  [[nodiscard]] auto players_info() const
-      -> std::optional<std::span<const PlayerInfo>>;
+  [[nodiscard]] auto players_info() const -> const std::vector<PlayerInfo>&;
 
-  [[nodiscard]] auto game_statistics() const
-      -> std::optional<std::reference_wrapper<const GameStatistics>>;
+  [[nodiscard]] auto game_statistics() const -> const GameStatistics&;
 
-  [[nodiscard]] auto environment_info() const
-      -> std::optional<std::reference_wrapper<const EnvironmentInfo>>;
+  [[nodiscard]] auto environment_info() const -> const EnvironmentInfo&;
 
-  [[nodiscard]] auto available_buffs() const
-      -> std::optional<std::span<const BuffKind>>;
+  [[nodiscard]] auto available_buffs() const -> const std::vector<BuffKind>&;
 
   void MoveForward();
 

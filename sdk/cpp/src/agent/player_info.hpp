@@ -11,10 +11,10 @@
 namespace thuai8_agent {
 
 enum class ArmorKnifeState : std::uint8_t {
-  NOT_OWNED,
-  AVAILABLE,
-  ACTIVE,
-  BROKEN
+  NotOwned,
+  Available,
+  Active,
+  Broken
 };
 
 enum class SkillKind : std::uint8_t {

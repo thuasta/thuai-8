@@ -8,7 +8,7 @@
 
 namespace thuai8_agent {
 
-enum class Stage : uint8_t { REST, BATTLE, END };
+enum class Stage : uint8_t { Rest, Battle, End };
 
 struct OnesScore {
   std::string token;

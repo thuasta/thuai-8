@@ -17,3 +17,6 @@ target("agent")
     set_exceptions("cxx")
     set_warnings("allextra")
     
+    if is_plat("windows") then
+        add_defines("NOMINMAX")
+    end

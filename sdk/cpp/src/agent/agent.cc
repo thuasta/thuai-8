@@ -7,13 +7,15 @@
 #include <spdlog/spdlog.h>
 
 #include <exception>
-#include <functional>
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <optional>
-#include <span>
 #include <string>
 #include <string_view>
+#include <utility>
+#include <vector>
 
+#include "agent/position.hpp"
 #include "available_buffs.hpp"
 #include "environment_info.hpp"
 #include "format.hpp"
@@ -56,25 +58,22 @@ auto Agent::IsGameReady() const -> bool {
          environment_info_.has_value() && available_buffs_.has_value();
 }
 
-auto Agent::token() const -> std::string { return token_; }
+auto Agent::token() const -> std::string_view { return token_; }
 
-auto Agent::players_info() const -> std::optional<std::span<const PlayerInfo>> {
-  return players_;
+auto Agent::players_info() const -> const std::vector<PlayerInfo>& {
+  return players_.value();
 }
 
-auto Agent::game_statistics() const
-    -> std::optional<std::reference_wrapper<const GameStatistics>> {
-  return game_statistics_;
+auto Agent::game_statistics() const -> const GameStatistics& {
+  return game_statistics_.value();
 }
 
-auto Agent::environment_info() const
-    -> std::optional<std::reference_wrapper<const EnvironmentInfo>> {
-  return environment_info_;
+auto Agent::environment_info() const -> const EnvironmentInfo& {
+  return environment_info_.value();
 }
 
-auto Agent::available_buffs() const
-    -> std::optional<std::span<const BuffKind>> {
-  return available_buffs_;
+auto Agent::available_buffs() const -> const std::vector<BuffKind>& {
+  return available_buffs_.value();
 }
 
 void Agent::MoveForward() {
@@ -117,6 +116,11 @@ void Agent::Loop() {
     if (!IsConnected()) {
       return;
     }
+    ws_client_->send(GetPlayerInfo(token_, "SELF").to_string());
+    ws_client_->send(GetPlayerInfo(token_, "OPPONENT").to_string());
+    ws_client_->send(GetGameStatistics(token_).to_string());
+    ws_client_->send(GetEnvironmentInfo(token_).to_string());
+    ws_client_->send(GetAvailableBuffs(token_).to_string());
   } catch (const std::exception& e) {
     spdlog::error("{} encountered an error [{}] in loop", *this, e.what());
   }
@@ -126,11 +130,95 @@ void Agent::OnMessage(const Message& message) {
   try {
     auto msg_dict = message.msg;
     auto msg_type = msg_dict["messageType"].get<std::string>();
-    if (msg_type == "ERROR") {
+    if (msg_type == "PLAYER_INFO") {
+      players_ = std::vector<PlayerInfo>(2);
+      const auto& weapon_data = msg_dict["weapon"];
+      Weapon weapon{
+          .isLaser = weapon_data["isLaser"].get<bool>(),
+          .antiArmor = weapon_data["antiArmor"].get<bool>(),
+          .damage = weapon_data["damage"].get<unsigned int>(),
+          .maxBullets = weapon_data["maxBullets"].get<unsigned int>(),
+          .currentBullets = weapon_data["currentBullets"].get<unsigned int>(),
+          .attackSpeed = weapon_data["attackSpeed"].get<double>(),
+          .bulletSpeed = weapon_data["bulletSpeed"].get<double>()};
+      const auto& armor_data = msg_dict["armor"];
+      Armor armor{.canReflect = armor_data["canReflect"].get<bool>(),
+                  .gravityField = armor_data["gravityField"].get<bool>(),
+                  .armorValue = armor_data["armorValue"].get<unsigned int>(),
+                  .health = armor_data["health"].get<unsigned int>(),
+                  .dodgeRate = armor_data["dodgeRate"].get<double>(),
+                  .knife = static_cast<ArmorKnifeState>(
+                      armor_data["knife"].get<unsigned int>())};
+      std::vector<Skill> skills;
+      for (const auto& skill_data : msg_dict["skills"]) {
+        skills.emplace_back(
+            Skill{.name = skill_data["name"].get<SkillKind>(),
+                  .maxCoolDown = skill_data["maxCoolDown"].get<unsigned int>(),
+                  .currentCoolDown =
+                      skill_data["currentCoolDown"].get<unsigned int>(),
+                  .isActive = skill_data["isActive"].get<bool>()});
+      }
+      Position position{.x = msg_dict["position"]["x"].get<double>(),
+                        .y = msg_dict["position"]["y"].get<double>(),
+                        .angle = msg_dict["position"]["angle"].get<double>()};
+      players_->emplace_back(
+          PlayerInfo{.token = msg_dict["token"].get<std::string>(),
+                     .position = position,
+                     .weapon = weapon,
+                     .armor = armor,
+                     .skills = std::move(skills)});
+    } else if (msg_type == "ENVIRONMENT_INFO") {
+      std::vector<Wall> walls;
+      for (const auto& wall_data : msg_dict["walls"]) {
+        walls.emplace_back(Wall{wall_data["x"].get<double>(),
+                                wall_data["y"].get<double>(),
+                                wall_data["angle"].get<double>()});
+      }
+      std::vector<Fence> fences;
+      for (const auto& fence_data : msg_dict["fences"]) {
+        fences.emplace_back(Fence{
+            .position = {.x = fence_data["position"]["x"].get<double>(),
+                         .y = fence_data["position"]["y"].get<double>(),
+                         .angle =
+                             fence_data["position"]["angle"].get<double>()},
+            .health = fence_data["health"].get<unsigned int>()});
+      }
+      std::vector<Bullet> bullets;
+      for (const auto& bullet_data : msg_dict["bullets"]) {
+        bullets.emplace_back(Bullet{
+            .position = {.x = bullet_data["position"]["x"].get<double>(),
+                         .y = bullet_data["position"]["y"].get<double>(),
+                         .angle =
+                             bullet_data["position"]["angle"].get<double>()},
+            .speed = bullet_data["speed"].get<double>(),
+            .damage = bullet_data["damage"].get<double>(),
+            .traveledDistance = bullet_data["traveledDistance"].get<double>()});
+      }
+      environment_info_ = EnvironmentInfo{.walls = std::move(walls),
+                                          .fences = std::move(fences),
+                                          .bullets = std::move(bullets)};
+    } else if (msg_dict == "GAME_STATISTICS") {
+      std::vector<OnesScore> scores(2);
+      for (const auto& score_data : msg_dict["scores"]) {
+        scores.emplace_back(
+            OnesScore{.token = score_data["token"].get<std::string>(),
+                      .score = score_data["score"].get<unsigned int>()});
+      }
+      game_statistics_ =
+          GameStatistics{.currentStage = msg_dict["currentStage"].get<Stage>(),
+                         .countDown = msg_dict["countDown"].get<unsigned int>(),
+                         .ticks = msg_dict["ticks"].get<unsigned int>(),
+                         .scores = std::move(scores)};
+    } else if (msg_type == "AVAILABLE_BUFFS") {
+      std::vector<BuffKind> buffs(3);
+      for (const auto& buff_data : msg_dict["buffs"]) {
+        buffs.emplace_back(buff_data.get<BuffKind>());
+      }
+      available_buffs_ = std::move(buffs);
+    } else if (msg_type == "ERROR") {
       spdlog::error("{} got an error from server: [code: {}, msg: {}]", *this,
                     msg_dict["errorCode"].get<int>(),
                     msg_dict["message"].get<std::string>());
-    } else if (msg_type == "PLAYER_INFO") {
     }
   } catch (const std::exception& e) {
     spdlog::error("{} encountered an error [{}] in OnMessage", *this, e.what());

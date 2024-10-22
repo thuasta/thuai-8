@@ -13,8 +13,8 @@ struct Wall {
 };
 
 struct Fence {
-  unsigned int health{};
   Position position{};
+  unsigned int health{};
 };
 
 struct Bullet {

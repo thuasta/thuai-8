@@ -6,9 +6,16 @@
 #include <string>
 
 #include "available_buffs.hpp"
+#include "game_statistics.hpp"
 #include "player_info.hpp"
 
 namespace thuai8_agent {
+
+NLOHMANN_JSON_SERIALIZE_ENUM(ArmorKnifeState,
+                             {{ArmorKnifeState::NotOwned, "NOT_OWNED"},
+                              {ArmorKnifeState::Available, "AVAILABLE"},
+                              {ArmorKnifeState::Active, "ACTIVE"},
+                              {ArmorKnifeState::Broken, "BROKEN"}});
 
 NLOHMANN_JSON_SERIALIZE_ENUM(SkillKind, {{SkillKind::BlackOut, "BLACK_OUT"},
                                          {SkillKind::SpeedUp, "SPEED_UP"},
@@ -39,6 +46,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(BuffKind, {{BuffKind::BulletCount, "BULLET_COUNT"},
                                         {BuffKind::Missile, "MISSILE"},
                                         {BuffKind::Kamui, "KAMUI"}});
 
+NLOHMANN_JSON_SERIALIZE_ENUM(Stage, {{Stage::Rest, "REST"},
+                                     {Stage::Battle, "BATTLE"},
+                                     {Stage::End, "END"}});
+
+// NOLINTBEGIN(misc-non-private-member-variables-in-classes)
 struct Message {
   nlohmann::json msg;
   Message() = default;
@@ -46,6 +58,7 @@ struct Message {
       : msg(nlohmann::json::parse(msg_str)) {}
   [[nodiscard]] auto to_string() const -> std::string { return msg.dump(); }
 };
+// NOLINTEND(misc-non-private-member-variables-in-classes)
 
 struct PerformMove : public Message {
   PerformMove(const std::string& token, const std::string& direction) {
