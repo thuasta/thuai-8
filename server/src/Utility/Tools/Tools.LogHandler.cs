@@ -17,7 +17,7 @@ public static partial class Tools
         /// <summary>
         /// The maximum length of a log message.
         /// </summary>
-        public const int MaximumMessageLength = 65536;
+        public const int MaximumMessageLength = 65535;
 
         /// <summary>
         /// The template for Serilog (console).
@@ -159,10 +159,10 @@ public static partial class Tools
         /// </summary>
         /// <param name="logger">The logger that logs the exception.</param>
         /// <param name="e">The exception.</param>
-        public static void LogException(ILogger logger, Exception e)
+        public static void LogException(ILogger? logger, Exception e)
         {
-            logger.Error($"An exception occurred: {Truncate(e.Message, MaximumMessageLength)}");
-            logger.Debug(e.StackTrace ?? "No stack trace available.");
+            logger?.Error($"An exception occurred: {Truncate(e.Message, MaximumMessageLength)}");
+            logger?.Debug(e.StackTrace ?? "No stack trace available.");
         }
 
         /// <summary>
