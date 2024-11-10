@@ -1,4 +1,3 @@
-using System.ComponentModel.Design.Serialization;
 using System.Text.Json.Serialization;
 
 using Serilog;
