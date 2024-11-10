@@ -74,7 +74,7 @@ components:
   # ==========================
   messages:
     PlayerPerform:
-    title: "PlayerPerform"
+      title: "PlayerPerform"
       summary: "玩家行为"
       payload:
         type: array
