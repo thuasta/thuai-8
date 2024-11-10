@@ -75,7 +75,7 @@ public class BuffSelector
     /// <summary>
     /// Initializes the buff selector.
     /// </summary>
-    public void BuffInit()
+    public bool BuffInit()
     {
         Random offensiverand = new Random();
         Random defensiverand = new Random();
@@ -83,8 +83,7 @@ public class BuffSelector
         OffensiveBuff = OffensiveBuff.OrderBy(x => offensiverand.Next()).ToArray();
         DefensiveBuff = DefensiveBuff.OrderBy(x => defensiverand.Next()).ToArray();
         UtilityBuff = UtilityBuff.OrderBy(x => Utilityrand.Next()).ToArray();
-
-        throw new NotImplementedException();
+        return true;
     }
 
     /// <summary>
@@ -223,5 +222,4 @@ public class BuffSelector
                 break;
         }
     }
-
 }
