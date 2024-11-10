@@ -40,7 +40,7 @@ namespace BattleCity
         public IArchitecture GetArchitecture()
         {
             return GameApp.Interface;
-        }
+        }//hello
 
         private JArray LoadRecordData()
         {
