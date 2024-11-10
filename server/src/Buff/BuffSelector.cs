@@ -1,5 +1,5 @@
 using Serilog.Debugging;
-using Thuai.Server.GameController;
+using Thuai.Server.GameLogic;
 
 namespace Thuai.Server.Buff;
 
@@ -30,7 +30,7 @@ public enum Buff
     }
 
 /// <summary>
-/// Selects a buff for a player.
+/// Selects a buff for a character.
 /// </summary>
 public class BuffSelector
 {
@@ -104,20 +104,20 @@ public class BuffSelector
     /// <summary>
     /// Selects a buff.
     /// </summary>
-    /// <param name="player","num">The player and the number of the buff.</param>
+    /// <param name="character","num">The character and the number of the buff.</param>
     /// <returns> void </returns>
-    public void SelectBuff(Player player, int num)
+    public void SelectBuff(Character character, int num)
     {
         switch (num)
         {
             case 1:
-                ChooseOffensiveBuff(player, OffensiveBuff[Round - 1]);
+                ChooseOffensiveBuff(character, OffensiveBuff[Round - 1]);
                 break;
             case 2:
-                ChooseDefensiveBuff(player, DefensiveBuff[Round - 1]);
+                ChooseDefensiveBuff(character, DefensiveBuff[Round - 1]);
                 break;
             case 3:
-                ChooseUtilityBuff(player, UtilityBuff[Round - 1]);
+                ChooseUtilityBuff(character, UtilityBuff[Round - 1]);
                 break;
             default:
                 break;
@@ -127,9 +127,9 @@ public class BuffSelector
     /// <summary>
     /// Chooses an offensive buff.
     /// </summary>
-    /// <param name="player","buff">The player and the buff.</param>
+    /// <param name="character","buff">The character and the buff.</param>
     /// <returns> void </returns>
-    private void ChooseOffensiveBuff(Player player, Buff buff)
+    private void ChooseOffensiveBuff(Character character, Buff buff)
     {
         switch (buff)
         {
@@ -159,9 +159,9 @@ public class BuffSelector
     /// <summary>
     /// Chooses a defensive buff.
     /// </summary>
-    /// <param name="player","buff">The player and the buff.</param>
+    /// <param name="character","buff">The character and the buff.</param>
     /// <returns> void </returns>
-    private void ChooseDefensiveBuff(Player player, Buff buff)
+    private void ChooseDefensiveBuff(Character character, Buff buff)
     {
         switch (buff)
         {
@@ -188,9 +188,9 @@ public class BuffSelector
     /// <summary>
     /// Chooses a utility buff.
     /// </summary>
-    /// <param name="player","buff">The player and the buff.</param>
+    /// <param name="character","buff">The character and the buff.</param>
     /// <returns> void </returns>
-    private void ChooseUtilityBuff(Player player, Buff buff)
+    private void ChooseUtilityBuff(Character character, Buff buff)
     {
         switch (buff)
         {
