@@ -4,6 +4,7 @@
 
 #include <nlohmann/json.hpp>
 #include <string>
+#include <string_view>
 
 #include "available_buffs.hpp"
 #include "game_statistics.hpp"
@@ -54,77 +55,73 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Stage, {{Stage::Rest, "REST"},
 struct Message {
   nlohmann::json msg;
   Message() = default;
-  explicit Message(const std::string& msg_str)
+  explicit Message(std::string_view msg_str)
       : msg(nlohmann::json::parse(msg_str)) {}
   [[nodiscard]] auto to_string() const -> std::string { return msg.dump(); }
 };
 // NOLINTEND(misc-non-private-member-variables-in-classes)
 
 struct PerformMove : public Message {
-  PerformMove(const std::string& token, const std::string& direction) {
-    msg["messageType"] = "PERFORM_MOVE";
-    msg["token"] = token;
-    msg["direction"] = direction;
+  PerformMove(std::string_view token, std::string_view direction) {
+    msg = {{"messageType", "PERFORM_MOVE"},
+           {"token", token},
+           {"direction", direction}};
   }
 };
 
 struct PerformTurn : public Message {
-  PerformTurn(const std::string& token, const std::string& direction) {
-    msg["messageType"] = "PERFORM_TURN";
-    msg["token"] = token;
-    msg["direction"] = direction;
+  PerformTurn(std::string_view token, std::string_view direction) {
+    msg = {{"messageType", "PERFORM_TURN"},
+           {"token", token},
+           {"direction", direction}};
   }
 };
 
 struct PerformAttack : public Message {
-  explicit PerformAttack(const std::string& token) {
-    msg["messageType"] = "PERFORM_ATTACK";
-    msg["token"] = token;
+  explicit PerformAttack(std::string_view token) {
+    msg = {{"messageType", "PERFORM_ATTACK"}, {"token", token}};
   }
 };
 
 struct PerformSkill : public Message {
-  PerformSkill(const std::string& token, const SkillKind& skillName) {
-    msg["messageType"] = "PERFORM_SKILL";
-    msg["token"] = token;
-    msg["skillName"] = skillName;
+  PerformSkill(std::string_view token, const SkillKind& skillName) {
+    msg = {{"messageType", "PERFORM_SKILL"},
+           {"token", token},
+           {"skillName", skillName}};
   }
 };
 
 struct PerformSelect : public Message {
-  PerformSelect(const std::string& token, const BuffKind& buffName) {
-    msg["messageType"] = "PERFORM_SELECT";
-    msg["token"] = token;
-    msg["buffName"] = buffName;
+  PerformSelect(std::string_view token, const BuffKind& buffName) {
+    msg = {{"messageType", "PERFORM_SELECT"},
+           {"token", token},
+           {"buffName", buffName}};
   }
 };
 
 struct GetPlayerInfo : public Message {
-  GetPlayerInfo(const std::string& token, const std::string& request) {
-    msg["messageType"] = "GET_PLAYER_INFO";
-    msg["token"] = token;
-    msg["request"] = request;
+  GetPlayerInfo(std::string_view token, std::string_view request) {
+    msg = {{"messageType", "GET_PLAYER_INFO"},
+           {"token", token},
+           {"request", request}};
   }
 };
 
 struct GetEnvironmentInfo : public Message {
-  explicit GetEnvironmentInfo(const std::string& token) {
-    msg["messageType"] = "GET_ENVIRONMENT_INFO";
-    msg["token"] = token;
+  explicit GetEnvironmentInfo(std::string_view token) {
+    msg = {{"messageType", "GET_ENVIRONMENT_INFO"}, {"token", token}};
   }
 };
 
 struct GetGameStatistics : public Message {
-  explicit GetGameStatistics(const std::string& token) {
-    msg["messageType"] = "GET_GAME_STATISTICS";
-    msg["token"] = token;
+  explicit GetGameStatistics(std::string_view token) {
+    msg = {{"messageType", "GET_GAME_STATISTICS"}, {"token", token}};
   }
 };
 
 struct GetAvailableBuffs : public Message {
-  explicit GetAvailableBuffs(const std::string& token) {
-    msg["messageType"] = "GET_AVAILABLE_BUFFS";
-    msg["token"] = token;
+  explicit GetAvailableBuffs(std::string_view token) {
+    msg = {{"messageType", "GET_AVAILABLE_BUFFS"}, {"token", token}};
   }
 };
 

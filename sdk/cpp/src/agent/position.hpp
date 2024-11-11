@@ -1,6 +1,6 @@
 #pragma once
 #ifndef _THUAI8_AGENT_POSITION_HPP_
-#define _THuAI8_AGENT_POSITION_HPP_
+#define _THUAI8_AGENT_POSITION_HPP_
 
 namespace thuai8_agent {
 
@@ -10,7 +10,7 @@ struct Position {
   double angle{};
 };
 
-inline auto operator==(const Position& lhs, const Position& rhs) -> bool {
+constexpr auto operator==(const Position& lhs, const Position& rhs) -> bool {
   return lhs.x == rhs.x && lhs.y == rhs.y;
 }
 

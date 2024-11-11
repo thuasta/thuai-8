@@ -9,7 +9,6 @@
 #include <string>
 
 #include "agent.hpp"
-#include "available_buffs.hpp"
 #include "environment_info.hpp"
 #include "game_statistics.hpp"
 #include "player_info.hpp"
@@ -20,15 +19,13 @@ namespace thuai8_agent {
 class Agent;  // Forward declaration to avoid circular dependency
 auto format_as(const Agent& object) -> std::string;
 
+template <typename T>
+  requires magic_enum::is_scoped_enum_v<T>
+auto format_as(T object) -> std::string {
+  return std::string(magic_enum::enum_name(object));
+}
+
 auto format_as(const Position& object) -> std::string;
-
-auto format_as(Stage object) -> std::string;
-
-auto format_as(BuffKind object) -> std::string;
-
-auto format_as(ArmorKnifeState object) -> std::string;
-
-auto format_as(SkillKind object) -> std::string;
 
 auto format_as(const Weapon& object) -> std::string;
 

@@ -7,7 +7,6 @@
 #include <string>
 
 #include "agent.hpp"
-#include "available_buffs.hpp"
 #include "environment_info.hpp"
 #include "game_statistics.hpp"
 #include "player_info.hpp"
@@ -22,22 +21,6 @@ auto format_as(const Agent& object) -> std::string {
 auto format_as(const Position& object) -> std::string {
   return fmt::format("Position: [x: {}, y: {}, angle: {}]", object.x, object.y,
                      object.angle);
-}
-
-auto format_as(Stage object) -> std::string {
-  return std::string(magic_enum::enum_name(object));
-}
-
-auto format_as(BuffKind object) -> std::string {
-  return std::string(magic_enum::enum_name(object));
-}
-
-auto format_as(ArmorKnifeState object) -> std::string {
-  return std::string(magic_enum::enum_name(object));
-}
-
-auto format_as(SkillKind object) -> std::string {
-  return std::string(magic_enum::enum_name(object));
 }
 
 auto format_as(const Weapon& object) -> std::string {
@@ -89,13 +72,13 @@ auto format_as(const EnvironmentInfo& object) -> std::string {
 }
 
 auto format_as(const OnesScore& object) -> std::string {
-  return fmt::format("Token {} -> Score {}", object.token, object.score);
+  return fmt::format("Token {} : Score {}", object.token, object.score);
 }
 
 auto format_as(const GameStatistics& object) -> std::string {
   return fmt::format(
-      "GameStatistics[Stage: {}, CountDown: {}, Ticks: {}, Scores: {{{} : {} = "
-      "{} : {}}}]",
+      "GameStatistics[Stage: {}, CountDown: {}, Ticks: {}, Scores: ({} : {} = "
+      "{} : {})]",
       object.currentStage, object.countDown, object.ticks,
       object.scores[0].token, object.scores[1].token, object.scores[0].score,
       object.scores[1].score);

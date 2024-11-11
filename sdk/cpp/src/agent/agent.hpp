@@ -33,13 +33,11 @@ class Agent {
 
   auto operator=(Agent&&) -> Agent& = delete;
 
-  ~Agent();
+  ~Agent() = default;
 
   // Methods for interacting with the game server
 
   void Connect(const std::string& server_address);
-
-  void Disconnect();
 
   [[nodiscard]] auto IsConnected() const -> bool;
 

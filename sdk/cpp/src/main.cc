@@ -2,6 +2,7 @@
 #include <hv/EventLoop.h>
 #include <spdlog/spdlog.h>
 
+#include <chrono>
 #include <cstdlib>
 #include <cxxopts.hpp>
 #include <exception>
@@ -9,17 +10,17 @@
 #include <optional>
 #include <print>
 #include <string>
-#include <string_view>
 #include <utility>
 
 #include "agent/agent.hpp"
 #include "agent/format.hpp"
 
+extern void SelectBuff(thuai8_agent::Agent& agent);
 extern void Loop(thuai8_agent::Agent& agent);
 
-constexpr auto kDefaultServer{std::string_view{"ws://localhost:14514"}};
-constexpr auto kDefaultToken{std::string_view{"1919810"}};
-constexpr auto kDefaultIntervalMs{200};
+constexpr auto kDefaultServer{"ws://localhost:14514"};
+constexpr auto kDefaultToken{"1919810"};
+constexpr unsigned int kDefaultIntervalMs{200};
 
 namespace {
 auto ParseOptions(int argc, char** argv)
@@ -36,34 +37,50 @@ auto ParseOptions(int argc, char** argv)
   }
   // NOLINTEND(concurrency-mt-unsafe)
 
-  cxxopts::Options options{"agent"};
-  options.add_options()("s,server", "Server address",
-                        cxxopts::value<std::string>(server))(
-      "t,token", "Token", cxxopts::value<std::string>(token))("h,help",
-                                                              "Print usage");
+  if (argc > 1) {
+    cxxopts::Options options{"agent"};
+    options.add_options()("s,server", "Set server_address",
+                          cxxopts::value<std::string>()->default_value(server))(
+        "t,token", "Set token",
+        cxxopts::value<std::string>()->default_value(token))("h,help",
+                                                             "Print usage");
+    options.allow_unrecognised_options();
 
-  auto result{options.parse(argc, argv)};
+    auto result{options.parse(argc, argv)};
 
-  if (result.count("help") > 0) {
-    std::println("{}", options.help());
-    return std::nullopt;
+    if (result.unmatched().size() > 0) {
+      std::print("\033[1;31mUnrecognized options: {}\033[0m",
+                 result.unmatched().front());
+      std::println("{}", options.help());
+      return std::nullopt;
+    }
+    if (result.count("help") > 0) {
+      std::println("{}", options.help());
+      return std::nullopt;
+    }
+
+    server = result["server"].as<std::string>();
+    token = result["token"].as<std::string>();
   }
 
-  server = result["server"].as<std::string>();
-  token = result["token"].as<std::string>();
-
-  return {std::make_pair(server, token)};
+  return std::make_pair(server, token);
 }
 }  // namespace
 
 auto main(int argc, char* argv[]) -> int {
+#ifdef NDEBUG
+  spdlog::set_level(spdlog::level::info);
+#else
+  spdlog::set_level(spdlog::level::debug);
+#endif
+
   auto options{ParseOptions(argc, argv)};
   if (!options.has_value()) {
     return 0;
   }
   auto [server, token]{options.value()};
 
-  hv::EventLoopPtr event_loop{std::make_shared<hv::EventLoop>()};
+  hv::EventLoopPtr event_loop{std::make_unique<hv::EventLoop>()};
 
   thuai8_agent::Agent agent{token, event_loop, kDefaultIntervalMs};
 
@@ -94,7 +111,7 @@ auto main(int argc, char* argv[]) -> int {
         spdlog::error("{} is no longer in a ready game", agent);
         is_previous_game_ready = false;
       }
-      spdlog::debug("{} is waiting for game to be ready", agent);
+      spdlog::debug("{} is waiting for the game to be ready", agent);
       return;
     }
 
@@ -104,11 +121,22 @@ auto main(int argc, char* argv[]) -> int {
     }
 
     try {
+      auto start = std::chrono::high_resolution_clock::now();
       Loop(agent);
+      if (auto end = std::chrono::high_resolution_clock::now();
+          std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+              .count() > kDefaultIntervalMs) {
+        spdlog::warn("{} PlayerLoop overflow {}ms", agent, kDefaultIntervalMs);
+      }
     } catch (const std::exception& e) {
-      spdlog::error("an error occurred in loop({}): {}", agent, e.what());
+      spdlog::error("an error occurred in PlayerLoop({}): {}", agent, e.what());
+      event_loop->stop();
     }
   });
 
-  event_loop->run();
+  try {
+    event_loop->run();
+  } catch (const std::exception& e) {
+    spdlog::error("an error occurred in EventLoop({}): {}", agent, e.what());
+  }
 }
