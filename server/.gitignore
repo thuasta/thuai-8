@@ -37,3 +37,13 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+
+## Repo Specific
+# Solution file
+*.sln
+
+# Config files
+**/config.json
+
+# Log files
+*.log
