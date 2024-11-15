@@ -151,7 +151,7 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Bullet'  # 所有在场子弹
-          playerPositions:
+          PlayerPositions:
             type: array
             items:
               type: object
@@ -161,6 +161,10 @@ components:
                 position:
                   $ref: '#/components/schemas/Position'
               additionalProperties: false
+          mapSize:                   # 新增的地图大小属性
+            type: integer
+            example: 100
+
     
     AvailableBuffs:
       title: "AvailableBuffs"
@@ -408,7 +412,7 @@ components:
     Wall: # 普通墙体类
       title: "Wall"
       type: object
-      $ref: '#/components/schemas/Position'
+      $ref: '#/components/schemas/PositionInt'
 
     Fence: # 技能墙体类
       title: "Fence"
@@ -416,7 +420,7 @@ components:
       additionalProperties: false
       properties:
         position:
-          $ref: '#/components/schemas/Position'
+          $ref: '#/components/schemas/PositionInt'
         health:
           type: integer  # 生命值
       required:
@@ -451,6 +455,22 @@ components:
           type: number
         y:
           type: number
+        angle:
+          type: number
+      required:
+        - x
+        - y
+        - angle
+
+    PositionInt: 
+      title: "PositionInt"
+      type: object
+      additionalProperties: false
+      properties:
+        x:
+          type: integer
+        y:
+          type: integer
         angle:
           type: number
       required:
