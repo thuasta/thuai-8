@@ -1,33 +1,35 @@
 using Serilog.Debugging;
 using Thuai.Server.GameLogic;
+using Thuai.Server.Buff;
 
-namespace Thuai.Server.Buff;
+namespace Thuai.Server.BuffSelector;
+
 
 /// <summary>
 /// Buffs that can be selected.
 /// </summary>
 public enum Buff
-    {
-        BULLET_COUNT, // 子弹数量
-        BULLET_SPEED, // 子弹移速
-        ATTACK_SPEED, // 攻速
-        LASER, // 激光
-        DAMAGE, // 伤害
-        ANTI_ARMOR, // 破甲
-        ARMOR, // 护盾
-        REFLECT, // 反弹
-        DODGE, // 闪避
-        KNIFE, // 名刀
-        GRAVITY, // 重力
-        BLACK_OUT, // 视野限制
-        SPEED_UP, // 加速
-        FLASH, // 闪现
-        DESTROY, // 破坏墙体
-        CONSTRUCT, // 建造墙体
-        TRAP, // 陷阱
-        MISSILE, // 导弹
-        KAMUI, // 虚化
-    }
+{
+    BULLET_COUNT, // 子弹数量
+    BULLET_SPEED, // 子弹移速
+    ATTACK_SPEED, // 攻速
+    LASER, // 激光
+    DAMAGE, // 伤害
+    ANTI_ARMOR, // 破甲
+    ARMOR, // 护盾
+    REFLECT, // 反弹
+    DODGE, // 闪避
+    KNIFE, // 名刀
+    GRAVITY, // 重力
+    BLACK_OUT, // 视野限制
+    SPEED_UP, // 加速
+    FLASH, // 闪现
+    DESTROY, // 破坏墙体
+    CONSTRUCT, // 建造墙体
+    TRAP, // 陷阱
+    MISSILE, // 导弹
+    KAMUI, // 虚化
+}
 
 /// <summary>
 /// Selects a buff for a character.
@@ -71,6 +73,14 @@ public class BuffSelector
         Buff.TRAP
     };
     private int Round = 1;
+
+    /// <summary>
+    /// Contructor.
+    /// </summary>
+    public BuffSelector()
+    {
+        BuffInit();
+    }
 
     /// <summary>
     /// Initializes the buff selector.
@@ -134,22 +144,22 @@ public class BuffSelector
         switch (buff)
         {
             case Buff.BULLET_COUNT:
-                //to be continued
+                O_Buff.BULLET_COUNT(character);
                 break;
             case Buff.BULLET_SPEED:
-                //to be continued
+                O_Buff.BULLET_SPEED(character);
                 break;
             case Buff.ATTACK_SPEED:
-                //to be continued
+                O_Buff.ATTACK_SPEED(character);
                 break;
             case Buff.LASER:
-                //to be continued
+                O_Buff.LASER(character);
                 break;
             case Buff.DAMAGE:
-                //to be continued
+                O_Buff.DAMAGE(character);
                 break;
             case Buff.ANTI_ARMOR:
-                //to be continued
+                O_Buff.ANTI_ARMOR(character);
                 break;
             default:
                 break;
@@ -166,19 +176,19 @@ public class BuffSelector
         switch (buff)
         {
             case Buff.ARMOR:
-                //to be continued
+                D_Buff.ARMOR(character);
                 break;
             case Buff.REFLECT:
-                //to be continued
+                D_Buff.REFLECT(character);
                 break;
             case Buff.DODGE:
-                //to be continued
+                D_Buff.DODGE(character);
                 break;
             case Buff.KNIFE:
-                //to be continued
+                D_Buff.KNIFE(character);
                 break;
             case Buff.GRAVITY:
-                //to be continued
+                D_Buff.GRAVITY(character);
                 break;
             default:
                 break;
@@ -195,28 +205,28 @@ public class BuffSelector
         switch (buff)
         {
             case Buff.BLACK_OUT:
-                //to be continued
+                U_Buff.BLACK_OUT(character);
                 break;
             case Buff.SPEED_UP:
-                //to be continued
+                U_Buff.SPEED_UP(character);
                 break;
             case Buff.FLASH:
-                //to be continued
+                U_Buff.FLASH(character);
                 break;
             case Buff.DESTROY:
-                //to be continued
+                U_Buff.DESTROY(character);
                 break;
             case Buff.CONSTRUCT:
-                //to be continued
+                U_Buff.CONSTRUCT(character);
                 break;
             case Buff.TRAP:
-                //to be continued
+                U_Buff.TRAP(character);
                 break;
             case Buff.MISSILE:
-                //to be continued
+                U_Buff.MISSILE(character);
                 break;
             case Buff.KAMUI:
-                //to be continued
+                U_Buff.KAMUI(character);
                 break;
             default:
                 break;
