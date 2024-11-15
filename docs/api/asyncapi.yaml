@@ -151,7 +151,7 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Bullet'  # 所有在场子弹
-          playerPositions:
+          PlayerPositions:
             type: array
             items:
               type: object
@@ -160,10 +160,11 @@ components:
                   type: string
                 position:
                   $ref: '#/components/schemas/Position'
+              additionalProperties: false
           mapSize:                   # 新增的地图大小属性
             type: int
-            example: 100 
-              additionalProperties: false
+            example: 100
+
     
     AvailableBuffs:
       title: "AvailableBuffs"
