@@ -74,6 +74,7 @@ components:
   # ==========================
   messages:
     PlayerPerform:
+      title: "PlayerPerform"
       summary: "玩家行为"
       payload:
         type: array
@@ -91,6 +92,7 @@ components:
             - $ref: '#/components/schemas/GetAvailableBuffs' # 获取可选加成
 
     GameStatistics:
+      title: "GameStatistics"
       summary: "比赛统计信息"
       payload:
         type: object
@@ -125,11 +127,13 @@ components:
           - scores
 
     PlayerInfo:
+      title: "PlayerInfo"
       summary: "玩家属性"
       payload:
         $ref: '#/components/schemas/Player'
 
     EnvironmentInfo:
+      title: "EnvironmentInfo"
       summary: "环境属性"
       payload:
         additionalProperties: false
@@ -159,6 +163,7 @@ components:
               additionalProperties: false
     
     AvailableBuffs:
+      title: "AvailableBuffs"
       summary: "可选加成列表"
       payload:
         type: array
@@ -167,6 +172,7 @@ components:
           $ref: '#/components/schemas/BuffName'
     
     StageChange:
+      title: "StageChange"
       payload:
         type: object
         additionalProperties: false
@@ -181,6 +187,7 @@ components:
             $ref: '#/components/schemas/Stage'
 
     BattleUpdate:
+      title: "BattleUpdate"
       payload:
         type: object
         additionalProperties: false
@@ -209,6 +216,7 @@ components:
                 - $ref: '#/components/schemas/DestroyEvent'
     
     BuffSelect:
+      title: "BuffSelect"
       payload:
         type: object
         additionalProperties: false
@@ -229,6 +237,7 @@ components:
             $ref: '#/components/schemas/BuffName'
 
     Error:
+      title: "Error"
       summary: "错误信息"
       payload:
         type: object
@@ -248,6 +257,7 @@ components:
   schemas:
 
     Stage:
+      title: "Stage"
       type: string
       enum:
         - REST
@@ -255,6 +265,7 @@ components:
         - END
 
     Weapon:  # 武器类
+      title: "Weapon"
       type: object
       additionalProperties: false
       properties:
@@ -283,6 +294,7 @@ components:
         - currentBullets
 
     Armor: # 护甲类
+      title: "Armor"
       type: object
       additionalProperties: false
       properties:
@@ -312,6 +324,7 @@ components:
         - dodgeRate
 
     BuffName: 
+      title: "BuffName"
       type: string
       additionalProperties: false
       enum:
@@ -336,6 +349,7 @@ components:
         - KAMUI # 虚化
 
     SkillName: 
+      title: "SkillName"
       type: string
       additionalProperties: false
       enum:
@@ -349,6 +363,7 @@ components:
         - KAMUI # 虚化
 
     Skill: # 技能类
+      title: "Skill"
       type: object
       additionalProperties: false
       properties:
@@ -367,6 +382,7 @@ components:
         - isActive
     
     Player: # 玩家类
+      title: "Player"
       type: object
       additionalProperties: false
       properties:
@@ -390,9 +406,12 @@ components:
         - position
 
     Wall: # 普通墙体类
+      title: "Wall"
+      type: object
       $ref: '#/components/schemas/Position'
 
     Fence: # 技能墙体类
+      title: "Fence"
       type: object
       additionalProperties: false
       properties:
@@ -405,6 +424,7 @@ components:
         - health
 
     Bullet: # 子弹类
+      title: "Bullet"
       type: object
       additionalProperties: false
       properties:
@@ -423,6 +443,7 @@ components:
         - traveledDistance
 
     Position: 
+      title: "Position"
       type: object
       additionalProperties: false
       properties:
@@ -438,6 +459,7 @@ components:
         - angle
 
     PerformMove:
+      title: "PerformMove"
       type: object
       additionalProperties: false
       properties:
@@ -457,6 +479,7 @@ components:
         - direction
 
     PerformTurn:
+      title: "PerformTurn"
       type: object
       additionalProperties: false
       properties:
@@ -476,6 +499,7 @@ components:
         - direction
 
     PerformAttack:
+      title: "PerformAttack"
       type: object
       additionalProperties: false
       properties:
@@ -489,6 +513,7 @@ components:
         - token
 
     PerformSkill:
+      title: "PerformSkill"
       type: object
       additionalProperties: false
       properties:
@@ -505,6 +530,7 @@ components:
         - skillName
 
     PerformSelect:
+      title: "PerformSelect"
       type: object
       additionalProperties: false
       properties:
@@ -521,6 +547,7 @@ components:
         - buffName
 
     GetPlayerInfo:
+      title: "GetPlayerInfo"
       type: object
       additionalProperties: false
       properties:
@@ -540,6 +567,7 @@ components:
         - request
 
     GetEnvironmentInfo:
+      title: "GetEnvironmentInfo"
       type: object
       additionalProperties: false
       properties:
@@ -553,6 +581,7 @@ components:
         - token
 
     GetGameStatistics:
+      title: "GetGameStatistics"
       type: object
       additionalProperties: false
       properties:
@@ -566,6 +595,7 @@ components:
         - token
 
     GetAvailableBuffs:
+      title: "GetAvailableBuffs"
       type: object
       additionalProperties: false
       properties:
@@ -579,6 +609,7 @@ components:
         - token
       
     Laser:
+      title: "Laser"
       type: array
       items:
         type: object
@@ -602,6 +633,7 @@ components:
         - $ref: '#/components/schemas/BuffName'
     
     AppearEvent:
+      title: "AppearEvent"
       type: object
       additionalProperties: false
       properties:
@@ -620,6 +652,7 @@ components:
         - position
     
     BobEvent:
+      title: "BobEvent"
       type: object
       additionalProperties: false
       properties:
@@ -636,6 +669,7 @@ components:
         - end
     
     CollisionEvent:
+      title: "CollisionEvent"
       type: object
       additionalProperties: false
       properties:
@@ -651,6 +685,7 @@ components:
         - targets
 
     DestroyEvent:
+      title: "DestroyEvent"
       type: object
       additionalProperties: false
       properties:
