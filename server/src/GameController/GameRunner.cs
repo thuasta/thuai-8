@@ -10,9 +10,7 @@ public class GameRunner
     /// </summary>
     public GameLogic.Game CreateGame(Utility.Config.GameSettings gameSettings)
     {
-        // TODO: Implement
-
-        throw new NotImplementedException();
+        return new(gameSettings);
     }
 
     /// <summary>
