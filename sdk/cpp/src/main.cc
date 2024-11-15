@@ -2,7 +2,10 @@
 #include <hv/EventLoop.h>
 #include <spdlog/spdlog.h>
 
+#ifndef NDEBUG
 #include <chrono>
+#endif
+#include <cstdint>
 #include <cstdlib>
 #include <cxxopts.hpp>
 #include <exception>
@@ -14,13 +17,14 @@
 
 #include "agent/agent.hpp"
 #include "agent/format.hpp"
+#include "agent/game_statistics.hpp"
 
 extern void SelectBuff(thuai8_agent::Agent& agent);
 extern void Loop(thuai8_agent::Agent& agent);
 
 constexpr auto kDefaultServer{"ws://localhost:14514"};
 constexpr auto kDefaultToken{"1919810"};
-constexpr unsigned int kDefaultIntervalMs{200};
+constexpr std::uint8_t kDefaultIntervalMs{200};
 
 namespace {
 auto ParseOptions(int argc, char** argv)
@@ -68,9 +72,7 @@ auto ParseOptions(int argc, char** argv)
 }  // namespace
 
 auto main(int argc, char* argv[]) -> int {
-#ifdef NDEBUG
-  spdlog::set_level(spdlog::level::info);
-#else
+#ifndef NDEBUG
   spdlog::set_level(spdlog::level::debug);
 #endif
 
@@ -90,6 +92,7 @@ auto main(int argc, char* argv[]) -> int {
 
   bool is_previous_connected{false};
   bool is_previous_game_ready{false};
+  bool is_buff_selected{false};
 
   event_loop->setInterval(kDefaultIntervalMs, [&](hv::TimerID) {
     if (!agent.IsConnected()) {
@@ -120,17 +123,46 @@ auto main(int argc, char* argv[]) -> int {
       is_previous_game_ready = true;
     }
 
+    if (agent.game_statistics().currentStage == thuai8_agent::Stage::Rest) {
+      if (!is_buff_selected) {
+        try {
+          SelectBuff(agent);
+          spdlog::info("{} selected a buff", agent);
+          is_buff_selected = true;
+          return;
+        } catch (const std::exception& e) {
+          spdlog::error("an error occurred in SelectBuff({}): {}", agent,
+                        e.what());
+#ifdef NDEBUG
+          event_loop->stop();
+#endif
+        }
+      }
+      spdlog::debug("{} is waiting for next battle", agent);
+      return;
+    }
+
+    if (is_buff_selected) {
+      is_buff_selected = false;
+    }
+
     try {
+#ifndef NDEBUG
       auto start = std::chrono::high_resolution_clock::now();
+#endif
       Loop(agent);
+#ifndef NDEBUG
       if (auto end = std::chrono::high_resolution_clock::now();
           std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
               .count() > kDefaultIntervalMs) {
         spdlog::warn("{} PlayerLoop overflow {}ms", agent, kDefaultIntervalMs);
       }
+#endif
     } catch (const std::exception& e) {
       spdlog::error("an error occurred in PlayerLoop({}): {}", agent, e.what());
+#ifdef NDEBUG
       event_loop->stop();
+#endif
     }
   });
 

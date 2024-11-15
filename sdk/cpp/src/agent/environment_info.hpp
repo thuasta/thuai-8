@@ -1,6 +1,6 @@
 #pragma once
 #ifndef _THUAI8_ENVIRONMENT_INFO_HPP_
-#define _THuAI8_ENVIRONMENT_INFO_HPP_
+#define _THUAI8_ENVIRONMENT_INFO_HPP_
 
 #include <vector>
 
@@ -22,6 +22,11 @@ struct Bullet {
   double speed{};
   double damage{};
   double traveledDistance{};  // 子弹已经过路程
+};
+
+struct Laser {
+  Position start{};
+  Position end{};
 };
 
 struct EnvironmentInfo {

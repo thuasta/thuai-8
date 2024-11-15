@@ -6,7 +6,7 @@
 #include <hv/hloop.h>
 #include <spdlog/spdlog.h>
 
-#include <exception>
+#include <cstdint>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <optional>
@@ -23,7 +23,7 @@
 #include "message.hpp"
 #include "player_info.hpp"
 
-constexpr unsigned int MinDelayMs{10};
+constexpr std::uint8_t kMinDelayMs{10};
 
 namespace thuai8_agent {
 
@@ -37,7 +37,7 @@ Agent::Agent(std::string_view token, const hv::EventLoopPtr& event_loop,
 
   reconn_setting_t reconn_setting;
   reconn_setting.delay_policy = 0;
-  reconn_setting.min_delay = MinDelayMs;
+  reconn_setting.min_delay = kMinDelayMs;
   ws_client_->setReconnect(&reconn_setting);
 
   ws_client_->onmessage = [this](std::string_view msg) {
@@ -110,22 +110,18 @@ void Agent::SelectBuff(BuffKind buff) {
 }
 
 void Agent::Loop() {
-  try {
-    if (!IsConnected()) {
-      return;
-    }
-    ws_client_->send(GetPlayerInfo(token_, "SELF").to_string());
-    ws_client_->send(GetPlayerInfo(token_, "OPPONENT").to_string());
-    ws_client_->send(GetGameStatistics(token_).to_string());
-    ws_client_->send(GetEnvironmentInfo(token_).to_string());
-    ws_client_->send(GetAvailableBuffs(token_).to_string());
-  } catch (const std::exception& e) {
-    spdlog::error("an error occurred in AgentLoop({}): {}", *this, e.what());
+  if (!IsConnected()) {
+    return;
   }
+  ws_client_->send(GetPlayerInfo(token_, "SELF").to_string());
+  ws_client_->send(GetPlayerInfo(token_, "OPPONENT").to_string());
+  ws_client_->send(GetGameStatistics(token_).to_string());
+  ws_client_->send(GetEnvironmentInfo(token_).to_string());
+  ws_client_->send(GetAvailableBuffs(token_).to_string());
 }
 
 void Agent::OnMessage(const Message& message) {
-  auto msg_dict = message.msg;
+  const auto& msg_dict = message.msg;
   auto msg_type = msg_dict["messageType"].get<std::string>();
   if (msg_type == "PLAYER_INFO") {
     if (players_.has_value()) {
@@ -220,7 +216,7 @@ void Agent::OnMessage(const Message& message) {
       available_buffs_->emplace_back(buff_data.get<BuffKind>());
     }
   } else if (msg_type == "ERROR") {
-    spdlog::error("{} got an error from server: [code: {}, msg: {}]", *this,
+    spdlog::error("{} got an error from server: [{}] {}]", *this,
                   msg_dict["errorCode"].get<int>(),
                   msg_dict["message"].get<std::string>());
   }

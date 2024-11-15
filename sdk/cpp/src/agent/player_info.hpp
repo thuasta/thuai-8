@@ -28,11 +28,6 @@ enum class SkillKind : std::uint8_t {
   Kamui       // 虚化
 };
 
-struct Laser {
-  Position start{};
-  Position end{};
-};
-
 struct Weapon {
   bool isLaser{};    // 是否为激光
   bool antiArmor{};  // 是否破甲
