@@ -16,6 +16,7 @@ public class Program
             Initialize();
 
             // TODO: Implement
+
             throw new NotImplementedException();
 
         }
@@ -48,6 +49,7 @@ public class Program
         Utility.Config config = Utility.Tools.ConfigLoader.LoadOrCreateConfig(_configPath);
 
         Utility.Tools.LogHandler.Initialize(config.Log);
+        Utility.EventChannel.Initialize();
 
         _logger = Utility.Tools.LogHandler.CreateLogger("Program");
 
