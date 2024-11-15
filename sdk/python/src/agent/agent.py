@@ -3,12 +3,14 @@ import logging
 from typing import List, Literal, Optional
 
 from . import messages
-from .grenade_info import GrenadeInfo
-from .map import Map
-from .player_info import FirearmKind, Item, ItemKind, PlayerInfo
+from .enviroment_info import EnvironmentInfo, Wall, Fence, Bullet, PlayerPosition
+from .player_info import PlayerInfo, WeaponInfo, ArmorInfo, SkillInfo
 from .position import Position
-from .safe_zone import SafeZone
-from .supply import Supply, SupplyKind
+from .game_statistics import GameStatistics, Score
+from .stage import Stage
+from .skill_name import SkillName
+from .buffname import BuffName
+from .available_buffs import AvailableBuffs
 from .websocket_client import WebsocketClient
 
 MedicineKind = Literal[
@@ -21,18 +23,13 @@ class Agent:
     def __init__(self, token: str, loop_interval: float):
         self._token = token
         self._loop_interval = loop_interval
-
         self._all_player_info: Optional[List[PlayerInfo]] = None
-        self._map: Optional[Map] = None
-        self._supplies: Optional[List[Supply]] = None
-        self._safe_zone: Optional[SafeZone] = None
-        self._grenade_info: Optional[List[GrenadeInfo]] = None
+        self._environment_info: Optional[EnvironmentInfo] = None
+        self._game_statistics: Optional[GameStatistics] = None
+        self._availiable_buff: Optional[AvailableBuffs] = None
         self._self_id: Optional[int] = None
-        self._ticks: Optional[int] = None
-
         self._ws_client = WebsocketClient()
         self._loop_task: Optional[asyncio.Task] = None
-
         self._ws_client.on_message = self._on_message
 
     def __str__(self) -> str:
@@ -40,22 +37,22 @@ class Agent:
 
     def __repr__(self) -> str:
         return str(self)
-# 玩家收到的信息
+# Information received by the player
     @property
     def all_player_info(self) -> Optional[List[PlayerInfo]]:
         return self._all_player_info
 
     @property
-    def map(self) -> Optional[Map]:
-        return self._map
+    def environment_info(self) -> Optional[EnvironmentInfo]:
+        return self._environment_info
 
     @property
-    def supplies(self) -> Optional[List[Supply]]:
-        return self._supplies
+    def game_statistics(self) -> Optional[GameStatistics]:
+        return self._game_statistics
 
     @property
-    def safe_zone(self) -> Optional[SafeZone]:
-        return self._safe_zone
+    def availiable_buff(self) -> Optional[AvailableBuffs]:
+        return self._availiable_buff
 
     @property
     def self_id(self) -> Optional[int]:
@@ -64,14 +61,6 @@ class Agent:
     @property
     def token(self) -> str:
         return self._token
-
-    @property
-    def ticks(self) -> Optional[int]:
-        return self._ticks
-
-    @property
-    def grenade_info(self) -> Optional[List[GrenadeInfo]]:
-        return self._grenade_info
 
     async def connect(self, server: str):
         await self._ws_client.connect(server)
@@ -84,95 +73,80 @@ class Agent:
 
     def is_connected(self) -> bool:
         return self._ws_client.is_connected()
-# 内部函数，判断游戏是否准备好
+# Internal function to check if the game is ready
     def is_game_ready(self) -> bool:
         return (
             self._all_player_info is not None
-            and self._map is not None
-            and self._supplies is not None
-            and self._safe_zone is not None
+            and self._environment_info is not None
+            and self._game_statistics is not None
+            and self._availiable_buff is not None
             and self._self_id is not None
-            and self._ticks is not None
-            and self._grenade_info is not None
         )
-
-    async def abandon(self, supply: SupplyKind, count: int):
-        logging.debug("%s.abandon(%s, %d)", self, supply, count)
+    # direction is distinguished by the sign of the distance
+    async def move(self,distance:float):
         await self._ws_client.send(
-            messages.PerformAbandonMessage(
+            messages.MoveMessage(
                 token=self._token,
-                numb=count,
-                target_supply=supply,
+                target_distance=distance,
+            )
+        )
+    # angle is in degrees, positive for clockwise, negative for counterclockwise
+    async def turn(self, angle: float):
+        await self._ws_client.send(
+            messages.TurnMessage(
+                token=self._token,
+                target_angle=angle,
             )
         )
 
-    async def pick_up(self, supply: SupplyKind, count: int):
-        logging.debug("%s.pick_up(%s, %d)", self, supply, count)
+    async def attack(self):
         await self._ws_client.send(
-            messages.PerformPickUpMessage(
-                token=self._token, target_supply=supply, num=count
+            messages.AttackMessage(
+                token=self._token
             )
         )
 
-    async def switch_firearm(self, firearm: FirearmKind):
-        logging.debug("%s.switch_firearm(%s)", self, firearm)
+    async def use_skill(self, skill: SkillName):
         await self._ws_client.send(
-            messages.PerformSwitchArmMessage(
+            messages.UseSkillMessage(
                 token=self._token,
-                target_firearm=firearm,
+                skill_name=skill
             )
         )
 
-    async def use_medicine(self, medicine: MedicineKind):
-        logging.debug("%s.use_medicine(%s)", self, medicine)
+    async def select_skill(self, skill: SkillName):
         await self._ws_client.send(
-            messages.PerformUseMedicineMessage(
+            messages.SelectSkillMessage(
                 token=self._token,
-                medicine_name=medicine,
+                skill_name=skill
             )
         )
-
-    async def use_grenade(self, position: Position[float]):
-        logging.debug("%s.use_grenade(%s)", self, position)
+    
+    async def get_player_info(self):
         await self._ws_client.send(
-            messages.PerformUseGrenadeMessage(
-                token=self._token,
-                target_position=messages.Position(x=position.x, y=position.y),
-            )
-        )
-
-    async def move(self, position: Position[float]):
-        logging.debug("%s.move(%s)", self, position)
-        await self._ws_client.send(
-            messages.PerformMoveMessage(
-                token=self._token,
-                destination=messages.Position(x=position.x, y=position.y),
-            )
-        )
-
-    async def stop(self):
-        logging.debug("%s.stop()", self)
-        await self._ws_client.send(
-            messages.PerformStopMessage(
+            messages.GetPlayerInfoMessage(
                 token=self._token,
             )
         )
-
-    async def attack(self, position: Position[float]):
-        logging.debug("%s.attack(%s)", self, position)
+    
+    async def get_environment_info(self):
         await self._ws_client.send(
-            messages.PerformAttackMessage(
+            messages.GetEnvironmentInfoMessage(
                 token=self._token,
-                target_position=messages.Position(x=position.x, y=position.y),
             )
         )
-
-    async def choose_origin(self, position: Position[float]):
-        logging.debug("%s.choose_origin(%s)", self, position)
+    
+    async def get_game_statistics(self):
         await self._ws_client.send(
-            messages.ChooseOriginMessage(
+            messages.GetGameStatisticsMessage(
                 token=self._token,
-                origin_position=messages.Position(x=position.x, y=position.y),
+            )
+        )
+    
+    async def get_available_buff(self):
+        await self._ws_client.send(
+            messages.GetAvailableBuffsMessage(
+                token=self._token,
             )
         )
 
@@ -190,8 +164,16 @@ class Agent:
                     )
                 )
 
+                await self._ws_client.send(
+                    messages.GetEnvironmentInfoMessage(
+                        token=self._token,
+                    )
+                )
+
+
             except Exception as e:
                 logging.error(f"{self} encountered an error in loop: {e}")
+
 
     def _on_message(self, message: messages.Message):
         try:
@@ -202,76 +184,109 @@ class Agent:
                 logging.error(f"{self} got error from server: {msg_dict['message']}")
 
             elif msg_type == "PLAYERS_INFO":
-                self._ticks = msg_dict["elapsedTicks"]
                 self._all_player_info = [
-                    # 从服务器接收的数据中提取玩家信息
+                    # Extract player information from the data received from the server
                     PlayerInfo(
-                        id=data["playerId"],
-                        armor=data["armor"],
-                        current_armor_health=data["current_armor_health"],
-                        health=data["health"],
-                        speed=data["speed"],
-                        firearm=data["firearm"]["name"],
-                        firearms_pool=[
-                            weapon_data["name"] for weapon_data in data["firearms_pool"]
-                        ],
-                        range=data["firearm"]["distance"],
-                        position=Position(
-                            x=data["position"]["x"], y=data["position"]["y"]
+                        token=data["token"],
+                        weapon=WeaponInfo(
+                            attack_speed=data["weapon"]["attackSpeed"],
+                            bullet_speed=data["weapon"]["bulletSpeed"],
+                            is_laser=data["weapon"]["isLaser"],
+                            anti_armor=data["weapon"]["antiArmor"],
+                            damage=data["weapon"]["damage"],
+                            max_bullets=data["weapon"]["maxBullets"],
+                            current_bullets=data["weapon"]["currentBullets"]
                         ),
-                        inventory=[
-                            Item(kind=item["name"], count=item["num"])
-                            for item in data["inventory"]
-                        ],
+                        armor=ArmorInfo(
+                            can_reflect=data["armor"]["canReflect"],
+                            armor_value=data["armor"]["armorValue"],
+                            health=data["armor"]["health"],
+                            gravity_field=data["armor"]["gravityField"],
+                            knife=data["armor"]["knife"],
+                            dodge_rate=data["armor"]["dodgeRate"]
+                        ),
+                        skill=SkillInfo(
+                            name=data["skill"]["name"],
+                            max_cooldown=data["skill"]["maxCooldown"],
+                            current_cooldown=data["skill"]["currentCooldown"],
+                            is_active=data["skill"]["isActive"]
+                        ),
+                        position=Position(
+                            x=data["position"]["x"],
+                            y=data["position"]["y"],
+                            angle=data["position"]["angle"]
+                        )
                     )
                     for data in msg_dict["players"]
                 ]
-
-            elif msg_type == "MAP":
-                self._map = Map(
-                    length=msg_dict["length"],
-                    obstacles=[
-                        Position(
-                            x=wall["wallPositions"]["x"], y=wall["wallPositions"]["y"]
-                        )
-                        for wall in msg_dict["walls"]
-                    ],
-                )
-
-            elif msg_type == "SUPPLIES":
-                self._supplies = [
-                    Supply(
-                        kind=supply["name"],
+            elif msg_type == "EnvironmentInfo":
+                self._environment_info = EnvironmentInfo(
+                    walls=[
+                        Wall(Position(
+                        x=wall["x"],
+                        y=wall["y"],
+                        angle=wall["angle"]
+                    ))
+                    for wall in msg_dict["walls"]
+                ],
+                fences=[
+                    Fence(
                         position=Position(
-                            x=supply["position"]["x"], y=supply["position"]["y"]
+                            x=fence["position"]["x"],
+                            y=fence["position"]["y"],
+                            angle=fence["position"]["angle"]
                         ),
-                        count=supply["numb"],
+                        health=fence["health"]
                     )
-                    for supply in msg_dict["supplies"]
+                    for fence in msg_dict["fences"]
+                ],
+                bullets=[
+                    Bullet(
+                        position=Position(
+                            x=bullet["position"]["x"],
+                            y=bullet["position"]["y"],
+                            angle=bullet["position"]["angle"]
+                        ),
+                    speed=bullet["speed"],
+                    damage=bullet["damage"],
+                    traveled_distance=bullet["traveledDistance"]
+                    )
+                    for bullet in msg_dict["bullets"]
+                ],
+                player_positions=[
+                    PlayerPosition(
+                        token=player["token"],
+                        position=Position(
+                            x=player["position"]["x"],
+                            y=player["position"]["y"],
+                            angle=player["position"]["angle"]
+                        )
+                    )
+                    for player in msg_dict["playerPositions"]
                 ]
-
-            elif msg_type == "SAFE_ZONE":
-                self._safe_zone = SafeZone(
-                    center=Position(
-                        x=msg_dict["center"]["x"], y=msg_dict["center"]["y"]
-                    ),
-                    radius=msg_dict["radius"],
                 )
 
-            elif msg_type == "PLAYER_ID":
-                self._self_id = msg_dict["playerId"]
+            elif msg_type == "GameStatistics":
+                self._game_statistics = GameStatistics(
+                    current_stage=Stage(msg_dict["currentStage"]),
+                    count_down=msg_dict["countDown"],
+                    ticks=msg_dict["ticks"],
+                    scores=[
+                        Score(
+                            token=score["token"],
+                            score=score["score"]
+                        )
+                    for score in msg_dict["scores"]
+                    ]
+                )
 
-            elif msg_type == "GRENADES":
-                self._grenade_info = [
-                    GrenadeInfo(
-                        throwTick=grenade["throwTick"],
-                        evaluatedPosition=Position(
-                            x=grenade["evaluatedPosition"]["x"],
-                            y=grenade["evaluatedPosition"]["y"],
-                        ),
-                    )
-                    for grenade in msg_dict["grenades"]
-                ]
 
+            elif msg_type == "AvailableBuffs":
+                self._available_buffs = AvailableBuffs(
+                    buffs=[
+                        BuffName(buff)
+                        for buff in msg_dict["buffs"]
+                    ]
+                )
         except Exception as e:
             logging.error(f"{self} failed to handle message: {e}")

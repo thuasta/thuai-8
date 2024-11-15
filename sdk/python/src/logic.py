@@ -6,9 +6,11 @@ from pathfinding.finder.best_first import BestFirst
 
 from agent.agent import Agent
 from agent.position import Position
+from agent.enviroment_info import Wall, Fence, Bullet
 
-game_map_matrix: Optional[List[List[int]]] = None
-path: List[Position[int]] = []
+wall_list: Optional[List[Wall]] = None
+fence_list: Optional[List[Fence]] = None
+bullets_list: Optional[List[Bullet]] = None
 
 
 async def setup(agent: Agent):
@@ -19,7 +21,7 @@ async def setup(agent: Agent):
 async def loop(agent: Agent):
     # Your code here.
     # Here is an example of how to use the agent.
-    # Always move to the opponent's position, keep one cell away from the
+    # Always move to the opponent's position, keep a proper distance away from the
     # opponent, and attack the opponent.
 
     player_info_list = agent.all_player_info
@@ -31,60 +33,49 @@ async def loop(agent: Agent):
     self_info = player_info_list[self_id]
     opponent_info = player_info_list[(self_id + 1) % len(player_info_list)]
 
-    game_map = agent.map
-    assert game_map is not None
+    environment_info = agent.environment_info
+    assert environment_info is not None
 
-    global game_map_matrix
+    # Record the positions of walls and bullets in the environment
+    global wall_list
+    global fence_list
+    global bullets_list
 
-    if game_map_matrix is None:
-        game_map_matrix = [
-            [1 for _ in range(game_map.length)] for _ in range(game_map.length)
-        ]
-        for obstacle in game_map.obstacles:
-            game_map_matrix[obstacle.y][obstacle.x] = 0
+    wall_list = environment_info.walls
+    fence_list = environment_info.fences
+    bullets_list = environment_info.bullets
 
-    self_position_int = Position[int](
-        int(self_info.position.x), int(self_info.position.y)
-    )
-    opponent_position_int = Position[int](
-        int(opponent_info.position.x), int(opponent_info.position.y)
-    )
+    self_position_float = self_info.position
+    opponent_position_float = opponent_info.position
 
+    # Record the optimal path
     global path
 
-    if self_position_int not in path or opponent_position_int not in path:
-        path = find_path_befs(game_map_matrix, self_position_int, opponent_position_int)
+    path = find_path(self_position_float, opponent_position_float, wall_list, fence_list, bullets_list)
 
-        if len(path) == 0:
-            logging.info(
-                "no path from %s to %s", self_position_int, opponent_position_int
-            )
-            return
-
-        logging.info(f"found path from {self_position_int} to {opponent_position_int}")
-
-    while path[0] != self_position_int:
-        path.pop(0)
-
-    if len(path) > 1:
-        next_position_int = path[1]
-        next_position = Position[float](
-            float(next_position_int.x) + 0.5, float(next_position_int.y) + 0.5
+    if len(path) == 0:
+        logging.info(
+            "no path from %s to %s", self_position_float, opponent_position_float
         )
-
-        await agent.move(next_position)
         return
 
-    await agent.attack(opponent_info.position)
+    logging.info(f"found path from {self_position_float} to {opponent_position_float}")
+
+    if len(path) > 1:
+        await agent.turn(path[0][0])
+        await agent.move(path[0][1])
+        return
+
+   # If there's only one step, attack directly
+    await agent.turn(path[0][0])
+    await agent.attack()
 
 
-def find_path_befs(
-    game_map_matrix: List[List[int]], start: Position[int], end: Position[int]
-) -> List[Position[int]]:
-    game_map_grid = Grid(matrix=game_map_matrix)
-    start_node = game_map_grid.node(start.x, start.y)
-    end_node = game_map_grid.node(end.x, end.y)
-    finder = BestFirst()
-    path, _ = finder.find_path(start_node, end_node, game_map_grid)
-    assert isinstance(path, list)
-    return [Position[int](x, y) for x, y in path]
+def find_path(start: Position, end: Position, walls: List[Wall], fences: List[Fence], bullets: List[Bullet]) -> List[(float, float)]:
+    # Your code here.
+    # Design a pathfinding algorithm based on the positions of walls and bullets in the environment
+    # Return a list of the optimal path from start to end, each element being a tuple (angle, distance)
+    pass
+
+
+
