@@ -25,6 +25,8 @@ public class Cannonball : IBullet
 {
     public IBullet.BulletType Type => IBullet.BulletType.Cannonball;
 
+    public float speed;
+
     // TODO: Implement
 }
 
