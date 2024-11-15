@@ -162,7 +162,7 @@ components:
                   $ref: '#/components/schemas/Position'
               additionalProperties: false
           mapSize:                   # 新增的地图大小属性
-            type: int
+            type: integer
             example: 100
 
     
@@ -468,9 +468,9 @@ components:
       additionalProperties: false
       properties:
         x:
-          type: int
+          type: integer
         y:
-          type: int
+          type: integer
         angle:
           type: number
       required:
