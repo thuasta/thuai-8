@@ -84,7 +84,7 @@ public record Config
         /// <summary>
         /// Time limit per battle. (in ticks) 
         /// </summary>
-        public int MaxBattleTicks { get; init; } = MBT; // 2600 = 20 * 120 + 20;
+        public int MaxBattleTicks { get; init; } = MBT; // 2600 = 20 * 120 + 200;
 
         
 
