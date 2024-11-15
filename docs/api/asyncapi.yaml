@@ -160,6 +160,9 @@ components:
                   type: string
                 position:
                   $ref: '#/components/schemas/Position'
+          mapSize:                   # 新增的地图大小属性
+            type: int
+            example: 100 
               additionalProperties: false
     
     AvailableBuffs:
@@ -408,7 +411,7 @@ components:
     Wall: # 普通墙体类
       title: "Wall"
       type: object
-      $ref: '#/components/schemas/Position'
+      $ref: '#/components/schemas/PositionInt'
 
     Fence: # 技能墙体类
       title: "Fence"
@@ -416,7 +419,7 @@ components:
       additionalProperties: false
       properties:
         position:
-          $ref: '#/components/schemas/Position'
+          $ref: '#/components/schemas/PositionInt'
         health:
           type: integer  # 生命值
       required:
@@ -451,6 +454,22 @@ components:
           type: number
         y:
           type: number
+        angle:
+          type: number
+      required:
+        - x
+        - y
+        - angle
+
+    PositionInt: 
+      title: "PositionInt"
+      type: object
+      additionalProperties: false
+      properties:
+        x:
+          type: int
+        y:
+          type: int
         angle:
           type: number
       required:

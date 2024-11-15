@@ -1,23 +1,18 @@
 import asyncio
 import logging
-from typing import List, Literal, Optional
+from typing import List, Optional
 
 from . import messages
 from .enviroment_info import EnvironmentInfo, Wall, Fence, Bullet, PlayerPosition
 from .player_info import PlayerInfo, WeaponInfo, ArmorInfo, SkillInfo
 from .position import Position
+from .position_int import PositionInt
 from .game_statistics import GameStatistics, Score
 from .stage import Stage
 from .skill_name import SkillName
 from .buffname import BuffName
 from .available_buffs import AvailableBuffs
 from .websocket_client import WebsocketClient
-
-MedicineKind = Literal[
-    "BANDAGE",
-    "FIRST_AID",
-]
-
 
 class Agent:
     def __init__(self, token: str, loop_interval: float):
@@ -27,7 +22,6 @@ class Agent:
         self._environment_info: Optional[EnvironmentInfo] = None
         self._game_statistics: Optional[GameStatistics] = None
         self._availiable_buff: Optional[AvailableBuffs] = None
-        self._self_id: Optional[int] = None
         self._ws_client = WebsocketClient()
         self._loop_task: Optional[asyncio.Task] = None
         self._ws_client.on_message = self._on_message
@@ -53,10 +47,6 @@ class Agent:
     @property
     def availiable_buff(self) -> Optional[AvailableBuffs]:
         return self._availiable_buff
-
-    @property
-    def self_id(self) -> Optional[int]:
-        return self._self_id
 
     @property
     def token(self) -> str:
@@ -222,7 +212,7 @@ class Agent:
             elif msg_type == "EnvironmentInfo":
                 self._environment_info = EnvironmentInfo(
                     walls=[
-                        Wall(Position(
+                        Wall(PositionInt(
                         x=wall["x"],
                         y=wall["y"],
                         angle=wall["angle"]
@@ -231,7 +221,7 @@ class Agent:
                 ],
                 fences=[
                     Fence(
-                        position=Position(
+                        position=PositionInt(
                             x=fence["position"]["x"],
                             y=fence["position"]["y"],
                             angle=fence["position"]["angle"]

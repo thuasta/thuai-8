@@ -1,17 +1,17 @@
 from typing import List
 
 from .position import Position
-
+from .position_int import PositionInt
 
 class Wall:
-    def __init__(self, position: Position):
+    def __init__(self, position: PositionInt):
         self.position = position
 
     def __str__(self):
         return f"Wall(position={self.position})"
     
 class Fence:
-    def __init__(self, position: Position, health: int):
+    def __init__(self, position: PositionInt, health: int):
         self.position = position
         self.health = health
 

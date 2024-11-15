@@ -1,6 +1,6 @@
-# THUAI7 Agent Template (Python)
+# THUAI8 Agent Template (Python)
 
-Python agent template for the 7th Tsinghua University Artificial Intelligence Challenge.
+Python agent template for the 8th Tsinghua University Artificial Intelligence Challenge.
 
 ## Usage
 

@@ -1,6 +1,6 @@
 
-class Position:
-    def __init__(self, x: float, y: float, angle: float):
+class PositionInt:
+    def __init__(self, x: int, y: int, angle: float):
         self.x = x
         self.y = y
         self.angle = angle

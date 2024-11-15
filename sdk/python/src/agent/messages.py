@@ -79,7 +79,7 @@ class GetGameStatisticsMessage(Message):
         self.msg["messageType"] = "GET_GAME_STATISTICS"
         self.msg["token"] = token
 
-class GetAvailableSkillsMessage(Message):
+class GetAvailableBuffsMessage(Message):
     def __init__(self, token: str):
         super().__init__()
         self.msg["messageType"] = "GET_AVAILABLE_SKILLS"
