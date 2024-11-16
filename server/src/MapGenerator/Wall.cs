@@ -8,7 +8,20 @@ class Wall
         Y = y;
         Angle = angle;
     }
-    private int X { get; }
-    private int Y { get; }
-    private int Angle { get; }
+    public int X { get; }
+    public int Y { get; }
+    public int Angle { get; }
+    public override bool Equals(object? obj)
+    {
+        if (obj is Wall other)
+        {
+            return X == other.X && Y == other.Y && Angle == other.Angle;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(X, Y, Angle);
+    }
 }

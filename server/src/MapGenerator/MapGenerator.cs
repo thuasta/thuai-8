@@ -12,9 +12,9 @@ class Map
         Height = height;
         GenerateRandomWalls();
     }
-    private int Width { get; }
-    private int Height { get; }
-    private List<Wall> Walls { get; } = new List<Wall>();
+    public int Width { get; }
+    public int Height { get; }
+    public List<Wall> Walls { get; } = new List<Wall>();
     private void GenerateRandomWalls()
     {
         // lines on the path, should be maintained
@@ -26,25 +26,33 @@ class Map
         // random select a path from the top-left point
         Point startPoint = new Point(0, 0);
         openPoints.Push(startPoint);
+        closedPoints.Add(startPoint);
         while (openPoints.Count > 0)
         {
             Point currentPoint = openPoints.Pop();
-            Point nextPoint = TakeOneStep(currentPoint, closedPoints, lines);
-            if (nextPoint.X != -1)
+            Point nextPoint = TakeOneStep(currentPoint, ref closedPoints, ref lines);
+            while (nextPoint.X != -1)
             {
                 openPoints.Push(nextPoint);
-                lines.Add(new Line(currentPoint.X, currentPoint.Y, nextPoint.X, nextPoint.Y));
+                currentPoint = nextPoint;
+                nextPoint = TakeOneStep(currentPoint, ref closedPoints, ref lines);
             }
         }
-        List<Walls> allPossibleWalls = GetAllPossibleWalls();
+        List<Wall> allPossibleWalls = GetAllPossibleWalls();
+        // Console.WriteLine("lines:");
+        // foreach (var line in lines)
+        // {
+        //     Console.WriteLine(line.X1 + " " + line.Y1 + " " + line.X2 + " " + line.Y2);
+        // }
         foreach (var line in lines)
         {
             Wall wall = line.GetCorrespondingWall();
+            // Console.WriteLine("remove wall: " + wall.X + " " + wall.Y + " " + wall.Angle);
             allPossibleWalls.Remove(wall);
         }
         Walls.AddRange(allPossibleWalls);
     }
-    private Point TakeOneStep(Point currentPoint, List<Point>& closedPoints, List<Line>& lines)
+    private Point TakeOneStep(Point currentPoint, ref List<Point> closedPoints, ref List<Line> lines)
     {
         // random select a valid direction
         List<Point> validDirections = new List<Point>();
@@ -98,6 +106,7 @@ class Map
                 }
             }
         }
+        return walls;
     }
 }
 
@@ -143,10 +152,10 @@ struct Line
         }
         return new Wall(x, y, angle);
     }
-    private int X1 { get; }
-    private int Y1 { get; }
-    private int X2 { get; }
-    private int Y2 { get; }
+    public int X1 { get; }
+    public int Y1 { get; }
+    public int X2 { get; }
+    public int Y2 { get; }
 }
 
 struct Point 
@@ -156,8 +165,8 @@ struct Point
         X = x;
         Y = y;
     }
-    private int X { get; }
-    private int Y { get; }
+    public int X { get; }
+    public int Y { get; }
 }
 
 // test
@@ -166,14 +175,14 @@ class Program
     static void Main()
     {
         MapGenerator mapGenerator = new MapGenerator();
-        List<Map> maps = mapGenerator.GenerateMaps(10, 10, 10);
-        foreach (var map in maps)
+        List<Map> maps = mapGenerator.GenerateMaps(1, 30, 30);
+        Map map = maps[0];
+        Console.WriteLine("Width: " + map.Width);
+        Console.WriteLine("Height: " + map.Height);
+        Console.WriteLine("Walls:");
+        foreach (var wall in map.Walls)
         {
-            Console.WriteLine($"Map: width={map.Width}, height={map.Height}");
-            foreach (var wall in map.Walls)
-            {
-                Console.WriteLine($"Wall: x={wall.X}, y={wall.Y}, angle={wall.Angle}");
-            }
+            Console.WriteLine($"X: {wall.X}, Y: {wall.Y}, Angle: {wall.Angle}");
         }
     }
 }
