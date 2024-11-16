@@ -31,7 +31,6 @@ public class Recorder : IRecorder, IDisposable
         }
     }
 
-    private readonly ILogger _logger = Log.Logger.ForContext("Component", "Recorder");
     private readonly string _recordsDir;
     private readonly string _targetRecordFileName;
     private readonly string _targetResultFileName;
