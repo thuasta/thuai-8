@@ -35,19 +35,17 @@ class Agent {
 
   ~Agent() = default;
 
-  // Methods for interacting with the game server
-
   void Connect(const std::string& server_address);
 
-  [[nodiscard]] auto IsConnected() const -> bool;
+  [[nodiscard]] auto IsConnected() -> bool;
+
+  [[nodiscard]] auto IsGameReady() -> bool;
 
   [[nodiscard]] auto token() const -> std::string_view;
 
-  // Methods for interacting with the game
+  [[nodiscard]] auto self_info() const -> const PlayerInfo&;
 
-  [[nodiscard]] auto IsGameReady() const -> bool;
-
-  [[nodiscard]] auto players_info() const -> const std::vector<PlayerInfo>&;
+  [[nodiscard]] auto opponent_info() const -> const PlayerInfo&;
 
   [[nodiscard]] auto game_statistics() const -> const GameStatistics&;
 
@@ -55,19 +53,19 @@ class Agent {
 
   [[nodiscard]] auto available_buffs() const -> const std::vector<BuffKind>&;
 
-  void MoveForward();
+  void MoveForward() const;
 
-  void MoveBackward();
+  void MoveBackward() const;
 
-  void TurnClockwise();
+  void TurnClockwise() const;
 
-  void TurnCounterClockwise();
+  void TurnCounterClockwise() const;
 
-  void Attack();
+  void Attack() const;
 
-  void UseSkill(SkillKind skill);
+  void UseSkill(SkillKind skill) const;
 
-  void SelectBuff(BuffKind buff);
+  void SelectBuff(BuffKind buff) const;
 
  private:
   void Loop();
@@ -78,7 +76,8 @@ class Agent {
   hv::TimerID timer_id_;
   std::unique_ptr<hv::WebSocketClient> ws_client_;
 
-  std::optional<std::vector<PlayerInfo>> players_;
+  std::optional<PlayerInfo> self_info_;
+  std::optional<PlayerInfo> opponent_info_;
   std::optional<GameStatistics> game_statistics_;
   std::optional<EnvironmentInfo> environment_info_;
   std::optional<std::vector<BuffKind>> available_buffs_;

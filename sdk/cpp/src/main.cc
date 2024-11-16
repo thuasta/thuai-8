@@ -19,8 +19,8 @@
 #include "agent/format.hpp"
 #include "agent/game_statistics.hpp"
 
-extern void SelectBuff(thuai8_agent::Agent& agent);
-extern void Loop(thuai8_agent::Agent& agent);
+extern void SelectBuff(const thuai8_agent::Agent& agent);
+extern void Loop(const thuai8_agent::Agent& agent);
 
 constexpr auto kDefaultServer{"ws://localhost:14514"};
 constexpr auto kDefaultToken{"1919810"};
