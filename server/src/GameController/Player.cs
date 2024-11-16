@@ -10,6 +10,11 @@ public class Player
     /// </summary>
     public GameLogic.Character? Character { get; private set; } = null;
 
+    public bool Ready()
+    {
+        return Character != null;
+    }
+
     /// <summary>
     /// Binds a character to the player.
     /// </summary>
