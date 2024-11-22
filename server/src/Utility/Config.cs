@@ -1,4 +1,3 @@
-using System.ComponentModel.Design.Serialization;
 using System.Text.Json.Serialization;
 
 using Serilog;
@@ -69,8 +68,25 @@ public record Config
     /// <summary>
     /// The game settings.
     /// </summary>
-    public record GameSettings
+    public record GameSettings(int TPS=20, int BCT=200, int MBT=2600)
     {
+        /// <summary>
+        /// Literally, ticks per second.
+        /// </summary>
+        public int TicksPerSecond { get; init; } = TPS;
+
+        /// <summary>
+        /// Ticks for Buff Choosing.
+        /// </summary>
+        public int BuffChooseTicks { get; init; } = BCT;
+
+        /// <summary>
+        /// Time limit per battle. (in ticks) 
+        /// </summary>
+        public int MaxBattleTicks { get; init; } = MBT; // 2600 = 20 * 120 + 200;
+
+        
+
         // TODO: Implement
     }
 }
