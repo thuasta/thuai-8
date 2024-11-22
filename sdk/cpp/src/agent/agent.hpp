@@ -35,23 +35,41 @@ class Agent {
 
   ~Agent() = default;
 
-  void Connect(const std::string& server_address);
+  void Connect(const std::string& server_address) {
+    ws_client_->open(server_address.data());
+  }
 
-  [[nodiscard]] auto IsConnected() -> bool;
+  [[nodiscard]] auto IsConnected() const -> bool {
+    return ws_client_->isConnected();
+  }
 
-  [[nodiscard]] auto IsGameReady() -> bool;
+  [[nodiscard]] auto IsGameReady() const -> bool {
+    return self_info_.has_value() && opponent_info_.has_value() &&
+           game_statistics_.has_value() && environment_info_.has_value() &&
+           available_buffs_.has_value();
+  }
 
-  [[nodiscard]] auto token() const -> std::string_view;
+  [[nodiscard]] auto token() const -> std::string_view { return token_; }
 
-  [[nodiscard]] auto self_info() const -> const PlayerInfo&;
+  [[nodiscard]] auto self_info() const -> const PlayerInfo& {
+    return self_info_.value();
+  }
 
-  [[nodiscard]] auto opponent_info() const -> const PlayerInfo&;
+  [[nodiscard]] auto opponent_info() const -> const PlayerInfo& {
+    return opponent_info_.value();
+  }
 
-  [[nodiscard]] auto game_statistics() const -> const GameStatistics&;
+  [[nodiscard]] auto game_statistics() const -> const GameStatistics& {
+    return game_statistics_.value();
+  }
 
-  [[nodiscard]] auto environment_info() const -> const EnvironmentInfo&;
+  [[nodiscard]] auto environment_info() const -> const EnvironmentInfo& {
+    return environment_info_.value();
+  }
 
-  [[nodiscard]] auto available_buffs() const -> const std::vector<BuffKind>&;
+  [[nodiscard]] auto available_buffs() const -> const std::vector<BuffKind>& {
+    return available_buffs_.value();
+  }
 
   void MoveForward() const;
 

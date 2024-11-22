@@ -15,7 +15,6 @@
 #include <utility>
 #include <vector>
 
-#include "agent/position.hpp"
 #include "available_buffs.hpp"
 #include "environment_info.hpp"
 #include "format.hpp"
@@ -24,6 +23,7 @@
 #include "player_info.hpp"
 
 constexpr std::uint8_t kMinDelayMs{10};
+constexpr std::uint16_t kReserveSize{500};
 
 namespace thuai8_agent {
 
@@ -43,40 +43,6 @@ Agent::Agent(std::string_view token, const hv::EventLoopPtr& event_loop,
   ws_client_->onmessage = [this](std::string_view msg) {
     OnMessage(Message(msg));
   };
-}
-
-void Agent::Connect(const std::string& server_address) {
-  ws_client_->open(server_address.data());
-}
-
-auto Agent::IsConnected() -> bool { return ws_client_->isConnected(); }
-
-auto Agent::IsGameReady() -> bool {
-  return self_info_.has_value() && opponent_info_.has_value() &&
-         game_statistics_.has_value() && environment_info_.has_value() &&
-         available_buffs_.has_value();
-}
-
-auto Agent::token() const -> std::string_view { return token_; }
-
-auto Agent::self_info() const -> const PlayerInfo& {
-  return self_info_.value();
-}
-
-auto Agent::opponent_info() const -> const PlayerInfo& {
-  return opponent_info_.value();
-}
-
-auto Agent::game_statistics() const -> const GameStatistics& {
-  return game_statistics_.value();
-}
-
-auto Agent::environment_info() const -> const EnvironmentInfo& {
-  return environment_info_.value();
-}
-
-auto Agent::available_buffs() const -> const std::vector<BuffKind>& {
-  return available_buffs_.value();
 }
 
 void Agent::MoveForward() const {
@@ -154,24 +120,28 @@ void Agent::OnMessage(const Message& message) {
           .currentCoolDown = skill_data["currentCoolDown"].get<unsigned int>(),
           .isActive = skill_data["isActive"].get<bool>()});
     }
-    Position position{.x = msg_dict["position"]["x"].get<double>(),
-                      .y = msg_dict["position"]["y"].get<double>(),
-                      .angle = msg_dict["position"]["angle"].get<double>()};
     if (auto token = msg_dict["token"].get<std::string>(); token == token_) {
-      self_info_ = PlayerInfo{.token = token,
-                              .position = position,
-                              .weapon = weapon,
-                              .armor = armor,
-                              .skills = std::move(skills)};
+      self_info_ = PlayerInfo{
+          .token = token,
+          .position = {.x = msg_dict["position"]["x"].get<double>(),
+                       .y = msg_dict["position"]["y"].get<double>(),
+                       .angle = msg_dict["position"]["angle"].get<double>()},
+          .weapon = weapon,
+          .armor = armor,
+          .skills = std::move(skills)};
     } else {
-      opponent_info_ = PlayerInfo{.token = token,
-                                  .position = position,
-                                  .weapon = weapon,
-                                  .armor = armor,
-                                  .skills = std::move(skills)};
+      opponent_info_ = PlayerInfo{
+          .token = token,
+          .position = {.x = msg_dict["position"]["x"].get<double>(),
+                       .y = msg_dict["position"]["y"].get<double>(),
+                       .angle = msg_dict["position"]["angle"].get<double>()},
+          .weapon = weapon,
+          .armor = armor,
+          .skills = std::move(skills)};
     }
   } else if (msg_type == "ENVIRONMENT_INFO") {
     std::vector<Wall> walls;
+    walls.reserve(kReserveSize);
     for (const auto& wall_data : msg_dict["walls"]) {
       walls.emplace_back(Wall{wall_data["x"].get<int>(),
                               wall_data["y"].get<int>(),

@@ -3,6 +3,7 @@
 #define _THUAI8_AGENT_AVAILABLE_BUFFS_HPP_
 
 #include <cstdint>
+#include <type_traits>
 
 #include "player_info.hpp"
 
@@ -30,7 +31,10 @@ enum class BuffKind : std::uint8_t {
   Gravity       // 重力
 };
 
-constexpr auto operator==(BuffKind lhs, SkillKind rhs) -> bool {
+template <typename T, typename U>
+  requires(std::is_same_v<T, BuffKind> && std::is_same_v<U, SkillKind>) ||
+          (std::is_same_v<T, SkillKind> && std::is_same_v<U, BuffKind>)
+constexpr auto operator==(T lhs, U rhs) -> bool {
   return static_cast<std::uint8_t>(lhs) == static_cast<std::uint8_t>(rhs);
 }
 
