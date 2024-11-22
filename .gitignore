@@ -4,7 +4,3 @@
 # Visual Studio Code
 .vscode/
 /*.sln
-*.sln
-
-# test run
-server/src/MapGenerator/MyConsoleApp/

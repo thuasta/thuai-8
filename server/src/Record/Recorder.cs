@@ -3,12 +3,14 @@ using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Serilog;
+using Thuai.Server.Utility;
 
 namespace Thuai.GameServer.Recorder;
 
 public class Recorder : IRecorder, IDisposable
 {
     public const int MaxRecordsBeforeSave = 10000;
+    public ILogger _logger = Tools.LogHandler.CreateLogger("Recorder");
 
     public JsonNode Json
     {

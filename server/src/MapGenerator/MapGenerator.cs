@@ -15,6 +15,7 @@ class Map
     public int Width { get; }
     public int Height { get; }
     public List<Wall> Walls { get; } = new List<Wall>();
+    private static readonly Random random = new Random();
     private void GenerateRandomWalls()
     {
         // lines on the path, should be maintained
@@ -39,11 +40,7 @@ class Map
             }
         }
         List<Wall> allPossibleWalls = GetAllPossibleWalls();
-        // Console.WriteLine("lines:");
-        // foreach (var line in lines)
-        // {
-        //     Console.WriteLine(line.X1 + " " + line.Y1 + " " + line.X2 + " " + line.Y2);
-        // }
+
         foreach (var line in lines)
         {
             Wall wall = line.GetCorrespondingWall();
@@ -77,7 +74,6 @@ class Map
             return new Point(-1, -1);
         }
         // random select a direction
-        Random random = new Random();
         int index = random.Next(validDirections.Count);
         Point newPoint = validDirections[index];
         closedPoints.Add(newPoint);  // add the new point to the closedPoints
@@ -167,22 +163,4 @@ struct Point
     }
     public int X { get; }
     public int Y { get; }
-}
-
-// test
-class Program
-{
-    static void Main()
-    {
-        MapGenerator mapGenerator = new MapGenerator();
-        List<Map> maps = mapGenerator.GenerateMaps(1, 30, 30);
-        Map map = maps[0];
-        Console.WriteLine("Width: " + map.Width);
-        Console.WriteLine("Height: " + map.Height);
-        Console.WriteLine("Walls:");
-        foreach (var wall in map.Walls)
-        {
-            Console.WriteLine($"X: {wall.X}, Y: {wall.Y}, Angle: {wall.Angle}");
-        }
-    }
 }
