@@ -12,9 +12,9 @@
 
 namespace {
 // NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
-std::vector<thuai8_agent::Position<int>> path;
 // Your global variables here
 // But notice that you should avoid using global variables as much as possible
+std::vector<thuai8_agent::Position<int>> path;
 //
 // NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
 
@@ -24,35 +24,40 @@ std::vector<thuai8_agent::Position<int>> path;
 
 // NOLINTBEGIN(misc-use-internal-linkage)
 void SelectBuff(const thuai8_agent::Agent& agent) {
+  // Your code here
+  // Here is an example of how to select a buff
   const auto& self_info{agent.self_info()};
   const auto& available_buffs{agent.available_buffs()};
-  // Your code here
-  //
   for (auto buff : available_buffs) {
-    if (std::ranges::find_if(self_info.skills, [buff](auto skill) {
+    if (std::ranges::none_of(self_info.skills, [buff](auto skill) {
           return buff == skill.name;
-        }) == self_info.skills.end()) {
+        })) {
       agent.SelectBuff(buff);
       return;
     }
   }
+  agent.SelectBuff(available_buffs.front());
 }
 
 void Loop(const thuai8_agent::Agent& agent) {
+  // Your code here
+  // Here is an example of how to move your agent
   const auto& self_info{agent.self_info()};
   const auto& opponent_info{agent.opponent_info()};
   const auto& walls{agent.environment_info().walls};
   const auto& fences{agent.environment_info().fences};
   const auto& bullets{agent.environment_info().bullets};
   const auto& game_statistics{agent.game_statistics()};
-  // Your code here
-  //
+
   agent.MoveForward();
   agent.MoveBackward();
   agent.TurnClockwise();
   agent.TurnCounterClockwise();
   agent.Attack();
-  agent.UseSkill(thuai8_agent::SkillKind::Flash);
+
+  if (!self_info.skills.empty()) {
+    agent.UseSkill(self_info.skills.front().name);
+  }
 
   thuai8_agent::Position self_position_int{
       .x = static_cast<int>(self_info.position.x),
@@ -68,10 +73,10 @@ void Loop(const thuai8_agent::Agent& agent) {
                     opponent_info.position);
       return;
     }
-    spdlog::debug("Found path from {} to {}:", self_info.position,
+    spdlog::debug("Found path from {} to {}", self_info.position,
                   opponent_info.position);
   }
-  while (path.back() != opponent_position_int) {
+  while (path.back() != self_position_int) {
     path.pop_back();
   }
   if (auto size = path.size(); size > 1) {

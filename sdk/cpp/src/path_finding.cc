@@ -1,7 +1,7 @@
 #include "path_finding.hpp"
 
-#include <algorithm>
 #include <array>
+#include <bitset>
 #include <cstdint>
 #include <cstdlib>
 #include <functional>
@@ -27,8 +27,7 @@ constexpr auto ManhattanDistance(const thuai8_agent::Position<int>& start,
 }
 
 inline auto GetNeighbors(const thuai8_agent::Position<int>& pos,
-                         std::span<const thuai8_agent::Wall> walls,
-                         std::span<const thuai8_agent::Fence> fences) {
+                         std::span<std::bitset<kMapSize>> map_grid) {
   std::array<thuai8_agent::Position<int>, kNeighborCount> neighbors{
       thuai8_agent::Position<int>{.x = pos.x - 1, .y = pos.y - 1},
       thuai8_agent::Position<int>{.x = pos.x - 1, .y = pos.y},
@@ -39,29 +38,11 @@ inline auto GetNeighbors(const thuai8_agent::Position<int>& pos,
       thuai8_agent::Position<int>{.x = pos.x + 1, .y = pos.y},
       thuai8_agent::Position<int>{.x = pos.x + 1, .y = pos.y + 1}};
 
-  std::vector<thuai8_agent::Position<int>> obstacles;
-  for (const auto& wall : walls) {
-    if (ManhattanDistance(pos, wall.position) <= 2) {
-      obstacles.push_back(wall.position);
-    }
-  }
-  for (const auto& fence : fences) {
-    if (ManhattanDistance(pos, fence.position) <= 2) {
-      obstacles.push_back(fence.position);
-    }
-  }
-
   auto valid_neighbors{
-      neighbors |
-      std::views::filter(
-          [](const thuai8_agent::Position<int>& neighbor) -> bool {
-            return neighbor.x >= 0 && neighbor.x < kMapSize &&
-                   neighbor.y >= 0 && neighbor.y < kMapSize;
-          }) |
-      std::views::filter(
-          [&obstacles](const thuai8_agent::Position<int>& neighbor) {
-            return std::ranges::find(obstacles, neighbor) == obstacles.end();
-          })};
+      neighbors | std::views::filter([&map_grid](const auto& neighbor) {
+        return neighbor.x >= 0 && neighbor.x < kMapSize && neighbor.y >= 0 &&
+               neighbor.y < kMapSize && !map_grid[neighbor.x][neighbor.y];
+      })};
 
   return valid_neighbors;
 }
@@ -73,8 +54,15 @@ auto FindPathBFS(const thuai8_agent::Position<int>& start,
                  std::span<const thuai8_agent::Wall> walls,
                  std::span<const thuai8_agent::Fence> fences)
     -> std::vector<thuai8_agent::Position<int>> {
-  if (std::ranges::contains(walls, end, &thuai8_agent::Wall::position) ||
-      std::ranges::contains(fences, end, &thuai8_agent::Fence::position)) {
+  std::vector<std::bitset<kMapSize>> map_grid(kMapSize);
+  for (const auto& wall : walls) {
+    map_grid[wall.position.x][wall.position.y] = true;
+  }
+  for (const auto& fence : fences) {
+    map_grid[fence.position.x][fence.position.y] = true;
+  }
+
+  if (map_grid[start.x][start.y] || map_grid[end.x][end.y]) {
     return {};
   }
 
@@ -108,7 +96,7 @@ auto FindPathBFS(const thuai8_agent::Position<int>& start,
       break;
     }
 
-    for (const auto& neighbor : GetNeighbors(current, walls, fences)) {
+    for (const auto& neighbor : GetNeighbors(current, map_grid)) {
       if (visited.find(neighbor) != visited.end()) {
         continue;
       }
