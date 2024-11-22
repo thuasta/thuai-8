@@ -1,5 +1,4 @@
-# https://github.com/gitattributes/gitattributes/blob/master/Python.gitattributes
-
+## https://github.com/gitattributes/gitattributes/blob/master/Python.gitattributes
 # Basic .gitattributes for a python repo.
 
 # Source files

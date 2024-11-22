@@ -32,9 +32,35 @@ public static class EventChannel
         {
             foreach (Type eventType in eventTypes)
             {
+                if (!typeof(EventArgs).IsAssignableFrom(eventType))
+                {
+                    _logger?.Warning(
+                        $"Event type {eventType.FullName} does not inherit from EventArgs " +
+                        "and will be ignored."
+                    );
+                    continue;
+                }
+                if (eventType.IsAbstract)
+                {
+                    _logger?.Warning(
+                        $"Event type {eventType.FullName} is abstract and will be ignored."
+                    );
+                    continue;
+                }
+
                 var handlers = _eventHandlers.GetOrAdd(
                     eventType, _ => new ConcurrentDictionary<Action<object?, EventArgs>, object?>()
                 );
+
+                if (handlers.ContainsKey(eventHandler))
+                {
+                    _logger?.Warning(
+                        $"The given event handler for event type {eventType.FullName} " +
+                        "is already registered."
+                    );
+                    continue;
+                }
+
                 handlers[eventHandler] = null;
 
                 _logger?.Debug(
@@ -59,6 +85,22 @@ public static class EventChannel
         {
             foreach (Type eventType in eventTypes)
             {
+                if (!typeof(EventArgs).IsAssignableFrom(eventType))
+                {
+                    _logger?.Warning(
+                        $"Event type {eventType.FullName} does not inherit from EventArgs " +
+                        "and will be ignored."
+                    );
+                    continue;
+                }
+                if (eventType.IsAbstract)
+                {
+                    _logger?.Warning(
+                        $"Event type {eventType.FullName} is abstract and will be ignored."
+                    );
+                    continue;
+                }
+
                 if (_eventHandlers.TryGetValue(eventType, out var handlers))
                 {
                     if (handlers.TryRemove(eventHandler, out _))
@@ -87,6 +129,7 @@ public static class EventChannel
         if (!ContainsHandler(ref onTargetEvent, Collect))
         {
             onTargetEvent += Collect;
+            _logger?.Debug($"An event is added to collection");
         }
     }
 
@@ -99,6 +142,7 @@ public static class EventChannel
         if (onTargetEvent is not null && ContainsHandler(ref onTargetEvent, Collect))
         {
             onTargetEvent -= Collect;
+            _logger?.Debug($"An event is removed from collection");
         }
     }
 
