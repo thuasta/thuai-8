@@ -39,7 +39,6 @@ namespace BattleCity
             var ammoType = this.GetModel<AmmoText>().mAmmoType[_tankId];
             ammoNumber.text = $"{_ammo_number}";
             ammoType.sprite = _ammo_type;
-
         }
         
     }
