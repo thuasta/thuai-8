@@ -56,7 +56,7 @@ struct Skill {
 
 struct PlayerInfo {
   std::string token;
-  Position position{};
+  Position<double> position{};
   Weapon weapon{};
   Armor armor{};
   std::vector<Skill> skills;
