@@ -17,8 +17,8 @@ public partial class Battle
     /// <summary>
     /// Update the map.
     /// </summary>
-    public void UpdateMap()
+    private void UpdateMap()
     {
-
+        // TODO: implement.
     }
 }
