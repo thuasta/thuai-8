@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+=======
+<Project Sdk="Microsoft.NET.Sdk">
+>>>>>>> 686b229c7080cbf491fffc19b21d8b89b0dfb966
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>

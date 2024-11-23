@@ -35,39 +35,55 @@ class Agent {
 
   ~Agent() = default;
 
-  // Methods for interacting with the game server
+  void Connect(const std::string& server_address) {
+    ws_client_->open(server_address.data());
+  }
 
-  void Connect(const std::string& server_address);
+  [[nodiscard]] auto IsConnected() const -> bool {
+    return ws_client_->isConnected();
+  }
 
-  [[nodiscard]] auto IsConnected() const -> bool;
+  [[nodiscard]] auto IsGameReady() const -> bool {
+    return self_info_.has_value() && opponent_info_.has_value() &&
+           game_statistics_.has_value() && environment_info_.has_value() &&
+           available_buffs_.has_value();
+  }
 
-  [[nodiscard]] auto token() const -> std::string_view;
+  [[nodiscard]] auto token() const -> std::string_view { return token_; }
 
-  // Methods for interacting with the game
+  [[nodiscard]] auto self_info() const -> const PlayerInfo& {
+    return self_info_.value();
+  }
 
-  [[nodiscard]] auto IsGameReady() const -> bool;
+  [[nodiscard]] auto opponent_info() const -> const PlayerInfo& {
+    return opponent_info_.value();
+  }
 
-  [[nodiscard]] auto players_info() const -> const std::vector<PlayerInfo>&;
+  [[nodiscard]] auto game_statistics() const -> const GameStatistics& {
+    return game_statistics_.value();
+  }
 
-  [[nodiscard]] auto game_statistics() const -> const GameStatistics&;
+  [[nodiscard]] auto environment_info() const -> const EnvironmentInfo& {
+    return environment_info_.value();
+  }
 
-  [[nodiscard]] auto environment_info() const -> const EnvironmentInfo&;
+  [[nodiscard]] auto available_buffs() const -> const std::vector<BuffKind>& {
+    return available_buffs_.value();
+  }
 
-  [[nodiscard]] auto available_buffs() const -> const std::vector<BuffKind>&;
+  void MoveForward() const;
 
-  void MoveForward();
+  void MoveBackward() const;
 
-  void MoveBackward();
+  void TurnClockwise() const;
 
-  void TurnClockwise();
+  void TurnCounterClockwise() const;
 
-  void TurnCounterClockwise();
+  void Attack() const;
 
-  void Attack();
+  void UseSkill(SkillKind skill) const;
 
-  void UseSkill(SkillKind skill);
-
-  void SelectBuff(BuffKind buff);
+  void SelectBuff(BuffKind buff) const;
 
  private:
   void Loop();
@@ -78,7 +94,8 @@ class Agent {
   hv::TimerID timer_id_;
   std::unique_ptr<hv::WebSocketClient> ws_client_;
 
-  std::optional<std::vector<PlayerInfo>> players_;
+  std::optional<PlayerInfo> self_info_;
+  std::optional<PlayerInfo> opponent_info_;
   std::optional<GameStatistics> game_statistics_;
   std::optional<EnvironmentInfo> environment_info_;
   std::optional<std::vector<BuffKind>> available_buffs_;
