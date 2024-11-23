@@ -7,8 +7,16 @@ namespace Thuai.Server.Test;
 /// </summary>
 public class TestIntData : IEnumerable<object[]>
 {
+    public const int RandomTestIterations = 100;
+    private static readonly Random _random = new();
+
     public IEnumerator<object[]> GetEnumerator()
     {
+        for (int i = 0; i < RandomTestIterations; i++)
+        {
+            yield return new object[] { _random.Next(int.MinValue, int.MaxValue) };
+        }
+
         yield return new object[] { 0 };
         yield return new object[] { 1 };
         yield return new object[] { -1 };
@@ -26,8 +34,22 @@ public class TestIntData : IEnumerable<object[]>
 /// </summary>
 public class TestDoubleData : IEnumerable<object[]>
 {
+    public const int RandomTestIterations = 100;
+    private static readonly Random _random = new();
+
     public IEnumerator<object[]> GetEnumerator()
     {
+        for (int i = 0; i < RandomTestIterations; i++)
+        {
+            yield return new object[]
+            {
+                10.0 * (
+                    _random.NextDouble() * (0.1 * double.MaxValue -  0.1 * double.MinValue)
+                    + 0.1 * double.MinValue
+                )
+            };
+        }
+
         yield return new object[] { 0.0 };
         yield return new object[] { 1.0 };
         yield return new object[] { -1.0 };
@@ -133,6 +155,60 @@ public class TestActionWithExceptionData : IEnumerable<object[]>
             // Out of memory
             new Action(() => { List<List<int>> list = []; while(true) { list.Add(new(int.MaxValue)); } })
         };
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+}
+
+public class DataGroup<T1, T2> : IEnumerable<object[]>
+    where T1 : IEnumerable<object[]>, new()
+    where T2 : IEnumerable<object[]>, new()
+{
+    private IEnumerable<object[]>[] _datas;
+    public DataGroup()
+    {
+        _datas = [new T1(), new T2()];
+    }
+
+    public IEnumerator<object[]> GetEnumerator()
+    {
+        foreach (IEnumerable<object[]> data in _datas)
+        {
+            foreach (object[] item in data)
+            {
+                yield return item;
+            }
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+}
+
+public class TestParameters<T1, T2> : IEnumerable<object[]>
+    where T1 : IEnumerable<object[]>, new()
+    where T2 : IEnumerable<object[]>, new()
+{
+    private readonly IEnumerable<object[]> _param1;
+    private readonly IEnumerable<object[]> _param2;
+
+    public TestParameters()
+    {
+        _param1 = new T1();
+        _param2 = new T2();
+    }
+
+    public IEnumerator<object[]> GetEnumerator()
+    {
+        foreach (object[] item1 in _param1)
+        {
+            foreach (object[] item2 in _param2)
+            {
+                object[] combined = new object[item1.Length + item2.Length];
+                item1.CopyTo(combined, 0);
+                item2.CopyTo(combined, item1.Length);
+                yield return combined;
+            }
+        }
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

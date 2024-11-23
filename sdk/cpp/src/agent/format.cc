@@ -10,17 +10,11 @@
 #include "environment_info.hpp"
 #include "game_statistics.hpp"
 #include "player_info.hpp"
-#include "position.hpp"
 
 namespace thuai8_agent {
 
 auto format_as(const Agent& object) -> std::string {
   return fmt::format("Agent[Token: {}]", object.token());
-}
-
-auto format_as(const Position& object) -> std::string {
-  return fmt::format("Position: [x: {}, y: {}, angle: {}]", object.x, object.y,
-                     object.angle);
 }
 
 auto format_as(const Weapon& object) -> std::string {

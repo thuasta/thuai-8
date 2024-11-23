@@ -7,6 +7,7 @@
 
 #include <magic_enum.hpp>
 #include <string>
+#include <type_traits>
 
 #include "agent.hpp"
 #include "environment_info.hpp"
@@ -25,7 +26,12 @@ auto format_as(T object) -> std::string {
   return std::string(magic_enum::enum_name(object));
 }
 
-auto format_as(const Position& object) -> std::string;
+template <typename T>
+  requires std::is_same_v<T, int> || std::is_same_v<T, double>
+auto format_as(const Position<T>& object) -> std::string {
+  return fmt::format("Position: [x: {}, y: {}, angle: {}]", object.x, object.y,
+                     object.angle);
+}
 
 auto format_as(const Weapon& object) -> std::string;
 
