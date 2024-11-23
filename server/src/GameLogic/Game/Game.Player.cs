@@ -14,10 +14,7 @@ public partial class Game
     /// <summary>
     /// Record the scores of the players.
     /// </summary>
-    /// <remarks>
-    /// The i-th player's score is <see cref="Scoreboard"/>[i]
-    /// </remarks>
-    public List<int> Scoreboard { get; private set; } = [];
+    public Dictionary<Player, int> Scoreboard { get; private set; } = [];
 
     #endregion
 
@@ -41,7 +38,7 @@ public partial class Game
             lock(_lock)
             {
                 AllPlayers.Add(player);
-                Scoreboard.Add(0);
+                Scoreboard.Add(player, 0);
                 // SubscribePlayerEvents(player);
                 return true;
             }
@@ -64,14 +61,7 @@ public partial class Game
         {
             lock(_lock)
             {
-                // Is there a fancier way?
-                int index = AllPlayers.FindIndex((Player _player) => {
-                    return _player == player;
-                });
-                if (index != -1)
-                {
-                    Scoreboard.RemoveAt(index);
-                }
+                Scoreboard.Remove(player);
                 AllPlayers.Remove(player);
             }
         }
@@ -82,15 +72,5 @@ public partial class Game
         }
     }
 
-    public void UpdatePlayers()
-    {
-        foreach (Player player in AllPlayers)
-        {
-            // Update the player status.
-        }
-    }
-
-
     #endregion
-
 }

@@ -8,7 +8,7 @@ namespace BattleCity
 {
     public class ArmorShow : AbstractModel
     {
-        public Dictionary<int, int> armor_value = new();
+        public Dictionary<int, Slider> armor_value = new();
         public Dictionary<int, Color> armor_type = new();
 
 
@@ -18,9 +18,9 @@ namespace BattleCity
             Slider Armor_2 = GameObject.Find("Canvas/Armor_2").GetComponent<Slider>();
             Image Type_1 = GameObject.Find("Canvas/Armor_1/Fill Area/Fill").GetComponent<Image>();
             Image Type_2 = GameObject.Find("Canvas/Armor_2/Fill Area/Fill").GetComponent<Image>();
-            armor_value[1] = (int)Armor_1.value;
+            armor_value[1] = Armor_1;
             armor_type[1] = Type_1.color;
-            armor_value[2] = (int)Armor_2.value;
+            armor_value[2] = Armor_2;
             armor_type[2] = Type_2.color;
         }
     }
