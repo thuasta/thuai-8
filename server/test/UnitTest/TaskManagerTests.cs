@@ -18,47 +18,8 @@ public class TaskManagerTests
         Console.SetOut(_consoleOutput);
     }
 
-    private class TaskManagerTestDataNormal : IEnumerable<object[]>
-    {
-        readonly TestActionData _testActionData = new();
-        readonly TestStringData _testStringData = new();
-
-        public IEnumerator<object[]> GetEnumerator()
-        {
-            foreach (object[] actionData in _testActionData)
-            {
-                foreach (object[] stringData in _testStringData)
-                {
-                    yield return new object[] { actionData[0], stringData[0] };
-                }
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    }
-
-    private class TaskManagerTestDataWithException : IEnumerable<object[]>
-    {
-        readonly TestActionWithExceptionData _testActionData = new();
-        readonly TestStringData _testStringData = new();
-
-        public IEnumerator<object[]> GetEnumerator()
-        {
-            foreach (object[] actionData in _testActionData)
-            {
-                foreach (object[] stringData in _testStringData)
-                {
-                    yield return new object[] { actionData[0], stringData[0] };
-                }
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    }
-
     [Theory]
-    [ClassData(typeof(TaskManagerTestDataNormal))]
-    [ClassData(typeof(TaskManagerTestDataWithException))]
+    [ClassData(typeof(TestParameters<DataGroup<TestActionData, TestActionWithExceptionData>, TestStringData>))]
     public void CreateTask_ShouldCreateTask(Action action, string description)
     {
         // Act
