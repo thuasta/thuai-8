@@ -43,17 +43,16 @@ public record BattleUpdate : Message
         public record weapon
         {
             [JsonPropertyName("attackSpeed")]
-            public double AttackSpeed { get; init; };
+            public double AttackSpeed { get; init; }
 
             [JsonPropertyName("bulletSpeed")]
-            public double BulletSpeed { get; init; };
+            public double BulletSpeed { get; init; }
 
             [JsonPropertyName("isLaser")]
-            public bool IsLaser { get; init; };
+            public bool IsLaser { get; init; }
 
             [JsonPropertyName("antiArmor")]
-            public bool AntiArmor { get; init; };
-
+            public bool AntiArmor { get; init; }
             [JsonPropertyName("damage")]
             public int Damage { get; init; } = 0;
 
@@ -67,7 +66,7 @@ public record BattleUpdate : Message
         public record armor 
         {
             [JsonPropertyName("canReflect")]
-            public bool CanReflect { get; init; };
+            public bool CanReflect { get; init; }
 
             [JsonPropertyName("armorValue")]
             public int ArmorValue { get; init; } = 0;
@@ -76,13 +75,13 @@ public record BattleUpdate : Message
             public int Health { get; init; } = 0;
 
             [JsonPropertyName("gravityField")]
-            public bool GravityField { get; init; };
+            public bool GravityField { get; init; }
 
             [JsonPropertyName("knife")]
             public string Knife { get; init; } = "";
 
             [JsonPropertyName("dodgeRate")]
-            public double DodgeRate { get; init; };
+            public double DodgeRate { get; init; }
         }
 
         public record skill
@@ -97,7 +96,7 @@ public record BattleUpdate : Message
             public int CurrentCooldown { get; init; } = 0;
 
             [JsonPropertyName("isActive")]
-            public bool IsActive { get; init; };
+            public bool IsActive { get; init; }
         }
 
         public record position
