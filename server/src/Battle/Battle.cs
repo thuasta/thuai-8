@@ -1,31 +1,33 @@
 using Serilog;
 using Thuai.Server.GameController;
 
+
 namespace Thuai.Server.GameLogic;
 
 /// <summary>
 /// Simulates a round of game.
 /// </summary>
-public partial class Battle(Utility.Config.GameSettings setting, bool buff) 
+public partial class Battle(Utility.Config.GameSettings setting, List<Player> players) 
 {
+    public enum BattleStage 
+    {
+        Waiting,
+        InBattle,
+        ChoosingAward,
+        Finished
+    }
+    
     /// <summary>
     /// Represents the result of a battle.
     /// </summary>
     /// <remarks>
     /// !Valid means game not end, "Winner is null" means a draw.
     /// </remarks>
-    public enum BattleStage 
-    {
-        Waiting,
-        ChoosingBuff,
-        InBattle,
-        Finished
-    }
-    
     public class Result(Player? winner, bool valid) {
         public Player? Winner { get; init; } = winner;
         public bool Valid { get; init; } = valid;
     }
+
     #region Fields and properties
 
     // <summary>
@@ -41,7 +43,7 @@ public partial class Battle(Utility.Config.GameSettings setting, bool buff)
     /// <summary>
     /// Settings of the game.
     /// </summary>
-    public required Utility.Config.GameSettings GameSettings { get; init; } = setting;
+    public Utility.Config.GameSettings GameSettings { get; init; } = setting;
     
     private readonly ILogger _logger = 
         Utility.Tools.LogHandler.CreateLogger("Battle");
@@ -52,37 +54,39 @@ public partial class Battle(Utility.Config.GameSettings setting, bool buff)
 
     #region Methods
     public Result GetResult() {
-        if (Stage != BattleStage.Finished)
+        if (Stage != BattleStage.Finished && Stage != BattleStage.ChoosingAward)
         {
             return new Result(null, false);
         }
         else 
         {
-            // TODO: Get the winner and return.
-            return new(null, true);
+            return new(PlayerWithHighestHP(), true);
         }
     }
-
-    public bool IsRunning() {
-        return false;
-    }
-    private bool NeedToChooseBuff { get; init; } = buff;
 
     /// <summary>
     /// Initialize the battle.
     /// </summary>
-    /// <exception cref="Exception">Generate Map Failed.</exception>
-    public void Initialize() {
-        _logger.Information("Initializing game...");
-
-        if (!GenerateMap())
+    public bool Initialize() 
+    {
+        _logger.Information("Initializing battle...");
+        try
         {
-            throw new Exception("Generate Map Failed");
+            bool success = GenerateMap();
+            if (!success)
+            {
+                throw new Exception("Generate Map Failed");
+            }
+            ChooseSpawnpoint();
+            _logger.Information("Initialized battle successfully.");
+            return true;
         }
-
-        // TODO: Implement
-
-        _logger.Information("Game initialized.");
+        catch (Exception e)
+        {
+            _logger.Error($"Initialize battle failed: {e.Message}");
+            _logger.Debug($"{e}");
+            return false;
+        }
     }
 
     /// <summary>
@@ -94,7 +98,13 @@ public partial class Battle(Utility.Config.GameSettings setting, bool buff)
         {
             lock (_lock)
             {
-                // TODO: Ticks here.
+                if (Stage == BattleStage.InBattle)
+                {
+                    UpdatePlayers();
+                    UpdateBullets();
+                    UpdateMap();
+                }
+                StageControl();
             }
         }
         catch (Exception e)
@@ -104,25 +114,35 @@ public partial class Battle(Utility.Config.GameSettings setting, bool buff)
         }
     }
 
+    public bool IsBattleOver() {
+        return CurrentTick > GameSettings.MaxBattleTicks || AlivePlayers() <= 1;
+    }
+
     /// <summary>
     /// Control the stage of the battle.
     /// </summary>
     private void StageControl() {
         if (Stage == BattleStage.Waiting) 
         {
-            
+            if (PlayerCount >= 2)
+            {
+                Stage = BattleStage.InBattle;
+            }
         }
-        else if (Stage == BattleStage.ChoosingBuff) 
-        {
-
-        } 
         else if (Stage == BattleStage.InBattle) 
         {
-
+            if (IsBattleOver())
+            {
+                Stage = BattleStage.ChoosingAward;
+            }
+        } 
+        else if (Stage == BattleStage.ChoosingAward) 
+        {
+            // TODO: implement.
         } 
         else /* Stage == BattleStage.Finished */
         {
-
+            return;
         }
     }
     #endregion

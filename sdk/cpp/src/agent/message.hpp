@@ -84,7 +84,7 @@ struct PerformAttack : public Message {
 };
 
 struct PerformSkill : public Message {
-  PerformSkill(std::string_view token, const SkillKind& skillName) {
+  PerformSkill(std::string_view token, SkillKind skillName) {
     msg = {{"messageType", "PERFORM_SKILL"},
            {"token", token},
            {"skillName", skillName}};
@@ -92,7 +92,7 @@ struct PerformSkill : public Message {
 };
 
 struct PerformSelect : public Message {
-  PerformSelect(std::string_view token, const BuffKind& buffName) {
+  PerformSelect(std::string_view token, BuffKind buffName) {
     msg = {{"messageType", "PERFORM_SELECT"},
            {"token", token},
            {"buffName", buffName}};

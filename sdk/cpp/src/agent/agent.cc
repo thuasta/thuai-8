@@ -15,7 +15,6 @@
 #include <utility>
 #include <vector>
 
-#include "agent/position.hpp"
 #include "available_buffs.hpp"
 #include "environment_info.hpp"
 #include "format.hpp"
@@ -24,6 +23,7 @@
 #include "player_info.hpp"
 
 constexpr std::uint8_t kMinDelayMs{10};
+constexpr std::uint16_t kReserveSize{500};
 
 namespace thuai8_agent {
 
@@ -45,66 +45,37 @@ Agent::Agent(std::string_view token, const hv::EventLoopPtr& event_loop,
   };
 }
 
-void Agent::Connect(const std::string& server_address) {
-  ws_client_->open(server_address.data());
-}
-
-auto Agent::IsConnected() const -> bool { return ws_client_->isConnected(); }
-
-auto Agent::IsGameReady() const -> bool {
-  return players_.has_value() && game_statistics_.has_value() &&
-         environment_info_.has_value() && available_buffs_.has_value();
-}
-
-auto Agent::token() const -> std::string_view { return token_; }
-
-auto Agent::players_info() const -> const std::vector<PlayerInfo>& {
-  return players_.value();
-}
-
-auto Agent::game_statistics() const -> const GameStatistics& {
-  return game_statistics_.value();
-}
-
-auto Agent::environment_info() const -> const EnvironmentInfo& {
-  return environment_info_.value();
-}
-
-auto Agent::available_buffs() const -> const std::vector<BuffKind>& {
-  return available_buffs_.value();
-}
-
-void Agent::MoveForward() {
+void Agent::MoveForward() const {
   spdlog::debug("{}.MoveForward", *this);
   ws_client_->send(PerformMove(token_, "FORTH").to_string());
 }
 
-void Agent::MoveBackward() {
+void Agent::MoveBackward() const {
   spdlog::debug("{}.MoveBackward", *this);
   ws_client_->send(PerformMove(token_, "BACK").to_string());
 }
 
-void Agent::TurnClockwise() {
+void Agent::TurnClockwise() const {
   spdlog::debug("{}.TurnClockwise", *this);
   ws_client_->send(PerformMove(token_, "CLOCKWISE").to_string());
 }
 
-void Agent::TurnCounterClockwise() {
+void Agent::TurnCounterClockwise() const {
   spdlog::debug("{}.TurnCounterClockwise", *this);
   ws_client_->send(PerformMove(token_, "COUNTER_CLOCKWISE").to_string());
 }
 
-void Agent::Attack() {
+void Agent::Attack() const {
   spdlog::debug("{}.Attack", *this);
   ws_client_->send(PerformAttack(token_).to_string());
 }
 
-void Agent::UseSkill(SkillKind skill) {
+void Agent::UseSkill(SkillKind skill) const {
   spdlog::debug("{}.UseSkill({})", *this, skill);
   ws_client_->send(PerformSkill(token_, skill).to_string());
 }
 
-void Agent::SelectBuff(BuffKind buff) {
+void Agent::SelectBuff(BuffKind buff) const {
   spdlog::debug("{}.SelectBuff({})", *this, buff);
   ws_client_->send(PerformSelect(token_, buff).to_string());
 }
@@ -124,12 +95,6 @@ void Agent::OnMessage(const Message& message) {
   const auto& msg_dict = message.msg;
   auto msg_type = msg_dict["messageType"].get<std::string>();
   if (msg_type == "PLAYER_INFO") {
-    if (players_.has_value()) {
-      players_->clear();
-    } else {
-      players_ = std::vector<PlayerInfo>{};
-      players_->reserve(2);
-    }
     const auto& weapon_data{msg_dict["weapon"]};
     Weapon weapon{
         .isLaser = weapon_data["isLaser"].get<bool>(),
@@ -155,28 +120,39 @@ void Agent::OnMessage(const Message& message) {
           .currentCoolDown = skill_data["currentCoolDown"].get<unsigned int>(),
           .isActive = skill_data["isActive"].get<bool>()});
     }
-    Position position{.x = msg_dict["position"]["x"].get<double>(),
-                      .y = msg_dict["position"]["y"].get<double>(),
-                      .angle = msg_dict["position"]["angle"].get<double>()};
-    players_->emplace_back(
-        PlayerInfo{.token = msg_dict["token"].get<std::string>(),
-                   .position = position,
-                   .weapon = weapon,
-                   .armor = armor,
-                   .skills = std::move(skills)});
+    if (auto token = msg_dict["token"].get<std::string>(); token == token_) {
+      self_info_ = PlayerInfo{
+          .token = token,
+          .position = {.x = msg_dict["position"]["x"].get<double>(),
+                       .y = msg_dict["position"]["y"].get<double>(),
+                       .angle = msg_dict["position"]["angle"].get<double>()},
+          .weapon = weapon,
+          .armor = armor,
+          .skills = std::move(skills)};
+    } else {
+      opponent_info_ = PlayerInfo{
+          .token = token,
+          .position = {.x = msg_dict["position"]["x"].get<double>(),
+                       .y = msg_dict["position"]["y"].get<double>(),
+                       .angle = msg_dict["position"]["angle"].get<double>()},
+          .weapon = weapon,
+          .armor = armor,
+          .skills = std::move(skills)};
+    }
   } else if (msg_type == "ENVIRONMENT_INFO") {
     std::vector<Wall> walls;
+    walls.reserve(kReserveSize);
     for (const auto& wall_data : msg_dict["walls"]) {
-      walls.emplace_back(Wall{wall_data["x"].get<double>(),
-                              wall_data["y"].get<double>(),
-                              wall_data["angle"].get<double>()});
+      walls.emplace_back(Wall{wall_data["x"].get<int>(),
+                              wall_data["y"].get<int>(),
+                              wall_data["angle"].get<int>()});
     }
     std::vector<Fence> fences;
     for (const auto& fence_data : msg_dict["fences"]) {
       fences.emplace_back(Fence{
-          .position = {.x = fence_data["position"]["x"].get<double>(),
-                       .y = fence_data["position"]["y"].get<double>(),
-                       .angle = fence_data["position"]["angle"].get<double>()},
+          .position = {.x = fence_data["position"]["x"].get<int>(),
+                       .y = fence_data["position"]["y"].get<int>(),
+                       .angle = fence_data["position"]["angle"].get<int>()},
           .health = fence_data["health"].get<unsigned int>()});
     }
     std::vector<Bullet> bullets;
@@ -189,9 +165,11 @@ void Agent::OnMessage(const Message& message) {
           .damage = bullet_data["damage"].get<double>(),
           .traveledDistance = bullet_data["traveledDistance"].get<double>()});
     }
-    environment_info_ = EnvironmentInfo{.walls = std::move(walls),
-                                        .fences = std::move(fences),
-                                        .bullets = std::move(bullets)};
+    environment_info_ =
+        EnvironmentInfo{.mapSize = msg_dict["mapSize"].get<unsigned int>(),
+                        .walls = std::move(walls),
+                        .fences = std::move(fences),
+                        .bullets = std::move(bullets)};
   } else if (msg_type == "GAME_STATISTICS") {
     std::vector<OnesScore> scores;
     scores.reserve(2);

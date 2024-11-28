@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 
 using Serilog;
+using static Thuai.Server.GameLogic.Game;
 
 namespace Thuai.Server.Utility;
 
@@ -68,7 +69,7 @@ public record Config
     /// <summary>
     /// The game settings.
     /// </summary>
-    public record GameSettings(int TPS=20, int BCT=200, int MBT=2600)
+    public record GameSettings(int TPS=20, int ACT=200, int MBT=2400, int MPC=2, int PWT=200, int BC=9)
     {
         /// <summary>
         /// Literally, ticks per second.
@@ -78,14 +79,29 @@ public record Config
         /// <summary>
         /// Ticks for Buff Choosing.
         /// </summary>
-        public int BuffChooseTicks { get; init; } = BCT;
+        public int AwardChooseTicks { get; init; } = ACT;
 
         /// <summary>
         /// Time limit per battle. (in ticks) 
         /// </summary>
-        public int MaxBattleTicks { get; init; } = MBT; // 2600 = 20 * 120 + 200;
+        public int MaxBattleTicks { get; init; } = MBT; // 2400 = 20 * 120;
 
-        
+        /// <summary>
+        /// The minimum player count to start a game.
+        /// </summary>
+        /// <remarks>
+        /// Doesn't affect disconnection in game.
+        /// </remarks>
+        public int MinimumPlayerCount { get; init; } = MPC; 
+
+        /// <summary>
+        /// Ticks to wait before the <see cref="GameLogic.Game"/> 
+        /// goes into next stage, When the player count reaches 
+        /// <see cref="MinimumPlayerCount"/>.
+        /// </summary>
+        public int PlayerWaitingTicks = PWT;
+
+        public int BattleCount = BC;
 
         // TODO: Implement
     }
