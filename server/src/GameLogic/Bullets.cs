@@ -1,5 +1,6 @@
 namespace Thuai.Server.GameLogic;
 
+
 /// <summary>
 /// Bullet used by a weapon.
 /// </summary>
@@ -8,12 +9,19 @@ public interface IBullet
     public enum BulletType
     {
         Cannonball,
+        FastBullet,
+        DamageBullet,
+        FinalBullet
     }
 
     /// <summary>
     /// The type of the bullet.
     /// </summary>
     public BulletType Type { get; }
+
+    public Position BulletPosition { get; set; }
+    public double BulletSpeed { get; set; }
+    public double BulletDamage { get; set; }
 
     // TODO: Implement
 }
@@ -25,7 +33,13 @@ public class Cannonball : IBullet
 {
     public IBullet.BulletType Type => IBullet.BulletType.Cannonball;
 
-    // TODO: Implement
+    public Position BulletPosition { get; set; } = new Position();
+
+    public double BulletSpeed { get; set; }
+    public double BulletDamage { get; set; }
+
+
+
 }
 
 // TODO: Add more bullets
