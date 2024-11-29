@@ -67,7 +67,7 @@ namespace BattleCity
             {
                 int tankId = tank["tankId"].ToObject<int>();
                 int ammo = tank["ammo"].ToObject<int>();
-                this.SendCommand(new AmmoChangeCommand(tankId, ammo));
+                this.SendCommand(new AmmoChangeCommand(tankId, 0, ammo));
             }
         }
 
