@@ -7,195 +7,160 @@ public partial class AgentServer
 {
     public void HandleAfterGameTickEvent(object? sender, AfterGameTickEventArgs e)
     {
-        List<EnvironmentInfo.walls> walls = new();
-        List<EnvironmentInfo.fences> fences= new();
-
-        // Add walls and supplies
-        for (int x = 0; x < e.GameMap.Width; x++)
+        // Add schemes in EnvironmentInfo
+        // Add walls and fences
+        List<EnvironmentInfoMessage.Wall> walls = new();
+        List<EnvironmentInfoMessage.Fence> fences= new();
+        foreach (Wall ArgsWall in e.EnvironmentInfo.Walls)
         {
-            for (int y = 0; y < e.GameMap.Height; y++)
-            {
-                // Add walls
-                if (e.GameMap.MapChunk[x, y].IsWall == true)
+            walls.Add(
+                new EnvironmentInfoMessage.Wall
                 {
-                    walls.Add(
-                        new EnvironmentInfo.walls
-                        {
-                            Position = new MapMessage.Wall.WallPositions
-                            {
-                                X = x,
-                                Y = y
-                            }
-                        }
-                    );
+                    Position = new EnvironmentInfoMessage.position
+                    {
+                        X = ArgsWall.position.x,
+                        Y = ArgsWall.position.y,
+                        Angle = ArgsWall.position.angle
+                    }
                 }
-
-                // Add supplies
-                foreach (IItem item in e.GameMap.MapChunk[x, y].Items)
-                {
-                    supplies.Add(
-                        new SuppliesMessage.Supply
-                        {
-                            Name = item.ItemSpecificName,
-                            PositionOfSupply = new SuppliesMessage.Supply.Position
-                            {
-                                X = x,
-                                Y = y
-                            },
-                            Numb = item.Count
-                        }
-                    );
-                }
-            }
+            );
         }
 
-        List<PlayerInfo.Player> players = new();
-
-        // Add players
-        foreach (Player player in e.AllPlayers)
+        foreach (Fence ArgsFence in e.EnvironmentInfo.Fences)
         {
-            List<PlayerInfo.Player.weapon> weapon = new();
-
-            List<PlayerInfo.Player.FirearmInfo> weaponSlot = new();
-
-            float _current_armor_health = 0;
-
-            if (player.PlayerArmor != null)
-                _current_armor_health = player.PlayerArmor.Health;
-
-            // Add inventory
-            foreach (IItem item in player.PlayerBackPack.Items)
-            {
-                inventory.Add(
-                    new PlayerInfo.Player.Item
-                    {
-                        Name = item.ItemSpecificName,
-                        Num = item.Count
-                    }
-                );
-            }
-
-            foreach (IWeapon _weapon in player.WeaponSlot)
-            {
-                weaponSlot.Add(
-                    new PlayerInfo.Player.FirearmInfo
-                    {
-                        Name = _weapon.Name,
-                        Distance = _weapon.Range
-                    }
-                );
-            }
-
-            PlayerInfo.Player.PositionInfo tempPosition;
-
-            if (e.CurrentTick <= Constant.PREPERATION_TICKS)
-            {
-                tempPosition = new PlayerInfo.Player.PositionInfo
+            fences.Add(
+                new EnvironmentInfoMessage.Fence
                 {
-                    X = 0,
-                    Y = 0
-                };
-            }
-            else
-            {
-                tempPosition = new PlayerInfo.Player.PositionInfo
-                {
-                    X = player.PlayerPosition.x,
-                    Y = player.PlayerPosition.y
-                };
-            }
-
-
-            // Add player
-            players.Add(
-                new PlayerInfo.Player
-                {
-                    PlayerId = player.token,
-                    Armor = (player.PlayerArmor is not null) ? player.PlayerArmor.ItemSpecificName : "NO_ARMOR",
-                    Current_armor_health = _current_armor_health,
-                    Health = player.Health,
-                    Speed = player.Speed,
-                    Firearm = new PlayerInfo.Player.FirearmInfo
+                    Position = new EnvironmentInfoMessage.position
                     {
-                        Name = player.PlayerWeapon.Name,
-                        Distance = player.PlayerWeapon.Range
+                        X = ArgsFence.position.x,
+                        Y = ArgsFence.position.Y,
+                        Angle = ArgsFence.position.angle
                     },
-                    Firearms_pool = new(weaponSlot),
-                    Position = tempPosition,
-                    Inventory = new(inventory)
+                    Health = ArgsFence.health
                 }
             );
         }
 
-        List<GrenadesMessage.Grenade> grenades = new();
-        foreach (Grenade grenade in e.Grenades)
+        // Add bullets
+        List<EnvironmentInfoMessage.Bullet> bullets = new();
+        foreach (Bullet ArgsBullet in e.EnvironmentInfo.Bullets)
         {
-            grenades.Add(
-                new GrenadesMessage.Grenade
+            bullets.Add(
+                new EnvironmentInfoMessage.Bullet
                 {
-                    ThrowTick = grenade.ThrowTick,
-                    EvaluatedPosition = new GrenadesMessage.Grenade.Position
+                    Position = new EnvironmentInfoMessage.position
                     {
-                        X = grenade.EvaluatedPosition.x,
-                        Y = grenade.EvaluatedPosition.y
+                        X = ArgsBullet.position.x,
+                        Y = ArgsBullet.position.y,
+                        Angle = ArgsBullet.Position.angle
+                    },
+                    Speed = ArgsBullet.speed,
+                    Damage = ArgsBullet.damage,
+                    TraveledDistance = ArgsBullet.traveledDistance
+                }
+            );
+        }
+
+        // Add player positions
+        List<EnvironmentInfoMessage.playerPositions> playerPositions = new();
+        foreach (playerPositions ArgsPlayerPosition in e.EnvironmentInfo.playerPositions)
+        {
+            playerPositions.Add(
+                new EnvironmentInfoMessage.playerPosition
+                {
+                    Position = new EnvironmentInfoMessage.position
+                    {
+                        X = ArgsPlayerPosition.position.x,
+                        Y = ArgsPlayerPosition.position.y,
+                        Angle = ArgsPlayerPosition.position.angle
+                    },
+                    Token = ArgsPlayerPosition.token
+                }
+            );
+        }
+
+        //add player info
+        List<PlayerInfoMessage> playerInfos = new();
+        foreach (PlayerInfo ArgsPlayerInfo in e.PlayerInfo) {
+            //add weapon 
+            PlayerInfoMessage.weapon weapon = new()
+            {
+                AttackSpeed = ArgsPlayerInfo.weapon.attackSpeed,
+                BulletSpeed = ArgsPlayerInfo.weapon.bulletSpeed,
+                IsLaser = ArgsPlayerInfo.weapon.isLaser,
+                AntiArmor = ArgsPlayerInfo.weapon.antiArmor,
+                Damage = ArgsPlayerInfo.weapon.damage,
+                MaxBullets = ArgsPlayerInfo.weapon.maxBullets,
+                CurrentBullets = ArgsPlayerInfo.weapon.currentBullets
+            }
+
+            //add armor
+            PlayerInfoMessage.armor armor = new()
+            {
+                CanReflect = ArgsPlayerInfo.armor.canReflect,
+                ArmorValue = ArgsPlayerInfo.armor.armorValue,
+                Health = ArgsPlayerInfo.armor.health,
+                GravityField = ArgsPlayerInfo.armor.gravityField,
+                Knife = ArgsPlayerInfo.armor.knife,
+                DodgeRate = ArgsPlayerInfo.armor.dodgeRate
+            }
+
+            //add skills
+            List<PlayerInfoMessage.skill> skills = new();
+            foreach (skill ArgsSkill in ArgsPlayerInfo.skills) {
+                skills.Add(
+                    new PlayerInfoMessage.skill
+                    {
+                        Name = ArgsSkill.name,
+                        MaxCooldown = ArgsSkill.maxcooldown,
+                        CurrentCooldown = ArgsSkill.currentCooldown,
+                        IsActive = ArgsSkill.isActive
                     }
+                );
+            }
+
+            PlayerInfoMessage.Position = new PlayerInfoMessage.position
+            {
+                X = ArgsPlayerInfo.position.x,
+                Y = ArgsPlayerInfo.position.y,
+                Angle = ArgsPlayerInfo.position.angle
+            };
+
+            playerInfos.Add(
+                new PlayerInfoMessage
+                {
+                    Token = ArgsPlayerInfo.token,
+                    Weapon = weapon,
+                    Armor = armor,
+                    Skills = skills,
+                    Position = position
                 }
             );
         }
 
-        // Append map message, supplies message, players info message, and safe zone message to _messageToPublish
-        if (e.CurrentTick % 100 == 0)
-        {
-            Publish(
-                new MapMessage
+        //publish the message
+        //temporarily used last yera's code as template
+        Publish (
+            new EnvironmentInfoMessage
+            {
+                MessageType = "ENVIRONMENT_INFO",
+                Position = new EnvironmentInfoMessage.position
                 {
-                    Length = e.GameMap.Height,
-                    Walls = new(walls)
-                }
-            );
-        }
-
-        Publish(
-            new SuppliesMessage
-            {
-                Supplies = new(supplies)
-            }
-        );
-        Publish(
-            new PlayerInfo
-            {
-                ElapsedTicks = e.CurrentTick,
-                Players = new(players)
-            }
-        );
-        Publish(
-            new SafeZoneMessage
-            {
-                CenterOfCircle = new SafeZoneMessage.Center
-                {
-                    X = e.GameMap.SafeZone.Center.x,
-                    Y = e.GameMap.SafeZone.Center.y
+                    X = e.EnvironmentInfo.Position.x,
+                    Y = e.EnvironmentInfo.Position.y,
+                    Angle = e.EnvironmentInfo.Position.angle
                 },
-                Radius = e.GameMap.SafeZone.Radius
-            }
-        );
-        Publish(
-            new GrenadesMessage
-            {
-                Grenades = new(grenades)
+                Walls = walls,
+                Fences = fences,
+                Bullets = bullets,
+                PlayerPositions = playerPositions
             }
         );
 
-        // Publish player ids
-        foreach (Player player in e.AllPlayers)
+        foreach (PlayerInfoMessage playerInfomessage in playerInfos)
         {
-            Publish(
-                new PlayerIdMessage
-                {
-                    PlayerId = player.PlayerId
-                },
-                player.Token
-            );
+            Publish(playerInfomessage);
         }
     }
 

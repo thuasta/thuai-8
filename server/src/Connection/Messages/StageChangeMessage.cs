@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace GameServer.Connection;
 
-public record StageChange : Message
+public record StageChangeMessage : Message
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "STAGE_CHANGE";

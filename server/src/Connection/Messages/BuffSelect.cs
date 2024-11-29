@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace GameServer.Connection;
 
-public record BuffSelect : Message
+public record BuffSelectMessage : Message
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "BUFF_SELECT";

@@ -29,90 +29,74 @@ public partial class AgentServer
 
             switch (message.MessageType)
             {
-                case "PERFORM_ABANDON":
-                    AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformAbandonMessage>(text)
-                        ?? throw new Exception("failed to deserialize PerformAbandonMessage"),
-                        socketId
-                    ));
-                    break;
-
-                case "PERFORM_PICK_UP":
-                    AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformPickUpMessage>(text)
-                        ?? throw new Exception("failed to deserialize PerformPickUpMessage"),
-                        socketId
-                    ));
-                    break;
-
-                case "PERFORM_SWITCH_ARM":
-                    AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformSwitchArmMessage>(text)
-                        ?? throw new Exception("failed to deserialize PerformSwitchArmMessage"),
-                        socketId
-                    ));
-                    break;
-
-                case "PERFORM_USE_MEDICINE":
-                    AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformUseMedicineMessage>(text)
-                        ?? throw new Exception("failed to deserialize PerformUseMedicineMessage"),
-                        socketId
-                    ));
-                    break;
-
-                case "PERFORM_USE_GRENADE":
-                    AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformUseGrenadeMessage>(text)
-                        ?? throw new Exception("failed to deserialize PerformUseGrenadeMessage"),
-                        socketId
-                    ));
-                    break;
-
                 case "PERFORM_MOVE":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformMoveMessage>(text)
-                        ?? throw new Exception("failed to deserialize PerformMoveMessage"),
+                        JsonSerializer.Deserialize<PerformMove>(text)
+                        ?? throw new Exception("failed to deserialize AvailableBuffs"),
                         socketId
                     ));
                     break;
 
-                case "PERFORM_STOP":
+                case "PERFORM_TURN":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformStopMessage>(text)
-                        ?? throw new Exception("failed to deserialize PerformStopMessage"),
+                        JsonSerializer.Deserialize<PerformTurn>(text)
+                        ?? throw new Exception("failed to deserialize PerformTurn"),
                         socketId
                     ));
                     break;
 
                 case "PERFORM_ATTACK":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformAttackMessage>(text)
-                        ?? throw new Exception("failed to deserialize PerformAttackMessage"),
+                        JsonSerializer.Deserialize<PerformAttack>(text)
+                        ?? throw new Exception("failed to deserialize PerformAttack"),
+                        socketId
+                    ));
+                    break;
+
+                case "PERFORM_SKILL":
+                    AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
+                        JsonSerializer.Deserialize<PerformSkill>(text)
+                        ?? throw new Exception("failed to deserialize PerformSkill"),
+                        socketId
+                    ));
+                    break;
+
+                case "PERFORM_SELECT":
+                    AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
+                        JsonSerializer.Deserialize<PerformSelect>(text)
+                        ?? throw new Exception("failed to deserialize PerformSelect"),
                         socketId
                     ));
                     break;
 
                 case "GET_PLAYER_INFO":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<GetPlayerInfoMessage>(text)
-                        ?? throw new Exception("failed to deserialize GetPlayerInfoMessage"),
+                        JsonSerializer.Deserialize<GetPlayerinfo>(text)
+                        ?? throw new Exception("failed to deserialize GetPlayerinfo"),
                         socketId
                     ));
                     break;
-
-                case "GET_MAP_INFO":
+                
+                case "GET_ENVIRONMENT_INFO":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<GetMapMessage>(text)
-                        ?? throw new Exception("failed to deserialize GetMapInfoMessage"),
+                        JsonSerializer.Deserialize<GetEnvironmentInfo>(text)
+                        ?? throw new Exception("failed to deserialize GetEnvironmentInfo"),
                         socketId
                     ));
                     break;
-
-                case "CHOOSE_ORIGIN":
+                
+                case "GET_GAME_STATISTICS":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<ChooseOriginMessage>(text)
-                        ?? throw new Exception("failed to deserialize ChooseOriginMessage"),
+                        JsonSerializer.Deserialize<GetGameStatistics>(text)
+                        ?? throw new Exception("failed to deserialize GetGameStatistics"),
+                        socketId
+                    ));
+                    break;
+                
+                case "GET_AVAILABLE_BUFFS":
+                    AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
+                        JsonSerializer.Deserialize<GetAvailableBuffs>(text)
+                        ?? throw new Exception("failed to deserialize GetAvailableBuffs"),
                         socketId
                     ));
                     break;

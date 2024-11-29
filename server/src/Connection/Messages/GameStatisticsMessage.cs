@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace GameServer.Connection;
 
-public record GameStatistics : Message
+public record GameStatisticsMessage : Message
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "GAME_STATISTICS";
@@ -17,9 +17,9 @@ public record GameStatistics : Message
     public int Ticks { get; init; } = 0;
 
     [JsonPropertyName("scores")]
-    public List<Score> Scores { get; init; } = new();
+    public List<score> Scores { get; init; } = new();
 
-    public record scores
+    public record score
     {
         [JsonPropertyName("token")]
         public string Token { get; init; } = "";

@@ -8,7 +8,7 @@ public abstract record PerformMessage : Message
     public string Token { get; init; } = "";
 }
 
-public record PerformMove : PerformMessage
+public record PerformMoveMessage : PerformMessage
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "PERFORM_MOVE";
@@ -17,7 +17,7 @@ public record PerformMove : PerformMessage
     public string Direction { get; init; } = "";
 }
 
-public record PerformTurn: PerformMessage
+public record PerformTurnMessage : PerformMessage
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "PERFORM_TURN";
@@ -26,13 +26,13 @@ public record PerformTurn: PerformMessage
     public string Direction { get; init; } = "";
 }
 
-public record PerformAttack : PerformMessage
+public record PerformAttackMessage : PerformMessage
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "PERFORM_ATTACK";
 }
 
-public record PerformSkill : PerformMessage
+public record PerformSkillMessage : PerformMessage
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "PERFORM_SKILL";
@@ -41,7 +41,7 @@ public record PerformSkill : PerformMessage
     public string skillName { get; init; } = "";
 }
 
-public record PerformSelect : PerformMessage
+public record PerformSelectMessage : PerformMessage
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "PERFORM_SELECT";
@@ -50,7 +50,7 @@ public record PerformSelect : PerformMessage
     public string BuffName { get; init; } = "";
 }
 
-public record GetPlayerinfo : PerformMessage
+public record GetPlayerinfoMessage : PerformMessage
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "GET_PLAYER_INFO";
@@ -59,20 +59,20 @@ public record GetPlayerinfo : PerformMessage
     public string request { get; init; } = "";
 }
 
-public record GetEnvironmentInfo : PerformMessage
+public record GetEnvironmentInfoMessage : PerformMessage
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "Get_ENVIRONMENT_INFO";
 
 }
 
-public record GetGameStatistics : PerformMessage
+public record GetGameStatisticsMessage : PerformMessage
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "GET_GAME_STATISTICS";
 }
 
-public record GetAvailableBuffs : PerformMessage
+public record GetAvailableBuffsMessage : PerformMessage
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "GET_AVAILABLE_BUFFS";

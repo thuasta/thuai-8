@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace GameServer.Connection;
 
-public record Error : Message
+public record ErrorMessage : Message
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "ERROR";

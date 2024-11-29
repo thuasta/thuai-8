@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace GameServer.Connection;
 
-public record PlayerInfo : Message
+public record PlayerInfoMessage : Message
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "PlayerInfo";
@@ -93,5 +93,4 @@ public record PlayerInfo : Message
         [JsonPropertyName("angle")]
         public double Angle { get; init; }
     }
-
 }
