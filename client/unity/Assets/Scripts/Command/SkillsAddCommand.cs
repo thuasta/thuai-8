@@ -5,25 +5,23 @@ using UnityEngine;
 
 namespace BattleCity
 {
-    public class SkillsCDChangeCommand : AbstractCommand
+    public class SkillsAddCommand : AbstractCommand
     {
         private readonly int _tankId;
         private readonly string _skill;
-        private readonly float _skill_cd;
 
-        public SkillsCDChangeCommand(int tankId, string skill, float cd)
+        public SkillsAddCommand(int tankId, string skill)
         {
             _tankId = tankId;
             _skill = skill;
-            _skill_cd = cd;
         }
 
         protected override void OnExecute()
         {
-            var Skills_CD = this.GetModel<SkillsShow>().skills_cd[_tankId];
+            var Skills_Image = this.GetModel<SkillsShow>().skills_image[_tankId];
             var Skills_List = this.GetModel<SkillsShow>().skills_list[_tankId];
-            var number = Skills_List.IndexOf(_skill);
-            Skills_CD[number].fillAmount = _skill_cd;
+            Skills_List.Add(_skill);
+            Skills_Image[Skills_List.Count - 1].sprite = Resources.Load<Sprite>(_skill); 
         }
         
     }
