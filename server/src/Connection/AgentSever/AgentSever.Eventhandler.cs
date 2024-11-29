@@ -93,7 +93,7 @@ public partial class AgentServer
                 Damage = ArgsPlayerInfo.weapon.damage,
                 MaxBullets = ArgsPlayerInfo.weapon.maxBullets,
                 CurrentBullets = ArgsPlayerInfo.weapon.currentBullets
-            }
+            };
 
             //add armor
             PlayerInfoMessage.armor armor = new()
@@ -104,7 +104,7 @@ public partial class AgentServer
                 GravityField = ArgsPlayerInfo.armor.gravityField,
                 Knife = ArgsPlayerInfo.armor.knife,
                 DodgeRate = ArgsPlayerInfo.armor.dodgeRate
-            }
+            };
 
             //add skills
             List<PlayerInfoMessage.skill> skills = new();
