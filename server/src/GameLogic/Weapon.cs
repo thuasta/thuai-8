@@ -8,4 +8,8 @@ public class Weapon{
     public int damage;
     public int maxBullets;
     public int currentBullets;
+
+    public void PerformAttack(){
+
+    }
 }
