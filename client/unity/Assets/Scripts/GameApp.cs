@@ -15,6 +15,14 @@ namespace BattleCity
             this.RegisterModel(new Bullet());
             this.RegisterModel(new AmmoText());
             this.RegisterSystem(new ScoreSystem());
+            this.RegisterModel(new CountdownText());
+            this.RegisterModel(new HealthShow());
+            this.RegisterModel(new ArmorShow());
+            this.RegisterModel(new BuffShow());
+            this.RegisterModel(new ScoresShow());
+            this.RegisterModel(new RoundsShow());
+            this.RegisterModel(new SkillsShow());
+            this.RegisterModel(new EndInfo());
         }
         
     }
