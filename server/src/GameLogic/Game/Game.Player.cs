@@ -3,7 +3,7 @@ using Thuai.Server.GameController;
 
 namespace Thuai.Server.GameLogic;
 
-public partial class Game 
+public partial class Game
 {
 
     #region Fields and properties
@@ -27,7 +27,7 @@ public partial class Game
     /// <returns>If the adding succeeds.</returns>
     public bool AddPlayer(Player player)
     {
-        if (Stage != GameStage.Waiting) 
+        if (Stage != GameStage.Waiting)
         {
             _logger.Error("Cannot add player: The game is already started.");
             return false;
@@ -35,7 +35,7 @@ public partial class Game
 
         try
         {
-            lock(_lock)
+            lock (_lock)
             {
                 AllPlayers.Add(player);
                 Scoreboard.Add(player, 0);
@@ -59,7 +59,7 @@ public partial class Game
     {
         try
         {
-            lock(_lock)
+            lock (_lock)
             {
                 Scoreboard.Remove(player);
                 AllPlayers.Remove(player);
