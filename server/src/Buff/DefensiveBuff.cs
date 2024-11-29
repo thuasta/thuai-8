@@ -19,7 +19,7 @@ public static class D_Buff
     public static void DODGE(Tank tank)
     {
         // 闪避
-        tank.TankArmor.dodgeRate += 0.1
+        tank.TankArmor.dodgeRate += 0.1;
     }
     public static void KNIFE(Tank tank)
     {
