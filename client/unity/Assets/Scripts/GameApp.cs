@@ -19,6 +19,10 @@ namespace BattleCity
             this.RegisterModel(new HealthShow());
             this.RegisterModel(new ArmorShow());
             this.RegisterModel(new BuffShow());
+            this.RegisterModel(new ScoresShow());
+            this.RegisterModel(new RoundsShow());
+            this.RegisterModel(new SkillsShow());
+            this.RegisterModel(new EndInfo());
         }
         
     }

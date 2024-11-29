@@ -20,3 +20,10 @@ target("agent")
     if is_plat("windows") then
         add_defines("NOMINMAX")
     end
+
+    after_build(function (target)
+        os.cp(
+            target:targetfile(), 
+            path.join(os.projectdir(), "bin", path.filename(target:targetfile()))
+        )
+    end)

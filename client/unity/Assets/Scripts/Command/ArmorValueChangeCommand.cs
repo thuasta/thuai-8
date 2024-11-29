@@ -19,7 +19,7 @@ namespace BattleCity
         protected override void OnExecute()
         {
             var Armor_Value = this.GetModel<ArmorShow>().armor_value[_tankId];
-            Armor_Value = _armor_value;
+            Armor_Value.value = _armor_value;
         }
         
     }

@@ -21,24 +21,24 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     /// <summary>
     /// The config of the game.
     /// </summary>
-    public Utility.Config.GameSettings GameSettings { get; } = gameSettings;
+    public Utility.Config.GameSettings GameSettings { get; init; } = gameSettings;
 
     /// <summary>
     /// The current running battle.
     /// </summary>
     public Battle? RunningBattle { get; private set; } = null;
+    public int BattleNumber { get; private set; } = 0;
+    public GameStage Stage { get; private set; } = GameStage.Waiting;
+
+    public int WaitingTick { get; private set; } = 0;
 
     private readonly ILogger _logger = 
         Utility.Tools.LogHandler.CreateLogger("Game");
     private readonly object _lock = new();
 
-    public GameStage Stage { get; private set; } = GameStage.Waiting;
-
     #endregion
 
     #region Methods
-    
-    // TODO: Add properties
 
     /// <summary>
     /// Initializes the game.
@@ -47,7 +47,8 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     {
         try
         {
-
+            // TODO:
+            // 1. Generate the order of awards.
         }
         catch (Exception e)
         {
@@ -70,7 +71,9 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
         {
             lock(_lock)
             {
-
+                RunningBattle?.Tick();
+                StageControl();
+                // TODO: implement, but maybe not anymore?
             }
         }
         catch (Exception e)
@@ -81,19 +84,81 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     }
 
     /// <summary>
-    /// Controls the battles.
-    /// </summary>
-    private void BattleControl()
-    {
-
-    }
-
-    /// <summary>
-    /// Controls the Stage.
+    /// Controls the Stage and Battles.
     /// </summary>
     private void StageControl()
     {
+        if (Stage == GameStage.Waiting)
+        {
+            if (PlayerCount >= GameSettings.MinimumPlayerCount)
+            {
+                ++WaitingTick;
+                if (WaitingTick >= GameSettings.PlayerWaitingTicks)
+                {
+                    Stage = GameStage.PreparingGame;
+                }
+            }
+        } 
+        else if (Stage == GameStage.PreparingGame)
+        {
+            Initialize();
+            Stage = GameStage.PreparingBattle;
+        } 
+        else if (Stage == GameStage.PreparingBattle)
+        {
+            if (BattleNumber < GameSettings.BattleCount || NeedAdditionalBattle())
+            {
+                RunningBattle = new Battle(GameSettings, AllPlayers);
+                Stage = GameStage.InBattle;
+            }
+            else 
+            {
+                Stage = GameStage.Finished;
+            }
+        }
+        else if (Stage == GameStage.InBattle)
+        {
+            if (RunningBattle is null)
+            {
+                throw new Exception("Battle doesn't exist.");
+            }
+            else if (RunningBattle.Stage == Battle.BattleStage.Finished)
+            {
+                Player? winner = RunningBattle.GetResult().Winner;
+                if (winner is not null)
+                {
+                    ++Scoreboard[winner];
+                }
+                RunningBattle = null;
+                ++BattleNumber;
+                Stage = GameStage.PreparingBattle;
+            }
+        }
+        else /* Stage == GameStage.Finished */
+        {
+            // TODO: implement.
+        }
+    }
 
+    private bool NeedAdditionalBattle()
+    {
+        int highScore = 0;
+        foreach (Player player in AllPlayers)
+        {
+            if (Scoreboard[player] > highScore)
+            {
+                highScore = Scoreboard[player];
+            }
+        }
+        int highScoreCount = 0;
+        foreach (Player player in AllPlayers)
+        {
+            if (Scoreboard[player] == highScore)
+            {
+                ++highScoreCount;
+            }
+        }
+        return highScoreCount != 1;
     }
 
     #endregion

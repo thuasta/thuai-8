@@ -19,8 +19,8 @@
 #include "agent/format.hpp"
 #include "agent/game_statistics.hpp"
 
-extern void SelectBuff(thuai8_agent::Agent& agent);
-extern void Loop(thuai8_agent::Agent& agent);
+extern void SelectBuff(const thuai8_agent::Agent& agent);
+extern void Loop(const thuai8_agent::Agent& agent);
 
 constexpr auto kDefaultServer{"ws://localhost:14514"};
 constexpr auto kDefaultToken{"1919810"};
@@ -48,29 +48,27 @@ auto ParseOptions(int argc, char** argv)
         "t,token", "Set token",
         cxxopts::value<std::string>()->default_value(token))("h,help",
                                                              "Print usage");
-    options.allow_unrecognised_options();
 
-    auto result{options.parse(argc, argv)};
-
-    if (result.unmatched().size() > 0) {
-      std::print("\033[1;31mUnrecognized options: {}\033[0m",
-                 result.unmatched().front());
-      std::println("{}", options.help());
+    try {
+      auto result{options.parse(argc, argv)};
+      if (result.count("help") > 0) {
+        std::print("{}", options.help());
+        return std::nullopt;
+      }
+      server = result["server"].as<std::string>();
+      token = result["token"].as<std::string>();
+    } catch (const std::exception& e) {
+      std::print("\033[1;31m{}\033[0m", e.what());
+      std::print("{}", options.help());
       return std::nullopt;
     }
-    if (result.count("help") > 0) {
-      std::println("{}", options.help());
-      return std::nullopt;
-    }
-
-    server = result["server"].as<std::string>();
-    token = result["token"].as<std::string>();
   }
 
   return std::make_pair(server, token);
 }
 }  // namespace
 
+// NOLINTBEGIN(readability-function-cognitive-complexity)
 auto main(int argc, char* argv[]) -> int {
 #ifndef NDEBUG
   spdlog::set_level(spdlog::level::debug);
@@ -129,7 +127,6 @@ auto main(int argc, char* argv[]) -> int {
           SelectBuff(agent);
           spdlog::info("{} selected a buff", agent);
           is_buff_selected = true;
-          return;
         } catch (const std::exception& e) {
           spdlog::error("an error occurred in SelectBuff({}): {}", agent,
                         e.what());
@@ -143,6 +140,7 @@ auto main(int argc, char* argv[]) -> int {
     }
 
     if (is_buff_selected) {
+      spdlog::info("{} is in a new battle", agent);
       is_buff_selected = false;
     }
 
@@ -172,3 +170,4 @@ auto main(int argc, char* argv[]) -> int {
     spdlog::error("an error occurred in EventLoop({}): {}", agent, e.what());
   }
 }
+// NOLINTEND(readability-function-cognitive-complexity)
