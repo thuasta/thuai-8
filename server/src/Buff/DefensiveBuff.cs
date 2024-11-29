@@ -24,7 +24,7 @@ public static class D_Buff
     public static void KNIFE(Tank tank)
     {
         // 名刀
-        tank.TankArmor.knife = "AVAILABLE";
+        tank.TankArmor.knife = ArmorKnife.AVAILABLE;
     }
     public static void GRAVITY(Tank tank)
     {
