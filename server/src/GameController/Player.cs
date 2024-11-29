@@ -8,20 +8,20 @@ public class Player
     /// <summary>
     /// Character controlled by the player.
     /// </summary>
-    public GameLogic.Character? Character { get; private set; } = null;
+    public GameLogic.Tank? Tank { get; private set; } = null;
 
     public bool Ready()
     {
-        return Character != null;
+        return Tank != null;
     }
 
     /// <summary>
     /// Binds a character to the player.
     /// </summary>
-    /// <param name="character">The character to be controlled.</param>
-    public void Bind(GameLogic.Character character)
+    /// <param name="tank">The character to be controlled.</param>
+    public void Bind(GameLogic.Tank tank)
     {
-        Character = character;
+        Tank = tank;
     }
 
     /// <summary>
@@ -29,6 +29,6 @@ public class Player
     /// </summary>
     public void Unbind()
     {
-        Character = null;
+        Tank = null;
     }
 }
