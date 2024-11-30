@@ -9,7 +9,6 @@ add_requires("spdlog v1.14.1")
 
 target("agent")
     set_kind("binary")
-    set_toolchains("llvm")
     add_packages("cxxopts", "fmt", "libhv", "magic_enum", "nlohmann_json", "spdlog")
     add_includedirs("src")
     add_files("src/**.cc")
