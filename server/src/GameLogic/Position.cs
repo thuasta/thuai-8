@@ -7,3 +7,15 @@ public class Position
 
     public double Angle { get; set; }
 }
+
+public enum MoveDirection
+{
+    BACK,
+    FORTH,
+};
+
+public enum TurnDirection
+{
+    CLOCKWISE,
+    COUNTER_CLOCKWISE,
+};

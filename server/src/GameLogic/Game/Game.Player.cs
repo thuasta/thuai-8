@@ -23,9 +23,9 @@ public partial class Game
     /// <summary>
     /// Add player in the game.
     /// </summary>
-    /// <param name="player">The player to be added.</param>
+    /// <param name="playerId">The player to be added.</param>
     /// <returns>If the adding succeeds.</returns>
-    public bool AddPlayer(Player player)
+    public bool AddPlayer(string token, int playerId)
     {
         if (Stage != GameStage.Waiting)
         {
@@ -37,6 +37,10 @@ public partial class Game
         {
             lock (_lock)
             {
+                Player player = new(token, playerId)
+                {
+                    ID = playerId
+                };
                 AllPlayers.Add(player);
                 Scoreboard.Add(player, 0);
                 // SubscribePlayerEvents(player);
@@ -68,6 +72,22 @@ public partial class Game
         catch (Exception e)
         {
             _logger.Error($"Cannot remove player: {e.Message}");
+            _logger.Debug($"{e}");
+        }
+    }
+
+    public void addScore(Player player, int score)
+    {
+        try
+        {
+            lock (_lock)
+            {
+                Scoreboard[player] += score;
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.Error($"Cannot : {e.Message}");
             _logger.Debug($"{e}");
         }
     }
