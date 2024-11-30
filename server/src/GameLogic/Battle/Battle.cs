@@ -31,17 +31,17 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     #region Fields and properties
 
     // <summary>
-    /// Current tick of the game.
+    /// Current tick of the battle.
     /// </summary>
     public int CurrentTick { get; private set; } = 0;
 
     /// <summary>
-    /// Current Stage of the Game.
+    /// Current Stage of the battle.
     /// </summary>
     public BattleStage Stage { get; private set;} = BattleStage.Waiting;
 
     /// <summary>
-    /// Settings of the game.
+    /// Settings of the battle.
     /// </summary>
     public Utility.Config.GameSettings GameSettings { get; init; } = setting;
     
@@ -103,6 +103,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
                     UpdatePlayers();
                     UpdateBullets();
                     UpdateMap();
+                    ++CurrentTick;
                 }
                 StageControl();
             }
