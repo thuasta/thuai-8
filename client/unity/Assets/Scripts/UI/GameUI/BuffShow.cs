@@ -8,14 +8,19 @@ namespace BattleCity
 {
     public class BuffShow : AbstractModel
     {
-        public Dictionary<int, Text> buffText = new();
+        public Dictionary<int, Dictionary<int, Image>> buffImage = new();
+
+        public Dictionary<int, List<string>> buffList = new(); 
 
         protected override void OnInit()
         {
-            Text Buff_1 = GameObject.Find("Canvas/Buff_1").GetComponent<Text>();
-            Text Buff_2 = GameObject.Find("Canvas/Buff_2").GetComponent<Text>();
-            buffText[1] = Buff_1;
-            buffText[2] = Buff_2;
+            for(int i = 1; i <= 8; i++)
+            {
+                Image Buff_1 = GameObject.Find($"Canvas/Buff_1/buff_{i}").GetComponent<Image>();
+                Image Buff_2 = GameObject.Find($"Canvas/Buff_2/buff_{i}").GetComponent<Image>();
+                buffImage[1][i] = Buff_1;
+                buffImage[2][i] = Buff_2;
+            }
         }
     }
 }
