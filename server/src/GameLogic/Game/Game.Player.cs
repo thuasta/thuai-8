@@ -92,5 +92,44 @@ public partial class Game
         }
     }
 
+    /// <summary>
+    /// Get the player with the highest score. Null if more than one players
+    /// have the highest score.
+    /// </summary>
+    /// <returns>The reference of player with the highest score.</returns>
+    /// <exception cref="Exception">Never thrown, unless some error occurs.</exception>
+    public Player? GetHighScorePlayer()
+    {
+        int highScore = -1;
+        Player? highScorePlayer = null;
+        foreach (Player player in AllPlayers)
+        {
+            if (Scoreboard[player] > highScore)
+            {
+                highScore = Scoreboard[player];
+                highScorePlayer = player;
+            }
+        }
+        int highScoreCount = 0;
+        foreach (Player player in AllPlayers)
+        {
+            if (Scoreboard[player] == highScore)
+            {
+                ++highScoreCount;
+            }
+        }
+        if (highScoreCount == 1)
+        {
+            return highScorePlayer;
+        }
+        else if (highScoreCount > 1)
+        {
+            return null;
+        }
+        else
+        {
+            throw new Exception("This should NOT be thrown!");
+        }
+    }
     #endregion
 }

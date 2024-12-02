@@ -142,23 +142,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
 
     private bool NeedAdditionalBattle()
     {
-        int highScore = 0;
-        foreach (Player player in AllPlayers)
-        {
-            if (Scoreboard[player] > highScore)
-            {
-                highScore = Scoreboard[player];
-            }
-        }
-        int highScoreCount = 0;
-        foreach (Player player in AllPlayers)
-        {
-            if (Scoreboard[player] == highScore)
-            {
-                ++highScoreCount;
-            }
-        }
-        return highScoreCount != 1;
+        return GetHighScorePlayer() == null;
     }
 
     #endregion

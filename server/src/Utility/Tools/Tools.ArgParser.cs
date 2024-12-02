@@ -11,7 +11,7 @@ public static partial class Tools
         /// <summary>
         /// Parses command line arguments.
         /// </summary>
-        /// <param name="args">Argunemts from command line.</param>
+        /// <param name="args">Arguments from command line.</param>
         /// <returns>Corresponding settings.</returns>
         public static ArgSettings ParseArgs(string[] args)
         {
