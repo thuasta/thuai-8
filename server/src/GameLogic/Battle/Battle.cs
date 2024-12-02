@@ -7,23 +7,24 @@ namespace Thuai.Server.GameLogic;
 /// <summary>
 /// Simulates a round of game.
 /// </summary>
-public partial class Battle(Utility.Config.GameSettings setting, List<Player> players) 
+public partial class Battle(Utility.Config.GameSettings setting, List<Player> players)
 {
-    public enum BattleStage 
+    public enum BattleStage
     {
         Waiting,
         InBattle,
         ChoosingAward,
         Finished
     }
-    
+
     /// <summary>
     /// Represents the result of a battle.
     /// </summary>
     /// <remarks>
     /// !Valid means game not end, "Winner is null" means a draw.
     /// </remarks>
-    public class Result(Player? winner, bool valid) {
+    public class Result(Player? winner, bool valid)
+    {
         public Player? Winner { get; init; } = winner;
         public bool Valid { get; init; } = valid;
     }
@@ -38,14 +39,14 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     /// <summary>
     /// Current Stage of the battle.
     /// </summary>
-    public BattleStage Stage { get; private set;} = BattleStage.Waiting;
+    public BattleStage Stage { get; private set; } = BattleStage.Waiting;
 
     /// <summary>
     /// Settings of the battle.
     /// </summary>
     public Utility.Config.GameSettings GameSettings { get; init; } = setting;
-    
-    private readonly ILogger _logger = 
+
+    private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Battle");
 
     private readonly object _lock = new();
@@ -53,12 +54,13 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     #endregion 
 
     #region Methods
-    public Result GetResult() {
+    public Result GetResult()
+    {
         if (Stage != BattleStage.Finished && Stage != BattleStage.ChoosingAward)
         {
             return new Result(null, false);
         }
-        else 
+        else
         {
             return new(PlayerWithHighestHP(), true);
         }
@@ -67,7 +69,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     /// <summary>
     /// Initialize the battle.
     /// </summary>
-    public bool Initialize() 
+    public bool Initialize()
     {
         _logger.Information("Initializing battle...");
         try
@@ -115,32 +117,34 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
         }
     }
 
-    public bool IsBattleOver() {
+    public bool IsBattleOver()
+    {
         return CurrentTick > GameSettings.MaxBattleTicks || AlivePlayers() <= 1;
     }
 
     /// <summary>
     /// Control the stage of the battle.
     /// </summary>
-    private void StageControl() {
-        if (Stage == BattleStage.Waiting) 
+    private void StageControl()
+    {
+        if (Stage == BattleStage.Waiting)
         {
             if (PlayerCount >= 2)
             {
                 Stage = BattleStage.InBattle;
             }
         }
-        else if (Stage == BattleStage.InBattle) 
+        else if (Stage == BattleStage.InBattle)
         {
             if (IsBattleOver())
             {
                 Stage = BattleStage.ChoosingAward;
             }
-        } 
-        else if (Stage == BattleStage.ChoosingAward) 
+        }
+        else if (Stage == BattleStage.ChoosingAward)
         {
             // TODO: implement.
-        } 
+        }
         else /* Stage == BattleStage.Finished */
         {
             return;
