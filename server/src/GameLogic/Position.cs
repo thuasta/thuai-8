@@ -7,7 +7,7 @@ public class Position
 
     public double Angle { get; set; } // value are radians: 0 - 2 * Math.PI
 
-    public Position(double x, double y, double angle = 0)
+    public Position(double x = 0, double y = 0, double angle = 0)
     {
         Xpos = x;
         Ypos = y;
