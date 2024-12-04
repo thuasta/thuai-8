@@ -10,6 +10,8 @@ public partial class Player
     public int ID { get; set; }
     public double Speed { get; set; }
 
+    public double TurnSpeed { get; set; }
+
     public Position PlayerPosition { get; set; } = new();
 
     public Weapon PlayerWeapon { get; set; } = new();
@@ -23,7 +25,8 @@ public partial class Player
     {
         Token = token;
         ID = playerId;
-
+        Speed = Constants.MOVE_SPEED;
+        TurnSpeed = Constants.TURN_SPEED;
         _logger = Log.ForContext("Component", $"Player {playerId}");
     }
 
@@ -43,7 +46,6 @@ public partial class Player
     public void PlayerAttack()
     {
         _logger.Debug($"Player attack.");
-        PlayerWeapon.SubBullet();
         PlayerAttackEvent?.Invoke(this, new PlayerAttackEventArgs(this));
     }
 }

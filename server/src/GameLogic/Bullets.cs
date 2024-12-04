@@ -8,10 +8,8 @@ public interface IBullet
 {
     public enum BulletType
     {
-        Cannonball,
-        FastBullet,
-        DamageBullet,
-        FinalBullet
+        Bullet,
+        LaserBullet
     }
 
     /// <summary>
@@ -20,8 +18,10 @@ public interface IBullet
     public BulletType Type { get; }
 
     public Position BulletPosition { get; set; }
-    public double BulletSpeed { get; set; }
-    public double BulletDamage { get; set; }
+    public double BulletSpeed { get; }
+    public double BulletDamage { get; }
+
+    public bool AntiArmor { get; }
 
     // TODO: Implement
 }
@@ -29,17 +29,44 @@ public interface IBullet
 /// <summary>
 /// Default bullet for a weapon. Used by Cannon.
 /// </summary>
-public class Cannonball : IBullet
+public class Bullet : IBullet
 {
-    public IBullet.BulletType Type => IBullet.BulletType.Cannonball;
+    public IBullet.BulletType Type => IBullet.BulletType.Bullet;
 
-    public Position BulletPosition { get; set; } = new Position();
+    public Position BulletPosition { get; set; }
 
-    public double BulletSpeed { get; set; }
-    public double BulletDamage { get; set; }
+    public double BulletSpeed { get; }
+    public double BulletDamage { get; }
 
+    public bool AntiArmor { get; }
 
+    public Bullet(Position position, double speed, double damage, bool antiArmor = false)
+    {
+        BulletPosition = position;
+        BulletSpeed = speed;
+        BulletDamage = damage;
+        AntiArmor = antiArmor;
+    }
+}
 
+public class LaserBullet : IBullet
+{
+    public IBullet.BulletType Type => IBullet.BulletType.Bullet;
+
+    public Position BulletPosition { get; set; }
+
+    public double BulletSpeed { get; }
+    public double BulletDamage { get; }
+
+    public bool AntiArmor { get; }
+
+    public LaserBullet(Position position, double speed, double damage, bool antiArmor = false)
+    {
+        BulletPosition = position;
+        BulletSpeed = speed;
+        BulletDamage = damage;
+        AntiArmor = antiArmor;
+    }
 }
 
 // TODO: Add more bullets

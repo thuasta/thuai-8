@@ -1,6 +1,7 @@
 namespace Thuai.Server.GameLogic;
 
-public partial class Battle {
+public partial class Battle
+{
 
     #region Fields and properties
     private List<IBullet> Bullets = [];
@@ -48,6 +49,11 @@ public partial class Battle {
         {
             // TODO: implement.
         }
+    }
+
+    private void Apply_Laser(LaserBullet laserBullet)
+    {
+
     }
 
     #endregion

@@ -20,18 +20,4 @@ public class Weapon
         this.maxBullets = Constants.MAX_BULLETS;
         this.currentBullets = Constants.MAX_BULLETS;
     }
-
-    public bool SubBullet()
-    {
-        if (this.currentBullets > 0)
-        {
-            this.currentBullets--;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
 }
