@@ -30,6 +30,20 @@ public partial class Player
         _logger = Log.ForContext("Component", $"Player {playerId}");
     }
 
+    public void Injured(double damage)
+    {
+        if (PlayerArmor.armorValue >= damage)
+        {
+            PlayerArmor.armorValue -= damage;
+        }
+        else if (PlayerArmor.armorValue < damage)
+        {
+            double realDamege = damage - PlayerArmor.armorValue;
+            PlayerArmor.armorValue = 0;
+            PlayerArmor.health -= realDamege;
+        }
+    }
+
 
     public void PlayerMove(MoveDirection direction)
     {
