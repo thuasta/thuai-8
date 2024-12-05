@@ -6,8 +6,8 @@ namespace Thuai.Server.GameLogic;
 public static class Constants
 {
     //Armor
-    public const int INITIAL_ARMOR_VALUE = 0;
-    public const int INITIAL_HEALTH_VALUE = 1;
+    public const double INITIAL_ARMOR_VALUE = 0;
+    public const double INITIAL_HEALTH_VALUE = 1;
 
     //Weapon
     public const double INITIAL_ATTACK_SPEED = 2;
@@ -20,6 +20,7 @@ public static class Constants
     //Player
     public const double MOVE_SPEED = 2;
     public const double TURN_SPEED = Math.PI / 18;
+    public const double PLAYER_RADIO = 0.1;
 
     //Map
     public const int WALL_LENGTH = 10;

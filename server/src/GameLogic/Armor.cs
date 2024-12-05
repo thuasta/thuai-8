@@ -11,8 +11,8 @@ public enum ArmorKnife
 public class Armor
 {
     public bool canReflect;
-    public int armorValue;
-    public int health;
+    public double armorValue;
+    public double health;
     public bool gravityField;
     public ArmorKnife knife;
     public double dodgeRate;
