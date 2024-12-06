@@ -8,19 +8,35 @@ namespace BattleCity
 {
     public class AmmoText : AbstractModel
     {
-        public Dictionary<int, Image> mAmmoType = new();
-        public Dictionary<int, Text> mAmmoNumber = new();
+        public Dictionary<int, Dictionary<int, Image>> mAmmoType = new();
+        public Dictionary<int, Dictionary<int, Text>> mAmmoNumber = new();
 
         protected override void OnInit()
         {
-            Image AmmoType_1 = GameObject.Find("Canvas/Ammo_1/Image/Ammo_Type").GetComponent<Image>();
-            Image AmmoType_2 = GameObject.Find("Canvas/Ammo_2/Image/Ammo_Type").GetComponent<Image>();
-            Text AmmoNumber_1 = GameObject.Find("Canvas/Ammo_1/Ammo_Number").GetComponent<Text>();
-            Text AmmoNumber_2 = GameObject.Find("Canvas/Ammo_2/Ammo_Number").GetComponent<Text>();
-            mAmmoType[1] = AmmoType_1;
-            mAmmoType[2] = AmmoType_2;
-            mAmmoNumber[1] = AmmoNumber_1;
-            mAmmoNumber[2] = AmmoNumber_2;
+            Image AmmoType_1_1 = GameObject.Find("Canvas/Ammo_1/Image_bullet").GetComponent<Image>();
+            Image AmmoType_1_2 = GameObject.Find("Canvas/Ammo_1/Image_arrow").GetComponent<Image>();
+            Image AmmoType_1_3 = GameObject.Find("Canvas/Ammo_1/Image_laser").GetComponent<Image>();
+            Image AmmoType_2_1 = GameObject.Find("Canvas/Ammo_2/Image_bullet").GetComponent<Image>();
+            Image AmmoType_2_2 = GameObject.Find("Canvas/Ammo_2/Image_arrow").GetComponent<Image>();
+            Image AmmoType_2_3 = GameObject.Find("Canvas/Ammo_2/Image_laser").GetComponent<Image>();
+            Text AmmoNumber_1_1 = GameObject.Find("Canvas/Ammo_1/Bullet_Number").GetComponent<Text>();
+            Text AmmoNumber_1_2 = GameObject.Find("Canvas/Ammo_1/Arrow_Number").GetComponent<Text>();
+            Text AmmoNumber_1_3 = GameObject.Find("Canvas/Ammo_1/Laser_Number").GetComponent<Text>();
+            Text AmmoNumber_2_1 = GameObject.Find("Canvas/Ammo_2/Bullet_Number").GetComponent<Text>();
+            Text AmmoNumber_2_2 = GameObject.Find("Canvas/Ammo_2/Arrow_Number").GetComponent<Text>();
+            Text AmmoNumber_2_3 = GameObject.Find("Canvas/Ammo_2/Laser_Number").GetComponent<Text>();
+            mAmmoType[1][1] = AmmoType_1_1;
+            mAmmoType[1][2] = AmmoType_1_2;
+            mAmmoType[1][3] = AmmoType_1_3;
+            mAmmoType[2][1] = AmmoType_2_1;
+            mAmmoType[2][2] = AmmoType_2_2;
+            mAmmoType[2][3] = AmmoType_2_3;
+            mAmmoNumber[1][1] = AmmoNumber_1_1;
+            mAmmoNumber[1][2] = AmmoNumber_1_2;
+            mAmmoNumber[1][3] = AmmoNumber_1_3;
+            mAmmoNumber[2][1] = AmmoNumber_2_1;
+            mAmmoNumber[2][2] = AmmoNumber_2_2;
+            mAmmoNumber[2][3] = AmmoNumber_2_3;
         }
     }
 }
