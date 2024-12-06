@@ -32,7 +32,7 @@ public enum Buff
 }
 
 /// <summary>
-/// Selects a buff for a tank.
+/// Selects a buff for a player.
 /// </summary>
 public class BuffSelector
 {
@@ -114,20 +114,20 @@ public class BuffSelector
     /// <summary>
     /// Selects a buff.
     /// </summary>
-    /// <param name="tank","num">The tank and the number of the buff.</param>
+    /// <param name="player","num">The player and the number of the buff.</param>
     /// <returns> void </returns>
-    public void SelectBuff(Tank tank, int num)
+    public void SelectBuff(Player player, int num)
     {
         switch (num)
         {
             case 1:
-                ChooseOffensiveBuff(tank, OffensiveBuff[Round - 1]);
+                ChooseOffensiveBuff(player, OffensiveBuff[Round - 1]);
                 break;
             case 2:
-                ChooseDefensiveBuff(tank, DefensiveBuff[Round - 1]);
+                ChooseDefensiveBuff(player, DefensiveBuff[Round - 1]);
                 break;
             case 3:
-                ChooseUtilityBuff(tank, UtilityBuff[Round - 1]);
+                ChooseUtilityBuff(player, UtilityBuff[Round - 1]);
                 break;
             default:
                 break;
@@ -137,29 +137,29 @@ public class BuffSelector
     /// <summary>
     /// Chooses an offensive buff.
     /// </summary>
-    /// <param name="tank","buff">The tank and the buff.</param>
+    /// <param name="player","buff">The player and the buff.</param>
     /// <returns> void </returns>
-    private void ChooseOffensiveBuff(Tank tank, Buff buff)
+    private void ChooseOffensiveBuff(Player player, Buff buff)
     {
         switch (buff)
         {
             case Buff.BULLET_COUNT:
-                O_Buff.BULLET_COUNT(tank);
+                O_Buff.BULLET_COUNT(player);
                 break;
             case Buff.BULLET_SPEED:
-                O_Buff.BULLET_SPEED(tank);
+                O_Buff.BULLET_SPEED(player);
                 break;
             case Buff.ATTACK_SPEED:
-                O_Buff.ATTACK_SPEED(tank);
+                O_Buff.ATTACK_SPEED(player);
                 break;
             case Buff.LASER:
-                O_Buff.LASER(tank);
+                O_Buff.LASER(player);
                 break;
             case Buff.DAMAGE:
-                O_Buff.DAMAGE(tank);
+                O_Buff.DAMAGE(player);
                 break;
             case Buff.ANTI_ARMOR:
-                O_Buff.ANTI_ARMOR(tank);
+                O_Buff.ANTI_ARMOR(player);
                 break;
             default:
                 break;
@@ -169,26 +169,26 @@ public class BuffSelector
     /// <summary>
     /// Chooses a defensive buff.
     /// </summary>
-    /// <param name="tank","buff">The tank and the buff.</param>
+    /// <param name="player","buff">The player and the buff.</param>
     /// <returns> void </returns>
-    private void ChooseDefensiveBuff(Tank tank, Buff buff)
+    private void ChooseDefensiveBuff(Player player, Buff buff)
     {
         switch (buff)
         {
             case Buff.ARMOR:
-                D_Buff.ARMOR(tank);
+                D_Buff.ARMOR(player);
                 break;
             case Buff.REFLECT:
-                D_Buff.REFLECT(tank);
+                D_Buff.REFLECT(player);
                 break;
             case Buff.DODGE:
-                D_Buff.DODGE(tank);
+                D_Buff.DODGE(player);
                 break;
             case Buff.KNIFE:
-                D_Buff.KNIFE(tank);
+                D_Buff.KNIFE(player);
                 break;
             case Buff.GRAVITY:
-                D_Buff.GRAVITY(tank);
+                D_Buff.GRAVITY(player);
                 break;
             default:
                 break;
@@ -198,35 +198,35 @@ public class BuffSelector
     /// <summary>
     /// Chooses a utility buff.
     /// </summary>
-    /// <param name="tank","buff">The tank and the buff.</param>
+    /// <param name="player","buff">The player and the buff.</param>
     /// <returns> void </returns>
-    private void ChooseUtilityBuff(Tank tank, Buff buff)
+    private void ChooseUtilityBuff(Player player, Buff buff)
     {
         switch (buff)
         {
             case Buff.BLACK_OUT:
-                U_Buff.BLACK_OUT(tank);
+                U_Buff.BLACK_OUT(player);
                 break;
             case Buff.SPEED_UP:
-                U_Buff.SPEED_UP(tank);
+                U_Buff.SPEED_UP(player);
                 break;
             case Buff.FLASH:
-                U_Buff.FLASH(tank);
+                U_Buff.FLASH(player);
                 break;
             case Buff.DESTROY:
-                U_Buff.DESTROY(tank);
+                U_Buff.DESTROY(player);
                 break;
             case Buff.CONSTRUCT:
-                U_Buff.CONSTRUCT(tank);
+                U_Buff.CONSTRUCT(player);
                 break;
             case Buff.TRAP:
-                U_Buff.TRAP(tank);
+                U_Buff.TRAP(player);
                 break;
             case Buff.MISSILE:
-                U_Buff.MISSILE(tank);
+                U_Buff.MISSILE(player);
                 break;
             case Buff.KAMUI:
-                U_Buff.KAMUI(tank);
+                U_Buff.KAMUI(player);
                 break;
             default:
                 break;

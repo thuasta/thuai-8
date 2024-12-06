@@ -5,30 +5,30 @@ namespace Thuai.Server.Buff;
 
 public static class D_Buff
 {
-    public static void ARMOR(Tank tank)
+    public static void ARMOR(Player player)
     {
         // 护盾
-        tank.TankArmor.armorValue++;
+        player.PlayerArmor.armorValue++;
     }
-    public static void REFLECT(Tank tank)
+    public static void REFLECT(Player player)
     {
         // 反弹
-        tank.TankArmor.armorValue++;
-        tank.TankArmor.canReflect = true;
+        player.PlayerArmor.armorValue++;
+        player.PlayerArmor.canReflect = true;
     }
-    public static void DODGE(Tank tank)
+    public static void DODGE(Player player)
     {
         // 闪避
-        tank.TankArmor.dodgeRate += 0.1;
+        player.PlayerArmor.dodgeRate += 0.1;
     }
-    public static void KNIFE(Tank tank)
+    public static void KNIFE(Player player)
     {
         // 名刀
-        tank.TankArmor.knife = ArmorKnife.AVAILABLE;
+        player.PlayerArmor.knife = ArmorKnife.AVAILABLE;
     }
-    public static void GRAVITY(Tank tank)
+    public static void GRAVITY(Player player)
     {
         // 重力
-        tank.TankArmor.gravityField = true;
+        player.PlayerArmor.gravityField = true;
     }
 }
