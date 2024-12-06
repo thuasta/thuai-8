@@ -1,7 +1,7 @@
 asyncapi: 3.0.0
 info:
   title: THUAI8 API
-  version: '0.2'
+  version: '0.2.1129'
 # channels:
 # "用于玩家 SDK 与后端的通信频道。"
 channels:
@@ -644,13 +644,26 @@ components:
           - end
     
     Object:
-      oneOf:
-        - $ref: '#/components/schemas/Player'
-        - $ref: '#/components/schemas/Wall'
-        - $ref: '#/components/schemas/Fence'
-        - $ref: '#/components/schemas/Bullet'
-        - $ref: '#/components/schemas/Laser'
-        - $ref: '#/components/schemas/BuffName'
+      title: Object
+      type: object
+      properties:
+        name:
+          type: string
+          enum:
+            - player
+            - wall
+            - fence
+            - bullet
+            - laser
+            - buffname
+        data:
+          oneOf:
+            - $ref: '#/components/schemas/Player'
+            - $ref: '#/components/schemas/Wall'
+            - $ref: '#/components/schemas/Fence'
+            - $ref: '#/components/schemas/Bullet'
+            - $ref: '#/components/schemas/Laser'
+            - $ref: '#/components/schemas/BuffName'
     
     AppearEvent:
       title: "AppearEvent"
@@ -663,9 +676,17 @@ components:
         target:
           $ref: '#/components/schemas/Object'
         position:
-          oneOf:
-            - $ref: '#/components/schemas/Object'
-            - $ref: '#/components/schemas/Position'
+          type: object
+          properties:
+            name:
+              type: string
+              enum:
+                - object
+                - position
+            data:
+              oneOf:
+                - $ref: '#/components/schemas/Object'
+                - $ref: '#/components/schemas/Position'
       required:
         - messageType
         - target
