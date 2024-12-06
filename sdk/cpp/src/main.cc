@@ -16,7 +16,6 @@
 #include <utility>
 
 #include "agent/agent.hpp"
-#include "agent/format.hpp"
 #include "agent/game_statistics.hpp"
 
 extern void SelectBuff(const thuai8_agent::Agent& agent);
@@ -33,10 +32,10 @@ auto ParseOptions(int argc, char** argv)
   std::string token{kDefaultToken};
 
   // NOLINTBEGIN(concurrency-mt-unsafe)
-  if (auto* env_server{std::getenv("SERVER")}; env_server != nullptr) {
+  if (auto* env_server{std::getenv("SERVER")}) {
     server = env_server;
   }
-  if (auto* env_token{std::getenv("TOKEN")}; env_token != nullptr) {
+  if (auto* env_token{std::getenv("TOKEN")}) {
     token = env_token;
   }
   // NOLINTEND(concurrency-mt-unsafe)
@@ -52,14 +51,14 @@ auto ParseOptions(int argc, char** argv)
     try {
       auto result{options.parse(argc, argv)};
       if (result.count("help") > 0) {
-        std::print("{}", options.help());
+        std::println("{}", options.help());
         return std::nullopt;
       }
       server = result["server"].as<std::string>();
       token = result["token"].as<std::string>();
     } catch (const std::exception& e) {
       std::print("\033[1;31m{}\033[0m", e.what());
-      std::print("{}", options.help());
+      std::println("{}", options.help());
       return std::nullopt;
     }
   }
@@ -144,24 +143,29 @@ auto main(int argc, char* argv[]) -> int {
       is_buff_selected = false;
     }
 
+#ifndef NDEBUG
+    auto start{std::chrono::high_resolution_clock::now()};
+#endif
+
     try {
-#ifndef NDEBUG
-      auto start = std::chrono::high_resolution_clock::now();
-#endif
       Loop(agent);
-#ifndef NDEBUG
-      if (auto end = std::chrono::high_resolution_clock::now();
-          std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
-              .count() > kDefaultIntervalMs) {
-        spdlog::warn("{} PlayerLoop overflow {}ms", agent, kDefaultIntervalMs);
-      }
-#endif
     } catch (const std::exception& e) {
       spdlog::error("an error occurred in PlayerLoop({}): {}", agent, e.what());
 #ifdef NDEBUG
       event_loop->stop();
 #endif
     }
+
+#ifndef NDEBUG
+    auto end{std::chrono::high_resolution_clock::now()};
+    if (auto duration{
+            std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+                .count()};
+        duration > kDefaultIntervalMs) {
+      spdlog::warn("{} PlayerLoop overflow {}ms with {} ms", agent,
+                   kDefaultIntervalMs, duration);
+    }
+#endif
   });
 
   try {
