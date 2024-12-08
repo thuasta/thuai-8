@@ -22,7 +22,7 @@ void SelectBuff(const thuai8_agent::Agent& agent) {
   const auto& self_info{agent.self_info()};
   const auto& available_buffs{agent.available_buffs()};
   for (auto buff : available_buffs) {
-    if (std::ranges::none_of(self_info.skills, [buff](auto skill) {
+    if (std::ranges::none_of(self_info.skills, [buff](const auto& skill) {
           return buff == skill.name;
         })) {
       agent.SelectBuff(buff);

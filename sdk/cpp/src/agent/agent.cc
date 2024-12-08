@@ -86,12 +86,12 @@ void Agent::Loop() {
 }
 
 void Agent::OnMessage(std::string_view message) {
-  auto msg_type{Message::ReadMessageType(message)};
-  if (msg_type == "PLAYER_INFO") {
+  if (auto msg_type{Message::ReadMessageType(message)};
+      msg_type == "PLAYER_INFO") {
     if (auto received_token{Message::ReadToken(message)};
         received_token == token_) {
       Message::ReadInfo(self_info_, message);
-    } else if (received_token != token_ && !opponent_info_) {
+    } else {
       Message::ReadInfo(opponent_info_, message);
     }
   } else if (msg_type == "ENVIRONMENT_INFO") {
