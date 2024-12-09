@@ -20,9 +20,9 @@ namespace BattleCity
                 {
                     _mBuff[i][1][j] = mBuff[i][1][j];
                     _mBuff[i][2][j] = mBuff[i][2][j];
-                    _scores[i][1] = scores[i][1];
-                    _scores[i][2] = scores[i][2];
                 }
+                _scores[i][1] = scores[i][1];
+                _scores[i][2] = scores[i][2];
             }
         }
 
