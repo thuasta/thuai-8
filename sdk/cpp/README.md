@@ -6,7 +6,7 @@ C++ agent template for the 8th Tsinghua University Artificial Intelligence Chall
 
 ### Prerequisites
 
-- [XMake](https://xmake.io) >= 2.8.8
+- [XMake](https://xmake.io/#/zh-cn/) >= 2.9.6
 - C++ compiler toolchain with C++23 support
 
 ### Build
@@ -43,12 +43,6 @@ Run the following command to start the agent:
 ./agent --server <server> --token <token>
 ```
 
-Or pass the arguments with environment variables:
-
-```bash
-SERVER_ADDRESS=<server> TOKEN=<token> ./agent
-```
-
 - `<server>`: The server address of the game. (Default: `ws://localhost:14514`)
 - `<token>`: The token of the agent. (Default: `1919810`)
 
@@ -58,9 +52,7 @@ For example:
 ./agent --server ws://localhost:14514 --token 1919810
 ```
 
-```bash
-SERVER_ADDRESS=ws://server:14514 TOKEN=1919810 ./agent
-```
+Or pass the arguments with environment variables.
 
 ## Contributing
 
