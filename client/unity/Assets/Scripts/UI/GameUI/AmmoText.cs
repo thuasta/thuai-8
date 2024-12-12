@@ -50,6 +50,7 @@ namespace BattleCity
             mAmmoNumber[2][1] = AmmoNumber_2_1;
             mAmmoNumber[2][2] = AmmoNumber_2_2;
             mAmmoNumber[2][3] = AmmoNumber_2_3;
+
         }
     }
 }
