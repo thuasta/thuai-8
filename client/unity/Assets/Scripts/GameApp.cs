@@ -23,6 +23,7 @@ namespace BattleCity
             this.RegisterModel(new ScoresShow());
             this.RegisterModel(new RoundsShow());
             this.RegisterModel(new SkillsShow());
+            this.RegisterModel(new Map());
 
             // 获取当前活动场景 
             Scene currentScene = SceneManager.GetActiveScene(); 
@@ -30,6 +31,7 @@ namespace BattleCity
             string sceneName = currentScene.name; 
             if(sceneName == "End")
                 this.RegisterModel(new EndInfo());
+
         }
         
     }
