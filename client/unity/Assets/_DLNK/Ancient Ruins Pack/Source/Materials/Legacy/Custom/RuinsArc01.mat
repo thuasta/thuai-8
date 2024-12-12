@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: RuinsArc01
+  m_Shader: {fileID: 4800000, guid: 516e1d638296ed84a8111eeac2e687e3, type: 3}
+  m_ShaderKeywords: _METALLICGLOSSMAP _NORMALMAP _PARALLAXMAP _SPECGLOSSMAP _USELOCALNORMALS_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlbedoTop:
+        m_Texture: {fileID: 2800000, guid: 206ca5ddc5d8f1c4185d0fb3c5b17359, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 19c064a0cd226324c9e0aef3e0473c0a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMapTop:
+        m_Texture: {fileID: 2800000, guid: 84e7fc8befd88464f87d7e3cecd48b38, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Cavity:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 5, y: 5}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 2800000, guid: b4462dbd5ecc09b428c24761b44fbd1c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 8, y: 8}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 845322689ea282c41a3cd323c3de87a9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 2800000, guid: eae1c70bf75c0e64599141a4d3885d73, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetalnessTop:
+        m_Texture: {fileID: 2800000, guid: 08058f6cd39a6ea45b29e097aca575aa, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 2800000, guid: b4462dbd5ecc09b428c24761b44fbd1c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 2800000, guid: fa43f5549ea9d314a8ab3b3d5c1f269e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 2800000, guid: d87d552c6664d1b4dbfe8b9549127d9a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TranslucencyMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _UpAlbedo:
+        m_Texture: {fileID: 2800000, guid: 3bef5205be23f44458933f4e6d37bfa7, type: 3}
+        m_Scale: {x: 5, y: 5}
+        m_Offset: {x: 0, y: 0}
+    - _UpAmbientOc:
+        m_Texture: {fileID: 2800000, guid: 3e69a056657edc74883766819377e94b, type: 3}
+        m_Scale: {x: 5, y: 5}
+        m_Offset: {x: 0, y: 0}
+    - _UpMetalness:
+        m_Texture: {fileID: 2800000, guid: 0f09b25b55f22db45b2f958a8c9dbdce, type: 3}
+        m_Scale: {x: 5, y: 5}
+        m_Offset: {x: 0, y: 0}
+    - _UpNormal:
+        m_Texture: {fileID: 2800000, guid: 7030d64475af27d4c98f0547c2138b2f, type: 3}
+        m_Scale: {x: 5, y: 5}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - Depth: 0
+    - _Ammount: 1.45
+    - _BumpMix: 0.61
+    - _BumpScale: 1
+    - _BumpScaleTop: 1
+    - _CavityMult: 1
+    - _Cutoff: 0.5
+    - _DetailMaskMult: 0.41
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _EmissionLM: 0
+    - _GlossMapScale: 0.489
+    - _Glossiness: 1
+    - _GlossinessTop: 1
+    - _GlossyReflections: 1
+    - _HgtMapSmooth: 5
+    - _InvertAxis: 0
+    - _InvertDepth: 0
+    - _Metallic: 1
+    - _MetallicTop: 1
+    - _Mode: 0
+    - _NormalSmooth: -1.46
+    - _OcclusionStrenght: 1
+    - _OcclusionStrength: 1
+    - _OcclusionTop: 1
+    - _Parallax: 0.0272
+    - _Smooth: 0.49
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _TopBottom: -0.08
+    - _TopBottomMult: 4.85
+    - _TopBottomSmooth: 3.07
+    - _TopTiling: 3
+    - _TransMult: 0
+    - _UVMasterTiling: 1
+    - _UVSec: 0
+    - _UVWorld: 0
+    - _UpAOMult: 1
+    - _UpAlbPower: 1
+    - _UpGloss: 0
+    - _UpGlossSmooth: 0
+    - _UpMetallic: 0
+    - _UpNormalSmooth: 0
+    - _UseLocalNormals: 1
+    - _ZWrite: 1
+    - __dirty: 1
+    m_Colors:
+    - _CavityColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _Clamp: {r: 0, g: 1, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorTop: {r: 0.8396226, g: 0.80397826, b: 0.80397826, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - _UpColor: {r: 0.84868973, g: 0.8602941, b: 0.740106, a: 1}
+  m_BuildTextureStacks: []

@@ -120,7 +120,7 @@ class MapGenerator
     }
 }
 
-struct Line 
+struct Line
 {
     public Line(int x1, int y1, int x2, int y2)
     {
@@ -154,7 +154,7 @@ struct Line
     public int Y2 { get; }
 }
 
-struct Point 
+struct Point
 {
     public Point(int x, int y)
     {

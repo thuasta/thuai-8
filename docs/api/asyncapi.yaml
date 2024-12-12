@@ -77,27 +77,31 @@ components:
       title: "PlayerPerform"
       summary: "玩家行为"
       payload:
-        type: array
-        additionalProperties: false
-        items:
-          oneOf:
-            - $ref: '#/components/schemas/PerformMove' # 前后移动
-            - $ref: '#/components/schemas/PerformTurn' # 转向
-            - $ref: '#/components/schemas/PerformAttack' # 攻击
-            - $ref: '#/components/schemas/PerformSkill' # 使用技能
-            - $ref: '#/components/schemas/PerformSelect' # 选择加成
-            - $ref: '#/components/schemas/GetPlayerInfo' # 获取人物属性
-            - $ref: '#/components/schemas/GetEnvironmentInfo' # 获取环境属性
-            - $ref: '#/components/schemas/GetGameStatistics' # 获取统计信息
-            - $ref: '#/components/schemas/GetAvailableBuffs' # 获取可选加成
+        properties:
+          messageType:
+            type: string
+            const: PLAYER_PERFORM
+          perform:
+            oneOf:
+              - $ref: '#/components/schemas/PerformMove' # 前后移动
+              - $ref: '#/components/schemas/PerformTurn' # 转向
+              - $ref: '#/components/schemas/PerformAttack' # 攻击
+              - $ref: '#/components/schemas/PerformSkill' # 使用技能
+              - $ref: '#/components/schemas/PerformSelect' # 选择加成
+              - $ref: '#/components/schemas/GetPlayerInfo' # 获取人物属性
+              - $ref: '#/components/schemas/GetEnvironmentInfo' # 获取环境属性
+              - $ref: '#/components/schemas/GetGameStatistics' # 获取统计信息
+              - $ref: '#/components/schemas/GetAvailableBuffs' # 获取可选加成
 
     GameStatistics:
       title: "GameStatistics"
       summary: "比赛统计信息"
       payload:
-        type: object
         additionalProperties: false
         properties:
+          messageType:
+            type: string
+            const: GAME_STATISTICS
           currentStage:
             $ref: '#/components/schemas/Stage'
             description: "当前阶段"
@@ -130,15 +134,22 @@ components:
       title: "PlayerInfo"
       summary: "玩家属性"
       payload:
-        $ref: '#/components/schemas/Player'
+        properties:
+          messageType:
+            type: string
+            const: PLAYER_INFO
+          items:
+            $ref: '#/components/schemas/Player'
 
     EnvironmentInfo:
       title: "EnvironmentInfo"
       summary: "环境属性"
       payload:
         additionalProperties: false
-        type: object
         properties:
+          messageType:
+            type: string
+            const: ENVIRONMENT_INFO
           walls:
             type: array
             items:
@@ -170,10 +181,15 @@ components:
       title: "AvailableBuffs"
       summary: "可选加成列表"
       payload:
-        type: array
-        additionalProperties: false
-        items:
-          $ref: '#/components/schemas/BuffName'
+        properties:
+          messageType:
+            type: string
+            const: AVAILABLE_BUFFS
+          buffs:
+            type: array
+            additionalProperties: false
+            items:
+              $ref: '#/components/schemas/BuffName'
     
     StageChange:
       title: "StageChange"
@@ -247,6 +263,9 @@ components:
         type: object
         additionalProperties: false
         properties:
+          messageType:
+            type: string
+            const: ERROR
           errorCode:
             type: integer
           message:

@@ -16,9 +16,11 @@ namespace BattleCity
 
         protected override void OnExecute()
         {
+            /*
             TankModel player = Tank.GetTanks()[_tankId];
             Bullet.AddBulletModel(Bullet.Count() + 1, player.Position, player.Angle, "Bullet");
             player.TankObject.GetComponent<Animator>().Play("TankAttack");
+            */
         }
     }
 }

@@ -17,41 +17,17 @@ public class Skill
     public SkillName name;
     public int maxCooldown;
     public int currentCooldown;
-    public bool isActive;
 
-    public void PerformSkill(string skillName)
+    public Skill(SkillName skillName)
     {
-        if (skillName == "BLACK_OUT")
-        {
+        name = skillName;
+    }
 
-        }
-        if (skillName == "SPEED_UP")
+    public void UpdateCoolDown()
+    {
+        if (currentCooldown > 0)
         {
-
-        }
-        if (skillName == "FLASH")
-        {
-
-        }
-        if (skillName == "DESTROY")
-        {
-
-        }
-        if (skillName == "CONSTRUCT")
-        {
-
-        }
-        if (skillName == "TRAP")
-        {
-
-        }
-        if (skillName == "MISSILE")
-        {
-
-        }
-        if (skillName == "KAMUI")
-        {
-
+            currentCooldown--;
         }
     }
 }
