@@ -19,6 +19,7 @@ public class Skill
     public int currentCooldown;
     public int maxActiveTime;
     public int currentActiveTime;
+    public Player player;
 
     public Skill(SkillName skillName)
     {
