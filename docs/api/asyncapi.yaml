@@ -32,6 +32,8 @@ channels:
         $ref: '#/components/messages/BattleUpdate' # 战斗信息更新
       BuffSelect:
         $ref: '#/components/messages/BuffSelect' # 加成选择
+      Map:
+        $ref: '#/components/messages/InitialMap' # 地图信息
 
 
 operations:
@@ -172,10 +174,19 @@ components:
                 position:
                   $ref: '#/components/schemas/Position'
               additionalProperties: false
-          mapSize:                   # 新增的地图大小属性
-            type: integer
-            example: 100
-
+          mapSize:
+            type: object
+            additionalProperties: false
+            properties:
+              width:
+                type: integer
+                example: 100
+              height:
+                type: integer
+                example: 100
+            required:
+              - width
+              - height
     
     AvailableBuffs:
       title: "AvailableBuffs"
@@ -255,6 +266,42 @@ components:
             type: string
           buff:
             $ref: '#/components/schemas/BuffName'
+
+    InitialMap:
+      title: "InitialMap"
+      summary: "初始地图信息"
+      payload:
+        type: object
+        additionalProperties: false
+        required:
+          - messageType
+          - mapSize
+          - walls
+        properties:
+          messageType:
+            type: string
+            const: INITIAL_MAP
+          mapSize:
+            type: object
+            additionalProperties: false
+            properties:
+              width:
+                type: integer
+                example: 100
+              height:
+                type: integer
+                example: 100
+            required:
+              - width
+              - height
+          walls:
+            type: array
+            description: "初始墙体列表"
+            items:
+              $ref: '#/components/schemas/Wall'
+
+
+
 
     Error:
       title: "Error"
