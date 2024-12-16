@@ -1,2 +1,2 @@
-pathfinding==1.0.11
+pathfinding==1.0.16
 websockets==14.1
