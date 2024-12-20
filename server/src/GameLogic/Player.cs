@@ -38,9 +38,9 @@ public partial class Player
         }
         else if (PlayerArmor.armorValue < damage)
         {
-            double realDamage = damage - PlayerArmor.armorValue;
+            double realDamege = damage - PlayerArmor.armorValue;
             PlayerArmor.armorValue = 0;
-            PlayerArmor.health -= realDamage;
+            PlayerArmor.health -= realDamege;
         }
     }
 
