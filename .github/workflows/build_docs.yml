@@ -27,7 +27,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.event.repository.name }}-api-docs-${{ github.sha }}
+          name: api-pages
           path: site/
 
 
@@ -64,7 +64,7 @@ jobs:
       - name: Extract artifacts
         run: |
           mkdir site
-          tar -xvf artifacts/doxygen-pages/artifact.tar -C site/
+          tar -xvf artifacts/api-pages/artifact.tar -C site/
           tar -xvf artifacts/mkdocs-pages/artifact.tar -C site/
 
       - uses: actions/upload-pages-artifact@v3
