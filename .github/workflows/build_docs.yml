@@ -25,10 +25,14 @@ jobs:
           template: '@asyncapi/html-template@2.1.7'
           output: site/api/
 
+      - run: |
+          tar -cvf artifact.tar -C site/ .
+
       - uses: actions/upload-artifact@v4
         with:
           name: api-pages
-          path: site/
+          path: |
+            artifact.tar
 
 
   build-mkdocs:
