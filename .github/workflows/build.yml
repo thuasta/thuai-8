@@ -310,9 +310,15 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - run: |
-          dotnet test src
-        working-directory: server
+      # - run: |
+      #     dotnet test src
+      #   working-directory: server
+
+      - uses: alsi-lawr/dotnet-test-coverlet@v1
+        with:
+          project: server/test/Thuai.Server.Tests.csproj
+          dotnet-version: 8.0
+          threshold: 90
 
   server-dotnet-format:
     runs-on: ubuntu-latest
