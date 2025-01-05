@@ -310,15 +310,18 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      # - run: |
-      #     dotnet test src
-      #   working-directory: server
+      - run: |
+          dotnet test test/Thuai.Server.Test.csproj --collect:"XPlat Code Coverage"
+        working-directory: server
 
-      - uses: alsi-lawr/dotnet-test-coverlet@v1
-        with:
-          project: server/test/Thuai.Server.Tests.csproj
-          dotnet-version: 8.0
-          threshold: 90
+      - name: Check coverage threshold
+        run: |
+          coverage=$(grep -o 'line-rate="[^"]*"' server/test/TestResults/*/coverage.cobertura.xml | head -1 | cut -d'"' -f2)
+          coverage=$(echo "$coverage*100" | bc)
+          if (( $(echo "$coverage < 90" | bc -l) )); then
+            echo "Code coverage is below 90%: $coverage%"
+            exit 1
+          fi
 
   server-dotnet-format:
     runs-on: ubuntu-latest
