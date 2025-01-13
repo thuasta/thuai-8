@@ -6,7 +6,7 @@ C++ agent template for the 8th Tsinghua University Artificial Intelligence Chall
 
 ### Prerequisites
 
-- [XMake](https://xmake.io/#/zh-cn/) >= 2.9.6
+- [XMake](https://xmake.io/#/zh-cn/) >= 2.9.7
 - C++ compiler toolchain with C++23 support
 
 ### Build

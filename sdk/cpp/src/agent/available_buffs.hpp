@@ -2,17 +2,17 @@
 #ifndef _THUAI8_AGENT_AVAILABLE_BUFFS_HPP_
 #define _THUAI8_AGENT_AVAILABLE_BUFFS_HPP_
 
-#include <cstdint>
-#include <format>
+#include <spdlog/fmt/bundled/format.h>
+
 #include <magic_enum/magic_enum.hpp>
 #include <type_traits>
 #include <vector>
 
 namespace thuai8_agent {
 
-enum class SkillKind : std::uint8_t;  // Forward declaration
+enum class SkillKind : unsigned char;  // Forward declaration
 
-enum class BuffKind : std::uint8_t {
+enum class BuffKind : unsigned char {
   BlackOut,
   SpeedUp,
   Flash,
@@ -46,20 +46,9 @@ using AvailableBuffs = std::vector<BuffKind>;
 }  // namespace thuai8_agent
 
 template <>
-struct std::formatter<thuai8_agent::BuffKind> : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(thuai8_agent::BuffKind object, FormatContext& ctx) const {
-    return format_to(ctx.out(), "{}", magic_enum::enum_name(object));
-  }
-};
-
-template <>
-struct std::formatter<thuai8_agent::AvailableBuffs>
-    : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::AvailableBuffs& object,
-              FormatContext& ctx) const {
-    return format_to(ctx.out(), "AvailableBuffs{}", object);
+struct fmt::formatter<thuai8_agent::BuffKind> : fmt::formatter<std::string> {
+  static auto format(thuai8_agent::BuffKind obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(), "{}", magic_enum::enum_name(obj));
   }
 };
 

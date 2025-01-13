@@ -2,8 +2,9 @@
 #ifndef _THUAI8_AGENT_POSITION_HPP_
 #define _THUAI8_AGENT_POSITION_HPP_
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include <cstdlib>
-#include <format>
 #include <type_traits>
 
 constexpr double epsilon{1e-6};
@@ -15,7 +16,7 @@ template <class T>
 struct Position {
   T x{};
   T y{};
-  T angle{};
+  double angle{};
 };
 
 template <typename T, typename U>
@@ -35,12 +36,11 @@ constexpr auto operator==(const Position<T>& lhs, const Position<U>& rhs)
 
 template <class T>
   requires std::is_same_v<T, int> || std::is_same_v<T, double>
-struct std::formatter<thuai8_agent::Position<T>> : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::Position<T>& object,
-              FormatContext& ctx) const {
-    return format_to(ctx.out(), "Position: [x: {}, y: {}, angle: {}]", object.x,
-                     object.y, object.angle);
+struct fmt::formatter<thuai8_agent::Position<T>> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Position<T>& obj,
+                     format_context& ctx) {
+    return fmt::format_to(ctx.out(), "Position: {{x: {}, y: {}, angle: {}}}",
+                          obj.x, obj.y, obj.angle);
   }
 };
 

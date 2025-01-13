@@ -1,10 +1,10 @@
 add_rules("mode.debug", "mode.release")
 
-add_requires("cxxopts v3.2.1")
-add_requires("glaze v4.0.1")
-add_requires("libhv v1.3.3", {configs = {http_server = false}})
-add_requires("magic_enum v0.9.7")
-add_requires("spdlog v1.15.0", {configs = {std_format = true}})
+add_requires("cxxopts")
+add_requires("glaze")
+add_requires("libhv", {configs = {http_server = false}})
+add_requires("magic_enum")
+add_requires("spdlog")
 
 target("agent")
     set_kind("binary")

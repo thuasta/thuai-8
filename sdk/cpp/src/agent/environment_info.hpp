@@ -2,7 +2,9 @@
 #ifndef _THUAI8_ENVIRONMENT_INFO_HPP_
 #define _THUAI8_ENVIRONMENT_INFO_HPP_
 
-#include <format>
+#include <spdlog/fmt/bundled/format.h>
+#include <spdlog/fmt/bundled/ranges.h>
+
 #include <vector>
 
 #include "agent/position.hpp"
@@ -40,42 +42,38 @@ struct EnvironmentInfo {
 }  // namespace thuai8_agent
 
 template <>
-struct std::formatter<thuai8_agent::Wall> : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::Wall& object, FormatContext& ctx) const {
-    return format_to(ctx.out(), "Wall[{}]", object.position);
+struct fmt::formatter<thuai8_agent::Wall> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Wall& obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(), "Wall: {{{}}}", obj.position);
   }
 };
 
 template <>
-struct std::formatter<thuai8_agent::Fence> : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::Fence& object, FormatContext& ctx) const {
-    return format_to(ctx.out(), "Fence[{}, health: {}]", object.position,
-                     object.health);
+struct fmt::formatter<thuai8_agent::Fence> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Fence& obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(), "Fence: {{{}, health: {}}}", obj.position,
+                          obj.health);
   }
 };
 
 template <>
-struct std::formatter<thuai8_agent::Bullet> : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::Bullet& object, FormatContext& ctx) const {
-    return format_to(
-        ctx.out(), "Bullet[{}, speed: {}, damage: {}, traveledDistance: {}]",
-        object.position, object.speed, object.damage, object.traveledDistance);
-  }
-};
-
-template <>
-struct std::formatter<thuai8_agent::EnvironmentInfo>
-    : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::EnvironmentInfo& object,
-              FormatContext& ctx) const {
-    return format_to(
+struct fmt::formatter<thuai8_agent::Bullet> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Bullet& obj, format_context& ctx) {
+    return fmt::format_to(
         ctx.out(),
-        "EnvironmentInfo[Walls: {{{}}}, Fences: {{{}}}, Bullets: {{{}}}]",
-        object.walls, object.fences, object.bullets);
+        "Bullet: {{{}, speed: {}, damage: {}, traveledDistance: {}}}",
+        obj.position, obj.speed, obj.damage, obj.traveledDistance);
+  }
+};
+
+template <>
+struct fmt::formatter<thuai8_agent::EnvironmentInfo>
+    : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::EnvironmentInfo& obj,
+                     format_context& ctx) {
+    return fmt::format_to(ctx.out(),
+                          "EnvironmentInfo[Walls: {}, Fences: {}, Bullets: {}]",
+                          obj.walls, obj.fences, obj.bullets);
   };
 };
 

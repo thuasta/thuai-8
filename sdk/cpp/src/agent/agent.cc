@@ -6,7 +6,6 @@
 #include <hv/hloop.h>
 #include <spdlog/spdlog.h>
 
-#include <cstdint>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -15,25 +14,26 @@
 #include "message.hpp"
 #include "player_info.hpp"
 
-constexpr std::uint8_t kMinDelayMs{10};
+constexpr unsigned int kMinDelayMs{10};
 
 namespace thuai8_agent {
 
 Agent::Agent(std::string_view token, const hv::EventLoopPtr& event_loop,
              int loop_interval_ms)
-    : token_(token), event_loop_(event_loop) {
-  timer_id_ = event_loop->setInterval(loop_interval_ms,
-                                      [this](hv::TimerID) { Loop(); });
-
-  ws_client_ = std::make_unique<hv::WebSocketClient>(event_loop);
-
-  reconn_setting_t reconn_setting;
+    : token_(token),
+      event_loop_(event_loop),
+      ws_client_(std::make_unique<hv::WebSocketClient>(event_loop)),
+      timer_id_(event_loop->setInterval(loop_interval_ms,
+                                        [this](hv::TimerID) { Loop(); })) {
+  reconn_setting_t reconn_setting{};
   reconn_setting.delay_policy = 0;
   reconn_setting.min_delay = kMinDelayMs;
   ws_client_->setReconnect(&reconn_setting);
 
   ws_client_->onmessage = [this](std::string_view msg) { OnMessage(msg); };
 }
+
+Agent::~Agent() { event_loop_->killTimer(timer_id_); }
 
 void Agent::Connect(const std::string& server_address) {
   ws_client_->open(server_address.data());
@@ -74,7 +74,7 @@ void Agent::SelectBuff(BuffKind buff) const {
   ws_client_->send(Message::PerformSelect(token_, buff));
 }
 
-void Agent::Loop() {
+void Agent::Loop() const {
   if (!IsConnected()) {
     return;
   }

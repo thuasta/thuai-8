@@ -10,7 +10,7 @@
 
 ### 环境要求
 
-- 要求 XMake >= 2.9.6，安装方法请参考 [XMake 官方文档](https://xmake.io/#/zh-cn/guide/installation)。若您没有开启代理，可使用如下 Windows 下载地址：[XMake 2.9.6](https://cloud.tsinghua.edu.cn/f/c204dcdce21e43648edd/?dl=1)
+- 要求 XMake >= 2.9.7，安装方法请参考 [XMake 官方文档](https://xmake.io/#/zh-cn/guide/installation)。若您没有开启代理，可使用如下 Windows 下载地址：[XMake 2.9.7](https://cloud.tsinghua.edu.cn/f/e1fc9707ba2541718bbc/?dl=1)
 
 - 具备 C++23 支持的 C++ 编译器工具链。推荐使用 MSVC。可使用如下 VS Build Tools 下载地址：[Visual Studio Build Tools](https://aka.ms/vs/17/release/vs_BuildTools.exe)。若您使用的是其他编译器，请确保其支持 C++23 标准。
 
@@ -234,7 +234,7 @@ bool connected{agent.IsConnected()};
 
 - **返回类型：** bool
 
-`IsConnected` 方法将返回一个布尔值，指示 Agent 是否已连接到服务器。
+`IsConnected` 方法指示 Agent 是否已连接到服务器。
 
 #### 判断游戏是否准备就绪
 
@@ -244,4 +244,4 @@ bool ready{agent.IsGameReady()};
 
 - **返回类型：** bool
 
-`IsGameReady` 方法将返回一个布尔值，指示游戏是否已准备就绪，即是否已获取到所有必要的游戏状态信息。
+`IsGameReady` 方法指示游戏是否已准备就绪，即是否已获取到所有必要的游戏状态信息。

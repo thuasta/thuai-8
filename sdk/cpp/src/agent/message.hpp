@@ -5,7 +5,7 @@
 #ifndef NDEBUG
 #include <glaze/exceptions/core_exceptions.hpp>
 #endif
-#include <glaze/json/read.hpp>
+#include <glaze/core/read.hpp>
 #include <glaze/json/write.hpp>
 #include <string>
 #include <string_view>
@@ -63,16 +63,14 @@ struct meta<thuai8_agent::Wall> {
 
 namespace thuai8_agent {
 
-class Agent;  // Forward declaration
 class Message {
- private:
-  friend class Agent;
-
-  // NOLINTBEGIN(readability-implicit-bool-conversion)
-  static constexpr glz::opts readopts{
-      .error_on_unknown_keys = false, .raw_string = true, .partial_read = true};
-  static constexpr glz::opts writeopts{.raw_string = true};
-  // NOLINTEND(readability-implicit-bool-conversion)
+ public:
+  Message() = delete;
+  Message(const Message&) = delete;
+  Message(Message&&) = delete;
+  auto operator=(const Message&) -> Message& = delete;
+  auto operator=(Message&&) -> Message& = delete;
+  ~Message() = delete;
 
   template <class T>
   static void ReadInfo(T& value, std::string_view message) {
@@ -90,78 +88,129 @@ class Message {
     return value;
   }
 
+  template <class T>
+  [[nodiscard, maybe_unused]] static auto Write(T&& value) -> std::string {
+    return glz::write<writeopts>(std::forward<T>(value)).value();
+  }
+
   // NOLINTBEGIN
-  template <class... Args>
-  [[nodiscard]] static auto WriteMessage(Args&&... args) -> std::string {
-    return glz::write<writeopts>(
-               glz::obj{"messageType", std::forward<Args>(args)...})
-        .value();
+  template <class T, class... Args>
+  [[nodiscard]] static auto Write(Args&&... args) -> std::string {
+    return glz::write<writeopts>(T{std::forward<Args>(args)...}).value();
   }
   // NOLINTEND
 
   [[nodiscard]] static auto ReadMessageType(std::string_view message)
-      -> std::string;
+      -> std::string {
+    return ReadInfo<MessageType>(message).messageType;
+  }
 
-  [[nodiscard]] static auto ReadToken(std::string_view message) -> std::string;
+  [[nodiscard]] static auto ReadToken(std::string_view message) -> std::string {
+    return ReadInfo<Token>(message).token;
+  }
 
   [[nodiscard]] static auto ReadError(std::string_view message)
-      -> std::pair<int, std::string>;
+      -> std::pair<int, std::string> {
+    Error value{ReadInfo<Error>(message)};
+    return {value.errorCode, value.message};
+  }
 
   [[nodiscard]] static auto GetPlayerInfo(std::string_view token,
                                           std::string_view request)
       -> std::string {
-    return WriteMessage("GET_PLAYER_INFO", "token", token, "request", request);
+    return Write<addRequest>("GET_PLAYER_INFO", token, request);
   }
 
   [[nodiscard]] static auto GetEnvironmentInfo(std::string_view token)
       -> std::string {
-    return WriteMessage("GET_ENVIRONMENT_INFO", "token", token);
+    return Write<basic>("GET_ENVIRONMENT_INFO", token);
   }
 
   [[nodiscard]] static auto GetGameStatistics(std::string_view token)
       -> std::string {
-    return WriteMessage("GET_GAME_STATISTICS", "token", token);
+    return Write<basic>("GET_GAME_STATISTICS", token);
   }
 
   [[nodiscard]] static auto GetAvailableBuffs(std::string_view token)
       -> std::string {
-    return WriteMessage("GET_AVAILABLE_BUFFS", "token", token);
+    return Write<basic>("GET_AVAILABLE_BUFFS", token);
   }
 
   [[nodiscard]] static auto PerformMove(std::string_view token,
                                         std::string_view direction)
       -> std::string {
-    return WriteMessage("PERFORM_MOVE", "token", token, "direction", direction);
+    return Write<addDirection>("PERFORM_MOVE", token, direction);
   }
 
   [[nodiscard]] static auto PerformTurn(std::string_view token,
                                         std::string_view direction)
       -> std::string {
-    return WriteMessage("PERFORM_TURN", "token", token, "direction", direction);
+    return Write<addDirection>("PERFORM_TURN", token, direction);
   }
 
   [[nodiscard]] static auto PerformAttack(std::string_view token)
       -> std::string {
-    return WriteMessage("PERFORM_ATTACK", "token", token);
+    return Write<basic>("PERFORM_ATTACK", token);
   }
 
   [[nodiscard]] static auto PerformSkill(std::string_view token,
                                          SkillKind skill) -> std::string {
-    return WriteMessage("PERFORM_SKILL", "token", token, "skillName", skill);
+    return Write<addSkill>("PERFORM_SKILL", token, skill);
   }
 
   [[nodiscard]] static auto PerformSelect(std::string_view token, BuffKind buff)
       -> std::string {
-    return WriteMessage("PERFORM_SELECT", "token", token, "buffName", buff);
+    return Write<addBuff>("PERFORM_SELECT", token, buff);
   }
 
- public:
-  Message() = delete;
-  Message(const Message&) = delete;
-  Message(Message&&) = delete;
-  auto operator=(const Message&) -> Message& = delete;
-  auto operator=(Message&&) -> Message& = delete;
-  ~Message() = delete;
+ private:
+  // NOLINTBEGIN(readability-implicit-bool-conversion)
+  static constexpr glz::opts readopts{
+      .error_on_unknown_keys = false, .raw_string = true, .partial_read = true};
+  static constexpr glz::opts writeopts{.raw_string = true};
+  // NOLINTEND(readability-implicit-bool-conversion)
+
+  struct MessageType {
+    std::string messageType;
+  };
+
+  struct Token {
+    std::string token;
+  };
+
+  struct Error {
+    int errorCode{};
+    std::string message;
+  };
+
+  struct basic {
+    std::string_view messageType;
+    std::string_view token;
+  };
+
+  struct addRequest {
+    std::string_view messageType;
+    std::string_view token;
+    std::string_view request;
+  };
+
+  struct addDirection {
+    std::string_view messageType;
+    std::string_view token;
+    std::string_view direction;
+  };
+
+  struct addSkill {
+    std::string_view messageType;
+    std::string_view token;
+    SkillKind skillName;
+  };
+
+  struct addBuff {
+    std::string_view messageType;
+    std::string_view token;
+    BuffKind buffName;
+  };
 };
 
 }  // namespace thuai8_agent

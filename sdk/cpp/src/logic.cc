@@ -18,9 +18,11 @@ namespace {
 // NOLINTBEGIN(misc-use-internal-linkage)
 void SelectBuff(const thuai8_agent::Agent& agent) {
   // Your code here
-  // Here is an example of how to select a buff
+  // Here is an example of how to select a buff that is not in your skills
   const auto& self_info{agent.self_info()};
   const auto& available_buffs{agent.available_buffs()};
+
+  spdlog::debug("AvailableBuffs: {}", available_buffs);
   for (auto buff : available_buffs) {
     if (std::ranges::none_of(self_info.skills, [buff](const auto& skill) {
           return buff == skill.name;
