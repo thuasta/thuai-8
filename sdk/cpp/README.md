@@ -31,11 +31,11 @@ xmake
 
 ### Write Your Code
 
-You can write your code in `logic.cc`. For experienced developers, you can also modify any other files in the project.
+You can write your code in `logic.cpp`. For experienced developers, you can also modify any other files in the project.
 
 ### Run
 
-If you modify the code in `main.cc`, this section may be invalid.
+If you modify the code in `main.cpp`, this section may be invalid.
 
 Run the following command to start the agent:
 

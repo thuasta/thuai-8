@@ -38,7 +38,7 @@ template <typename T, typename U>
   requires(std::is_same_v<T, BuffKind> && std::is_same_v<U, SkillKind>) ||
           (std::is_same_v<T, SkillKind> && std::is_same_v<U, BuffKind>)
 constexpr auto operator==(T lhs, U rhs) -> bool {
-  return static_cast<std::uint8_t>(lhs) == static_cast<std::uint8_t>(rhs);
+  return static_cast<unsigned char>(lhs) == static_cast<unsigned char>(rhs);
 }
 
 using AvailableBuffs = std::vector<BuffKind>;

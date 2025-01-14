@@ -27,6 +27,10 @@ constexpr int kDefaultIntervalMs{200};
 namespace {
 #ifndef NDEBUG
 void SetLogLevel(const std::string& level) {
+  if (level == "0" || level == "trace") {
+    spdlog::set_level(spdlog::level::trace);
+    return;
+  }
   if (level == "1" || level == "debug") {
     spdlog::set_level(spdlog::level::debug);
     return;
@@ -69,9 +73,9 @@ auto ParseOptions(int argc, char** argv)
         "t,token", "Set token",
         cxxopts::value<std::string>()->default_value(token));
 #ifndef NDEBUG
-    options.add_options()("l,log",
-                          "Set log level: 1=debug, 2=info, 3=warn, 4=error",
-                          cxxopts::value<std::string>()->default_value("1"));
+    options.add_options()(
+        "l,log", "Set log level: 0=trace, 1=debug, 2=info, 3=warn, 4=error",
+        cxxopts::value<std::string>()->default_value("0"));
 #endif
 
     try {
@@ -93,7 +97,7 @@ auto ParseOptions(int argc, char** argv)
   }
 #ifndef NDEBUG
   else {
-    spdlog::set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::trace);
   }
 #endif
 
@@ -107,15 +111,14 @@ auto main(int argc, char* argv[]) -> int {
   if (!options.has_value()) {
     return 0;
   }
-  auto [server, token]{options.value()};
 
   hv::EventLoopPtr event_loop{std::make_shared<hv::EventLoop>()};
 
-  thuai8_agent::Agent agent{token, event_loop, kDefaultIntervalMs};
+  thuai8_agent::Agent agent{options->second, event_loop, kDefaultIntervalMs};
 
-  spdlog::info("{} is starting with server {}", agent, server);
+  event_loop->runInLoop([&] { agent.Connect(options->first); });
 
-  event_loop->runInLoop([&] { agent.Connect(server); });
+  spdlog::info("{} is starting with server {}", agent, options->first);
 
   bool is_previous_connected{false};
   bool is_previous_game_ready{false};
@@ -127,7 +130,7 @@ auto main(int argc, char* argv[]) -> int {
         spdlog::error("{} disconnected from server", agent);
         is_previous_connected = false;
       }
-      spdlog::debug("{} is waiting for connection", agent);
+      spdlog::trace("{} is waiting for connection", agent);
       return;
     }
 
@@ -141,7 +144,7 @@ auto main(int argc, char* argv[]) -> int {
         spdlog::error("{} is no longer in a ready game", agent);
         is_previous_game_ready = false;
       }
-      spdlog::debug("{} is waiting for the game to be ready", agent);
+      spdlog::trace("{} is waiting for the game to be ready", agent);
       return;
     }
 
@@ -154,6 +157,8 @@ auto main(int argc, char* argv[]) -> int {
       if (!is_buff_selected) {
         try {
           SelectBuff(agent);
+          spdlog::info("{} has selected a buff", agent);
+          is_buff_selected = true;
         } catch (const std::exception& e) {
           spdlog::error("an error occurred in SelectBuff({}): {}", agent,
                         e.what());
@@ -161,9 +166,8 @@ auto main(int argc, char* argv[]) -> int {
           event_loop->stop();
 #endif
         }
-        is_buff_selected = true;
       }
-      spdlog::debug("{} is waiting for next battle", agent);
+      spdlog::trace("{} is waiting for next battle", agent);
       return;
     }
 

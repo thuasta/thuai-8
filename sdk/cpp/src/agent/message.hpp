@@ -73,7 +73,7 @@ class Message {
   ~Message() = delete;
 
   template <class T>
-  static void ReadInfo(T& value, std::string_view message) {
+  static void Read(T& value, std::string_view message) {
 #ifdef NDEBUG
     std::ignore = glz::read<readopts>(value, message);
 #else
@@ -82,14 +82,14 @@ class Message {
   }
 
   template <class T>
-  [[nodiscard]] static auto ReadInfo(std::string_view message) -> T {
+  [[nodiscard]] static auto Read(std::string_view message) -> T {
     T value{};
-    ReadInfo(value, message);
+    Read(value, message);
     return value;
   }
 
   template <class T>
-  [[nodiscard, maybe_unused]] static auto Write(T&& value) -> std::string {
+  [[nodiscard]] static auto Write(T&& value) -> std::string {
     return glz::write<writeopts>(std::forward<T>(value)).value();
   }
 
@@ -102,16 +102,16 @@ class Message {
 
   [[nodiscard]] static auto ReadMessageType(std::string_view message)
       -> std::string {
-    return ReadInfo<MessageType>(message).messageType;
+    return Read<MessageType>(message).messageType;
   }
 
   [[nodiscard]] static auto ReadToken(std::string_view message) -> std::string {
-    return ReadInfo<Token>(message).token;
+    return Read<Token>(message).token;
   }
 
   [[nodiscard]] static auto ReadError(std::string_view message)
       -> std::pair<int, std::string> {
-    Error value{ReadInfo<Error>(message)};
+    Error value{Read<Error>(message)};
     return {value.errorCode, value.message};
   }
 

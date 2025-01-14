@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <utility>
 
 #include "available_buffs.hpp"
 #include "message.hpp"
@@ -18,9 +19,9 @@ constexpr unsigned int kMinDelayMs{10};
 
 namespace thuai8_agent {
 
-Agent::Agent(std::string_view token, const hv::EventLoopPtr& event_loop,
+Agent::Agent(std::string token, const hv::EventLoopPtr& event_loop,
              int loop_interval_ms)
-    : token_(token),
+    : token_(std::move(token)),
       event_loop_(event_loop),
       ws_client_(std::make_unique<hv::WebSocketClient>(event_loop)),
       timer_id_(event_loop->setInterval(loop_interval_ms,
@@ -88,21 +89,20 @@ void Agent::Loop() const {
 void Agent::OnMessage(std::string_view message) {
   if (auto msg_type{Message::ReadMessageType(message)};
       msg_type == "PLAYER_INFO") {
-    if (auto received_token{Message::ReadToken(message)};
-        received_token == token_) {
-      Message::ReadInfo(self_info_, message);
+    if (token_ == Message::ReadToken(message)) {
+      Message::Read(self_info_, message);
     } else {
-      Message::ReadInfo(opponent_info_, message);
+      Message::Read(opponent_info_, message);
     }
   } else if (msg_type == "ENVIRONMENT_INFO") {
-    Message::ReadInfo(environment_info_, message);
+    Message::Read(environment_info_, message);
   } else if (msg_type == "GAME_STATISTICS") {
-    Message::ReadInfo(game_statistics_, message);
+    Message::Read(game_statistics_, message);
   } else if (msg_type == "AVAILABLE_BUFFS") {
-    Message::ReadInfo(available_buffs_, message);
+    Message::Read(available_buffs_, message);
   } else if (msg_type == "ERROR") {
     auto [error_code, error_message]{Message::ReadError(message)};
-    spdlog::error("{} got an error from server: [{}] {}]", *this, error_code,
+    spdlog::error("{} got an error from server: [{}] {}", *this, error_code,
                   error_message);
   }
 }

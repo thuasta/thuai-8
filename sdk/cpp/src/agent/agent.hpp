@@ -21,7 +21,7 @@ namespace thuai8_agent {
 
 class Agent {
  public:
-  Agent(std::string_view token, const hv::EventLoopPtr& event_loop,
+  Agent(std::string token, const hv::EventLoopPtr& event_loop,
         int loop_interval_ms);
 
   Agent(const Agent&) = delete;
