@@ -200,7 +200,7 @@ public partial class Battle
                         double Y = startPos.Ypos + ua * (endPos.Ypos - startPos.Ypos);
                         X -= Math.Cos(startPos.Angle) / Math.Abs(Math.Cos(startPos.Angle)) * Constants.WALL_THICK;
                         Y -= Math.Sin(startPos.Angle) / Math.Abs(Math.Sin(startPos.Angle)) * Constants.WALL_THICK;
-                        Position tempEndPosition = new Position(X, Y);
+                        Position tempEndPosition = new Position(X, Y, endPos.Angle);
                         double tempDistance = PointDistance(startPos, tempEndPosition);
                         if (tempDistance < distance)
                         {

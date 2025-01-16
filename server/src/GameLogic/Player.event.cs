@@ -24,7 +24,7 @@ public partial class Player
     }
     public class PlayerAttackEventArgs : EventArgs
     {
-        public const PlayerEventType EventName = PlayerEventType.PlayerMove;
+        public const PlayerEventType EventName = PlayerEventType.PlayerAttack;
         public Player Player { get; }
 
         public PlayerAttackEventArgs(Player player)
@@ -35,7 +35,7 @@ public partial class Player
 
     public class PlayerTurnEventArgs : EventArgs
     {
-        public const PlayerEventType EventName = PlayerEventType.PlayerMove;
+        public const PlayerEventType EventName = PlayerEventType.PlayerTurn;
         public Player Player { get; }
 
         public TurnDirection Turndirection { get; set; }

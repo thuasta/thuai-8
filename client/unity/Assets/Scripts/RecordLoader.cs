@@ -12,8 +12,8 @@ namespace BattleCity
 {
     public class RecordLoader : MonoBehaviour, IController
     {
-        private Tank mTanks;
-        private Bullet mBullets;
+        private Tanks mTanks;
+        private Bullets mBullets;
         private Map CityMap;
 
         private JArray _recordArray;
@@ -24,9 +24,15 @@ namespace BattleCity
         // Start is called before the first frame update
         void Start()
         {
-            mTanks = this.GetModel<Tank>();
-            mBullets = this.GetModel<Bullet>();
+            //model
+            mTanks = this.GetModel<Tanks>();
+            mBullets = this.GetModel<Bullets>();
             CityMap = this.GetModel<Map>();
+
+            //UI
+
+            //record
+            _recordInfo = this.GetModel<RecordInfo>();
 
             FileLoaded fileLoaded = GameObject.Find("RecordReader").GetComponent<FileLoaded>();
             _recordFile = fileLoaded.File;
@@ -36,6 +42,8 @@ namespace BattleCity
                 return;
             }
             _recordArray = LoadRecordData();
+            _recordInfo.MaxTick = (int)_recordArray.Last["currentTicks"];
+            GenerateMap(_recordArray);
 
         }
 
@@ -58,7 +66,54 @@ namespace BattleCity
             return recordArray;
         }
 
+
+
         #region Event Definition
+
+        private void GenerateMap(JArray recordArray)
+        {
+            if (recordArray == null || recordArray.Count == 0)
+            {
+                Debug.LogError("Record array is null or empty!");
+                return;
+            }
+
+            // 遍历 recordArray
+            foreach (var record in recordArray)
+            {
+                // 确保 record 中包含 walls 数据
+                JArray wallsArray = (JArray)record["walls"];
+                if (wallsArray == null)
+                {
+                    Debug.LogWarning("No walls data found in the record!");
+                    continue;
+                }
+
+                // 遍历每个 wall 数据
+                foreach (var wall in wallsArray)
+                {
+                    // 提取 wall 的属性数据
+                    float x = wall["x"]?.Value<float>() ?? 0f;
+                    float y = wall["y"]?.Value<float>() ?? 0f;
+                    float angle = wall["angle"]?.Value<float>() ?? 0f;
+
+                    Debug.Log($"Wall Position: x={x}, y={y}, angle={angle}");
+
+                    // 创建 Position 对象并添加到 cityMap
+                    Position position = new Position(x, y, angle);
+                    CityMap.AddWall(position);
+                }
+
+                // 提取 mapSize（如果存在）
+                var mapSizeToken = record["mapSize"];
+                if (mapSizeToken != null)
+                {
+                    int mapSize = mapSizeToken.Value<int>();
+                    CityMap.setSize(mapSize);
+                }
+            }
+            this.SendCommand(new GenerateMapCommand());
+        }
 
         private void UpdateTanks(JArray tanks)
         {
@@ -67,7 +122,7 @@ namespace BattleCity
 
             foreach (JObject tank in tanks)
             {
-                int tankId = tank["tankId"].ToObject<int>();
+                int tankId = tank["token"].ToObject<int>();
                 int ammo = tank["ammo"].ToObject<int>();
                 this.SendCommand(new AmmoChangeCommand(tankId, 0, ammo));
             }
@@ -79,6 +134,8 @@ namespace BattleCity
             this.SendCommand(new AttackCommand(tankId));
 
         }
+
+
 
         #endregion
 
@@ -120,7 +177,7 @@ namespace BattleCity
         private void FixedUpdate()
         {
 
-            if (!(_recordInfo.NowPlayState == PlayState.Play && _recordInfo.NowTick < _recordInfo.MaxTick))
+            if (!(_recordInfo.NowPlayState == PlayState.Battle && _recordInfo.NowTick < _recordInfo.MaxTick))
             {
                 return;
             }

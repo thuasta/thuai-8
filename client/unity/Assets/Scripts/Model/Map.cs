@@ -8,10 +8,10 @@ namespace BattleCity
 {
     public class Map : AbstractModel
     {
-        public int MapSize;
-        public List<Wall> CityWall;
-        public List<Wall> CityFence;
-        public List<GameObject> CityFloors;
+        public int MapSize { get; set; }
+        public List<Wall> CityWall { get; set; }
+        public List<Wall> CityFence { get; set; }
+        public List<GameObject> CityFloors { get; set; }
         protected override void OnInit()
         {
             CityWall = new List<Wall>();
