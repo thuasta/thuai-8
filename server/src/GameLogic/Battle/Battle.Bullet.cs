@@ -4,7 +4,7 @@ public partial class Battle
 {
 
     #region Fields and properties
-    private List<IBullet> Bullets = [];
+    public List<IBullet> Bullets { get; } = [];
 
     #endregion
 
