@@ -1,6 +1,6 @@
 namespace Thuai.GameServer.MapGenerator;
 
-class Wall 
+public class Wall
 {
     public Wall(int x, int y, int angle)
     {
