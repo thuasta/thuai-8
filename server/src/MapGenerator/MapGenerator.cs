@@ -2,7 +2,7 @@ namespace Thuai.GameServer.MapGenerator;
 using System;
 using System.Collections.Generic;
 
-class Map
+public class Map
 {
     public Map(int width, int height)
     {
