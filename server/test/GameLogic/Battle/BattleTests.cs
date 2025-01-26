@@ -59,7 +59,7 @@ public class BattleTests
         var player1 = new Player("Player1", 1);
         var player2 = new Player("Player2", 2);
         var players = new List<Player> { player1, player2 };
-        var battle = new Battle(new(MBT:0), players);
+        var battle = new Battle(new(MBT: 0), players);
 
         // Act
         var result = battle.GetResult();
@@ -98,8 +98,8 @@ public class BattleTests
         var player1 = new Player("Player1", 1);
         var player2 = new Player("Player2", 2);
         var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(MBT:0), players);
-        
+        Battle battle = new Battle(new(MBT: 0), players);
+
         // Act
         battle.Tick();
         battle.Tick();
@@ -178,7 +178,7 @@ public class BattleTests
         var player1 = new Player("Player1", 1);
         var player2 = new Player("Player2", 2);
         var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(MBT:0), players);
+        Battle battle = new Battle(new(MBT: 0), players);
 
         // Act
         battle.Tick();
@@ -253,7 +253,7 @@ public class BattleTests
         var player1 = new Player("Player1", 1);
         var player2 = new Player("Player2", 2);
         var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(MBT:0), players);
+        Battle battle = new Battle(new(MBT: 0), players);
 
         // Act
         battle.Tick();
@@ -287,7 +287,7 @@ public class BattleTests
         var player1 = new Player("Player1", 1);
         var player2 = new Player("Player2", 2);
         var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(MBT:0), players);
+        Battle battle = new Battle(new(MBT: 0), players);
 
         // Act
         battle.Tick();
@@ -305,7 +305,7 @@ public class BattleTests
         var player1 = new Player("Player1", 1);
         var player2 = new Player("Player2", 2);
         var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(MBT:0), players);
+        Battle battle = new Battle(new(MBT: 0), players);
 
         // Act
         battle.Tick();

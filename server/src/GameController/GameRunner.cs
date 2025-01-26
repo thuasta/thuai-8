@@ -15,7 +15,7 @@ public class GameRunner(Utility.Config.GameSettings gameSettings)
     public void Run()
     {
         Game game = new(GameSettings);
-        
+
         throw new NotImplementedException();
     }
 

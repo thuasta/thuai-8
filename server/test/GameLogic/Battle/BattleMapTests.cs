@@ -11,7 +11,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.Initialize();
@@ -27,7 +27,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.Initialize();
@@ -45,7 +45,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player1);
@@ -66,7 +66,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player1);
@@ -88,7 +88,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player1);
@@ -110,7 +110,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
         double endX = 1;
 
         // Act
@@ -146,7 +146,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
         double endY = 1;
 
         // Act
@@ -182,7 +182,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
         double endX = 1;
         double endY = 1;
 
@@ -232,7 +232,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player2);
@@ -254,7 +254,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
         Bullet bullet = new(new(4.1, 1, 0), 3, 1, false);
 
         // Act
@@ -277,14 +277,14 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player2);
         battle.Tick();
         player2.PlayerAttack();
         battle.Tick();
-        
+
         // Assert
         Assert.NotEqual([], battle.Bullets);
     }
@@ -299,7 +299,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player1);
@@ -321,7 +321,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
         double wallX = 1;
         double endX;
 
@@ -360,7 +360,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
         double wallY = 1;
         double endY;
 
@@ -398,7 +398,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
         double wallX = 1;
         double wallY = 1;
         double endX;
@@ -440,7 +440,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
         double wallX = 1;
         double wallY = 1;
         double endX;
@@ -482,7 +482,7 @@ public class BattleMapTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
         double wallX = 1;
         double wallY = 1;
         double endX;
@@ -509,7 +509,7 @@ public class BattleMapTests
                 }
             }
         }
-        player1.PlayerPosition = new Position(wallX + Math.Sqrt(2) / 2, wallY + Math.Sqrt(2) , - 3 * Math.PI / 4);
+        player1.PlayerPosition = new Position(wallX + Math.Sqrt(2) / 2, wallY + Math.Sqrt(2), -3 * Math.PI / 4);
         endX = wallX - 0.192031;
         endY = wallY - 0.192031;
         player1.PlayerAttack();

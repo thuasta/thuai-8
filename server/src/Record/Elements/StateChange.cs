@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Thuai.GameServer.Recorder;
 
-public record StageChange : IRecord 
+public record StageChange : IRecord
 {
     [JsonPropertyName("messageType")]
     public string messageType => "STAGE_CHANGE";

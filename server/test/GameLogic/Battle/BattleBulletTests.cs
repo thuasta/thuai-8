@@ -15,7 +15,7 @@ public class BattleBulletTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player1);
@@ -39,7 +39,7 @@ public class BattleBulletTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player1);
@@ -66,7 +66,7 @@ public class BattleBulletTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player1);
@@ -92,7 +92,7 @@ public class BattleBulletTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player1);
@@ -117,7 +117,7 @@ public class BattleBulletTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player1);
@@ -144,7 +144,7 @@ public class BattleBulletTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player1);
@@ -169,7 +169,7 @@ public class BattleBulletTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
-        Battle battle = new(new (), [player1, player2]);
+        Battle battle = new(new(), [player1, player2]);
         double wallX = 1;
         double wallY = 1;
         double endX;
@@ -217,7 +217,7 @@ public class BattleBulletTests
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
         Player player3 = new("player3", 3);
-        Battle battle = new(new (), [player1, player2, player3]);
+        Battle battle = new(new(), [player1, player2, player3]);
         double wallX = 1;
         double wallY = 1;
 
@@ -258,7 +258,7 @@ public class BattleBulletTests
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
         Player player3 = null!;
-        Battle battle = new(new (), [player1, player2, player3]);
+        Battle battle = new(new(), [player1, player2, player3]);
 
         // Act
         battle.SubscribePlayerEvents(player1);

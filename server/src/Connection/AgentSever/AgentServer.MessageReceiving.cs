@@ -76,7 +76,7 @@ public partial class AgentServer
                         socketId
                     ));
                     break;
-                
+
                 case "GET_ENVIRONMENT_INFO":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
                         JsonSerializer.Deserialize<GetEnvironmentInfoMessage>(text)
@@ -84,7 +84,7 @@ public partial class AgentServer
                         socketId
                     ));
                     break;
-                
+
                 case "GET_GAME_STATISTICS":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
                         JsonSerializer.Deserialize<GetGameStatisticsMessage>(text)
@@ -92,7 +92,7 @@ public partial class AgentServer
                         socketId
                     ));
                     break;
-                
+
                 case "GET_AVAILABLE_BUFFS":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
                         JsonSerializer.Deserialize<GetAvailableBuffsMessage>(text)

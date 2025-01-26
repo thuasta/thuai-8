@@ -13,7 +13,7 @@ public record Target
     public Fence Fence { get; init; } = new();
 
     [JsonPropertyName("bullet")]
-    public Bullet Bullet {get; init; } = new();
+    public Bullet Bullet { get; init; } = new();
 
     [JsonPropertyName("laser")]
     public List<Laser> Laser { get; init; } = new();
