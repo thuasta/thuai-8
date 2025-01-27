@@ -105,9 +105,9 @@ public class BuffSelector
     {
         Buff[] availableBuff = new Buff[3];
         Round = round;
-        availableBuff[0] = OffensiveBuff[round-1];
-        availableBuff[1] = DefensiveBuff[round-1];
-        availableBuff[2] = UtilityBuff[round-1];
+        availableBuff[0] = OffensiveBuff[round - 1];
+        availableBuff[1] = DefensiveBuff[round - 1];
+        availableBuff[2] = UtilityBuff[round - 1];
         return availableBuff;
     }
 

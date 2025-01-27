@@ -13,7 +13,7 @@ public class BattleEventHandlerTests
         var players = new List<Player> { player1, player2 };
         Battle battle = new Battle(new(), players);
         battle.SubscribePlayerEvents(player1);
-        
+
         // Act
         player1.PlayerMove(MoveDirection.FORTH);
 

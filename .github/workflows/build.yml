@@ -147,7 +147,7 @@ jobs:
           name: ${{ github.event.repository.name }}-sdk-cpp-${{ matrix.platform }}-${{ matrix.architecture }}-${{ github.sha }}
           path: sdk/cpp/build/${{ matrix.platform }}/${{ matrix.architecture }}/release/
 
-  sdk-cpp-build-docker:
+  sdk-cpp-build-docker-image:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -158,7 +158,7 @@ jobs:
         with:
           context: sdk/cpp
 
-  sdk-cpp-clang-format:
+  sdk-cpp-check-style:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -185,7 +185,7 @@ jobs:
           pip install -r requirements.txt
         working-directory: sdk/python
 
-  sdk-python-build-docker:
+  sdk-python-build-docker-image:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -215,7 +215,7 @@ jobs:
           python -m unittest discover -v
         working-directory: sdk/python
 
-  sdk-python-black:
+  sdk-python-check-style:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -226,7 +226,7 @@ jobs:
         with:
           options: "--check --verbose"
 
-  sdk-python-pylint:
+  sdk-python-lint:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -283,7 +283,7 @@ jobs:
           name: ${{ github.event.repository.name }}-server-${{ matrix.runtime }}-${{ github.sha }}
           path: server/bin
 
-  server-build-docker:
+  server-build-docker-image:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -314,7 +314,7 @@ jobs:
           dotnet test test
         working-directory: server
 
-  server-test-coverage:
+  server-check-test-coverage:
     strategy:
       fail-fast: false
       matrix:
@@ -343,7 +343,7 @@ jobs:
             exit 1
           fi
 
-  server-dotnet-format:
+  server-check-style:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

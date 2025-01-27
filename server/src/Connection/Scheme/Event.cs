@@ -6,7 +6,7 @@ public record Events
 {
     [JsonPropertyName("messageType")]
 
-    public virtual string  MessageType{ get; init; } = "";
+    public virtual string MessageType { get; init; } = "";
 }
 
 public record AppearEvent : Events
@@ -15,7 +15,7 @@ public record AppearEvent : Events
     public override string MessageType { get; init; } = "APPEAR_EVENT";
 
     [JsonPropertyName("target")]
-    public Target Target { get; init; } = new(); 
+    public Target Target { get; init; } = new();
 
     [JsonPropertyName("position")]
     public Position Position { get; init; } = new();
