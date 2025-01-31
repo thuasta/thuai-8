@@ -7,7 +7,6 @@ using UnityEngine.UIElements;
 using QFramework;
 using TMPro;
 using UnityEngine.UI;
-using UnityEditor.PackageManager;
 
 namespace BattleCity
 {
