@@ -15,30 +15,48 @@ namespace BattleCity
         }
         public bool CanReflect { get; set; }
         public int ArmorValue { get; set; }
-        public float Health { get; set; }
+        public int Health { get; set; }
         public bool GravityField { get; set; }
         public KNIFE Knife { get; set; }
         public float DodgeRate { get; set; }
 
 
-        public Armor(bool canReflect = false, int armorValue = 0, float health = 0, bool gravityField = false, KNIFE knife = KNIFE.NOT_OWNED, float dodgeRate = 0)
+        public Armor(bool canReflect = false, int armorValue = 0, int health = 0, bool gravityField = false, string knife = "NOT_OWNED", float dodgeRate = 0)
         {
             CanReflect = canReflect;
             ArmorValue = armorValue;
             Health = health;
             GravityField = gravityField;
-            Knife = knife;
+            try
+            {
+                SetKnife(knife);
+            }
+            catch
+            {
+                Console.WriteLine($"The value of Knife is wrong, and cannot be set!");
+            }
             DodgeRate = dodgeRate;
         }
 
-        public void UpdateArmor(bool canReflect, int armorValue, float health, bool gravityField, KNIFE knife, float dodgeRate)
+        public void UpdateArmor(bool canReflect, int armorValue, int health, bool gravityField, string knife, float dodgeRate)
         {
             CanReflect = canReflect;
             ArmorValue = armorValue;
             Health = health;
             GravityField = gravityField;
-            Knife = knife;
+            try
+            {
+                SetKnife(knife);
+            }
+            catch
+            {
+                Console.WriteLine($"The value of Knife is wrong, and cannot be set!");
+            }
             DodgeRate = dodgeRate;
+        }
+        public void UpdateArmor(Armor armor)
+        {
+            UpdateArmor(armor.CanReflect,armor.ArmorValue,armor.Health,armor.GravityField,armor.Knife.ToString(),armor.DodgeRate);
         }
 
         public bool SetKnife(string knifeString)

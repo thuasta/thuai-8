@@ -41,14 +41,8 @@ namespace BattleCity
             }
         }
 
-        public void UpdateTankPosition(int id, Position tankPosition)
+        public void UpdateTankPosition( Position tankPosition)
         {
-            if (id != Id)
-            {
-                Debug.LogWarning($"Trying to update tank position for a tank with id {id}, but this is tank {Id}.");
-                return;
-            }
-
             TankPosition = tankPosition;
 
             if (TankObject != null)
@@ -64,6 +58,12 @@ namespace BattleCity
                 Debug.LogWarning($"tankObject is null for id {Id}. Cannot update position.");
             }
 
+        }
+
+        public void UpdateTankPosition(float x, float y, float angle)
+        {
+            Position position = new Position(x, y, angle);
+            UpdateTankPosition (position);
         }
     }
 }

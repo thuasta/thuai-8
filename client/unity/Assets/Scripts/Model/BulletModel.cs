@@ -10,16 +10,28 @@ namespace BattleCity
 
         public Position BulletPosition{ get; set; }
 
-        public string BulletType { get; set; }
-
         private GameObject BulletObject { get; set; }
 
-        public BulletModel(int id, Position bulletPosition, string bulletType)
+        public BulletModel(int id, Position bulletPosition, int speed, int damage, bool isMissile = false, bool isAntiArmor = false, float traveledDistance = 0)
         {
             Id = id;
-            BulletType = bulletType;
+            GameObject prefab;
 
-            GameObject prefab = Resources.Load<GameObject>($"Model/Bullet/{BulletType}");
+            //TODO: different speed and damage
+            if (isMissile)
+            {
+                prefab = Resources.Load<GameObject>($"Model/Bullet/");
+            }
+            else
+            {
+                prefab = Resources.Load<GameObject>($"Model/Bullet/");
+            }
+            if(isAntiArmor)
+            {
+                //TODO
+            }
+            
+
             if (prefab != null)
             {
                 Vector3 position = new Vector3((float)bulletPosition.X, (float)bulletPosition.Y, (float)bulletPosition.Z);
@@ -30,18 +42,12 @@ namespace BattleCity
             }
             else
             {
-                Debug.LogError($"Bullet model {BulletType} not found in Resources/Model/Bullet");
+                Debug.LogError($"Bullet model not found in Resources/Model/Bullet");
             }
         }
 
-        public void UpdateBulletPosition(int id, Position bulletPosition)
-        {
-            if (id != Id)
-            {
-                Debug.LogWarning($"Trying to update bullet position for a bullet with id {id}, but this is bullet {Id}.");
-                return;
-            }
-                        
+        public void UpdateBulletPosition(Position bulletPosition)
+        {                        
             BulletPosition = bulletPosition;
 
             if (BulletObject != null)
@@ -57,6 +63,11 @@ namespace BattleCity
                 Debug.LogWarning($"BulletObject is null for bullet with id {Id}. Cannot update position.");
             }
 
+        }
+        public void UpdateBulletPosition(float x, float y, float angle)
+        {
+            Position position = new Position(x, y, angle);
+            UpdateBulletPosition(position);
         }
 
 
