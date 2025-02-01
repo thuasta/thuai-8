@@ -76,7 +76,7 @@ namespace BattleCity
         private void TankAttackEvent(JObject eventJson)
         {
             int tankId = eventJson["data"]["tankId"].ToObject<int>();
-            this.SendCommand(new AttackCommand(tankId));
+            this.SendCommand(new AddAttackCommand(tankId));
 
         }
 
