@@ -16,29 +16,58 @@ on:
   workflow_dispatch:
 
 jobs:
-  activate-unity-license:
+  activate-license:
     runs-on: ubuntu-latest
+    outputs:
+      license-file: ${{ steps.export-license.outputs.licensePath }}
     steps:
       - name: Activate Unity License
         uses: game-ci/unity-request-activation-file@v2
+        id: activation
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
 
       - name: Export License
+        id: export-license
         run: |
           mkdir -p ~/.unity3d
-          cp "$UNITY_LICENSE" ~/.unity3d/Unity_lic.ulf
+          cp "$UNITY_LICENSE_FILE" ~/.unity3d/Unity_lic.ulf
+          mkdir -p ./license
+          license_path="./license/Unity_lic.ulf"
+          cp "$UNITY_LICENSE_FILE" "$license_path"
+          echo "licensePath=$license_path" >> $GITHUB_OUTPUT
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-  client-unity-build:
-    needs: activate-unity-license
+          UNITY_LICENSE_FILE: ${{ steps.activation.outputs.licensePath }}
+
+      - name: Upload License Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: unity-license
+          path: ${{ steps.export-license.outputs.licensePath }}
+
+  build:
+    needs: activate-license
     runs-on: ubuntu-latest
     steps:
-      - uses: game-ci/unity-builder@v4
+      - name: Download License Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: unity-license
+          path: ./license
+
+      - name: Setup License
+        run: |
+          mkdir -p ~/.unity3d
+          cp ./license/Unity_lic.ulf ~/.unity3d/
+
+      - name: Build Project
+        uses: game-ci/unity-builder@v4
         with:
           projectPath: client/unity
           targetPlatform: ${{ matrix.targetPlatform }}
+        env:
+          UNITY_LICENSE: ~/.unity3d/Unity_lic.ulf
 
   client-unity-test:
     if: ${{ github.event_name != 'pull_request' }}
