@@ -46,22 +46,25 @@ jobs:
           name: unity-license
           path: ${{ steps.export-license.outputs.licensePath }}
 
-  build:
+  client-unity-build:
     needs: activate-license
     runs-on: ubuntu-latest
     steps:
       - name: Download License Artifact
+        if: github.event.pull_request.head.repo.full_name == github.repository
         uses: actions/download-artifact@v3
         with:
           name: unity-license
           path: ./license
 
       - name: Setup License
+        if: github.event.pull_request.head.repo.full_name == github.repository
         run: |
           mkdir -p ~/.unity3d
           cp ./license/Unity_lic.ulf ~/.unity3d/
 
       - name: Build Project
+        if: github.event.pull_request.head.repo.full_name == github.repository
         uses: game-ci/unity-builder@v4
         with:
           projectPath: client/unity
