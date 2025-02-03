@@ -225,7 +225,7 @@ namespace BattleCity
                 if (_recordArray[_recordInfo.NowRecordNum].Value<string>("currentTicks") != null &&
                     _recordArray[_recordInfo.NowRecordNum]["messageType"].ToString() == "COMPETITION_UPDATE")
                 {
-                    UpdateTanks((JArray)_recordArray[_recordInfo.NowRecordNum]["data"]["tanks"]);
+                    //UpdateTanks((JArray)_recordArray[_recordInfo.NowRecordNum]["data"]["tanks"]);
                     _recordInfo.NowTick = (int)(_recordArray[_recordInfo.NowRecordNum]["currentTicks"]);
                     JArray events = (JArray)_recordArray[_recordInfo.NowRecordNum]["data"]["events"];
                     if (events != null)
@@ -257,6 +257,7 @@ namespace BattleCity
                         }
                     }
                 }
+                _recordInfo.NowRecordNum++;
             }
         }
 
