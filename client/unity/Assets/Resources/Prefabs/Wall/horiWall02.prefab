@@ -79,6 +79,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ea5ba09f390e91b42a155fcd6e3630bf, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2123396186731073676}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ea5ba09f390e91b42a155fcd6e3630bf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -78047479549529691}
   m_SourcePrefab: {fileID: 100100000, guid: ea5ba09f390e91b42a155fcd6e3630bf, type: 3}
 --- !u!1 &1402072664464288331 stripped
 GameObject:
@@ -107,3 +110,33 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2843622879263689032, guid: ea5ba09f390e91b42a155fcd6e3630bf, type: 3}
+--- !u!114 &-78047479549529691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1402072664464288331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 100bcc9db4f7fc64e95ecc1abca8c97d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_originalMesh: {fileID: 0}
+  m_simplifiedMesh: {fileID: 0}
+  m_bEnablePrefabUsage: 0
+  m_fVertexAmount: 0.6
+  m_strAssetPath: 
+  m_meshSimplifyRoot: {fileID: 0}
+  m_listDependentChildren: []
+  m_bExpandRelevanceSpheres: 1
+  m_aRelevanceSpheres: []
+  m_meshSimplifier: {fileID: 0}
+  m_bGenerateIncludeChildren: 1
+  m_bOverrideRootSettings: 0
+  m_bUseEdgeLength: 1
+  m_bUseCurvature: 1
+  m_bProtectTexture: 1
+  m_bLockBorder: 1
+  m_bDataDirty: 1
+  m_bExcludedFromTree: 0

@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class Position 
 {
-    public double X;
-    public double Y;
-    public double Z;
-    public double Angle;
+    public double X { get; set; }
+    public double Y { get; set; }
+    public double Z { get; set; }
+    public double Angle { get; set; }
 
     public Position(double x, double z, double angle)
     {
-        this.X = x + Constants.POS_BIAS;
+        this.X = x * Constants.FLOOR_LEN + Constants.POS_BIAS;
         this.Y = Constants.YPOS;
-        this.Z = z + Constants.POS_BIAS;
+        this.Z = z * Constants.FLOOR_LEN + Constants.POS_BIAS;
         this.Angle = angle;
     }
     public override bool Equals(object obj)

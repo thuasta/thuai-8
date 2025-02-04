@@ -1,0 +1,367 @@
+{
+    "records": [
+        {
+            "record": [
+                {
+                    "messageType": "STAGE",
+                    "currentTicks": 0,
+                    "targetStage": "REST"
+                }
+            ]
+        },
+        {
+            "record": [
+                {
+                    "messageType": "STAGE",
+                    "currentTicks": 1,
+                    "targetStage": "BATTLE"
+                },
+                {
+                    "messageType": "BATTLE_UPDATE",
+                    "events": [
+                        {
+                            "messageType": "PLAYER_UPDATE_EVENT",
+                            "players": [
+                                {
+                                    "token": "1",
+                                    "weapon": {
+                                        "attackSpeed": 1.5,
+                                        "bulletSpeed": 300,
+                                        "isLaser": false,
+                                        "antiArmor": true,
+                                        "damage": 50,
+                                        "maxBullets": 10,
+                                        "currentBullets": 5
+                                    },
+                                    "armor": {
+                                        "canReflect": true,
+                                        "armorValue": 100,
+                                        "health": 100,
+                                        "gravityField": false,
+                                        "knife": "AVAILABLE",
+                                        "dodgeRate": 0.2
+                                    },
+                                    "skills": [
+                                        {
+                                            "name": "SPEED_UP",
+                                            "maxCooldown": 5,
+                                            "currentCooldown": 2,
+                                            "isActive": true
+                                        }
+                                    ],
+                                    "position": {
+                                        "x": 10,
+                                        "y": 20,
+                                        "angle": 45
+                                    }
+                                },
+                                {
+                                    "token": "2",
+                                    "weapon": {
+                                        "attackSpeed": 1.2,
+                                        "bulletSpeed": 280,
+                                        "isLaser": true,
+                                        "antiArmor": false,
+                                        "damage": 40,
+                                        "maxBullets": 8,
+                                        "currentBullets": 3
+                                    },
+                                    "armor": {
+                                        "canReflect": false,
+                                        "armorValue": 50,
+                                        "health": 80,
+                                        "gravityField": true,
+                                        "knife": "NOT_OWNED",
+                                        "dodgeRate": 0.1
+                                    },
+                                    "skills": [
+                                        {
+                                            "name": "FLASH",
+                                            "maxCooldown": 3,
+                                            "currentCooldown": 0,
+                                            "isActive": false
+                                        }
+                                    ],
+                                    "position": {
+                                        "x": 15,
+                                        "y": 25,
+                                        "angle": 90
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "messageType": "BULLETS_UPDATE_EVENT",
+                            "bullets": [
+                                {
+                                    "no": 1,
+                                    "isMissile": false,
+                                    "isAntiArmor": true,
+                                    "position": {
+                                        "x": 12,
+                                        "y": 22,
+                                        "angle": 30
+                                    },
+                                    "speed": 300,
+                                    "damage": 50,
+                                    "traveledDistance": 15
+                                }
+                            ]
+                        },
+                        {
+                            "messageType": "MAP_UPDATE_EVENT",
+                            "walls": [
+                                {
+                                    "x": 0,
+                                    "y": 0,
+                                    "angle": 0
+                                },
+                                {
+                                    "x": 1,
+                                    "y": 0,
+                                    "angle": 90
+                                },
+                                {
+                                    "x": 2,
+                                    "y": 3,
+                                    "angle": 0
+                                },
+                                {
+                                    "x": 4,
+                                    "y": 5,
+                                    "angle": 90
+                                },
+                                {
+                                    "x": 6,
+                                    "y": 8,
+                                    "angle": 0
+                                },
+                                {
+                                    "x": 9,
+                                    "y": 2,
+                                    "angle": 90
+                                },
+                                {
+                                    "x": 3,
+                                    "y": 9,
+                                    "angle": 0
+                                },
+                                {
+                                    "x": 7,
+                                    "y": 1,
+                                    "angle": 90
+                                },
+                                {
+                                    "x": 5,
+                                    "y": 5,
+                                    "angle": 0
+                                },
+                                {
+                                    "x": 8,
+                                    "y": 4,
+                                    "angle": 90
+                                }
+                            ],
+                            "fences": [],
+                            "traps": [],
+                            "laser": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "record": [
+                {
+                    "messageType": "STAGE",
+                    "currentTicks": 2,
+                    "targetStage": "BATTLE"
+                },
+                {
+                    "messageType": "BATTLE_UPDATE",
+                    "events": [
+                        {
+                            "messageType": "PLAYER_UPDATE_EVENT",
+                            "players": [
+                                {
+                                    "token": "1",
+                                    "weapon": {
+                                        "attackSpeed": 2.0,
+                                        "bulletSpeed": 320,
+                                        "isLaser": true,
+                                        "antiArmor": false,
+                                        "damage": 45,
+                                        "maxBullets": 15,
+                                        "currentBullets": 8
+                                    },
+                                    "armor": {
+                                        "canReflect": false,
+                                        "armorValue": 80,
+                                        "health": 75,
+                                        "gravityField": true,
+                                        "knife": "AVAILABLE",
+                                        "dodgeRate": 0.15
+                                    },
+                                    "skills": [
+                                        {
+                                            "name": "SPEED_UP",
+                                            "maxCooldown": 8,
+                                            "currentCooldown": 5,
+                                            "isActive": false
+                                        }
+                                    ],
+                                    "position": {
+                                        "x": 25,
+                                        "y": 35,
+                                        "angle": 270
+                                    }
+                                },
+                                {
+                                    "token": "2",
+                                    "weapon": {
+                                        "attackSpeed": 1.8,
+                                        "bulletSpeed": 350,
+                                        "isLaser": false,
+                                        "antiArmor": true,
+                                        "damage": 60,
+                                        "maxBullets": 6,
+                                        "currentBullets": 6
+                                    },
+                                    "armor": {
+                                        "canReflect": true,
+                                        "armorValue": 120,
+                                        "health": 90,
+                                        "gravityField": false,
+                                        "knife": "NOT_OWNED",
+                                        "dodgeRate": 0.25
+                                    },
+                                    "skills": [
+                                        {
+                                            "name": "FLASH",
+                                            "maxCooldown": 10,
+                                            "currentCooldown": 10,
+                                            "isActive": false
+                                        }
+                                    ],
+                                    "position": {
+                                        "x": 40,
+                                        "y": 15,
+                                        "angle": 180
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "messageType": "BULLETS_UPDATE_EVENT",
+                            "bullets": [
+                                {
+                                    "no": 2,
+                                    "isMissile": true,
+                                    "isAntiArmor": false,
+                                    "position": {
+                                        "x": 28,
+                                        "y": 32,
+                                        "angle": 315
+                                    },
+                                    "speed": 280,
+                                    "damage": 75,
+                                    "traveledDistance": 42
+                                },
+                                {
+                                    "no": 3,
+                                    "isMissile": false,
+                                    "isAntiArmor": true,
+                                    "position": {
+                                        "x": 37,
+                                        "y": 18,
+                                        "angle": 90
+                                    },
+                                    "speed": 350,
+                                    "damage": 60,
+                                    "traveledDistance": 15
+                                }
+                            ]
+                        },
+                        {
+                            "messageType": "MAP_UPDATE_EVENT",
+                            "walls": [
+                                {
+                                    "x": 0,
+                                    "y": 0,
+                                    "angle": 0
+                                },
+                                {
+                                    "x": 1,
+                                    "y": 0,
+                                    "angle": 90
+                                },
+                                {
+                                    "x": 2,
+                                    "y": 3,
+                                    "angle": 0
+                                },
+                                {
+                                    "x": 4,
+                                    "y": 5,
+                                    "angle": 90
+                                },
+                                {
+                                    "x": 6,
+                                    "y": 8,
+                                    "angle": 0
+                                },
+                                {
+                                    "x": 9,
+                                    "y": 2,
+                                    "angle": 90
+                                },
+                                {
+                                    "x": 3,
+                                    "y": 9,
+                                    "angle": 0
+                                },
+                                {
+                                    "x": 7,
+                                    "y": 1,
+                                    "angle": 90
+                                },
+                                {
+                                    "x": 5,
+                                    "y": 5,
+                                    "angle": 0
+                                },
+                                {
+                                    "x": 8,
+                                    "y": 4,
+                                    "angle": 90
+                                }
+                            ],
+                            "fences": [],
+                            "traps": [],
+                            "laser": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "record": [
+                {
+                    "messageType": "STAGE_CHANGE",
+                    "currentTicks": 3,
+                    "targetStage": "END"
+                },
+                {
+                    "messageType": "BUFF_SELECT",
+                    "token": 1,
+                    "buff": "DESTROY"
+                },
+                {
+                    "messageType": "BUFF_SELECT",
+                    "token": 2,
+                    "buff": "TRAP"
+                }
+            ]
+        }
+    ]
+}

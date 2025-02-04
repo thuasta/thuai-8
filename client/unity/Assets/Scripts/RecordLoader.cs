@@ -12,21 +12,30 @@ namespace BattleCity
 {
     public class RecordLoader : MonoBehaviour, IController
     {
-        private Tank mTanks;
-        private Bullet mBullets;
+        private Tanks mTanks;
+        private Bullets mBullets;
         private Map CityMap;
 
         private JArray _recordArray;
         private string _recordFile;
         public RecordInfo _recordInfo;
 
+        private bool BattleStart;
+
 
         // Start is called before the first frame update
         void Start()
         {
-            mTanks = this.GetModel<Tank>();
-            mBullets = this.GetModel<Bullet>();
+            //model
+            mTanks = this.GetModel<Tanks>();
+            mBullets = this.GetModel<Bullets>();
             CityMap = this.GetModel<Map>();
+
+            //UI
+
+            //record
+            BattleStart = true;
+            _recordInfo = this.GetModel<RecordInfo>();
 
             FileLoaded fileLoaded = GameObject.Find("RecordReader").GetComponent<FileLoaded>();
             _recordFile = fileLoaded.File;
@@ -36,6 +45,7 @@ namespace BattleCity
                 return;
             }
             _recordArray = LoadRecordData();
+            _recordInfo.MaxTick = (int)_recordArray.Last["currentTicks"];
 
         }
 
@@ -58,27 +68,147 @@ namespace BattleCity
             return recordArray;
         }
 
+
+
         #region Event Definition
+
+        private void UpdateMap(JObject MapData)
+        {
+            if(BattleStart)
+            {
+                if (MapData == null || MapData.Count == 0)
+                {
+                    Debug.LogError("MapData is null or empty!");
+                    return;
+                }
+
+                JArray wallsArray = (JArray)MapData["walls"];
+                if (wallsArray == null)
+                {
+                    Debug.LogWarning("No walls data found in the record!");
+                }
+
+                foreach (var wall in wallsArray)
+                {
+                    // 提取 wall 的属性数据
+                    float x = wall["x"]?.Value<float>() ?? 0f;
+                    float y = wall["y"]?.Value<float>() ?? 0f;
+                    float angle = wall["angle"]?.Value<float>() ?? 0f;
+
+                    Debug.Log($"Wall Position: x={x}, y={y}, angle={angle}");
+
+                    // 创建 Position 对象并添加到 cityMap
+                    Position position = new Position(x, y, angle);
+                    CityMap.AddWall(position);
+                }
+
+                int? mapSize = MapData["mapSize"].ToObject<int>();
+                CityMap.setSize(mapSize);
+
+                this.SendCommand(new GenerateMapCommand());
+                BattleStart = false;
+            }
+            else
+            {
+                this.SendCommand(new UpdateMapCommand(MapData));
+            }
+            
+            
+        }
 
         private void UpdateTanks(JArray tanks)
         {
             if (tanks is null)
                 return;
 
-            foreach (JObject tank in tanks)
+            foreach (JObject tempTank in tanks)
             {
-                int tankId = tank["tankId"].ToObject<int>();
-                int ammo = tank["ammo"].ToObject<int>();
-                this.SendCommand(new AmmoChangeCommand(tankId, 0, ammo));
+                int tankId = tempTank["token"].ToObject<int>();
+                TankModel tank = mTanks.GetTank(tankId);
+
+                JToken WeaponData = tempTank["weapon"];
+                JToken ArmorData = tempTank["armor"];
+                JToken SkillsData = tempTank["skills"];
+                JToken PositionData = tempTank["position"];
+                this.SendCommand(new UpdateWeaponCommand(tank, WeaponData));
+                this.SendCommand(new UpdateArmorCommand(tank, ArmorData));
+                this.SendCommand(new UpdateSkillsCommand(tank, SkillsData));
+                this.SendCommand(new UpdatePositionCommand(tank, PositionData));
             }
         }
 
-        private void TankAttackEvent(JObject eventJson)
+        private void UpdateBullets(JArray bullets)
         {
-            int tankId = eventJson["data"]["tankId"].ToObject<int>();
-            this.SendCommand(new AttackCommand(tankId));
+            if (bullets is null)
+                return;
+            HashSet<int> currentBulletIds = new HashSet<int>();
+
+            foreach (JObject BulletData in bullets)
+            {
+                int bulletId = BulletData["no"].ToObject<int>();
+                currentBulletIds.Add(bulletId);
+                BulletModel bullet = mBullets.GetBullet(bulletId);
+                JToken PositionData = BulletData["position"];
+                if (bullet != null)
+                {                    
+                    this.SendCommand(new UpdatePositionCommand(bullet, PositionData));
+                }
+                else
+                {
+                    this.SendCommand(new AddBulletCommand(mBullets, BulletData));
+                }
+            }
+
+            foreach(int id in mBullets.GetBulletIds())
+            {
+                if (!currentBulletIds.Contains(id)) 
+                {
+                    mBullets.DelBulletModel(id); 
+                }
+            }
+        }
+
+        private void BuffActive(JObject ActiveData)
+        {
+            if (ActiveData.TryGetValue("playerToken", out JToken tokenObj) && tokenObj.ToString() is string tokenString)
+            {
+                if (int.TryParse(tokenString, out int playerId))
+                {
+                    string buffName = ActiveData["buffName"].ToObject<string>();
+                    this.SendCommand(new BuffActiveCommand(mTanks.GetTank(playerId),buffName));
+                }
+                else
+                {
+                    Debug.LogError("cannot turn string playerToken into int !");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("No actived buff data found in the record!");
+            }
+        }
+
+        private void BuffDisactive(JObject ActiveData)
+        {
+            if (ActiveData.TryGetValue("playerToken", out JToken tokenObj) && tokenObj.ToString() is string tokenString)
+            {
+                if (int.TryParse(tokenString, out int playerId))
+                {
+                    string buffName = ActiveData["buffName"].ToObject<string>();
+                    this.SendCommand(new BuffDisactiveCommand(mTanks.GetTank(playerId), buffName));
+                }
+                else
+                {
+                    Debug.LogError("cannot turn string playerToken into int !");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("No actived buff data found in the record!");
+            }
 
         }
+
 
         #endregion
 
@@ -95,7 +225,7 @@ namespace BattleCity
                 if (_recordArray[_recordInfo.NowRecordNum].Value<string>("currentTicks") != null &&
                     _recordArray[_recordInfo.NowRecordNum]["messageType"].ToString() == "COMPETITION_UPDATE")
                 {
-                    UpdateTanks((JArray)_recordArray[_recordInfo.NowRecordNum]["data"]["tanks"]);
+                    //UpdateTanks((JArray)_recordArray[_recordInfo.NowRecordNum]["data"]["tanks"]);
                     _recordInfo.NowTick = (int)(_recordArray[_recordInfo.NowRecordNum]["currentTicks"]);
                     JArray events = (JArray)_recordArray[_recordInfo.NowRecordNum]["data"]["events"];
                     if (events != null)
@@ -105,22 +235,36 @@ namespace BattleCity
                             JObject eventJsonInfo = (JObject)eventJson["Json"];
                             switch (eventJson["Json"]["eventType"].ToString())
                             {
-                                case "PLAYER_ATTACK":
-                                    TankAttackEvent(eventJsonInfo);
+                                case "BULLETS_UPDATE_EVENT":
+                                    UpdateBullets((JArray)eventJsonInfo["bullets"]);
+                                    break;
+                                case "PLAYER_UPDATE_EVENT":
+                                    UpdateTanks((JArray)eventJsonInfo["player"]);
+                                    break;
+                                case "MAP_UPDATE_EVENT":
+                                    UpdateMap(eventJsonInfo);
+                                    break;
+                                case "BUFF_ACTIVE_EVENT":
+                                    BuffActive(eventJsonInfo);
+                                    break;
+                                case "BUFF_DISACTIVE_EVENT":
+                                    BuffDisactive(eventJsonInfo);
                                     break;
                                 default:
+                                    Console.WriteLine("Unknown event type: " + eventJson["Json"]["eventType"].ToString());
                                     break;
                             }
                         }
                     }
                 }
+                _recordInfo.NowRecordNum++;
             }
         }
 
         private void FixedUpdate()
         {
 
-            if (!(_recordInfo.NowPlayState == PlayState.Play && _recordInfo.NowTick < _recordInfo.MaxTick))
+            if (!(_recordInfo.NowPlayState == PlayState.Battle && _recordInfo.NowTick < _recordInfo.MaxTick))
             {
                 return;
             }

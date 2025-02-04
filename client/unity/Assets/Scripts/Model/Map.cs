@@ -8,20 +8,30 @@ namespace BattleCity
 {
     public class Map : AbstractModel
     {
-        public int MapSize;
-        public List<Wall> CityWall;
-        public List<Wall> CityFence;
-        public List<GameObject> CityFloors;
+        public int MapSize { get; set; }
+        public List<Wall> CityWall { get; set; }
+        public List<Wall> CityFence { get; set; }
+
+        public List<Trap> Traps { get; set; }
+        public List<GameObject> CityFloors { get; set; }
         protected override void OnInit()
         {
             CityWall = new List<Wall>();
             CityFence = new List<Wall>();
             CityFloors = new List<GameObject>();
+            Traps = new List<Trap>();
         }
 
-        public void setSize(int mapSize)
+        public void setSize(int? mapSize)
         {
-            MapSize = mapSize;
+            if (mapSize != null)
+            {
+                MapSize = (int)mapSize;
+            }
+            else
+            {
+                MapSize = Constants.MAP_SIZE;
+            }
         }
         
         //用于初始创建地图时增加wall
@@ -82,6 +92,10 @@ namespace BattleCity
             Position position = new(x, y, angle);
             RemoveWall(position);
         }
+        public void RemoveWall(Wall wall)
+        {
+            RemoveWall(wall.wallPos);
+        }
 
         //用于移除fence
         public void RemoveFence(Position wallPos)
@@ -103,6 +117,43 @@ namespace BattleCity
         {
             Position position = new(x, y, angle);
             RemoveFence(position);
+        }
+
+        public void RemoveFence(Wall wall)
+        {
+            RemoveFence(wall.wallPos);
+        }
+
+        public void AddTrap(Position trapPos, bool isActive = false)
+        {
+            Trap trap = new(trapPos,isActive);
+            Traps.Add(trap);
+        }
+
+        public void UpdateTrap(Trap trap, bool isActive)
+        {
+            if (trap == null)
+            {
+                trap.isActive = isActive;
+            }
+        }
+        public void RemoveTrap(Position position)
+        {
+            Trap trap = Traps.Find(w => w.trapPos == position);
+            if (trap != null)
+            {
+                Traps.Remove(trap);
+                trap.RemoveTrap();
+            }
+            else
+            {
+                Debug.LogError("The Trap is not found!");
+            }
+        }
+
+        public void RemoveTrap(Trap trap)
+        {
+            RemoveTrap(trap.trapPos);
         }
 
     }

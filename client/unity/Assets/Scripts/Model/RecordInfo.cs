@@ -8,11 +8,10 @@ namespace BattleCity
 {
     public enum PlayState
     {
-        Prepare,
-        Play,
+        Rest,
+        Battle,
         Pause,
         End,
-        Jump
     }
 
     public class RecordInfo : AbstractModel

@@ -32,7 +32,7 @@ public partial class Battle
                     double endXpos = e.Player.PlayerPosition.Xpos - delta_x;
                     double endYpos = e.Player.PlayerPosition.Ypos - delta_y;
                     Position startPos = new(e.Player.PlayerPosition.Xpos, e.Player.PlayerPosition.Ypos, e.Player.PlayerPosition.Angle - Math.PI);
-                    Position endPos = new(endXpos, endYpos);
+                    Position endPos = new(endXpos, endYpos, e.Player.PlayerPosition.Angle);
                     Position? finalPos = GetPlayerFinalPos(startPos, endPos);
                     if (finalPos != null)
                     {

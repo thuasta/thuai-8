@@ -7,20 +7,15 @@ namespace BattleCity
 {
     public class MoveTankCommand : AbstractCommand
     {
-        private readonly int _tankId;
-        private readonly int _speed;
-        private readonly float _angle;
+        TankModel player;
 
-        public MoveTankCommand(int tankId, int speed, float angle)
+        public MoveTankCommand(TankModel tank)
         {
-            _tankId = tankId;
-            _speed = speed;
-            _angle = angle;
+            player = tank;
         }
 
         protected override void OnExecute()
         {
-            TankModel player = Tank.GetTanks()[_tankId];
             player.TankObject.GetComponent<Animator>().Play("Move");
             //TankObject.transform.rotation = Vector3.Lerp(transform.position, targetPosition.position, angle * Time.deltaTime);
             //TankObject.transform.position = Vector3.Lerp(transform.position, targetPosition.position, speed * Time.deltaTime);
