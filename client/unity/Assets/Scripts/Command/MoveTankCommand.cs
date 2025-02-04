@@ -7,16 +7,15 @@ namespace BattleCity
 {
     public class MoveTankCommand : AbstractCommand
     {
-        private readonly int _tankId;
+        TankModel player;
 
-        public MoveTankCommand(int tankId)
+        public MoveTankCommand(TankModel tank)
         {
-            _tankId = tankId;
+            player = tank;
         }
 
         protected override void OnExecute()
         {
-            TankModel player = Tank.GetTanks()[_tankId];
             player.TankObject.GetComponent<Animator>().SetBool("IsMoving", true);
         }
     }

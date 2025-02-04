@@ -7,18 +7,19 @@ namespace BattleCity
 {
     public class DestroySkillCommand : AbstractCommand
     {
-        private readonly int _tankId;
         private readonly string _skillId;
+        TankModel player;
 
-        public DestroySkillCommand(int tankId, string skillId)
+
+
+        public DestroySkillCommand(string skillId, TankModel player)
         {
-            _tankId = tankId;
             _skillId = skillId;
+            this.player = player;
         }
 
         protected override void OnExecute()
         {
-            TankModel player = Tank.GetTanks()[_tankId];
             player.TankObject.GetComponent<Animator>().Play(_skillId + "Destroy");
         }
     }

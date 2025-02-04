@@ -42,13 +42,15 @@ public class GenerateMapCommand : AbstractCommand
                 Vector3 position = new Vector3((float)i * Constants.FLOOR_LEN + Constants.POS_BIAS, (float)(Constants.YPOS + Constants.Y_BIAS), (float)j * Constants.FLOOR_LEN + Constants.POS_BIAS);
                 int randomIndex = Random.Range(0, floorPrefabNames.Length);
                 // 根据索引加载对应的预制体
-                string prefabPath = "Prefabs/Floor" + floorPrefabNames[randomIndex];
+                string prefabPath = "Prefabs/Floor/" + floorPrefabNames[randomIndex];
                 GameObject floor = Resources.Load<GameObject>(prefabPath);
 
                 if (floor != null)
                 {
                    GameObject floorObject =  Object.Instantiate(floor, position, Quaternion.identity);
                    floorObject.transform.SetParent(wallController.transform);
+                   floorObject.transform.localScale *= 20f;
+
                    map.CityFloors.Add(floorObject);
                 }
                 else

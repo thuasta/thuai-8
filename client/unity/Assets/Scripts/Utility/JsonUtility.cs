@@ -129,37 +129,31 @@ public class JsonUtility
             if (records != null && records.Count > 0)
             {
                 string messageType = records[0]["messageType"].ToString();
-                if (messageType != null && messageType == "MAP" && records.Count > 1)
+                foreach (JArray recordInfo in records)
                 {
-                    JValue tick = (JValue)records[1]["currentTicks"];
+                    JValue tick;
+                    if (recordInfo[0]["messageType"].ToString()=="STAGE")
+                    {
+                        tick = (JValue)recordInfo[0]["currentTicks"];
+                    }
+                    else
+                    {
+                        tick = (JValue)(-2);
+                    }
+                    
                     if (tick != null)
                     {
                         // The first tick
                         indexAndTicks[nowRecordIndex].Item2 = (int)tick;
+                        break;
                     }
                     else
                     {
-                        indexAndTicks[nowRecordIndex].Item2 = -1;
-                    }
-                }
-                else
-                {
-                    foreach (JToken recordInfo in records)
-                    {
-                        JValue tick = (JValue)recordInfo["currentTicks"];
-                        if (tick != null)
-                        {
-                            // The first tick
-                            indexAndTicks[nowRecordIndex].Item2 = (int)tick;
-                            break;
-                        }
-                        else
-                        {
-                            indexAndTicks[nowRecordIndex].Item2 = -2;
-                        }
+                        indexAndTicks[nowRecordIndex].Item2 = -2;
                     }
                 }
             }
+            
             nowRecordIndex++;
         }
         // Rearrange the order of record file according to their first ticks

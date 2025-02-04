@@ -12,25 +12,38 @@ namespace BattleCity
     {
         protected override void Init()
         {
-            this.RegisterModel(new Tank());
-            this.RegisterModel(new Bullet());
-            this.RegisterModel(new AmmoText());
-            // this.RegisterSystem(new ScoreSystem());
-            this.RegisterModel(new CountdownText());
-            this.RegisterModel(new HealthShow());
-            this.RegisterModel(new ArmorShow());
-            this.RegisterModel(new BuffShow());
-            this.RegisterModel(new ScoresShow());
-            this.RegisterModel(new RoundsShow());
-            this.RegisterModel(new SkillsShow());
-            this.RegisterModel(new Map());
-
             // 获取当前活动场景 
-            Scene currentScene = SceneManager.GetActiveScene(); 
+            Scene currentScene = SceneManager.GetActiveScene();
             // 获取场景名称 
-            string sceneName = currentScene.name; 
+            string sceneName = currentScene.name;
+
+            
+            // this.RegisterModel(new AmmoText());
+            // this.RegisterSystem(new ScoreSystem());
+            // this.RegisterModel(new CountdownText());
+            if (sceneName == "Game")
+            {
+                this.RegisterModel(new HealthShow());
+                this.RegisterModel(new ArmorShow());
+                this.RegisterModel(new BuffShow());
+                this.RegisterModel(new ScoresShow());
+                this.RegisterModel(new RoundsShow());
+                this.RegisterModel(new SkillsShow());
+            }
+                
+            if (sceneName == "test_Game")
+            {
+                this.RegisterModel(new Tanks());
+                this.RegisterModel(new Bullets());
+                this.RegisterModel(new Map());
+                this.RegisterModel(new RecordInfo());
+            }
+                
             if(sceneName == "End")
+            {
                 this.RegisterModel(new EndInfo());
+            }
+                
 
         }
         
