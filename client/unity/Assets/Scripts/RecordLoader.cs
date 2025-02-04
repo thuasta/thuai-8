@@ -90,14 +90,14 @@ namespace BattleCity
 
                 foreach (var wall in wallsArray)
                 {
-                    // ÌáÈ¡ wall µÄÊôĞÔÊı¾İ
+                    // æå– wall çš„å±æ€§æ•°æ®
                     float x = wall["x"]?.Value<float>() ?? 0f;
                     float y = wall["y"]?.Value<float>() ?? 0f;
                     float angle = wall["angle"]?.Value<float>() ?? 0f;
 
                     Debug.Log($"Wall Position: x={x}, y={y}, angle={angle}");
 
-                    // ´´½¨ Position ¶ÔÏó²¢Ìí¼Óµ½ cityMap
+                    // åˆ›å»º Position å¯¹è±¡å¹¶æ·»åŠ åˆ° cityMap
                     Position position = new Position(x, y, angle);
                     CityMap.AddWall(position);
                 }
@@ -206,7 +206,6 @@ namespace BattleCity
             {
                 Debug.LogWarning("No actived buff data found in the record!");
             }
-
         }
 
 

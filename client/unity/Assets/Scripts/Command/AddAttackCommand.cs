@@ -5,22 +5,20 @@ using UnityEngine;
 
 namespace BattleCity
 {
-    public class AttackCommand : AbstractCommand
+    public class AddAttackCommand : AbstractCommand
     {
         private readonly int _tankId;
 
-        public AttackCommand(int tankId)
+        public AddAttackCommand(int tankId)
         {
             _tankId = tankId;
         }
 
         protected override void OnExecute()
         {
-            /*
             TankModel player = Tank.GetTanks()[_tankId];
-            Bullet.AddBulletModel(Bullet.Count() + 1, player.Position, player.Angle, "Bullet");
-            player.TankObject.GetComponent<Animator>().Play("TankAttack");
-            */
+            int t_IsAttacking = player.TankObject.GetComponent<Animator>().GetInteger("IsAttacking");
+            player.TankObject.GetComponent<Animator>().SetInteger("IsAttacking", t_IsAttacking + 1);
         }
     }
 }
