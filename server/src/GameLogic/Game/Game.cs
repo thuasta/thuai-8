@@ -32,7 +32,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
 
     public int WaitingTick { get; private set; } = 0;
 
-    private readonly ILogger _logger = 
+    private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Game");
     private readonly object _lock = new();
 
@@ -69,7 +69,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     {
         try
         {
-            lock(_lock)
+            lock (_lock)
             {
                 RunningBattle?.Tick();
                 StageControl();
@@ -98,12 +98,12 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
                     Stage = GameStage.PreparingGame;
                 }
             }
-        } 
+        }
         else if (Stage == GameStage.PreparingGame)
         {
             Initialize();
             Stage = GameStage.PreparingBattle;
-        } 
+        }
         else if (Stage == GameStage.PreparingBattle)
         {
             if (BattleNumber < GameSettings.BattleCount || NeedAdditionalBattle())
@@ -111,7 +111,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
                 RunningBattle = new Battle(GameSettings, AllPlayers);
                 Stage = GameStage.InBattle;
             }
-            else 
+            else
             {
                 Stage = GameStage.Finished;
             }

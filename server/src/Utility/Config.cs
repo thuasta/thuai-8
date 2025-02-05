@@ -69,7 +69,7 @@ public record Config
     /// <summary>
     /// The game settings.
     /// </summary>
-    public record GameSettings(int TPS=20, int ACT=200, int MBT=2400, int MPC=2, int PWT=200, int BC=9)
+    public record GameSettings(int TPS = 20, int ACT = 200, int MBT = 2400, int MPC = 2, int PWT = 200, int BC = 9)
     {
         /// <summary>
         /// Literally, ticks per second.
@@ -92,7 +92,7 @@ public record Config
         /// <remarks>
         /// Doesn't affect disconnection in game.
         /// </remarks>
-        public int MinimumPlayerCount { get; init; } = MPC; 
+        public int MinimumPlayerCount { get; init; } = MPC;
 
         /// <summary>
         /// Ticks to wait before the <see cref="GameLogic.Game"/> 

@@ -61,4 +61,4 @@ public record playerType
         [JsonPropertyName("angle")]
         public double angle { get; set; }
     }
-} 
+}

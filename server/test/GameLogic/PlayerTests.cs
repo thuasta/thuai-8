@@ -90,7 +90,8 @@ public class PlayerTests
         Player player = new("", 0);
         bool eventInvoked = false;
         MoveDirection? direction = null;
-        player.PlayerMoveEvent += (sender, args) => {
+        player.PlayerMoveEvent += (sender, args) =>
+        {
             eventInvoked = true;
             direction = args.Movedirection;
         };
@@ -123,7 +124,8 @@ public class PlayerTests
         Player player = new("", 0);
         bool eventInvoked = false;
         TurnDirection? direction = null;
-        player.PlayerTurnEvent += (sender, args) => {
+        player.PlayerTurnEvent += (sender, args) =>
+        {
             eventInvoked = true;
             direction = args.Turndirection;
         };
@@ -155,7 +157,8 @@ public class PlayerTests
         // Arrange.
         Player player = new("", 0);
         bool eventInvoked = false;
-        player.PlayerAttackEvent += (sender, args) => {
+        player.PlayerAttackEvent += (sender, args) =>
+        {
             eventInvoked = true;
         };
 

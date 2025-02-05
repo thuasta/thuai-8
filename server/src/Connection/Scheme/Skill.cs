@@ -2,16 +2,16 @@ using System.Text.Json.Serialization;
 
 namespace Thuai.Server.Connection;
 public record Skill
-    {
-        [JsonPropertyName("name")]
-        public string Name { get; init; } = "";
+{
+    [JsonPropertyName("name")]
+    public string Name { get; init; } = "";
 
-        [JsonPropertyName("maxCooldown")]
-        public int MaxCooldown { get; init; } = 0;
+    [JsonPropertyName("maxCooldown")]
+    public int MaxCooldown { get; init; } = 0;
 
-        [JsonPropertyName("currentCooldown")]
-        public int CurrentCooldown { get; init; } = 0;
+    [JsonPropertyName("currentCooldown")]
+    public int CurrentCooldown { get; init; } = 0;
 
-        [JsonPropertyName("isActive")]
-        public bool IsActive { get; init; }
-    }
+    [JsonPropertyName("isActive")]
+    public bool IsActive { get; init; }
+}

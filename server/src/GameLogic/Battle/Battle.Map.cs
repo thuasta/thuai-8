@@ -4,7 +4,7 @@ namespace Thuai.Server.GameLogic;
 
 public partial class Battle
 {
-    private Map? Map = null;
+    public Map? Map { get; private set; }
 
     private MapGenerator MapGenerator = new();
 

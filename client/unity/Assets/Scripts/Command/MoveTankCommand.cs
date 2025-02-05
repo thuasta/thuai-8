@@ -16,9 +16,7 @@ namespace BattleCity
 
         protected override void OnExecute()
         {
-            player.TankObject.GetComponent<Animator>().Play("Move");
-            //TankObject.transform.rotation = Vector3.Lerp(transform.position, targetPosition.position, angle * Time.deltaTime);
-            //TankObject.transform.position = Vector3.Lerp(transform.position, targetPosition.position, speed * Time.deltaTime);
+            player.TankObject.GetComponent<Animator>().SetBool("IsMoving", true);
         }
     }
 }

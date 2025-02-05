@@ -26,8 +26,8 @@ channels:
     messages:
       Error:
         $ref: '#/components/messages/Error' # 错误信息
-      StageChange:
-        $ref: '#/components/messages/StageChange' # 阶段切换
+      StageInfo:
+        $ref: '#/components/messages/StageInfo' # 阶段切换
       BattleUpdate:
         $ref: '#/components/messages/BattleUpdate' # 战斗信息更新
       BuffSelect:
@@ -63,7 +63,7 @@ operations:
       $ref: '#/channels/~1competition~1Record'
     messages:
       - $ref: '#/channels/~1competition~1Record/messages/Error' # 错误信息
-      - $ref: '#/channels/~1competition~1Record/messages/StageChange' # 阶段切换
+      - $ref: '#/channels/~1competition~1Record/messages/StageInfo' # 阶段切换
       - $ref: '#/channels/~1competition~1Record/messages/BattleUpdate' # 战斗信息更新
       - $ref: '#/channels/~1competition~1Record/messages/BuffSelect' # 加成选择
 
@@ -191,20 +191,23 @@ components:
             items:
               $ref: '#/components/schemas/BuffName'
     
-    StageChange:
-      title: "StageChange"
+    StageInfo:
+      title: "StageInfo"
       payload:
         type: object
         additionalProperties: false
         required:
           - messageType
           - targetStage
+          - currentTicks
         properties:
           messageType:
             type: string
             const: STAGE_CHANGE
           targetStage:
             $ref: '#/components/schemas/Stage'
+          currentTicks:
+            type: integer
 
     BattleUpdate:
       title: "BattleUpdate"
@@ -213,15 +216,12 @@ components:
         additionalProperties: false
         required:
           - messageType
-          - currentTicks
           - players
           - events
         properties:
           messageType:
             type: string
             const: BATTLE_UPDATE
-          currentTicks:
-            type: integer
           players:
             type: array
             items:
@@ -242,15 +242,12 @@ components:
         additionalProperties: false
         required:
           - messageType
-          - currentTicks
           - token
           - buff
         properties:
           messageType:
             type: string
             const: BUFF_SELECT
-          currentTicks:
-            type: integer
           token:
             type: string
           buff:
@@ -293,9 +290,9 @@ components:
       additionalProperties: false
       properties:
         attackSpeed:
-          type: number  # 攻速
+          type: integer  # 攻速
         bulletSpeed:
-          type: number  # 子弹速度
+          type: integer  # 子弹速度
         isLaser: # 激光
           type: boolean
         antiArmor: # 破甲
