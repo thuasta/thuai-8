@@ -7,16 +7,15 @@ namespace BattleCity
 {
     public class BattleWinCommand : AbstractCommand
     {
-        private readonly int _tankId;
+        private TankModel player;
 
-        public BattleWinCommand(int tankId)
+        public BattleWinCommand(TankModel tank)
         {
-            _tankId = tankId;
+            player = tank;
         }
 
         protected override void OnExecute()
         {
-            TankModel player = Tank.GetTanks()[_tankId];
             player.TankObject.GetComponent<Animator>().SetTrigger("BattleEnd");
         }
     }

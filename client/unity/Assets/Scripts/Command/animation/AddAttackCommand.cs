@@ -7,16 +7,15 @@ namespace BattleCity
 {
     public class AddAttackCommand : AbstractCommand
     {
-        private readonly int _tankId;
+        private TankModel player;
 
-        public AddAttackCommand(int tankId)
+        public AddAttackCommand(TankModel tank)
         {
-            _tankId = tankId;
+            player = tank;
         }
 
         protected override void OnExecute()
         {
-            TankModel player = Tank.GetTanks()[_tankId];
             int t_IsAttacking = player.TankObject.GetComponent<Animator>().GetInteger("IsAttacking");
             player.TankObject.GetComponent<Animator>().SetInteger("IsAttacking", t_IsAttacking + 1);
         }

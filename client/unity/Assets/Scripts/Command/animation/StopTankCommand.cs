@@ -7,20 +7,15 @@ namespace BattleCity
 {
     public class StopTankCommand : AbstractCommand
     {
-        private readonly int _tankId;
-        private readonly int _speed;
-        private readonly float _angle;
+        private TankModel player;
 
-        public StopTankCommand(int tankId, int speed, float angle)
+        public StopTankCommand(TankModel tank)
         {
-            _tankId = tankId;
-            _speed = speed;
-            _angle = angle;
+            player = tank;
         }
 
         protected override void OnExecute()
         {
-            TankModel player = Tank.GetTanks()[_tankId];
             player.TankObject.GetComponent<Animator>().SetBool("IsMoving", false);
         }
     }
