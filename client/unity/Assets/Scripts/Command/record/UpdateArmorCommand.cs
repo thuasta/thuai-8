@@ -28,17 +28,21 @@ public class UpdateArmorCommand : AbstractCommand
                 int health = ArmorData["health"].ToObject<int>();
                 bool gravityField = ArmorData["gravityField"].ToObject<bool>();
                 string knife = ArmorData["knife"].ToString();
-                float dodgeRate = ArmorData["dadgeRate"].ToObject<float>();
+                float dodgeRate = ArmorData["dodgeRate"].ToObject<float>();
                 player.TankArmor.UpdateArmor(canReflect, armorValue, health, gravityField, knife, dodgeRate);
+
+                this.SendCommand(new HealthChangeCommand(player.Id, health));
+                this.SendCommand(new ArmorValueChangeCommand(player.Id, armorValue));
+                this.SendCommand(new ArmorTypeChangeCommand(player.Id, canReflect));
             }
             catch
             {
-                Console.WriteLine($"No armor data found for tank {player.Id}");
+                Debug.LogError($"No armor data found for tank {player.Id}");
             }
         }
         else
         {
-            Console.WriteLine($"No armor data found for tank {player.Id}");
+            Debug.LogWarning($"No armor data found for tank {player.Id}");
         }
     }
 }

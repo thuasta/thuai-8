@@ -31,16 +31,17 @@ public class UpdateWeaponCommand : AbstractCommand
                 int maxBullets = WeaponData["maxBullets"].ToObject<int>();
                 int currentBullets = WeaponData["currentBullets"].ToObject<int>();
                 player.TankWeapon.UpdateWeapon(attackSpeed, bulletSpeed, isLaser, antiArmor, damage, maxBullets, currentBullets);
-
+                
+                this.SendCommand(new AmmoChangeCommand(player.Id,currentBullets));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error parsing weapon data for tank {player.Id}: {ex.Message}");
+                Debug.LogError($"Error parsing weapon data for tank {player.Id}: {ex.Message}");
             }
         }
         else
         {
-            Console.WriteLine($"No weapon data found for tank {player.Id}");
+            Debug.LogWarning($"No weapon data found for tank {player.Id}");
         }
     }
 }

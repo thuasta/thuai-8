@@ -48,12 +48,12 @@ public class UpdatePositionCommand : AbstractCommand
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error parsing position data for tank or bullet: {ex.Message}");
+                Debug.LogError($"Error parsing position data for tank or bullet: {ex.Message}");
             }
         }
         else
         {
-            Console.WriteLine($"No position data found for tank or bullet");
+            Debug.LogWarning($"No position data found for tank or bullet");
         }
     }
 }

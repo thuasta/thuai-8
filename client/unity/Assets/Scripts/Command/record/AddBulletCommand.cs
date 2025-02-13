@@ -12,13 +12,13 @@ public class AddBulletCommand : AbstractCommand
     Bullets bullets;
     JToken bulletData;
 
-    public AddBulletCommand(Bullets bullets, JToken bullet)
+    public AddBulletCommand(JToken bullet)
     {
-        this.bullets = bullets;
         bulletData = bullet;
     }
     protected override void OnExecute()
     {
+        bullets = this.GetModel<Bullets>();
         if (bulletData != null)
         {
             try
@@ -41,12 +41,12 @@ public class AddBulletCommand : AbstractCommand
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error parsing bullet data: {ex.Message}");
+                Debug.LogError($"Error parsing bullet data: {ex.Message}");
             }
         }
         else
         {
-            Console.WriteLine($"No bullet data");
+            Debug.LogWarning($"No bullet data");
         }
     }
 }

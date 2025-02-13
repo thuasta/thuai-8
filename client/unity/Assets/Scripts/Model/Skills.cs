@@ -43,11 +43,12 @@ namespace BattleCity
             skills = new List<Skill>();
         }
 
-        public void UpdateSkill(string skillName, int maxCooldown, int currentCooldown, bool isActive)
+        public bool UpdateSkill(string skillName, int maxCooldown, int currentCooldown, bool isActive)
         {
             if (!Enum.TryParse(typeof(SkillName), skillName, true, out var result))
             {
-                throw new ArgumentException($"Invalid skill name: {skillName}");
+                Debug.LogError("this skill is invaild: " + skillName);
+                return false; 
             }
             SkillName skillEnum = (SkillName)result;
             Skill existingSkill = skills.Find(skill => skill.name == skillEnum);
@@ -64,6 +65,7 @@ namespace BattleCity
                 Skill newSkill = new Skill(skillEnum, maxCooldown, currentCooldown, isActive);
                 skills.Add(newSkill);
             }
+            return true;
         }
 
         

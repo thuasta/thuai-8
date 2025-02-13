@@ -20,11 +20,11 @@ namespace BattleCity
             //TODO: different speed and damage
             if (isMissile)
             {
-                prefab = Resources.Load<GameObject>($"Model/Bullet/");
+                prefab = Resources.Load<GameObject>($"Model/Bullet/Bullet");
             }
             else
             {
-                prefab = Resources.Load<GameObject>($"Model/Bullet/");
+                prefab = Resources.Load<GameObject>($"Model/Bullet/Bullet");
             }
             if(isAntiArmor)
             {
@@ -70,7 +70,16 @@ namespace BattleCity
             UpdateBulletPosition(position);
         }
 
+        public void SelfDestruct()
+        {
+            if (BulletObject != null)
+            {
+                Object.Destroy(BulletObject);
+                BulletObject = null;
 
+                // - ²¥·Å±¬Õ¨ÌØÐ§
+            }
+        }
     }
 }
 

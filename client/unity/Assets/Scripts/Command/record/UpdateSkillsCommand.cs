@@ -33,7 +33,7 @@ public class UpdateSkillsCommand : AbstractCommand
                 }
                 catch
                 {
-                    Console.WriteLine($"No skill data found for tank {player.Id}");
+                    Debug.LogWarning($"No skill data found for tank {player.Id}");
                 }
             }
         }

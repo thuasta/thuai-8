@@ -13,6 +13,11 @@ namespace BattleCity
         {
             TankDict = new();
         }
+
+        public int GetPlayerNum()
+        {
+            return TankDict.Count;
+        }
         
         public TankModel GetTank(int id)
         {
@@ -28,6 +33,13 @@ namespace BattleCity
             }
 
             TankDict[tank.Id] = tank;
+            return true;
+        }
+
+        public bool AddTankModel(int id)
+        {
+            TankModel tank = new TankModel(id);
+            AddTankModel(tank);
             return true;
         }
 
