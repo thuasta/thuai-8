@@ -106,7 +106,7 @@ public class Map
     }
 }
 
-class MapGenerator
+public class MapGenerator
 {
     public List<Map> GenerateMaps(int count, int width, int height)
     {
