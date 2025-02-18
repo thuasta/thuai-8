@@ -25,6 +25,13 @@ namespace BattleCity
             return tank;
         }
 
+        public Dictionary<int, TankModel> GetTankDictCopy()
+        {
+            return TankDict != null
+                ? new Dictionary<int, TankModel>(TankDict)
+                : new Dictionary<int, TankModel>();
+        }
+
         public bool AddTankModel(TankModel tank)
         {
             if (tank == null || TankDict.ContainsKey(tank.Id))
