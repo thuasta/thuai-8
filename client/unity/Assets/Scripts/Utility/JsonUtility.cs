@@ -85,7 +85,7 @@ public class JsonUtility
                 }
             }
         }
-        else if (File.Exists(path))
+        else if (File.Exists(path) && Path.GetExtension(path).Equals(".zip", StringComparison.OrdinalIgnoreCase))
         {
             Debug.Log("Record is a Zipped File.");
             ZipArchive ncLevelDataZipFile = ZipFile.OpenRead($"{path}");
@@ -105,6 +105,19 @@ public class JsonUtility
                 {
                     Debug.Log(e.Message);
                 }
+            }
+        }
+        else if(File.Exists(path) && Path.GetExtension(path).Equals(".json", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                string jsonContent = File.ReadAllText(path);
+                JObject jsonObj = JObject.Parse(jsonContent);
+                allRecordJsonObject.Add(jsonObj);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Fail to open the json record : {ex.Message}");
             }
         }
 
@@ -128,33 +141,29 @@ public class JsonUtility
             JArray records = (JArray)jsonObject["records"];
             if (records != null && records.Count > 0)
             {
-                string messageType = records[0]["messageType"].ToString();
-                foreach (JArray recordInfo in records)
+                foreach (JObject recordInfo in records)
                 {
-                    JValue tick;
-                    if (recordInfo[0]["messageType"].ToString()=="STAGE")
+                    JArray record = (JArray)recordInfo["record"];
+                    if (record == null || record.Count == 0) continue;
+
+                    foreach (JObject recordItem in record)
                     {
-                        tick = (JValue)recordInfo[0]["currentTicks"];
+                        JToken messageTypeToken = recordItem["messageType"];
+                        if (messageTypeToken?.ToString() == "STAGE")
+                        {
+                            JToken tickToken = recordItem["currentTicks"];
+                            if (tickToken != null && tickToken.Type == JTokenType.Integer)
+                            {
+                                indexAndTicks[nowRecordIndex].Item2 = (int)tickToken;
+                                break; // 找到第一个有效tick后跳出
+                            }
+                        }
                     }
-                    else
-                    {
-                        tick = (JValue)(-2);
-                    }
-                    
-                    if (tick != null)
-                    {
-                        // The first tick
-                        indexAndTicks[nowRecordIndex].Item2 = (int)tick;
-                        break;
-                    }
-                    else
-                    {
-                        indexAndTicks[nowRecordIndex].Item2 = -2;
-                    }
+                    // 如果已找到有效tick则不再检查后续record
+                    if (indexAndTicks[nowRecordIndex].Item2 != -1) break;
                 }
+                nowRecordIndex++;
             }
-            
-            nowRecordIndex++;
         }
         // Rearrange the order of record file according to their first ticks
         List<(int, int)> indexAndTicksList = indexAndTicks.ToList<(int, int)>();

@@ -20,7 +20,7 @@
                     "messageType": "BATTLE_UPDATE",
                     "events": [
                         {
-                            "messageType": "PLAYER_UPDATE_EVENT",
+                            "eventType": "PLAYER_UPDATE_EVENT",
                             "players": [
                                 {
                                     "token": "1",
@@ -50,8 +50,8 @@
                                         }
                                     ],
                                     "position": {
-                                        "x": 10,
-                                        "y": 20,
+                                        "x": 1,
+                                        "y": 2,
                                         "angle": 45
                                     }
                                 },
@@ -83,23 +83,23 @@
                                         }
                                     ],
                                     "position": {
-                                        "x": 15,
-                                        "y": 25,
+                                        "x": 1.5,
+                                        "y": 2.5,
                                         "angle": 90
                                     }
                                 }
                             ]
                         },
                         {
-                            "messageType": "BULLETS_UPDATE_EVENT",
+                            "eventType": "BULLETS_UPDATE_EVENT",
                             "bullets": [
                                 {
                                     "no": 1,
                                     "isMissile": false,
                                     "isAntiArmor": true,
                                     "position": {
-                                        "x": 12,
-                                        "y": 22,
+                                        "x": 1.2,
+                                        "y": 2.2,
                                         "angle": 30
                                     },
                                     "speed": 300,
@@ -109,7 +109,7 @@
                             ]
                         },
                         {
-                            "messageType": "MAP_UPDATE_EVENT",
+                            "eventType": "MAP_UPDATE_EVENT",
                             "walls": [
                                 {
                                     "x": 0,
@@ -181,7 +181,7 @@
                     "messageType": "BATTLE_UPDATE",
                     "events": [
                         {
-                            "messageType": "PLAYER_UPDATE_EVENT",
+                            "eventType": "PLAYER_UPDATE_EVENT",
                             "players": [
                                 {
                                     "token": "1",
@@ -211,8 +211,8 @@
                                         }
                                     ],
                                     "position": {
-                                        "x": 25,
-                                        "y": 35,
+                                        "x": 2.5,
+                                        "y": 3.5,
                                         "angle": 270
                                     }
                                 },
@@ -244,23 +244,23 @@
                                         }
                                     ],
                                     "position": {
-                                        "x": 40,
-                                        "y": 15,
+                                        "x": 4,
+                                        "y": 1.5,
                                         "angle": 180
                                     }
                                 }
                             ]
                         },
                         {
-                            "messageType": "BULLETS_UPDATE_EVENT",
+                            "eventType": "BULLETS_UPDATE_EVENT",
                             "bullets": [
                                 {
                                     "no": 2,
                                     "isMissile": true,
                                     "isAntiArmor": false,
                                     "position": {
-                                        "x": 28,
-                                        "y": 32,
+                                        "x": 2.8,
+                                        "y": 3.2,
                                         "angle": 315
                                     },
                                     "speed": 280,
@@ -272,8 +272,8 @@
                                     "isMissile": false,
                                     "isAntiArmor": true,
                                     "position": {
-                                        "x": 37,
-                                        "y": 18,
+                                        "x": 3.7,
+                                        "y": 1.8,
                                         "angle": 90
                                     },
                                     "speed": 350,
@@ -283,7 +283,7 @@
                             ]
                         },
                         {
-                            "messageType": "MAP_UPDATE_EVENT",
+                            "eventType": "MAP_UPDATE_EVENT",
                             "walls": [
                                 {
                                     "x": 0,

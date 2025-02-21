@@ -34,7 +34,7 @@ public class test : MonoBehaviour,IController
 
         // 读取和解析 JSON 数据
         ReadWallsFromJson();
-        this.SendCommand(new GenerateMapCommand());
+        //this.SendCommand(new GenerateMapCommand());
     }
     public IArchitecture GetArchitecture()
     {

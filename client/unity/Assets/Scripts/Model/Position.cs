@@ -9,7 +9,7 @@ public class Position
     public double Z { get; set; }
     public double Angle { get; set; }
 
-    public Position(double x, double z, double angle)
+    public Position(double x = 0, double z = 0, double angle = 0)
     {
         this.X = x * Constants.FLOOR_LEN + Constants.POS_BIAS;
         this.Y = Constants.YPOS;

@@ -52,6 +52,7 @@ namespace BattleCity
             {
                 BulletsList.Remove(bullet);
                 BulletsId.Remove(bullet.Id);
+                bullet.SelfDestruct();
                 return true; // ³É¹¦É¾³ý
             }
 

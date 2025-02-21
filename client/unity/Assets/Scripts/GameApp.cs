@@ -19,7 +19,6 @@ namespace BattleCity
 
             
             // this.RegisterModel(new AmmoText());
-            // this.RegisterSystem(new ScoreSystem());
             // this.RegisterModel(new CountdownText());
             if (sceneName == "Game")
             {
@@ -33,6 +32,15 @@ namespace BattleCity
                 
             if (sceneName == "test_Game")
             {
+                Debug.Log("test_Game");
+                this.RegisterModel(new AmmoText());
+                this.RegisterModel(new CountdownText());
+                this.RegisterModel(new HealthShow());
+                this.RegisterModel(new ArmorShow());
+                this.RegisterModel(new BuffShow());
+                this.RegisterModel(new ScoresShow());
+                this.RegisterModel(new RoundsShow());
+                this.RegisterModel(new SkillsShow());
                 this.RegisterModel(new Tanks());
                 this.RegisterModel(new Bullets());
                 this.RegisterModel(new Map());
@@ -42,9 +50,7 @@ namespace BattleCity
             if(sceneName == "End")
             {
                 this.RegisterModel(new EndInfo());
-            }
-                
-
+            }                
         }
         
     }

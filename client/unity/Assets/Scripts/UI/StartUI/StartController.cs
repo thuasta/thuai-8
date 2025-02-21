@@ -15,6 +15,6 @@ public class StartController : MonoBehaviour
 
     void OnClick()
     {
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("test_Game");
     }
 }

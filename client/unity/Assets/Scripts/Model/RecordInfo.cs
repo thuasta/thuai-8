@@ -18,7 +18,7 @@ namespace BattleCity
     {
         // 20 frame per second
         public const float FrameTime = 0.05f;
-        public PlayState NowPlayState = PlayState.Pause;
+        public PlayState NowPlayState = PlayState.Rest;
         public int NowTick = 0;
         /// <summary>
         /// Now record serial number

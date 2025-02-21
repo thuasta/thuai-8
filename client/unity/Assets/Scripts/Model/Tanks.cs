@@ -13,11 +13,23 @@ namespace BattleCity
         {
             TankDict = new();
         }
+
+        public int GetPlayerNum()
+        {
+            return TankDict.Count;
+        }
         
         public TankModel GetTank(int id)
         {
             TankDict.TryGetValue(id, out var tank);
             return tank;
+        }
+
+        public Dictionary<int, TankModel> GetTankDictCopy()
+        {
+            return TankDict != null
+                ? new Dictionary<int, TankModel>(TankDict)
+                : new Dictionary<int, TankModel>();
         }
 
         public bool AddTankModel(TankModel tank)
@@ -28,6 +40,13 @@ namespace BattleCity
             }
 
             TankDict[tank.Id] = tank;
+            return true;
+        }
+
+        public bool AddTankModel(int id)
+        {
+            TankModel tank = new TankModel(id);
+            AddTankModel(tank);
             return true;
         }
 

@@ -11,7 +11,7 @@ public class Constants
     public const double WALL_XBIAS = +0.5;
 
     public const int FLOOR_LEN = 20;
-    public const int MAP_SIZE = 100;
+    public const int MAP_SIZE = 10;
 
     public const int baseSpeed = 1;
 }

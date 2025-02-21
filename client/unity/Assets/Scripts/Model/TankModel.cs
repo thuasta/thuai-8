@@ -40,6 +40,27 @@ namespace BattleCity
                 Debug.LogError($"Tank model {Id} not found in Resources/Model/Tank");
             }
         }
+        public TankModel(int id)
+        {
+            Id = id;
+            TankWeapon = new Weapon();
+            TankArmor = new Armor();
+            TankSkills = new Skills();
+            TankPosition = new Position();
+            GameObject prefab = Resources.Load<GameObject>($"Model/Tank/{Id}");
+            if (prefab != null)
+            {
+                Vector3 position = new Vector3((float)TankPosition.X, (float)TankPosition.Y, (float)TankPosition.Z);
+
+                Quaternion rotation = Quaternion.Euler(0, (float)TankPosition.Angle, 0); // ¼ÙÉè Y ÖáÐý×ª
+
+                TankObject = Object.Instantiate(prefab, position, rotation);
+            }
+            else
+            {
+                Debug.LogError($"Tank model {Id} not found in Resources/Model/Tank");
+            }
+        }
 
         public void UpdateTankPosition( Position tankPosition)
         {
