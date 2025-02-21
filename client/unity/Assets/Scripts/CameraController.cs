@@ -158,30 +158,37 @@ namespace BattleCity
 
         void Rotate()
         {
-            isRotating = true;
-            if (isRotating)
+            if (Input.GetMouseButton(1))
             {
-                //得到鼠标x方向移动距离
-                mousex = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
-                //旋转轴的位置是目标物体处，方向是世界坐标系的y轴
+                isRotating = true;
+                if (isRotating)
+                {
+                    //得到鼠标x方向移动距离
+                    mousex = Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime;
+                    //旋转轴的位置是目标物体处，方向是世界坐标系的y轴
 
-                transform.RotateAround(GetHeadPos(targetTank.TankObject.transform.position), Vector3.up, mousex);
-                //每次旋转后更新偏移量
-                offset = GetHeadPos(targetTank.TankObject.transform.position) - transform.position;
+                    transform.RotateAround(GetHeadPos(targetTank.TankObject.transform.position), Vector3.up, mousex);
+                    //每次旋转后更新偏移量
+                    offset = GetHeadPos(targetTank.TankObject.transform.position) - transform.position;
+                }
             }
         }
+
         void Rollup()
         {
-            lookup = true;
-            if (lookup)
+            if (Input.GetMouseButton(1))
             {
-                //得到鼠标y方向移动距离
-                mousey = -Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
-                //旋转轴的位置在目标物体处，方向是摄像机的x轴
-                if (Mathf.Abs(transform.rotation.x + mousey - initialTransform.rotation.x) > 90) mousey = 0;
-                transform.RotateAround(GetHeadPos(targetTank.TankObject.transform.position), transform.right, mousey);
-                //每次旋转后更新偏移量
-                offset = GetHeadPos(targetTank.TankObject.transform.position) - transform.position;
+                lookup = true;
+                if (lookup)
+                {
+                    //得到鼠标y方向移动距离
+                    mousey = -Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime;
+                    //旋转轴的位置在目标物体处，方向是摄像机的x轴
+                    if (Mathf.Abs(transform.rotation.x + mousey - initialTransform.rotation.x) > 90) mousey = 0;
+                    transform.RotateAround(GetHeadPos(targetTank.TankObject.transform.position), transform.right, mousey);
+                    //每次旋转后更新偏移量
+                    offset = GetHeadPos(targetTank.TankObject.transform.position) - transform.position;
+                }
             }
 
         }
