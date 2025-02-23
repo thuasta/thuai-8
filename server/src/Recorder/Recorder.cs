@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 using Serilog;
 using Thuai.Server.Utility;
 
-namespace Thuai.GameServer.Recorder;
+namespace Thuai.Server.Recorder;
 
 public class Recorder : IRecorder, IDisposable
 {

@@ -1,4 +1,4 @@
-namespace Thuai.Server.GameLogic;
+namespace Thuai.Server.Recorder;
 
 public interface IObject
 {

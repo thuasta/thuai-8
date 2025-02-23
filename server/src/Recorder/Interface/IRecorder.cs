@@ -1,7 +1,7 @@
 using System.Text.Json.Nodes;
 using Thuai.Server.GameLogic;
 
-namespace Thuai.GameServer.Recorder;
+namespace Thuai.Server.Recorder;
 
 public interface IRecorder
 {

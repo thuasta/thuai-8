@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Thuai.GameServer.Recorder;
+namespace Thuai.Server.Recorder;
 
 public record Result
 {
