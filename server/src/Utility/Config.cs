@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
 
 using Serilog;
-using static Thuai.Server.GameLogic.Game;
 
 namespace Thuai.Server.Utility;
 
@@ -69,22 +68,22 @@ public record Config
     /// <summary>
     /// The game settings.
     /// </summary>
-    public record GameSettings(int TPS = 20, int ACT = 200, int MBT = 2400, int MPC = 2, int PWT = 200, int BC = 9)
+    public record GameSettings()
     {
-        /// <summary>
-        /// Literally, ticks per second.
-        /// </summary>
-        public int TicksPerSecond { get; init; } = TPS;
+        [JsonPropertyName("ticksPerSecond")]
+        public int TicksPerSecond { get; init; } = 20;
 
         /// <summary>
         /// Ticks for Buff Choosing.
         /// </summary>
-        public int AwardChooseTicks { get; init; } = ACT;
+        [JsonPropertyName("buffChooseTicks")]
+        public int AwardChooseTicks { get; init; } = 200;
 
         /// <summary>
         /// Time limit per battle. (in ticks) 
         /// </summary>
-        public int MaxBattleTicks { get; init; } = MBT; // 2400 = 20 * 120;
+        [JsonPropertyName("maxBattleTicks")]
+        public int MaxBattleTicks { get; init; } = 120 * 20;
 
         /// <summary>
         /// The minimum player count to start a game.
@@ -92,17 +91,18 @@ public record Config
         /// <remarks>
         /// Doesn't affect disconnection in game.
         /// </remarks>
-        public int MinimumPlayerCount { get; init; } = MPC;
+        [JsonPropertyName("minimumPlayerCount")]
+        public int MinimumPlayerCount { get; init; } = 2;
 
         /// <summary>
         /// Ticks to wait before the <see cref="GameLogic.Game"/> 
         /// goes into next stage, When the player count reaches 
         /// <see cref="MinimumPlayerCount"/>.
         /// </summary>
-        public int PlayerWaitingTicks = PWT;
+        [JsonPropertyName("playerWaitingTicks")]
+        public int PlayerWaitingTicks = 200;
 
-        public int BattleCount = BC;
-
-        // TODO: Implement
+        [JsonPropertyName("battleCount")]
+        public int BattleCount = 9;
     }
 }
