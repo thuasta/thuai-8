@@ -8,40 +8,38 @@ namespace Thuai.Server.GameController;
 public class GameRunner(Utility.Config.GameSettings gameSettings)
 {
     public Utility.Config.GameSettings GameSettings = gameSettings;
+    public GameLogic.Game Game { get; private set; } = new(gameSettings);
 
-    private bool _isRunning = false;
-    private Utility.ClockProvider _clockProvider = new(gameSettings.TicksPerSecond);
-    
+    public bool IsRunning { get; private set; } = false;
+    private readonly Utility.ClockProvider _clockProvider = new(gameSettings.TicksPerSecond);
+
     private readonly ILogger _logger = Utility.Tools.LogHandler.CreateLogger("GameRunner");
 
     public void Start()
     {
-        Task.Run(RunGame);
-    }
-
-    private void RunGame()
-    {
-        if (_isRunning)
+        if (IsRunning)
         {
             _logger.Warning("Cannot run a running game again.");
             return;
         }
-        GameLogic.Game game = new(GameSettings);
 
-        game.Initialize();
+        Game.Initialize();
 
-        _isRunning = true;
-        while (_isRunning)
+        IsRunning = true;
+        Task.Run(() =>
         {
-            Task clock = _clockProvider.CreateClock();
-            game.Tick();
-
-            if (game.Stage == GameLogic.Game.GameStage.Finished)
+            while (IsRunning)
             {
-                _isRunning = false;
-            }
+                Task clock = _clockProvider.CreateClock();
+                Game.Tick();
 
-            clock.Wait();
-        }
+                if (Game.Stage == GameLogic.Game.GameStage.Finished)
+                {
+                    IsRunning = false;
+                }
+
+                clock.Wait();
+            }
+        });
     }
 }

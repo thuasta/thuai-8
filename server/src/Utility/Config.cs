@@ -19,6 +19,9 @@ public record Config
     [JsonPropertyName("game")]
     public GameSettings Game { get; init; } = new();
 
+    [JsonPropertyName("recorder")]
+    public RecorderSettings Recorder { get; init; } = new();
+
     /// <summary>
     /// The server settings.
     /// </summary>
@@ -76,7 +79,7 @@ public record Config
         /// <summary>
         /// Ticks for Buff Choosing.
         /// </summary>
-        [JsonPropertyName("buffChooseTicks")]
+        [JsonPropertyName("awardChooseTicks")]
         public int AwardChooseTicks { get; init; } = 200;
 
         /// <summary>
@@ -100,9 +103,13 @@ public record Config
         /// <see cref="MinimumPlayerCount"/>.
         /// </summary>
         [JsonPropertyName("playerWaitingTicks")]
-        public int PlayerWaitingTicks = 200;
+        public int PlayerWaitingTicks { get; init; } = 200;
 
         [JsonPropertyName("battleCount")]
-        public int BattleCount = 9;
+        public int BattleCount { get; init; } = 9;
+    }
+    public record RecorderSettings()
+    {
+
     }
 }

@@ -1,6 +1,3 @@
-
-using Thuai.Server.GameController;
-
 namespace Thuai.Server.GameLogic;
 
 public partial class Game

@@ -13,12 +13,24 @@ public class Program
     {
         try
         {
-            Initialize();
+            Utility.Config config = Initialize();
 
-            // TODO: Implement
+            Connection.AgentServer agentServer = new();
+            GameController.GameRunner gameRunner = new(config.Game);
 
-            throw new NotImplementedException();
+            // Just for prototype. Will be replaced by a real player adding system.
+            gameRunner.Game.AddPlayer("token_1", 0);
+            gameRunner.Game.AddPlayer("token_2", 1);
 
+            agentServer.Start();
+            gameRunner.Start();
+
+            _logger?.Information("Program started.");
+
+            while (gameRunner.IsRunning)
+            {
+                Task.Delay(100).Wait();
+            }
         }
         catch (Exception e)
         {
@@ -44,7 +56,7 @@ public class Program
         }
     }
 
-    private static void Initialize()
+    private static Utility.Config Initialize()
     {
         Utility.Config config = Utility.Tools.ConfigLoader.LoadOrCreateConfig(_configPath);
 
@@ -59,5 +71,7 @@ public class Program
         _logger.Information($"THUAI8 Server v{version}");
         _logger.Information("Copyright (c) 2024 THUASTA");
         _logger.Information("--------------------------------");
+
+        return config;
     }
 }
