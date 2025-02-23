@@ -1,9 +1,4 @@
-using Serilog.Debugging;
-using Thuai.Server.GameLogic;
-using Thuai.Server.Buff;
-
-namespace Thuai.Server.BuffSelector;
-
+namespace Thuai.Server.GameLogic.Buff;
 
 /// <summary>
 /// Buffs that can be selected.

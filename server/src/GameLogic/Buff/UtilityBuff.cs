@@ -1,8 +1,4 @@
-using Serilog.Debugging;
-using Thuai.Server.GameLogic;
-
-namespace Thuai.Server.Buff;
-
+namespace Thuai.Server.GameLogic.Buff;
 
 public static class U_Buff
 {
