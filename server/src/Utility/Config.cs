@@ -27,7 +27,8 @@ public record Config
     /// </summary>
     public record ServerSettings
     {
-        // TODO: Implement
+        [JsonPropertyName("port")]
+        public int Port { get; init; } = 14514;
     }
 
     /// <summary>
