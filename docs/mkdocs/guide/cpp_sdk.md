@@ -10,7 +10,7 @@
 
 ### 环境要求
 
-- 要求 XMake >= 2.9.6，安装方法请参考 [XMake 官方文档](https://xmake.io/#/zh-cn/guide/installation)。若您没有开启代理，可使用如下 Windows 下载地址：[XMake 2.9.6](https://cloud.tsinghua.edu.cn/f/c204dcdce21e43648edd/?dl=1)
+- 要求 XMake >= 2.9.8，安装方法请参考 [XMake 官方文档](https://xmake.io/#/zh-cn/guide/installation)。若您没有开启代理，可使用如下 Windows 下载地址：[XMake 2.9.8](https://cloud.tsinghua.edu.cn/f/6e7fd6cee2b34ee4a2b8/?dl=1)
 
 - 具备 C++23 支持的 C++ 编译器工具链。推荐使用 MSVC。可使用如下 VS Build Tools 下载地址：[Visual Studio Build Tools](https://aka.ms/vs/17/release/vs_BuildTools.exe)。若您使用的是其他编译器，请确保其支持 C++23 标准。
 
@@ -42,7 +42,7 @@ xmake f -m release
 xmake
 ```
 
-若您需要生成 compile_commands.json 文件，可以使用以下命令：
+若您需要生成 `compile_commands.json` 文件，可以使用以下命令：
 
 ```bash
 xmake project -k compile_commands
@@ -50,11 +50,11 @@ xmake project -k compile_commands
 
 ### 编写代码
 
-您可以在 logic.cc 文件中编写您的代码。对于有经验的开发者，您也可以修改项目中的其他任何文件。在 logic.cc 中，我们已经为您提供了一个示例代码，您可以根据自己的需求进行修改。
+您可以在 `logic.cpp` 文件中编写您的代码。对于有经验的开发者，您也可以修改项目中的其他任何文件。在 `logic.cpp` 中，我们已经为您提供了一个示例代码，您可以根据自己的需求进行修改。
 
 ### 运行
 
-如果您修改了 main.cc 中与 `ParseOptions(int argc, char** argv)` 方法相关的代码，则此部分可能无效。
+如果您修改了 `main.cpp` 中与 `ParseOptions(int argc, char** argv)` 方法相关的代码，则此部分可能无效。
 
 运行以下命令启动 Agent：
 
@@ -66,13 +66,21 @@ xmake project -k compile_commands
 
 \<token\>：Agent 的令牌。（默认值：1919810）
 
+在 debug 模式下，您还可以使用以下命令更改日志级别：
+
+```bash
+./agent --log <level>
+```
+
+\<level\>：日志级别。可选值为 `trace`、`debug`、`info`、`warn` 和 `error`。（默认值：trace）
+
 例如：
 
 ```bash
-./agent --server ws://localhost:14514 --token 1919810
+./agent --server ws://localhost:14514 --token 1919810 --log debug
 ```
 
-注意： 运行前，请确保您的服务器地址和令牌是正确的，以确保 Agent 能够成功连接到游戏服务器。
+> **注意**：运行前，请确保您的服务器地址和令牌是正确的，以确保 Agent 能够成功连接到游戏服务器；在 release 模式下，日志级别为 `info` 且无法更改。
 
 ## 接口介绍
 
@@ -234,7 +242,7 @@ bool connected{agent.IsConnected()};
 
 - **返回类型：** bool
 
-`IsConnected` 方法将返回一个布尔值，指示 Agent 是否已连接到服务器。
+`IsConnected` 方法指示 Agent 是否已连接到服务器。
 
 #### 判断游戏是否准备就绪
 
@@ -244,4 +252,4 @@ bool ready{agent.IsGameReady()};
 
 - **返回类型：** bool
 
-`IsGameReady` 方法将返回一个布尔值，指示游戏是否已准备就绪，即是否已获取到所有必要的游戏状态信息。
+`IsGameReady` 方法指示游戏是否已准备就绪，即是否已获取到所有必要的游戏状态信息。

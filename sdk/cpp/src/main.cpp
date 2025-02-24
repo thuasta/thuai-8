@@ -5,13 +5,12 @@
 #ifndef NDEBUG
 #include <chrono>
 #endif
-#include <cstdint>
 #include <cstdlib>
 #include <cxxopts.hpp>
 #include <exception>
+#include <iostream>
 #include <memory>
 #include <optional>
-#include <print>
 #include <string>
 #include <utility>
 
@@ -23,22 +22,30 @@ extern void Loop(const thuai8_agent::Agent& agent);
 
 constexpr auto kDefaultServer{"ws://localhost:14514"};
 constexpr auto kDefaultToken{"1919810"};
-constexpr std::uint8_t kDefaultIntervalMs{200};
+constexpr int kDefaultIntervalMs{200};
 
 namespace {
 #ifndef NDEBUG
-auto GetLogLevel(const std::string& level) -> spdlog::level::level_enum {
-  if (level == "1") {
-    return spdlog::level::debug;
+void SetLogLevel(const std::string& level) {
+  if (level == "0" || level == "trace") {
+    spdlog::set_level(spdlog::level::trace);
+    return;
   }
-  if (level == "2") {
-    return spdlog::level::info;
+  if (level == "1" || level == "debug") {
+    spdlog::set_level(spdlog::level::debug);
+    return;
   }
-  if (level == "3") {
-    return spdlog::level::warn;
+  if (level == "2" || level == "info") {
+    spdlog::set_level(spdlog::level::info);
+    return;
   }
-  if (level == "4") {
-    return spdlog::level::err;
+  if (level == "3" || level == "warn") {
+    spdlog::set_level(spdlog::level::warn);
+    return;
+  }
+  if (level == "4" || level == "error") {
+    spdlog::set_level(spdlog::level::err);
+    return;
   }
   throw std::invalid_argument("Invalid log level '" + level + "'");
 }
@@ -66,31 +73,31 @@ auto ParseOptions(int argc, char** argv)
         "t,token", "Set token",
         cxxopts::value<std::string>()->default_value(token));
 #ifndef NDEBUG
-    options.add_options()("l,log",
-                          "Set log level: 1-debug, 2-info, 3-warn, 4-error",
-                          cxxopts::value<std::string>()->default_value("1"));
+    options.add_options()(
+        "l,log", "Set log level: 0=trace, 1=debug, 2=info, 3=warn, 4=error",
+        cxxopts::value<std::string>()->default_value("0"));
 #endif
 
     try {
       auto result{options.parse(argc, argv)};
       if (result.count("help") > 0) {
-        std::println("{}", options.help());
+        std::cout << options.help() << '\n';
         return std::nullopt;
       }
       server = result["server"].as<std::string>();
       token = result["token"].as<std::string>();
 #ifndef NDEBUG
-      spdlog::set_level(GetLogLevel(result["log"].as<std::string>()));
+      SetLogLevel(result["log"].as<std::string>());
 #endif
     } catch (const std::exception& e) {
-      std::print("\033[1;31m{}\033[0m", e.what());
-      std::println("{}", options.help());
+      std::cout << "\033[1;31m" << e.what() << "\033[0m";
+      std::cout << options.help() << '\n';
       return std::nullopt;
     }
   }
 #ifndef NDEBUG
   else {
-    spdlog::set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::trace);
   }
 #endif
 
@@ -104,15 +111,14 @@ auto main(int argc, char* argv[]) -> int {
   if (!options.has_value()) {
     return 0;
   }
-  auto [server, token]{options.value()};
 
-  hv::EventLoopPtr event_loop{std::make_unique<hv::EventLoop>()};
+  hv::EventLoopPtr event_loop{std::make_shared<hv::EventLoop>()};
 
-  thuai8_agent::Agent agent{token, event_loop, kDefaultIntervalMs};
+  thuai8_agent::Agent agent{options->second, event_loop, kDefaultIntervalMs};
 
-  spdlog::info("{} is starting with server {}", agent, server);
+  event_loop->runInLoop([&] { agent.Connect(options->first); });
 
-  event_loop->runInLoop([&] { agent.Connect(server); });
+  spdlog::info("{} is starting with server {}", agent, options->first);
 
   bool is_previous_connected{false};
   bool is_previous_game_ready{false};
@@ -124,7 +130,7 @@ auto main(int argc, char* argv[]) -> int {
         spdlog::error("{} disconnected from server", agent);
         is_previous_connected = false;
       }
-      spdlog::debug("{} is waiting for connection", agent);
+      spdlog::trace("{} is waiting for connection", agent);
       return;
     }
 
@@ -138,7 +144,7 @@ auto main(int argc, char* argv[]) -> int {
         spdlog::error("{} is no longer in a ready game", agent);
         is_previous_game_ready = false;
       }
-      spdlog::debug("{} is waiting for the game to be ready", agent);
+      spdlog::trace("{} is waiting for the game to be ready", agent);
       return;
     }
 
@@ -151,7 +157,6 @@ auto main(int argc, char* argv[]) -> int {
       if (!is_buff_selected) {
         try {
           SelectBuff(agent);
-          spdlog::info("{} selected a buff", agent);
           is_buff_selected = true;
         } catch (const std::exception& e) {
           spdlog::error("an error occurred in SelectBuff({}): {}", agent,
@@ -161,7 +166,7 @@ auto main(int argc, char* argv[]) -> int {
 #endif
         }
       }
-      spdlog::debug("{} is waiting for next battle", agent);
+      spdlog::trace("{} is waiting for next battle", agent);
       return;
     }
 
@@ -187,7 +192,7 @@ auto main(int argc, char* argv[]) -> int {
             std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
                 .count()};
         duration > kDefaultIntervalMs) {
-      spdlog::warn("{} PlayerLoop overflow {}ms with {} ms", agent,
+      spdlog::warn("PlayerLoop({}) overflow {}ms with {}ms", agent,
                    kDefaultIntervalMs, duration);
     }
 #endif

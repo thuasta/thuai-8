@@ -5,8 +5,8 @@
 #include <hv/Event.h>
 #include <hv/EventLoop.h>
 #include <hv/WebSocketClient.h>
+#include <spdlog/fmt/bundled/format.h>
 
-#include <format>
 #include <memory>
 #include <optional>
 #include <string>
@@ -28,7 +28,8 @@ class Agent {
   Agent(Agent&&) = delete;
   auto operator=(const Agent&) -> Agent& = delete;
   auto operator=(Agent&&) -> Agent& = delete;
-  ~Agent() = default;
+
+  ~Agent();
 
   void Connect(const std::string& server_address);
 
@@ -79,13 +80,13 @@ class Agent {
   void SelectBuff(BuffKind buff) const;
 
  private:
-  void Loop();
+  void Loop() const;
   void OnMessage(std::string_view message);
 
-  std::string token_;
-  hv::EventLoopPtr event_loop_;
-  hv::TimerID timer_id_;
-  std::unique_ptr<hv::WebSocketClient> ws_client_;
+  const std::string token_;
+  const hv::EventLoopPtr event_loop_;
+  const std::unique_ptr<hv::WebSocketClient> ws_client_;
+  const hv::TimerID timer_id_;
 
   std::optional<PlayerInfo> self_info_;
   std::optional<PlayerInfo> opponent_info_;
@@ -97,10 +98,9 @@ class Agent {
 }  // namespace thuai8_agent
 
 template <>
-struct std::formatter<thuai8_agent::Agent> : std::formatter<string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::Agent& object, FormatContext& ctx) const {
-    return format_to(ctx.out(), "Agent[Token: {}]", object.token());
+struct fmt::formatter<thuai8_agent::Agent> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Agent& obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(), "Agent[{}]", obj.token());
   }
 };
 
