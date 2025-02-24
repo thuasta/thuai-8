@@ -13,11 +13,26 @@ public class Program
     {
         try
         {
-            Initialize();
+            Utility.Config config = Initialize();
 
-            // TODO: Implement
+            Connection.AgentServer agentServer = new() { Port = config.Server.Port };
+            GameController.GameRunner gameRunner = new(config.Game);
+            Recorder.Recorder recorder = new("./data", "replay.dat", "result.json");
 
-            throw new NotImplementedException();
+            // Just for prototype. Will be replaced by a real player adding system.
+            gameRunner.Game.AddPlayer("token_1", 0);
+            gameRunner.Game.AddPlayer("token_2", 1);
+            gameRunner.Game.AddScore(gameRunner.Game.AllPlayers[0], 100);
+
+            agentServer.Start();
+
+            // Just for prototype. Will be replaced by a real game running system.
+            Task.Delay(5000).Wait();
+
+            // Just for prototype. Will be replaced by a recording system.
+            recorder.Record(new Recorder.Error() { errorCode = 111111, message = "Damn the game isn't running" });
+            recorder.Save();
+            recorder.SaveResults(gameRunner.Game.Scoreboard);
 
         }
         catch (Exception e)
@@ -44,7 +59,7 @@ public class Program
         }
     }
 
-    private static void Initialize()
+    private static Utility.Config Initialize()
     {
         Utility.Config config = Utility.Tools.ConfigLoader.LoadOrCreateConfig(_configPath);
 
@@ -59,5 +74,7 @@ public class Program
         _logger.Information($"THUAI8 Server v{version}");
         _logger.Information("Copyright (c) 2024 THUASTA");
         _logger.Information("--------------------------------");
+
+        return config;
     }
 }

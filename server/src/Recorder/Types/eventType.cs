@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Thuai.Server.GameLogic;
 
-namespace Thuai.GameServer.Recorder;
+namespace Thuai.Server.Recorder;
 
 public record eventType
 {

@@ -47,3 +47,6 @@ msbuild.wrn
 
 # Log files
 *.log
+
+# replay files
+**/data

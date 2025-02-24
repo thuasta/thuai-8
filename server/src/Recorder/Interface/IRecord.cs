@@ -1,7 +1,7 @@
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
-namespace Thuai.GameServer.Recorder;
+namespace Thuai.Server.Recorder;
 
 /// <summary>
 /// IRecord declares common interfaces of all records.

@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 using Serilog;
 using Thuai.Server.Utility;
 
-namespace Thuai.GameServer.Recorder;
+namespace Thuai.Server.Recorder;
 
 public class Recorder : IRecorder, IDisposable
 {
@@ -167,8 +167,16 @@ public class Recorder : IRecorder, IDisposable
         }
     }
 
-    public void SaveResults(List<Result> results)
+    public void SaveResults(Dictionary<GameLogic.Player, int> scoreboard)
     {
+        Result results = new()
+        {
+            Scores = scoreboard.ToDictionary(
+                kvp => kvp.Key.Token,
+                kvp => kvp.Value
+            )
+        };
+
         string resultFilePath = Path.Combine(_recordsDir, _targetResultFileName);
         File.WriteAllText(
             resultFilePath,

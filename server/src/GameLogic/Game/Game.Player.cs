@@ -1,6 +1,3 @@
-
-using Thuai.Server.GameController;
-
 namespace Thuai.Server.GameLogic;
 
 public partial class Game
@@ -76,7 +73,7 @@ public partial class Game
         }
     }
 
-    public void addScore(Player player, int score)
+    public void AddScore(Player player, int score)
     {
         try
         {
