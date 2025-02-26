@@ -2,19 +2,19 @@
 #ifndef _THUAI8_AGENT_GAME_STATISTICS_HPP_
 #define _THUAI8_AGENT_GAME_STATISTICS_HPP_
 
-#include <cstdint>
-#include <format>
+#include <spdlog/fmt/bundled/format.h>
+
 #include <magic_enum/magic_enum.hpp>
 #include <string>
 #include <vector>
 
 namespace thuai8_agent {
 
-enum class Stage : uint8_t { Rest, Battle, End };
+enum class Stage : unsigned char { Rest, Battle, End };
 
 struct OnesScore {
   std::string token;
-  unsigned int score;
+  unsigned int score{};
 };
 
 struct GameStatistics {
@@ -27,34 +27,31 @@ struct GameStatistics {
 }  // namespace thuai8_agent
 
 template <>
-struct std::formatter<thuai8_agent::Stage> : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(thuai8_agent::Stage object, FormatContext& ctx) const {
-    return format_to(ctx.out(), "{}", magic_enum::enum_name(object));
+struct fmt::formatter<thuai8_agent::Stage> : fmt::formatter<std::string> {
+  static auto format(thuai8_agent::Stage obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(), "{}", magic_enum::enum_name(obj));
   }
 };
 
 template <>
-struct std::formatter<thuai8_agent::OnesScore> : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::OnesScore& object, FormatContext& ctx) const {
-    return format_to(ctx.out(), "Token {} : Score {}", object.token,
-                     object.score);
+struct fmt::formatter<thuai8_agent::OnesScore> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::OnesScore& obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(), "Token({}).Score({})", obj.token,
+                          obj.score);
   }
 };
 
 template <>
-struct std::formatter<thuai8_agent::GameStatistics>
-    : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::GameStatistics& object,
-              FormatContext& ctx) const {
-    return format_to(ctx.out(),
-                     "GameStatistics[Stage: {}, CountDown: {}, Ticks: {}, "
-                     "Scores: ({} : {} = {} : {})]",
-                     object.currentStage, object.countDown, object.ticks,
-                     object.scores[0].token, object.scores[1].token,
-                     object.scores[0].score, object.scores[1].score);
+struct fmt::formatter<thuai8_agent::GameStatistics>
+    : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::GameStatistics& obj,
+                     format_context& ctx) {
+    return fmt::format_to(
+        ctx.out(),
+        "GameStatistics: {{Stage: {}, CountDown: {}, Ticks: {}, "
+        "Scores: ({} : {} = {} : {})}}",
+        obj.currentStage, obj.countDown, obj.ticks, obj.scores[0].token,
+        obj.scores[1].token, obj.scores[0].score, obj.scores[1].score);
   }
 };
 
