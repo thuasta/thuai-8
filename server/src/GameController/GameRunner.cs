@@ -11,7 +11,7 @@ public class GameRunner(Utility.Config.GameSettings gameSettings)
     public GameLogic.Game Game { get; private set; } = new(gameSettings);
 
     public bool IsRunning { get; private set; } = false;
-    private readonly Utility.ClockProvider _clockProvider = new(gameSettings.TicksPerSecond);
+    private readonly Utility.ClockProvider _clockProvider = new(1000 / gameSettings.TicksPerSecond);
 
     private readonly ILogger _logger = Utility.Tools.LogHandler.CreateLogger("GameRunner");
 
