@@ -62,4 +62,4 @@ PRs accepted.
 
 ## License
 
-CC0-1.0 © THUASTA
+CC0-1.0 Public Domain Dedication

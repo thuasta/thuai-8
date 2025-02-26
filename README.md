@@ -23,4 +23,5 @@ PRs accepted!
 
 ## License
 
-GPL-3.0-only © ASTA
+- Platform: GPL-3.0-only © ASTA
+- SDK: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
