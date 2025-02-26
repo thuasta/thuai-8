@@ -2,8 +2,9 @@
 #ifndef _THUAI8_AGENT_PLAYER_INFO_HPP_
 #define _THUAI8_AGENT_PLAYER_INFO_HPP_
 
-#include <cstdint>
-#include <format>
+#include <spdlog/fmt/bundled/format.h>
+#include <spdlog/fmt/bundled/ranges.h>
+
 #include <magic_enum/magic_enum.hpp>
 #include <string>
 #include <vector>
@@ -12,14 +13,14 @@
 
 namespace thuai8_agent {
 
-enum class ArmorKnifeState : std::uint8_t {
+enum class ArmorKnifeState : unsigned char {
   NotOwned,
   Available,
   Active,
   Broken
 };
 
-enum class SkillKind : std::uint8_t {
+enum class SkillKind : unsigned char {
   BlackOut,
   SpeedUp,
   Flash,
@@ -31,13 +32,13 @@ enum class SkillKind : std::uint8_t {
 };
 
 struct Weapon {
+  unsigned int attackSpeed{};
+  unsigned int bulletSpeed{};
   bool isLaser{};
   bool antiArmor{};
   unsigned int damage{};
   unsigned int maxBullets{};
   unsigned int currentBullets{};
-  double attackSpeed{};
-  double bulletSpeed{};
 };
 
 struct Armor {
@@ -67,69 +68,61 @@ struct PlayerInfo {
 }  // namespace thuai8_agent
 
 template <>
-struct std::formatter<thuai8_agent::ArmorKnifeState>
-    : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(thuai8_agent::ArmorKnifeState object, FormatContext& ctx) const {
-    return format_to(ctx.out(), "{}", magic_enum::enum_name(object));
+struct fmt::formatter<thuai8_agent::ArmorKnifeState>
+    : fmt::formatter<std::string> {
+  static auto format(thuai8_agent::ArmorKnifeState obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(), "{}", magic_enum::enum_name(obj));
   }
 };
 
 template <>
-struct std::formatter<thuai8_agent::SkillKind> : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(thuai8_agent::SkillKind object, FormatContext& ctx) const {
-    return format_to(ctx.out(), "{}", magic_enum::enum_name(object));
+struct fmt::formatter<thuai8_agent::SkillKind> : fmt::formatter<std::string> {
+  static auto format(thuai8_agent::SkillKind obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(), "{}", magic_enum::enum_name(obj));
   }
 };
 
 template <>
-struct std::formatter<thuai8_agent::Weapon> : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::Weapon& object, FormatContext& ctx) const {
-    return format_to(
+struct fmt::formatter<thuai8_agent::Weapon> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Weapon& obj, format_context& ctx) {
+    return fmt::format_to(
         ctx.out(),
-        "Weapon: [IsLaser: {},  AntiArmor: {}, Damage: {}, MaxBullets: {}, "
-        "CurrentBullets: {}, AttackSpeed: {}, BulletSpeed: {}]",
-        object.isLaser, object.antiArmor, object.damage, object.maxBullets,
-        object.currentBullets, object.attackSpeed, object.bulletSpeed);
+        "Weapon: {{AttackSpeed: {}, BulletSpeed: {}, IsLaser: {}, AntiArmor: "
+        "{}, Damage: {}, MaxBullets: {}, CurrentBullets: {}}}",
+        obj.attackSpeed, obj.bulletSpeed, obj.isLaser, obj.antiArmor,
+        obj.damage, obj.maxBullets, obj.currentBullets);
   }
 };
 
 template <>
-struct std::formatter<thuai8_agent::Armor> : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::Armor& object, FormatContext& ctx) const {
-    return format_to(
+struct fmt::formatter<thuai8_agent::Armor> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Armor& obj, format_context& ctx) {
+    return fmt::format_to(
         ctx.out(),
-        "Armor: [CanReflect: {}, GravityField: {}, ArmorValue: {}, Health: {}, "
-        "DodgeRate: {}, Knife: {}]",
-        object.canReflect, object.gravityField, object.armorValue,
-        object.health, object.dodgeRate, object.knife);
+        "Armor: {{CanReflect: {}, GravityField: {}, ArmorValue: {}, Health: "
+        "{}, DodgeRate: {}, Knife: {}}}",
+        obj.canReflect, obj.gravityField, obj.armorValue, obj.health,
+        obj.dodgeRate, obj.knife);
   }
 };
 
 template <>
-struct std::formatter<thuai8_agent::Skill> : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::Skill& object, FormatContext& ctx) const {
-    return format_to(
-        ctx.out(),
-        "Skill[Name: {}, MaxCoolDown: {}, CurrentCoolDown: {}, IsActive: {}]",
-        object.name, object.maxCoolDown, object.currentCoolDown,
-        object.isActive);
+struct fmt::formatter<thuai8_agent::Skill> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Skill& obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(),
+                          "Skill: {{Name: {}, MaxCoolDown: {}, "
+                          "CurrentCoolDown: {}, IsActive: {}}}",
+                          obj.name, obj.maxCoolDown, obj.currentCoolDown,
+                          obj.isActive);
   }
 };
 
 template <>
-struct std::formatter<thuai8_agent::PlayerInfo> : std::formatter<std::string> {
-  template <class FormatContext>
-  auto format(const thuai8_agent::PlayerInfo& object,
-              FormatContext& ctx) const {
-    return format_to(ctx.out(),
-                     "PlayerInfo[Token: {}, {}, {}, {}, Skills: {{{}}}]",
-                     object.token, object.position, object.weapon, object.armor,
-                     object.skills);
+struct fmt::formatter<thuai8_agent::PlayerInfo> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::PlayerInfo& obj, format_context& ctx) {
+    return fmt::format_to(
+        ctx.out(), "PlayerInfo: {{Token: {}, {}, {}, {}, Skills: {}}}",
+        obj.token, obj.position, obj.weapon, obj.armor, obj.skills);
   }
 };
 
