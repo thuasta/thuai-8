@@ -17,6 +17,6 @@ public record GameStatisticsMessage : Message
     public int Ticks { get; init; } = 0;
 
     [JsonPropertyName("scores")]
-    public List<Score> Scores { get; init; } = new();
+    public List<Score> Scores { get; init; } = [];
 
 }

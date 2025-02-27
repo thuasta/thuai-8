@@ -70,7 +70,7 @@ namespace Thuai.Server.Test.GameLogic
             // Assert
             // Ensure that all walls that are part of the path have been removed and are not in the final wall list
             var closedPoints = new HashSet<string>();
-            List<Wall> remainingWalls = new List<Wall>(walls);
+            List<Wall> remainingWalls = [.. walls];
             foreach (var line in map.Walls)
             {
                 string wallKey = $"{line.X}-{line.Y}-{line.Angle}";

@@ -23,9 +23,9 @@ public partial class AgentServer
                                ?? throw new Exception("failed to deserialize Message");
 
             _logger.Debug(
-                $"Parsing message: \"{(message.MessageType.Length > 32 ? string.Concat(message.MessageType.AsSpan(0, 32), "...") : message.MessageType)}\""
+                $"Parsing message: \"{Utility.Tools.LogHandler.Truncate(message.MessageType, 32)}\""
             );
-            _logger.Verbose(text.Length > 65536 ? string.Concat(text.AsSpan(0, 65536), "...") : text);
+            _logger.Verbose(Utility.Tools.LogHandler.Truncate(text, Utility.Tools.LogHandler.MaximumMessageLength));
 
             switch (message.MessageType)
             {
@@ -103,14 +103,14 @@ public partial class AgentServer
 
                 default:
                     throw new InvalidOperationException(
-                        $"Invalid message type {(message.MessageType.Length > 32 ? string.Concat(message.MessageType.AsSpan(0, 32), "...") : message.MessageType)}."
+                        $"Invalid message type {Utility.Tools.LogHandler.Truncate(message.MessageType, 32)}."
                     );
             }
         }
         catch (Exception exception)
         {
-            _logger.Error($"Failed to parse message: {exception.Message}");
-            _logger.Debug($"{exception}");
+            _logger.Error($"Failed to parse message:");
+            Utility.Tools.LogHandler.LogException(_logger, exception);
         }
     }
 
@@ -155,8 +155,8 @@ public partial class AgentServer
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"Failed to parse message from {GetAddress(socketId)}: {ex.Message}");
-                    _logger.Debug($"{ex}");
+                    _logger.Error($"Failed to parse message from {GetAddress(socketId)}:");
+                    Utility.Tools.LogHandler.LogException(_logger, ex);
                 }
             }
         }, cts.Token);

@@ -14,14 +14,14 @@ public class Map
     }
     public int Width { get; }
     public int Height { get; }
-    public List<Wall> Walls { get; } = new List<Wall>();
+    public List<Wall> Walls { get; } = [];
     private static readonly Random random = new Random();
     private void GenerateRandomWalls()
     {
         // lines on the path, should be maintained
-        List<Line> lines = new List<Line>();
+        List<Line> lines = [];
         // points that have been visited, should be maintained
-        List<Point> closedPoints = new List<Point>();
+        List<Point> closedPoints = [];
         // points that are on the path and have not been visited
         Stack<Point> openPoints = new Stack<Point>();
         // random select a path from the top-left point
@@ -52,7 +52,7 @@ public class Map
     private Point TakeOneStep(Point currentPoint, ref List<Point> closedPoints, ref List<Line> lines)
     {
         // random select a valid direction
-        List<Point> validDirections = new List<Point>();
+        List<Point> validDirections = [];
         if (currentPoint.X > 0 && !closedPoints.Contains(new Point(currentPoint.X - 1, currentPoint.Y)))
         {
             validDirections.Add(new Point(currentPoint.X - 1, currentPoint.Y));
@@ -82,7 +82,7 @@ public class Map
     }
     private List<Wall> GetAllPossibleWalls()
     {
-        List<Wall> walls = new List<Wall>();
+        List<Wall> walls = [];
         for (int i = 0; i < Height; i++)
         {
             for (int j = 0; j < Width; j++)

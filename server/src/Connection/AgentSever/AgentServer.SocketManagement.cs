@@ -102,7 +102,7 @@ public partial class AgentServer
         }
         catch (Exception)
         {
-            return "[UNKNOWN]";
+            return $"[UNKNOWN](ID: {socket.ConnectionInfo.Id})";
         }
     }
 
@@ -116,12 +116,12 @@ public partial class AgentServer
             }
             else
             {
-                return "[UNKNOWN]";
+                return $"[UNKNOWN](ID: {socketId})";
             }
         }
         catch (Exception)
         {
-            return "[UNKNOWN]";
+            return $"[UNKNOWN](ID: {socketId})";
         }
     }
 }

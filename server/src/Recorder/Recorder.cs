@@ -21,7 +21,7 @@ public class Recorder : IRecorder, IDisposable
                 ["type"] = "record"
             };
 
-            JsonArray records = new();
+            JsonArray records = [];
             foreach (IRecord rec in _recordQueue.ToArray())
             {
                 records.Add(rec.Json);

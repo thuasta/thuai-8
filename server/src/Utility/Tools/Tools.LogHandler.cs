@@ -17,7 +17,7 @@ public static partial class Tools
         /// <summary>
         /// The maximum length of a log message.
         /// </summary>
-        public const int MaximumMessageLength = 65535;
+        public const int MaximumMessageLength = 65536;
 
         /// <summary>
         /// The template for Serilog (console).
