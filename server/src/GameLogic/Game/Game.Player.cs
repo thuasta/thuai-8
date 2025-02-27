@@ -15,6 +15,8 @@ public partial class Game
 
     #endregion
 
+    private int _playerId = 0;
+
     #region Methods
 
     /// <summary>
@@ -22,7 +24,7 @@ public partial class Game
     /// </summary>
     /// <param name="playerId">The player to be added.</param>
     /// <returns>If the adding succeeds.</returns>
-    public bool AddPlayer(string token, int playerId)
+    public bool AddPlayer(string token)
     {
         if (Stage != GameStage.Waiting)
         {
@@ -34,21 +36,28 @@ public partial class Game
         {
             lock (_lock)
             {
-                Player player = new(token, playerId)
-                {
-                    ID = playerId
-                };
+                Player player = new(token, _playerId);
                 AllPlayers.Add(player);
                 Scoreboard.Add(player, 0);
-                // SubscribePlayerEvents(player);
+
+                ++_playerId;
+
                 return true;
             }
         }
         catch (Exception e)
         {
-            _logger.Error($"Cannot add player: {e.Message}");
-            _logger.Debug($"{e}");
+            _logger.Error($"Cannot add player:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
             return false;
+        }
+    }
+
+    public void AddPlayer(string[] tokens)
+    {
+        foreach (string token in tokens)
+        {
+            AddPlayer(token);
         }
     }
 
@@ -68,8 +77,8 @@ public partial class Game
         }
         catch (Exception e)
         {
-            _logger.Error($"Cannot remove player: {e.Message}");
-            _logger.Debug($"{e}");
+            _logger.Error($"Cannot remove player:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
         }
     }
 
@@ -84,8 +93,8 @@ public partial class Game
         }
         catch (Exception e)
         {
-            _logger.Error($"Cannot : {e.Message}");
-            _logger.Debug($"{e}");
+            _logger.Error($"Failed to add score to player {player.ID}.");
+            Utility.Tools.LogHandler.LogException(_logger, e);
         }
     }
 
@@ -125,7 +134,7 @@ public partial class Game
         }
         else
         {
-            throw new Exception("This should NOT be thrown!");
+            throw new Exception($"Unexpected count of players with highest scores: {highScoreCount}.");
         }
     }
     #endregion

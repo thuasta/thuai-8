@@ -19,10 +19,23 @@ public class Program
             GameController.GameRunner gameRunner = new(config.Game);
             Recorder.Recorder recorder = new("./data", "replay.dat", "result.json");
 
-            // Just for prototype. Will be replaced by a real player adding system.
-            gameRunner.Game.AddPlayer("token_1", 0);
-            gameRunner.Game.AddPlayer("token_2", 1);
-            gameRunner.Game.AddScore(gameRunner.Game.AllPlayers[0], 100);
+            string[] tokens = [];
+
+            try
+            {
+                tokens = Utility.Tools.TokenLoader.LoadTokens(config.Token);
+            }
+            catch (Exception)
+            {
+                _logger!.Error("Failed to load tokens. Please check your config file or token list.");
+                _logger!.Error("Hint: If you are running this program for the first time,");
+                _logger!.Error("      you may need to create a token file or set up environment variables.");
+                _logger!.Error("You can change the token settings in the config file.");
+                _logger!.Error("Press Ctrl+C to exit.");
+                Task.Delay(-1).Wait();
+            }
+
+            gameRunner.Game.AddPlayer(tokens);
 
             agentServer.Start();
 

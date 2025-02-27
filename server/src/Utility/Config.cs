@@ -13,6 +13,9 @@ public record Config
     [JsonPropertyName("server")]
     public ServerSettings Server { get; init; } = new();
 
+    [JsonPropertyName("token")]
+    public TokenSettings Token { get; init; } = new();
+
     [JsonPropertyName("log")]
     public LogSettings Log { get; init; } = new();
 
@@ -29,6 +32,18 @@ public record Config
     {
         [JsonPropertyName("port")]
         public int Port { get; init; } = 14514;
+    }
+
+    public record TokenSettings
+    {
+        [JsonPropertyName("loadTokenFromEnv")]
+        public bool LoadTokenFromEnv { get; init; } = true;
+
+        [JsonPropertyName("tokenLocation")]
+        public string TokenLocation { get; init; } = "TOKENS";
+
+        [JsonPropertyName("tokenDelimiter")]
+        public char TokenDelimiter { get; init; } = ',';
     }
 
     /// <summary>
