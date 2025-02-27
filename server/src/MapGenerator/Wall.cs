@@ -1,16 +1,10 @@
 namespace Thuai.GameServer.MapGenerator;
 
-public class Wall
+public class Wall(int x, int y, int angle)
 {
-    public Wall(int x, int y, int angle)
-    {
-        X = x;
-        Y = y;
-        Angle = angle;
-    }
-    public int X { get; }
-    public int Y { get; }
-    public int Angle { get; }
+    public int X { get; } = x;
+    public int Y { get; } = y;
+    public int Angle { get; } = angle;
     public override bool Equals(object? obj)
     {
         if (obj is Wall other)

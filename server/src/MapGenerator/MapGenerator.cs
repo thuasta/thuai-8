@@ -120,15 +120,8 @@ public class MapGenerator
     }
 }
 
-struct Line
+struct Line(int x1, int y1, int x2, int y2)
 {
-    public Line(int x1, int y1, int x2, int y2)
-    {
-        X1 = x1;
-        Y1 = y1;
-        X2 = x2;
-        Y2 = y2;
-    }
     public Wall GetCorrespondingWall()
     {
         int angle = 0;
@@ -148,19 +141,14 @@ struct Line
         }
         return new Wall(x, y, angle);
     }
-    public int X1 { get; }
-    public int Y1 { get; }
-    public int X2 { get; }
-    public int Y2 { get; }
+    public int X1 { get; } = x1;
+    public int Y1 { get; } = y1;
+    public int X2 { get; } = x2;
+    public int Y2 { get; } = y2;
 }
 
-struct Point
+struct Point(int x, int y)
 {
-    public Point(int x, int y)
-    {
-        X = x;
-        Y = y;
-    }
-    public int X { get; }
-    public int Y { get; }
+    public int X { get; } = x;
+    public int Y { get; } = y;
 }

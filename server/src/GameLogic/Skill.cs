@@ -12,16 +12,11 @@ public enum SkillName
     KAMUI
 }
 
-public class Skill
+public class Skill(SkillName skillName)
 {
-    public SkillName name;
+    public SkillName name = skillName;
     public int maxCooldown;
     public int currentCooldown;
-
-    public Skill(SkillName skillName)
-    {
-        name = skillName;
-    }
 
     public void UpdateCoolDown()
     {

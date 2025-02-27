@@ -4,13 +4,13 @@ namespace Thuai.Server.GameLogic;
 /// <summary>
 /// Character controlled by a player.
 /// </summary>
-public partial class Player
+public partial class Player(string token, int playerId)
 {
-    public string Token { get; set; }
-    public int ID { get; set; }
-    public double Speed { get; set; }
+    public string Token { get; set; } = token;
+    public int ID { get; set; } = playerId;
+    public double Speed { get; set; } = Constants.MOVE_SPEED;
 
-    public double TurnSpeed { get; set; }
+    public double TurnSpeed { get; set; } = Constants.TURN_SPEED;
 
     public Position PlayerPosition { get; set; } = new();
 
@@ -19,16 +19,7 @@ public partial class Player
     public Armor PlayerArmor { get; set; } = new();
 
     public List<Skill> PlayerSkills { get; set; } = [];
-    private readonly ILogger _logger;
-
-    public Player(string token, int playerId)
-    {
-        Token = token;
-        ID = playerId;
-        Speed = Constants.MOVE_SPEED;
-        TurnSpeed = Constants.TURN_SPEED;
-        _logger = Log.ForContext("Component", $"Player {playerId}");
-    }
+    private readonly ILogger _logger = Log.ForContext("Component", $"Player {playerId}");
 
     public void Injured(double damage)
     {
