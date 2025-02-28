@@ -6,8 +6,6 @@ public class ClockProvider(int milliseconds)
 
     public Task CreateClock()
     {
-        Task task = Task.Delay(Milliseconds);
-        task.Start();
-        return task;
+        return Task.Delay(Milliseconds);
     }
 }

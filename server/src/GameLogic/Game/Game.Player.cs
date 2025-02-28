@@ -40,6 +40,10 @@ public partial class Game
                 AllPlayers.Add(player);
                 Scoreboard.Add(player, 0);
 
+                _logger.Information(
+                    $"Player {Utility.Tools.LogHandler.Truncate(player.Token, 32)} with id {player.ID} added."
+                );
+
                 ++_playerId;
 
                 return true;

@@ -96,7 +96,7 @@ public record Config
         /// Ticks for Buff Choosing.
         /// </summary>
         [JsonPropertyName("awardChooseTicks")]
-        public int AwardChooseTicks { get; init; } = 200;
+        public int AwardChooseTicks { get; init; } = 10 * 20;
 
         /// <summary>
         /// Time limit per battle. (in ticks) 
@@ -119,7 +119,7 @@ public record Config
         /// <see cref="MinimumPlayerCount"/>.
         /// </summary>
         [JsonPropertyName("playerWaitingTicks")]
-        public int PlayerWaitingTicks { get; init; } = 200;
+        public int PlayerWaitingTicks { get; init; } = 10 * 20;
 
         [JsonPropertyName("battleCount")]
         public int BattleCount { get; init; } = 9;

@@ -14,9 +14,18 @@ public partial class Battle
     /// <returns>If the map available.</returns>
     private bool GenerateMap()
     {
-        MapGenerator mapGenerator = new();
-        Map = mapGenerator.GenerateMaps(1, 10, 10)[0];
-        return false;
+        try
+        {
+            MapGenerator mapGenerator = new();
+            Map = mapGenerator.GenerateMaps(1, 10, 10)[0];
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.Error($"Failed to generate the map:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
+            return false;
+        }
     }
 
     /// <summarYpos>

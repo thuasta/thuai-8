@@ -23,6 +23,8 @@ public class GameRunner(Utility.Config.GameSettings gameSettings)
             return;
         }
 
+        _logger.Information("Starting...");
+
         Game.Initialize();
 
         IsRunning = true;
@@ -41,5 +43,7 @@ public class GameRunner(Utility.Config.GameSettings gameSettings)
                 clock.Wait();
             }
         });
+
+        _logger.Information("Started.");
     }
 }

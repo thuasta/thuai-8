@@ -1,5 +1,5 @@
 using Serilog;
-using Thuai.Server.GameController;
+using Thuai.Server.GameLogic.Buff;
 
 namespace Thuai.Server.GameLogic;
 
@@ -28,9 +28,13 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     /// </summary>
     public Battle? RunningBattle { get; private set; } = null;
     public int BattleNumber { get; private set; } = 0;
+    public int AwardCount => GameSettings.BattleCount - 1;
     public GameStage Stage { get; private set; } = GameStage.Waiting;
 
     public int WaitingTick { get; private set; } = 0;
+
+    private BuffSelector _buffSelector = new();
+    private Buff.Buff[] _avilableBuffsAfterCurrentBattle = new Buff.Buff[3];
 
     private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Game");
@@ -47,13 +51,12 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     {
         try
         {
-            // TODO:
-            // 1. Generate the order of awards.
+            _logger.Information("Game initialized.");
         }
         catch (Exception e)
         {
-            _logger.Error($"Failed to initialize the game: {e.Message}");
-            _logger.Debug($"{e}");
+            _logger.Error($"Failed to initialize the game:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
         }
     }
 
@@ -67,6 +70,8 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     /// </remarks>
     public void Tick()
     {
+        _logger.Debug("Running a new tick.");
+        _logger.Debug($"Current stage: {Stage}");
         try
         {
             lock (_lock)
@@ -78,8 +83,8 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
         }
         catch (Exception e)
         {
-            _logger.Error($"An exception occurred while ticking the game: {e.Message}");
-            _logger.Debug($"{e}");
+            _logger.Error($"An exception occurred while ticking the game:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
         }
     }
 
@@ -101,15 +106,20 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
         }
         else if (Stage == GameStage.PreparingGame)
         {
-            Initialize();
             Stage = GameStage.PreparingBattle;
         }
         else if (Stage == GameStage.PreparingBattle)
         {
+            if (BattleNumber < AwardCount)
+            {
+                _avilableBuffsAfterCurrentBattle = _buffSelector.ShowBuff(BattleNumber + 1);
+            }
+
             if (BattleNumber < GameSettings.BattleCount || NeedAdditionalBattle())
             {
                 RunningBattle = new Battle(GameSettings, AllPlayers);
                 Stage = GameStage.InBattle;
+                _logger.Information($"Battle {BattleNumber} started.");
             }
             else
             {
@@ -120,7 +130,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
         {
             if (RunningBattle is null)
             {
-                throw new Exception("Battle doesn't exist.");
+                throw new Exception($"Battle {BattleNumber} doesn't exist.");
             }
             else if (RunningBattle.Stage == Battle.BattleStage.Finished)
             {
@@ -142,7 +152,8 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
 
     private bool NeedAdditionalBattle()
     {
-        return GetHighScorePlayer() == null;
+        // return GetHighScorePlayer() == null;
+        return false;
     }
 
     #endregion

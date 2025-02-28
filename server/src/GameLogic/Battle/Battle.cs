@@ -1,6 +1,4 @@
 using Serilog;
-using Thuai.Server.GameController;
-
 
 namespace Thuai.Server.GameLogic;
 
@@ -85,8 +83,8 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
         }
         catch (Exception e)
         {
-            _logger.Error($"Initialize battle failed: {e.Message}");
-            _logger.Debug($"{e}");
+            _logger.Error($"Initialize battle failed:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
             return false;
         }
     }
@@ -143,7 +141,8 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
         }
         else if (Stage == BattleStage.ChoosingAward)
         {
-            // TODO: implement.
+            // TODO: implement
+            Stage = BattleStage.Finished;
         }
         else /* Stage == BattleStage.Finished */
         {

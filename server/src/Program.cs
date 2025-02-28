@@ -38,9 +38,12 @@ public class Program
             gameRunner.Game.AddPlayer(tokens);
 
             agentServer.Start();
+            gameRunner.Start();
 
-            // Just for prototype. Will be replaced by a real game running system.
-            Task.Delay(5000).Wait();
+            while (gameRunner.IsRunning)
+            {
+                Task.Delay(1000).Wait();
+            }
 
             // Just for prototype. Will be replaced by a recording system.
             recorder.Record(new Recorder.Error() { errorCode = 111111, message = "Damn the game isn't running" });
