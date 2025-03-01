@@ -77,8 +77,8 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
             {
                 RunningBattle?.Tick();
                 StageControl();
-                // TODO: implement, but maybe not anymore?
             }
+            AfterGameTickEvent?.Invoke(this, new AfterGameTickEventArgs(this));
         }
         catch (Exception e)
         {
