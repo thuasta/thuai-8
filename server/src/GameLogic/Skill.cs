@@ -14,15 +14,22 @@ public enum SkillName
 
 public class Skill(SkillName skillName)
 {
-    public SkillName name = skillName;
-    public int maxCooldown;
-    public int currentCooldown;
+    public SkillName Name { get; init; } = skillName;
+    public int MaxCooldown => Constants.SKILL_MAX_COOLDOWN;
+    public int CurrentCooldown;
+
+    public bool IsReady => CurrentCooldown == 0;
 
     public void UpdateCoolDown()
     {
-        if (currentCooldown > 0)
+        if (CurrentCooldown > 0)
         {
-            currentCooldown--;
+            CurrentCooldown--;
         }
+    }
+
+    public void Recover()
+    {
+        CurrentCooldown = 0;
     }
 }

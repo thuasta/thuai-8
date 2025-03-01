@@ -6,8 +6,8 @@ namespace Thuai.Server.GameLogic;
 /// </summary>
 public partial class Player(string token, int playerId)
 {
-    public string Token { get; set; } = token;
-    public int ID { get; set; } = playerId;
+    public string Token => token;
+    public int ID => playerId;
     public double Speed { get; set; } = Constants.MOVE_SPEED;
 
     public double TurnSpeed { get; set; } = Constants.TURN_SPEED;
@@ -23,6 +23,7 @@ public partial class Player(string token, int playerId)
 
     public void Injured(int damage)
     {
+        // TODO: Implement more complex logic for damage calculation.
         if (PlayerArmor.ArmorValue >= damage)
         {
             PlayerArmor.ArmorValue -= damage;
@@ -32,6 +33,16 @@ public partial class Player(string token, int playerId)
             int realDamege = damage - PlayerArmor.ArmorValue;
             PlayerArmor.ArmorValue = 0;
             PlayerArmor.Health -= realDamege;
+        }
+    }
+
+    public void Recover()
+    {
+        PlayerArmor.Recover();
+        PlayerWeapon.Recover();
+        foreach (Skill skill in PlayerSkills)
+        {
+            skill.Recover();
         }
     }
 
