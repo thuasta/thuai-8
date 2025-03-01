@@ -116,7 +116,10 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
 
             if (BattleNumber < GameSettings.BattleCount || NeedAdditionalBattle())
             {
-                RunningBattle = new Battle(GameSettings, AllPlayers);
+                RunningBattle = new Battle(GameSettings, AllPlayers)
+                {
+                    AwardChoosingTickLimit = GameSettings.AwardChooseTicks
+                };
                 RunningBattle.Initialize();
                 Stage = GameStage.InBattle;
                 _logger.Information($"Battle {BattleNumber} started.");

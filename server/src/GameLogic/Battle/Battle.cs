@@ -33,6 +33,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     /// Current tick of the battle.
     /// </summary>
     public int CurrentTick { get; private set; } = 0;
+    public int AwardChoosingTickLimit { get; init; } = 0;
 
     /// <summary>
     /// Current Stage of the battle.
@@ -43,6 +44,8 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     /// Settings of the battle.
     /// </summary>
     public Utility.Config.GameSettings GameSettings { get; init; } = setting;
+
+    private int _currentAwardChoosingTick = 0;
 
     private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Battle");
@@ -152,8 +155,11 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
         }
         else if (Stage == BattleStage.ChoosingAward)
         {
-            // TODO: implement
-            Stage = BattleStage.Finished;
+            _currentAwardChoosingTick++;
+            if (_currentAwardChoosingTick >= AwardChoosingTickLimit)
+            {
+                Stage = BattleStage.Finished;
+            }
         }
         else /* Stage == BattleStage.Finished */
         {

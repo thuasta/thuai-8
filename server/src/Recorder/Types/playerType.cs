@@ -1,5 +1,3 @@
-using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 namespace Thuai.Server.Recorder;
@@ -9,6 +7,11 @@ public record playerType
 
     [JsonPropertyName("token")]
     public string? token { get; init; }
+
+    public weaponType weapon { get; init; } = new();
+    public armorType armor { get; init; } = new();
+    public List<skillType> skills { get; init; } = new();
+    public positionType position { get; init; } = new();
     public record weaponType
     {
         [JsonPropertyName("attackSpeed")]

@@ -42,6 +42,8 @@ public class GameRunner(Utility.Config.GameSettings gameSettings)
 
                 clock.Wait();
             }
+
+            _logger.Information("Game finished.");
         });
 
         _logger.Information("Started.");

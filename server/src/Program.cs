@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using Serilog;
 
 namespace Thuai.Server;
@@ -46,6 +45,7 @@ public class Program
 
             // Subscribe to events
             gameRunner.Game.AfterGameTickEvent += agentServer.HandleAfterGameTickEvent;
+            gameRunner.Game.AfterGameTickEvent += recorder.HandleAfterGameTickEvent;
 
             agentServer.Start();
             gameRunner.Start();
@@ -55,8 +55,6 @@ public class Program
                 Task.Delay(1000).Wait();
             }
 
-            // Just for prototype. Will be replaced by a recording system.
-            recorder.Record(new Recorder.Error() { errorCode = 111111, message = "Damn the game isn't running" });
             recorder.Save();
             recorder.SaveResults(gameRunner.Game.Scoreboard);
 
