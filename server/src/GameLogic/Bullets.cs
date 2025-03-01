@@ -22,7 +22,7 @@ public interface IBullet
 
     public bool AntiArmor { get; }
 
-    // TODO: Implement
+    // TODO: Implement TravelledDistance
 }
 
 /// <summary>

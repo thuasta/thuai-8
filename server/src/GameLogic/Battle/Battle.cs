@@ -77,6 +77,10 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
             {
                 throw new Exception("Generate Map Failed");
             }
+            foreach (Player player in AllPlayers)
+            {
+                SubscribePlayerEvents(player);
+            }
             ChooseSpawnpoint();
             _logger.Information("Initialized battle successfully.");
             return true;
@@ -139,6 +143,10 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
         {
             if (IsBattleOver())
             {
+                foreach (Player player in AllPlayers)
+                {
+                    UnsubscribePlayerEvents(player);
+                }
                 Stage = BattleStage.ChoosingAward;
             }
         }

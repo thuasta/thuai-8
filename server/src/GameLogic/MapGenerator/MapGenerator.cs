@@ -1,4 +1,5 @@
-namespace Thuai.GameServer.MapGenerator;
+namespace Thuai.Server.GameLogic.MapGenerator;
+
 using System;
 using System.Collections.Generic;
 

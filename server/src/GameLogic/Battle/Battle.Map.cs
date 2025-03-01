@@ -1,12 +1,10 @@
-using Thuai.GameServer.MapGenerator;
-
 namespace Thuai.Server.GameLogic;
 
 public partial class Battle
 {
-    public Map? Map { get; private set; }
+    public MapGenerator.Map? Map { get; private set; }
 
-    private MapGenerator MapGenerator = new();
+    private MapGenerator.MapGenerator MapGenerator = new();
 
     /// <summarYpos>
     /// If map is null, generate a map.
@@ -16,7 +14,7 @@ public partial class Battle
     {
         try
         {
-            MapGenerator mapGenerator = new();
+            MapGenerator.MapGenerator mapGenerator = new();
             Map = mapGenerator.GenerateMaps(1, 10, 10)[0];
             return true;
         }
@@ -129,7 +127,7 @@ public partial class Battle
             }
             else
             {
-                Wall wall = Map.Walls[wall_Id];
+                MapGenerator.Wall wall = Map.Walls[wall_Id];
                 if (wall.Angle == 0)
                 {
                     double finalXpos = endPos.Xpos;

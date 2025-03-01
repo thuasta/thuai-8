@@ -8,7 +8,12 @@ public partial class Battle
         player.PlayerTurnEvent += OnPlayerTurn;
         player.PlayerAttackEvent += OnPlayerAttack;
     }
-
+    public void UnsubscribePlayerEvents(Player player)
+    {
+        player.PlayerMoveEvent -= OnPlayerMove;
+        player.PlayerTurnEvent -= OnPlayerTurn;
+        player.PlayerAttackEvent -= OnPlayerAttack;
+    }
 
     private void OnPlayerMove(object? sender, Player.PlayerMoveEventArgs e)
     {

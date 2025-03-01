@@ -30,11 +30,10 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     public int BattleNumber { get; private set; } = 0;
     public int AwardCount => GameSettings.BattleCount - 1;
     public GameStage Stage { get; private set; } = GameStage.Waiting;
-
     public int WaitingTick { get; private set; } = 0;
+    public Buff.Buff[] AvilableBuffsAfterCurrentBattle { get; private set; } = new Buff.Buff[3];
 
     private BuffSelector _buffSelector = new();
-    private Buff.Buff[] _avilableBuffsAfterCurrentBattle = new Buff.Buff[3];
 
     private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Game");
@@ -112,7 +111,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
         {
             if (BattleNumber < AwardCount)
             {
-                _avilableBuffsAfterCurrentBattle = _buffSelector.ShowBuff(BattleNumber + 1);
+                AvilableBuffsAfterCurrentBattle = _buffSelector.ShowBuff(BattleNumber + 1);
             }
 
             if (BattleNumber < GameSettings.BattleCount || NeedAdditionalBattle())

@@ -20,6 +20,9 @@ public class Skill(SkillName skillName)
 
     public bool IsReady => CurrentCooldown == 0;
 
+    // TODO: Implement activation logic
+    public bool IsActive => false;
+
     public void UpdateCoolDown()
     {
         if (CurrentCooldown > 0)

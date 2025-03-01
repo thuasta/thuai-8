@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using Serilog;
 
 namespace Thuai.Server;
@@ -42,6 +43,9 @@ public class Program
             }
 
             gameRunner.Game.AddPlayer(tokens);
+
+            // Subscribe to events
+            gameRunner.Game.AfterGameTickEvent += agentServer.HandleAfterGameTickEvent;
 
             agentServer.Start();
             gameRunner.Start();
