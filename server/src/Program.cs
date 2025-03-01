@@ -24,6 +24,12 @@ public class Program
             try
             {
                 tokens = Utility.Tools.TokenLoader.LoadTokens(config.Token);
+
+                if (tokens.Length != tokens.Distinct().Count())
+                {
+                    _logger!.Warning("Duplicate tokens will be ignored.");
+                    tokens = [.. tokens.Distinct()];
+                }
             }
             catch (Exception)
             {
