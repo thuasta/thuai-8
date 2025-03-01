@@ -1,5 +1,3 @@
-using Thuai.Server.GameController;
-
 namespace Thuai.Server.GameLogic;
 
 public partial class Battle
@@ -115,21 +113,35 @@ public partial class Battle
         {
             lock (_lock)
             {
-                if (e.Player.PlayerWeapon.currentBullets > 0)
+                if (e.Player.PlayerWeapon.CurrentBullets > 0)
                 {
-                    e.Player.PlayerWeapon.currentBullets -= 1;
+                    e.Player.PlayerWeapon.CurrentBullets -= 1;
                     double delta_x = Constants.WALL_THICK * Math.Cos(e.Player.PlayerPosition.Angle);
                     double delta_y = Constants.WALL_THICK * Math.Sin(e.Player.PlayerPosition.Angle);
-                    Position bulletPosition = new(e.Player.PlayerPosition.Xpos + delta_x, e.Player.PlayerPosition.Ypos + delta_y, e.Player.PlayerPosition.Angle);
+                    Position bulletPosition = new(
+                        e.Player.PlayerPosition.Xpos + delta_x,
+                        e.Player.PlayerPosition.Ypos + delta_y,
+                        e.Player.PlayerPosition.Angle
+                    );
                     //The bullet will be spawned in front of the player!
-                    if (e.Player.PlayerWeapon.isLaser == false)
+                    if (e.Player.PlayerWeapon.IsLaser == false)
                     {
-                        Bullet bullet = new(bulletPosition, e.Player.PlayerWeapon.bulletSpeed, e.Player.PlayerWeapon.damage, e.Player.PlayerWeapon.antiArmor);
+                        Bullet bullet = new(
+                            bulletPosition,
+                            e.Player.PlayerWeapon.BulletSpeed,
+                            e.Player.PlayerWeapon.Damage,
+                            e.Player.PlayerWeapon.AntiArmor
+                        );
                         AddBullet(bullet);
                     }
                     else
                     {
-                        LaserBullet laserBullet = new(bulletPosition, e.Player.PlayerWeapon.bulletSpeed, e.Player.PlayerWeapon.damage, e.Player.PlayerWeapon.antiArmor);
+                        LaserBullet laserBullet = new(
+                            bulletPosition,
+                            e.Player.PlayerWeapon.BulletSpeed,
+                            e.Player.PlayerWeapon.Damage,
+                            e.Player.PlayerWeapon.AntiArmor
+                        );
                         Apply_Laser(laserBullet);
                     }
                 }
@@ -142,8 +154,8 @@ public partial class Battle
         }
         catch (Exception ex)
         {
-            _logger.Error($"[Player {e.Player.ID}] Failed to attack: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"[Player {e.Player.ID}] Failed to attack:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
     }
 

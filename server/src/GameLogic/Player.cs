@@ -21,20 +21,19 @@ public partial class Player(string token, int playerId)
     public List<Skill> PlayerSkills { get; set; } = [];
     private readonly ILogger _logger = Log.ForContext("Component", $"Player {playerId}");
 
-    public void Injured(double damage)
+    public void Injured(int damage)
     {
-        if (PlayerArmor.armorValue >= damage)
+        if (PlayerArmor.ArmorValue >= damage)
         {
-            PlayerArmor.armorValue -= damage;
+            PlayerArmor.ArmorValue -= damage;
         }
-        else if (PlayerArmor.armorValue < damage)
+        else if (PlayerArmor.ArmorValue < damage)
         {
-            double realDamege = damage - PlayerArmor.armorValue;
-            PlayerArmor.armorValue = 0;
-            PlayerArmor.health -= realDamege;
+            int realDamege = damage - PlayerArmor.ArmorValue;
+            PlayerArmor.ArmorValue = 0;
+            PlayerArmor.Health -= realDamege;
         }
     }
-
 
     public void PlayerMove(MoveDirection direction)
     {
@@ -54,6 +53,3 @@ public partial class Player(string token, int playerId)
         PlayerAttackEvent?.Invoke(this, new PlayerAttackEventArgs(this));
     }
 }
-
-
-

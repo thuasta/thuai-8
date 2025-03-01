@@ -10,20 +10,22 @@ public enum ArmorKnife
 
 public class Armor
 {
-    public bool canReflect;
-    public double armorValue;
-    public double health;
-    public bool gravityField;
-    public ArmorKnife knife;
-    public double dodgeRate;
+    public bool CanReflect { get; set; } = false;
+    public int MaximumArmorValue { get; set; } = Constants.INITIAL_ARMOR_VALUE;
+    public int ArmorValue { get; set; } = Constants.INITIAL_ARMOR_VALUE;
+    public int MaximumHealth { get; set; } = Constants.INITIAL_HEALTH_VALUE;
+    public int Health { get; set; } = Constants.INITIAL_HEALTH_VALUE;
+    public bool GravityField { get; set; } = false;
+    public ArmorKnife Knife = ArmorKnife.NOT_OWNED;
+    public int DodgeRate { get; set; } = Constants.INITIAL_DODGE_PERCENTAGE;
 
-    public Armor()
+    public void Recover()
     {
-        this.canReflect = false;
-        this.armorValue = Constants.INITIAL_ARMOR_VALUE;
-        this.health = Constants.INITIAL_HEALTH_VALUE;
-        this.gravityField = false;
-        this.knife = ArmorKnife.NOT_OWNED;
-        this.dodgeRate = 0;
+        ArmorValue = MaximumArmorValue;
+        Health = MaximumHealth;
+        if (Knife != ArmorKnife.NOT_OWNED)
+        {
+            Knife = ArmorKnife.AVAILABLE;
+        }
     }
 }
