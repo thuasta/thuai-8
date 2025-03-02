@@ -20,6 +20,16 @@ public partial class Game
     #region Methods
 
     /// <summary>
+    /// Find a player by token.
+    /// </summary>
+    /// <param name="token">Token of the player.</param>
+    /// <returns>Player with given token. Returns null if no player owns that token.</returns>
+    public Player? FindPlayer(string token)
+    {
+        return AllPlayers.Find(player => player.Token == token);
+    }
+
+    /// <summary>
     /// Add player in the game.
     /// </summary>
     /// <param name="playerId">The player to be added.</param>
