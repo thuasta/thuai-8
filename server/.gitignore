@@ -49,4 +49,5 @@ msbuild.wrn
 *.log
 
 # replay files
-**/data
+**/result.json
+*.dat

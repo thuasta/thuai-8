@@ -15,7 +15,7 @@ public partial class AgentServer
     public int Port { get; init; } = 8080;
 
     public bool WhiteListMode { get; init; } = false;
-    public List<string> WhiteList { get; init; } = new();
+    public List<string> WhiteList { get; init; } = [];
 
     private readonly ILogger _logger = Log.Logger.ForContext("Component", "AgentServer");
 
@@ -46,8 +46,8 @@ public partial class AgentServer
         }
         catch (Exception ex)
         {
-            _logger.Error($"Failed to start AgentServer: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"Failed to start AgentServer:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
     }
 
@@ -87,8 +87,8 @@ public partial class AgentServer
         }
         catch (Exception ex)
         {
-            _logger.Error($"Failed to stop AgentServer: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"Failed to stop AgentServer:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
     }
 
@@ -117,7 +117,7 @@ public partial class AgentServer
 
             socket.OnClose = () =>
             {
-                _logger.Debug($"Connection from {GetAddress(socket)} closed.");
+                _logger.Information($"Connection from {GetAddress(socket)} closed.");
 
                 // Remove the socket.
                 RemoveSocket(socket.ConnectionInfo.Id);
@@ -138,12 +138,12 @@ public partial class AgentServer
 
                     _socketRawTextReceivingQueue[socket.ConnectionInfo.Id].Enqueue(text);
                     _logger.Debug($"Received text message from {GetAddress(socket)}.");
-                    _logger.Verbose(text.Length > 65536 ? string.Concat(text.AsSpan(0, 65536), "...") : text);
+                    _logger.Verbose(Utility.Tools.LogHandler.Truncate(text, Utility.Tools.LogHandler.MaximumMessageLength));
                 }
                 catch (Exception exception)
                 {
-                    _logger.Error($"Failed to receive message from {GetAddress(socket)}: {exception.Message}");
-                    _logger.Debug($"{exception}");
+                    _logger.Error($"Failed to receive message from {GetAddress(socket)}:");
+                    Utility.Tools.LogHandler.LogException(_logger, exception);
                 }
             };
 
@@ -165,14 +165,14 @@ public partial class AgentServer
                     _logger.Debug(
                         $"Received binary message from {GetAddress(socket)}."
                     );
-                    _logger.Verbose(text.Length > 65536 ? string.Concat(text.AsSpan(0, 65536), "...") : text);
+                    _logger.Verbose(Utility.Tools.LogHandler.Truncate(text, Utility.Tools.LogHandler.MaximumMessageLength));
                 }
                 catch (Exception exception)
                 {
                     _logger.Error(
-                        $"Failed to receive message from {GetAddress(socket)}: {exception.Message}"
+                        $"Failed to receive message from {GetAddress(socket)}:"
                     );
-                    _logger.Debug($"{exception}");
+                    Utility.Tools.LogHandler.LogException(_logger, exception);
                 }
             };
 

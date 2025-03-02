@@ -1,12 +1,10 @@
-using Thuai.GameServer.MapGenerator;
-
 namespace Thuai.Server.GameLogic;
 
 public partial class Battle
 {
-    public Map? Map { get; private set; }
+    public MapGenerator.Map? Map { get; private set; }
 
-    private MapGenerator MapGenerator = new();
+    private MapGenerator.MapGenerator MapGenerator = new();
 
     /// <summarYpos>
     /// If map is null, generate a map.
@@ -14,9 +12,18 @@ public partial class Battle
     /// <returns>If the map available.</returns>
     private bool GenerateMap()
     {
-        MapGenerator mapGenerator = new();
-        Map = mapGenerator.GenerateMaps(1, 10, 10)[0];
-        return false;
+        try
+        {
+            MapGenerator.MapGenerator mapGenerator = new();
+            Map = mapGenerator.GenerateMaps(1, 10, 10)[0];
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.Error($"Failed to generate the map:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
+            return false;
+        }
     }
 
     /// <summarYpos>
@@ -120,7 +127,7 @@ public partial class Battle
             }
             else
             {
-                Wall wall = Map.Walls[wall_Id];
+                MapGenerator.Wall wall = Map.Walls[wall_Id];
                 if (wall.Angle == 0)
                 {
                     double finalXpos = endPos.Xpos;

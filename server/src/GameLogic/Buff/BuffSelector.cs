@@ -67,7 +67,8 @@ public class BuffSelector
         Buff.MISSILE,
         Buff.TRAP
     };
-    private int Round = 1;
+
+    private int _round = 1;
 
     /// <summary>
     /// Contructor.
@@ -99,7 +100,7 @@ public class BuffSelector
     public Buff[] ShowBuff(int round)
     {
         Buff[] availableBuff = new Buff[3];
-        Round = round;
+        _round = round;
         availableBuff[0] = OffensiveBuff[round - 1];
         availableBuff[1] = DefensiveBuff[round - 1];
         availableBuff[2] = UtilityBuff[round - 1];
@@ -116,13 +117,13 @@ public class BuffSelector
         switch (num)
         {
             case 1:
-                ChooseOffensiveBuff(player, OffensiveBuff[Round - 1]);
+                ChooseOffensiveBuff(player, OffensiveBuff[_round - 1]);
                 break;
             case 2:
-                ChooseDefensiveBuff(player, DefensiveBuff[Round - 1]);
+                ChooseDefensiveBuff(player, DefensiveBuff[_round - 1]);
                 break;
             case 3:
-                ChooseUtilityBuff(player, UtilityBuff[Round - 1]);
+                ChooseUtilityBuff(player, UtilityBuff[_round - 1]);
                 break;
             default:
                 break;

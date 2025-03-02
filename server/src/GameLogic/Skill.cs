@@ -12,22 +12,27 @@ public enum SkillName
     KAMUI
 }
 
-public class Skill
+public class Skill(SkillName skillName)
 {
-    public SkillName name;
-    public int maxCooldown;
-    public int currentCooldown;
+    public SkillName Name { get; init; } = skillName;
+    public int MaxCooldown => Constants.SKILL_MAX_COOLDOWN;
+    public int CurrentCooldown;
 
-    public Skill(SkillName skillName)
-    {
-        name = skillName;
-    }
+    public bool IsReady => CurrentCooldown == 0;
+
+    // TODO: Implement activation logic
+    public bool IsActive => false;
 
     public void UpdateCoolDown()
     {
-        if (currentCooldown > 0)
+        if (CurrentCooldown > 0)
         {
-            currentCooldown--;
+            CurrentCooldown--;
         }
+    }
+
+    public void Recover()
+    {
+        CurrentCooldown = 0;
     }
 }

@@ -5,7 +5,7 @@ namespace Thuai.Server.GameController;
 /// <summary>
 /// Runs and manages the game.
 /// </summary>
-public class GameRunner(Utility.Config.GameSettings gameSettings)
+public partial class GameRunner(Utility.Config.GameSettings gameSettings)
 {
     public Utility.Config.GameSettings GameSettings = gameSettings;
     public GameLogic.Game Game { get; private set; } = new(gameSettings);
@@ -22,6 +22,8 @@ public class GameRunner(Utility.Config.GameSettings gameSettings)
             _logger.Warning("Cannot run a running game again.");
             return;
         }
+
+        _logger.Information("Starting...");
 
         Game.Initialize();
 
@@ -40,6 +42,10 @@ public class GameRunner(Utility.Config.GameSettings gameSettings)
 
                 clock.Wait();
             }
+
+            _logger.Information("Game finished.");
         });
+
+        _logger.Information("Started.");
     }
 }

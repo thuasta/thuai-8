@@ -1,4 +1,5 @@
-namespace Thuai.GameServer.MapGenerator;
+namespace Thuai.Server.GameLogic.MapGenerator;
+
 using System;
 using System.Collections.Generic;
 
@@ -14,14 +15,14 @@ public class Map
     }
     public int Width { get; }
     public int Height { get; }
-    public List<Wall> Walls { get; } = new List<Wall>();
+    public List<Wall> Walls { get; } = [];
     private static readonly Random random = new Random();
     private void GenerateRandomWalls()
     {
         // lines on the path, should be maintained
-        List<Line> lines = new List<Line>();
+        List<Line> lines = [];
         // points that have been visited, should be maintained
-        List<Point> closedPoints = new List<Point>();
+        List<Point> closedPoints = [];
         // points that are on the path and have not been visited
         Stack<Point> openPoints = new Stack<Point>();
         // random select a path from the top-left point
@@ -52,7 +53,7 @@ public class Map
     private Point TakeOneStep(Point currentPoint, ref List<Point> closedPoints, ref List<Line> lines)
     {
         // random select a valid direction
-        List<Point> validDirections = new List<Point>();
+        List<Point> validDirections = [];
         if (currentPoint.X > 0 && !closedPoints.Contains(new Point(currentPoint.X - 1, currentPoint.Y)))
         {
             validDirections.Add(new Point(currentPoint.X - 1, currentPoint.Y));
@@ -82,7 +83,7 @@ public class Map
     }
     private List<Wall> GetAllPossibleWalls()
     {
-        List<Wall> walls = new List<Wall>();
+        List<Wall> walls = [];
         for (int i = 0; i < Height; i++)
         {
             for (int j = 0; j < Width; j++)
@@ -120,15 +121,8 @@ public class MapGenerator
     }
 }
 
-struct Line
+struct Line(int x1, int y1, int x2, int y2)
 {
-    public Line(int x1, int y1, int x2, int y2)
-    {
-        X1 = x1;
-        Y1 = y1;
-        X2 = x2;
-        Y2 = y2;
-    }
     public Wall GetCorrespondingWall()
     {
         int angle = 0;
@@ -148,19 +142,14 @@ struct Line
         }
         return new Wall(x, y, angle);
     }
-    public int X1 { get; }
-    public int Y1 { get; }
-    public int X2 { get; }
-    public int Y2 { get; }
+    public int X1 { get; } = x1;
+    public int Y1 { get; } = y1;
+    public int X2 { get; } = x2;
+    public int Y2 { get; } = y2;
 }
 
-struct Point
+struct Point(int x, int y)
 {
-    public Point(int x, int y)
-    {
-        X = x;
-        Y = y;
-    }
-    public int X { get; }
-    public int Y { get; }
+    public int X { get; } = x;
+    public int Y { get; } = y;
 }

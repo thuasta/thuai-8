@@ -9,42 +9,25 @@ public partial class Player
         PlayerTurn,
     };
 
-    public class PlayerMoveEventArgs : EventArgs
+    public class PlayerMoveEventArgs(Player player, MoveDirection direction) : EventArgs
     {
         public const PlayerEventType EventName = PlayerEventType.PlayerMove;
-        public Player Player { get; }
+        public Player Player { get; } = player;
 
-        public MoveDirection Movedirection { get; set; }
-
-        public PlayerMoveEventArgs(Player player, MoveDirection direction)
-        {
-            Player = player;
-            Movedirection = direction;
-        }
+        public MoveDirection Movedirection { get; set; } = direction;
     }
-    public class PlayerAttackEventArgs : EventArgs
+    public class PlayerAttackEventArgs(Player player) : EventArgs
     {
         public const PlayerEventType EventName = PlayerEventType.PlayerAttack;
-        public Player Player { get; }
-
-        public PlayerAttackEventArgs(Player player)
-        {
-            Player = player;
-        }
+        public Player Player { get; } = player;
     }
 
-    public class PlayerTurnEventArgs : EventArgs
+    public class PlayerTurnEventArgs(Player player, TurnDirection direction) : EventArgs
     {
         public const PlayerEventType EventName = PlayerEventType.PlayerTurn;
-        public Player Player { get; }
+        public Player Player { get; } = player;
 
-        public TurnDirection Turndirection { get; set; }
-
-        public PlayerTurnEventArgs(Player player, TurnDirection direction)
-        {
-            Player = player;
-            Turndirection = direction;
-        }
+        public TurnDirection Turndirection { get; set; } = direction;
     }
     public event EventHandler<PlayerMoveEventArgs>? PlayerMoveEvent;
     public event EventHandler<PlayerAttackEventArgs>? PlayerAttackEvent;

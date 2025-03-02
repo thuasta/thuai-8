@@ -7,7 +7,7 @@ using Thuai.Server.Utility;
 
 namespace Thuai.Server.Recorder;
 
-public class Recorder : IRecorder, IDisposable
+public partial class Recorder : IRecorder, IDisposable
 {
     public const int MaxRecordsBeforeSave = 10000;
     public ILogger _logger = Tools.LogHandler.CreateLogger("Recorder");
@@ -21,7 +21,7 @@ public class Recorder : IRecorder, IDisposable
                 ["type"] = "record"
             };
 
-            JsonArray records = new();
+            JsonArray records = [];
             foreach (IRecord rec in _recordQueue.ToArray())
             {
                 records.Add(rec.Json);

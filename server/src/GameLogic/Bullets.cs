@@ -1,6 +1,5 @@
 namespace Thuai.Server.GameLogic;
 
-
 /// <summary>
 /// Bullet used by a weapon.
 /// </summary>
@@ -19,54 +18,38 @@ public interface IBullet
 
     public Position BulletPosition { get; set; }
     public double BulletSpeed { get; }
-    public double BulletDamage { get; }
+    public int BulletDamage { get; }
 
     public bool AntiArmor { get; }
 
-    // TODO: Implement
+    // TODO: Implement TravelledDistance
 }
 
 /// <summary>
 /// Default bullet for a weapon. Used by Cannon.
 /// </summary>
-public class Bullet : IBullet
+public class Bullet(Position position, double speed, int damage, bool antiArmor = false) : IBullet
 {
     public IBullet.BulletType Type => IBullet.BulletType.Bullet;
 
-    public Position BulletPosition { get; set; }
+    public Position BulletPosition { get; set; } = position;
 
-    public double BulletSpeed { get; }
-    public double BulletDamage { get; }
+    public double BulletSpeed { get; } = speed;
+    public int BulletDamage { get; } = damage;
 
-    public bool AntiArmor { get; }
-
-    public Bullet(Position position, double speed, double damage, bool antiArmor = false)
-    {
-        BulletPosition = position;
-        BulletSpeed = speed;
-        BulletDamage = damage;
-        AntiArmor = antiArmor;
-    }
+    public bool AntiArmor { get; } = antiArmor;
 }
 
-public class LaserBullet : IBullet
+public class LaserBullet(Position position, double speed, int damage, bool antiArmor = false) : IBullet
 {
     public IBullet.BulletType Type => IBullet.BulletType.Bullet;
 
-    public Position BulletPosition { get; set; }
+    public Position BulletPosition { get; set; } = position;
 
-    public double BulletSpeed { get; }
-    public double BulletDamage { get; }
+    public double BulletSpeed { get; } = speed;
+    public int BulletDamage { get; } = damage;
 
-    public bool AntiArmor { get; }
-
-    public LaserBullet(Position position, double speed, double damage, bool antiArmor = false)
-    {
-        BulletPosition = position;
-        BulletSpeed = speed;
-        BulletDamage = damage;
-        AntiArmor = antiArmor;
-    }
+    public bool AntiArmor { get; } = antiArmor;
 }
 
 // TODO: Add more bullets

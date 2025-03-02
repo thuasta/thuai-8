@@ -1,28 +1,23 @@
 namespace Thuai.Server.GameLogic;
 
-public class Position
+public class Position(double x = 0, double y = 0, double angle = 0)
 {
-    public double Xpos { get; set; }
-    public double Ypos { get; set; }
+    public double Xpos { get; set; } = x;
+    public double Ypos { get; set; } = y;
 
-    public double Angle { get; set; } // value are radians: 0 - 2 * Math.PI
-
-    public Position(double x = 0, double y = 0, double angle = 0)
-    {
-        Xpos = x;
-        Ypos = y;
-        Angle = angle;
-    }
+    public double Angle { get; set; } = angle;
 }
 
 public enum MoveDirection
 {
+    NONE,
     BACK,
-    FORTH,
+    FORTH
 };
 
 public enum TurnDirection
 {
+    NONE,
     CLOCKWISE,
     COUNTER_CLOCKWISE,
 };

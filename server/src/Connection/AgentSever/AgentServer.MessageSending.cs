@@ -39,8 +39,8 @@ public partial class AgentServer
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"Failed to add message to message queue of socket {connectionId}: {ex.Message}");
-                    _logger.Debug($"{ex}");
+                    _logger.Error($"Failed to add message to message queue of socket {GetAddress(connectionId)}:");
+                    Utility.Tools.LogHandler.LogException(_logger, ex);
                 }
             }
 
@@ -49,8 +49,8 @@ public partial class AgentServer
         }
         catch (Exception ex)
         {
-            _logger.Error($"Failed to publish message: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"Failed to publish message:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
     }
 
@@ -85,7 +85,10 @@ public partial class AgentServer
                     {
                         if (queue.Count > MAXIMUM_MESSAGE_QUEUE_SIZE)
                         {
-                            _logger.Warning($"Message queue for sending to {GetAddress(socketId)} is full. The messages in queue will be cleared.");
+                            _logger.Warning(
+                                $"Message queue for sending to {GetAddress(socketId)} is full. "
+                                + "The messages in queue will be cleared."
+                            );
                             queue.Clear();
                         }
 
@@ -102,8 +105,8 @@ public partial class AgentServer
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"Failed to send message to {GetAddress(socketId)}: {ex.Message}");
-                    _logger.Debug($"{ex}");
+                    _logger.Error($"Failed to send message to {GetAddress(socketId)}:");
+                    Utility.Tools.LogHandler.LogException(_logger, ex);
                 }
             }
         }, cts.Token);

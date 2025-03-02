@@ -9,14 +9,14 @@ public record BattleUpdateMessage : Message
     public override string MessageType { get; init; } = "BATTLE_UPDATE";
 
     [JsonPropertyName("currentTicks")]
-    public int currentTicks { get; init; } = 0;
+    public int CurrentTicks { get; init; } = 0;
 
     [JsonPropertyName("players")]
-    public List<Player> Players { get; init; } = new();
+    public List<Player> Players { get; init; } = [];
 
     [JsonPropertyName("events")]
     [JsonConverter(typeof(EventConverter))]
-    public List<Events> Events { get; init; } = new();
+    public List<Events> Events { get; init; } = [];
 
     public class EventConverter : JsonConverter<Events>
     {
@@ -25,7 +25,7 @@ public record BattleUpdateMessage : Message
         {
             JsonElement jsonObject = JsonDocument.ParseValue(ref reader).RootElement;
 
-            string? eventType = jsonObject.GetProperty("messageTYpe").GetString();
+            string? eventType = jsonObject.GetProperty("messageType").GetString();
 
             return eventType switch
             {

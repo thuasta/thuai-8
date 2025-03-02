@@ -4,13 +4,16 @@ namespace Thuai.Server.GameLogic;
 /// <summary>
 /// Character controlled by a player.
 /// </summary>
-public partial class Player
+public partial class Player(string token, int playerId)
 {
-    public string Token { get; set; }
-    public int ID { get; set; }
-    public double Speed { get; set; }
+    public string Token => token;
+    public int ID => playerId;
+    public double Speed { get; set; } = Constants.MOVE_SPEED;
 
-    public double TurnSpeed { get; set; }
+    public double TurnSpeed { get; set; } = Constants.TURN_SPEED;
+
+    public MoveDirection MoveDirection { get; set; } = MoveDirection.NONE;
+    public TurnDirection TurnDirection { get; set; } = TurnDirection.NONE;
 
     public Position PlayerPosition { get; set; } = new();
 
@@ -19,31 +22,37 @@ public partial class Player
     public Armor PlayerArmor { get; set; } = new();
 
     public List<Skill> PlayerSkills { get; set; } = [];
-    private readonly ILogger _logger;
+    public bool HasChosenAward { get; set; } = false;
 
-    public Player(string token, int playerId)
-    {
-        Token = token;
-        ID = playerId;
-        Speed = Constants.MOVE_SPEED;
-        TurnSpeed = Constants.TURN_SPEED;
-        _logger = Log.ForContext("Component", $"Player {playerId}");
-    }
+    public bool IsAlive => PlayerArmor.Health > 0;
 
-    public void Injured(double damage)
+    private readonly ILogger _logger = Log.ForContext("Component", $"Player {playerId}");
+
+    public void Injured(int damage)
     {
-        if (PlayerArmor.armorValue >= damage)
+        // TODO: Implement more complex logic for damage calculation.
+        if (PlayerArmor.ArmorValue >= damage)
         {
-            PlayerArmor.armorValue -= damage;
+            PlayerArmor.ArmorValue -= damage;
         }
-        else if (PlayerArmor.armorValue < damage)
+        else if (PlayerArmor.ArmorValue < damage)
         {
-            double realDamege = damage - PlayerArmor.armorValue;
-            PlayerArmor.armorValue = 0;
-            PlayerArmor.health -= realDamege;
+            int realDamege = damage - PlayerArmor.ArmorValue;
+            PlayerArmor.ArmorValue = 0;
+            PlayerArmor.Health -= realDamege;
         }
     }
 
+    public void Recover()
+    {
+        PlayerArmor.Recover();
+        PlayerWeapon.Recover();
+        foreach (Skill skill in PlayerSkills)
+        {
+            skill.Recover();
+        }
+        HasChosenAward = false;
+    }
 
     public void PlayerMove(MoveDirection direction)
     {
@@ -63,6 +72,3 @@ public partial class Player
         PlayerAttackEvent?.Invoke(this, new PlayerAttackEventArgs(this));
     }
 }
-
-
-
