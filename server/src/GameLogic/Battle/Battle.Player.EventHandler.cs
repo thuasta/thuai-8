@@ -28,6 +28,11 @@ public partial class Battle
         {
             lock (_lock)
             {
+                if (e.Movedirection == MoveDirection.NONE)
+                {
+                    return;
+                }
+
                 double delta_x = e.Player.Speed * Math.Cos(e.Player.PlayerPosition.Angle);
                 double delta_y = e.Player.Speed * Math.Sin(e.Player.PlayerPosition.Angle);
                 if (e.Movedirection == MoveDirection.BACK)
@@ -82,6 +87,11 @@ public partial class Battle
         {
             lock (_lock)
             {
+                if (e.Turndirection == TurnDirection.NONE)
+                {
+                    return;
+                }
+
                 double delta_angle = e.Player.TurnSpeed;
                 if (e.Turndirection == TurnDirection.CLOCKWISE)
                 {

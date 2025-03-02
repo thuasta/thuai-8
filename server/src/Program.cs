@@ -46,6 +46,8 @@ public class Program
             // Subscribe to events
             gameRunner.Game.AfterGameTickEvent += agentServer.HandleAfterGameTickEvent;
             gameRunner.Game.AfterGameTickEvent += recorder.HandleAfterGameTickEvent;
+            gameRunner.AfterPlayerConnectEvent += agentServer.HandleAfterPlayerConnectEvent;
+            agentServer.AfterMessageReceiveEvent += gameRunner.HandleAfterMessageReceiveEvent;
 
             agentServer.Start();
             gameRunner.Start();

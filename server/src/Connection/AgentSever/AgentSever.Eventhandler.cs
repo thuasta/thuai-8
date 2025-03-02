@@ -135,22 +135,22 @@ public partial class AgentServer
         }
     }
 
-    // public void HandleAfterPlayerConnectEvent(object? sender, AfterPlayerConnect e)
-    // {
-    //     // Remove all items whose value is e.Token
-    //     List<Guid> keys = [];
-    //     foreach (KeyValuePair<Guid, string> pair in _socketTokens)
-    //     {
-    //         if (pair.Value == e.Token)
-    //         {
-    //             keys.Add(pair.Key);
-    //         }
-    //     }
-    //     foreach (Guid key in keys)
-    //     {
-    //         _socketTokens.TryRemove(key, out _);
-    //     }
+    public void HandleAfterPlayerConnectEvent(object? sender, GameController.GameRunner.AfterPlayerConnectEventArgs e)
+    {
+        // Remove all items whose value is e.Token
+        List<Guid> keys = [];
+        foreach (KeyValuePair<Guid, string> pair in _socketTokens)
+        {
+            if (pair.Value == e.Token)
+            {
+                keys.Add(pair.Key);
+            }
+        }
+        foreach (Guid key in keys)
+        {
+            _socketTokens.TryRemove(key, out _);
+        }
 
-    //     _socketTokens.AddOrUpdate(e.SocketId, e.Token, (key, oldValue) => e.Token);
-    // }
+        _socketTokens.AddOrUpdate(e.SocketId, e.Token, (key, oldValue) => e.Token);
+    }
 }

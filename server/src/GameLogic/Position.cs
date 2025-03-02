@@ -10,12 +10,14 @@ public class Position(double x = 0, double y = 0, double angle = 0)
 
 public enum MoveDirection
 {
+    NONE,
     BACK,
-    FORTH,
+    FORTH
 };
 
 public enum TurnDirection
 {
+    NONE,
     CLOCKWISE,
     COUNTER_CLOCKWISE,
 };

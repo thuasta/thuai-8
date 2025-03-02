@@ -19,7 +19,8 @@ public partial class Battle
     {
         foreach (Player player in AllPlayers)
         {
-            // Update the players.
+            player.PlayerMove(player.MoveDirection);
+            player.PlayerTurn(player.TurnDirection);
         }
     }
 
@@ -33,7 +34,14 @@ public partial class Battle
         {
             throw new Exception("No available map!");
         }
-        // TODO: implement.
+
+        foreach (Player player in AllPlayers)
+        {
+            double x = _random.Next(0, Map.Width) + 0.5;
+            double y = _random.Next(0, Map.Height) + 0.5;
+            double angle = _random.NextDouble() * 2 * Math.PI;
+            player.PlayerPosition = new Position(x, y, angle);
+        }
     }
 
     /// <summary>
@@ -42,22 +50,46 @@ public partial class Battle
     /// <returns>Count of alive players.</returns>
     private int AlivePlayers()
     {
-        // TODO: implement.
-        return 0;
+        int count = 0;
+        foreach (Player player in AllPlayers)
+        {
+            if (player.IsAlive)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     /// <summary>
     /// Get the player with the highest HP.
     /// </summary>
-    /// <returns>The player, null if more than one players have the highest 
-    /// HP.</returns>
+    /// <returns>The player, null if more than one players have the highest HP.</returns>
     /// <remarks>
     /// Returns null if more than one players have the highest HP.
     /// </remarks>
     private Player? PlayerWithHighestHP()
     {
-        // TODO: implement
-        return null;
+        Player? player = null;
+        int playerCount = 0;
+        foreach (Player p in AllPlayers)
+        {
+            if (player == null || p.PlayerArmor.Health > player.PlayerArmor.Health)
+            {
+                player = p;
+                playerCount = 1;
+            }
+            else if (p.PlayerArmor.Health == player.PlayerArmor.Health)
+            {
+                playerCount++;
+            }
+        }
+
+        if (playerCount != 1)
+        {
+            return null;
+        }
+        return player;
     }
 
     #endregion

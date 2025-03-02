@@ -5,7 +5,7 @@ namespace Thuai.Server.GameController;
 /// <summary>
 /// Runs and manages the game.
 /// </summary>
-public class GameRunner(Utility.Config.GameSettings gameSettings)
+public partial class GameRunner(Utility.Config.GameSettings gameSettings)
 {
     public Utility.Config.GameSettings GameSettings = gameSettings;
     public GameLogic.Game Game { get; private set; } = new(gameSettings);

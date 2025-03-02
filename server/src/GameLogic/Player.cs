@@ -12,6 +12,9 @@ public partial class Player(string token, int playerId)
 
     public double TurnSpeed { get; set; } = Constants.TURN_SPEED;
 
+    public MoveDirection MoveDirection { get; set; } = MoveDirection.NONE;
+    public TurnDirection TurnDirection { get; set; } = TurnDirection.NONE;
+
     public Position PlayerPosition { get; set; } = new();
 
     public Weapon PlayerWeapon { get; set; } = new();
@@ -19,6 +22,10 @@ public partial class Player(string token, int playerId)
     public Armor PlayerArmor { get; set; } = new();
 
     public List<Skill> PlayerSkills { get; set; } = [];
+    public bool HasChosenAward { get; set; } = false;
+
+    public bool IsAlive => PlayerArmor.Health > 0;
+
     private readonly ILogger _logger = Log.ForContext("Component", $"Player {playerId}");
 
     public void Injured(int damage)
@@ -44,6 +51,7 @@ public partial class Player(string token, int playerId)
         {
             skill.Recover();
         }
+        HasChosenAward = false;
     }
 
     public void PlayerMove(MoveDirection direction)

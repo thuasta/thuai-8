@@ -47,9 +47,9 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
 
     private int _currentAwardChoosingTick = 0;
 
+    private readonly Random _random = new();
     private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Battle");
-
     private readonly object _lock = new();
 
     #endregion 
@@ -82,6 +82,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
             }
             foreach (Player player in AllPlayers)
             {
+                player.Recover();
                 SubscribePlayerEvents(player);
             }
             ChooseSpawnpoint();
@@ -150,6 +151,8 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
                 {
                     UnsubscribePlayerEvents(player);
                 }
+                Bullets.Clear();
+
                 Stage = BattleStage.ChoosingAward;
             }
         }
