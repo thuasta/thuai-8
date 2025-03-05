@@ -1,6 +1,4 @@
 using Serilog;
-using Thuai.Server.GameController;
-
 
 namespace Thuai.Server.GameLogic;
 
@@ -35,6 +33,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     /// Current tick of the battle.
     /// </summary>
     public int CurrentTick { get; private set; } = 0;
+    public int AwardChoosingTickLimit { get; init; } = 0;
 
     /// <summary>
     /// Current Stage of the battle.
@@ -46,9 +45,11 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     /// </summary>
     public Utility.Config.GameSettings GameSettings { get; init; } = setting;
 
+    private int _currentAwardChoosingTick = 0;
+
+    private readonly Random _random = new();
     private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Battle");
-
     private readonly object _lock = new();
 
     #endregion 
@@ -79,14 +80,19 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
             {
                 throw new Exception("Generate Map Failed");
             }
+            foreach (Player player in AllPlayers)
+            {
+                player.Recover();
+                SubscribePlayerEvents(player);
+            }
             ChooseSpawnpoint();
             _logger.Information("Initialized battle successfully.");
             return true;
         }
         catch (Exception e)
         {
-            _logger.Error($"Initialize battle failed: {e.Message}");
-            _logger.Debug($"{e}");
+            _logger.Error($"Initialize battle failed:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
             return false;
         }
     }
@@ -96,6 +102,9 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     /// </summary>
     public void Tick()
     {
+        _logger.Debug("Running a new tick in battle.");
+        _logger.Debug($"Current battle stage: {Stage}");
+
         try
         {
             lock (_lock)
@@ -138,12 +147,22 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
         {
             if (IsBattleOver())
             {
+                foreach (Player player in AllPlayers)
+                {
+                    UnsubscribePlayerEvents(player);
+                }
+                Bullets.Clear();
+
                 Stage = BattleStage.ChoosingAward;
             }
         }
         else if (Stage == BattleStage.ChoosingAward)
         {
-            // TODO: implement.
+            _currentAwardChoosingTick++;
+            if (_currentAwardChoosingTick >= AwardChoosingTickLimit)
+            {
+                Stage = BattleStage.Finished;
+            }
         }
         else /* Stage == BattleStage.Finished */
         {

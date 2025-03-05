@@ -38,7 +38,7 @@ public record PerformSkillMessage : PerformMessage
     public override string MessageType { get; init; } = "PERFORM_SKILL";
 
     [JsonPropertyName("skillName")]
-    public string skillName { get; init; } = "";
+    public string SkillName { get; init; } = "";
 }
 
 public record PerformSelectMessage : PerformMessage
@@ -56,7 +56,7 @@ public record GetPlayerinfoMessage : PerformMessage
     public override string MessageType { get; init; } = "GET_PLAYER_INFO";
 
     [JsonPropertyName("request")]
-    public string request { get; init; } = "";
+    public string Request { get; init; } = "";
 }
 
 public record GetEnvironmentInfoMessage : PerformMessage

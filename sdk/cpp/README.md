@@ -6,7 +6,7 @@ C++ agent template for the 8th Tsinghua University Artificial Intelligence Chall
 
 ### Prerequisites
 
-- [XMake](https://xmake.io/#/zh-cn/) >= 2.9.6
+- [XMake](https://xmake.io/#/zh-cn/) >= 2.9.8
 - C++ compiler toolchain with C++23 support
 
 ### Build
@@ -31,11 +31,11 @@ xmake
 
 ### Write Your Code
 
-You can write your code in `logic.cc`. For experienced developers, you can also modify any other files in the project.
+You can write your code in `logic.cpp`. For experienced developers, you can also modify any other files in the project.
 
 ### Run
 
-If you modify the code in `main.cc`, this section may be invalid.
+If you modify the code in `main.cpp`, this section may be invalid.
 
 Run the following command to start the agent:
 
@@ -62,4 +62,4 @@ PRs accepted.
 
 ## License
 
-CC0-1.0 © THUASTA
+CC0-1.0 Public Domain Dedication

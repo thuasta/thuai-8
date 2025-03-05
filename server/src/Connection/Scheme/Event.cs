@@ -39,7 +39,7 @@ public record CollisionEvent : Events
     public override string MessageType { get; init; } = "COLLISION_EVENT";
 
     [JsonPropertyName("targets")]
-    public List<Target> Targets { get; init; } = new();
+    public List<Target> Targets { get; init; } = [];
 }
 
 public record DestoryEvent : Events

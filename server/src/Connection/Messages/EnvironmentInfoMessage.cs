@@ -8,14 +8,14 @@ public record EnvironmentInfoMessage : Message
     public override string MessageType { get; init; } = "ENVIRONMENT_INFO";
 
     [JsonPropertyName("walls")]
-    public List<Wall> Walls { get; init; } = new();
+    public List<Wall> Walls { get; init; } = [];
 
     [JsonPropertyName("fences")]
-    public List<Fence> Fences { get; init; } = new();
+    public List<Fence> Fences { get; init; } = [];
 
     [JsonPropertyName("bullets")]
-    public List<Bullet> Bullets { get; init; } = new();
+    public List<Bullet> Bullets { get; init; } = [];
 
     [JsonPropertyName("playerPositions")]
-    public List<playerPositions> PlayerPositions { get; init; } = new();
+    public List<playerPositions> PlayerPositions { get; init; } = [];
 }

@@ -16,7 +16,7 @@ public record Target
     public Bullet Bullet { get; init; } = new();
 
     [JsonPropertyName("laser")]
-    public List<Laser> Laser { get; init; } = new();
+    public List<Laser> Laser { get; init; } = [];
 
     [JsonPropertyName("buffName")]
     public string BuffName { get; init; } = "";

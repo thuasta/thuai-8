@@ -1,186 +1,156 @@
-using Thuai.Server.GameController;
-using Thuai.Server.GameLogic;
-
 namespace Thuai.Server.Connection;
 
 public partial class AgentServer
 {
-    //完成Gamelogic后只需要改变下面的Args中的类名即可
-    // public void HandleAfterGameTickEvent(object? sender, AfterGameTickEventArgs e)
-    // {
-    //     // Add schemes in EnvironmentInfo
-    //     // Add walls and fences
-    //     List<EnvironmentInfoMessage.Wall> walls = new();
-    //     List<EnvironmentInfoMessage.Fence> fences= new();
-    //     foreach (Wall ArgsWall in e.EnvironmentInfo.Walls)
-    //     {
-    //         walls.Add(
-    //             new EnvironmentInfoMessage.Wall
-    //             {
-    //                 Position = new EnvironmentInfoMessage.position
-    //                 {
-    //                     X = ArgsWall.position.x,
-    //                     Y = ArgsWall.position.y,
-    //                     Angle = ArgsWall.position.angle
-    //                 }
-    //             }
-    //         );
-    //     }
+    public void HandleAfterGameTickEvent(object? sender, GameLogic.Game.AfterGameTickEventArgs e)
+    {
+        if (e.Game.Stage != GameLogic.Game.GameStage.InBattle)
+        {
+            _logger.Debug("Game stage is not InBattle, skipping.");
+            return;
+        }
+        if (e.Game.RunningBattle == null)
+        {
+            _logger.Debug("RunningBattle is null, skipping.");
+            return;
+        }
 
-    //     foreach (Fence ArgsFence in e.EnvironmentInfo.Fences)
-    //     {
-    //         fences.Add(
-    //             new EnvironmentInfoMessage.Fence
-    //             {
-    //                 Position = new EnvironmentInfoMessage.position
-    //                 {
-    //                     X = ArgsFence.position.x,
-    //                     Y = ArgsFence.position.Y,
-    //                     Angle = ArgsFence.position.angle
-    //                 },
-    //                 Health = ArgsFence.health
-    //             }
-    //         );
-    //     }
+        if (e.Game.RunningBattle.Stage == GameLogic.Battle.BattleStage.InBattle)
+        {
+            if (e.Game.RunningBattle.Map == null)
+            {
+                _logger.Error("Cannot get map from RunningBattle, skipping.");
+                return;
+            }
+            List<Wall> walls = [];
+            List<Bullet> bullets = [];
+            foreach (GameLogic.MapGenerator.Wall wall in e.Game.RunningBattle.Map.Walls)
+            {
+                walls.Add(
+                    new Wall()
+                    {
+                        Position = new()
+                        {
+                            X = wall.X,
+                            Y = wall.Y,
+                            Angle = wall.Angle,
+                        }
+                    }
+                );
+            }
+            foreach (GameLogic.IBullet bullet in e.Game.RunningBattle.Bullets)
+            {
+                bullets.Add(
+                    new Bullet()
+                    {
+                        Position = new()
+                        {
+                            X = bullet.BulletPosition.Xpos,
+                            Y = bullet.BulletPosition.Ypos,
+                            Angle = bullet.BulletPosition.Angle,
+                        },
+                        Speed = bullet.BulletSpeed,
+                        Damage = bullet.BulletDamage,
 
-    //     // Add bullets
-    //     List<EnvironmentInfoMessage.Bullet> bullets = new();
-    //     foreach (Bullet ArgsBullet in e.EnvironmentInfo.Bullets)
-    //     {
-    //         bullets.Add(
-    //             new EnvironmentInfoMessage.Bullet
-    //             {
-    //                 Position = new EnvironmentInfoMessage.position
-    //                 {
-    //                     X = ArgsBullet.position.x,
-    //                     Y = ArgsBullet.position.y,
-    //                     Angle = ArgsBullet.Position.angle
-    //                 },
-    //                 Speed = ArgsBullet.speed,
-    //                 Damage = ArgsBullet.damage,
-    //                 TraveledDistance = ArgsBullet.traveledDistance
-    //             }
-    //         );
-    //     }
+                        // TODO: Implement TravelledDistance in IBullet
+                        TraveledDistance = 0
+                    }
+                );
+            }
+            Publish(
+                new EnvironmentInfoMessage()
+                {
+                    Walls = [..walls],
+                    Fences = [],                    // TODO: Implement Fences
+                    Bullets = [..bullets],
+                    PlayerPositions = []
+                }
+            );
+            foreach (GameLogic.Player receiver in e.Game.AllPlayers)
+            {
+                foreach(GameLogic.Player player in e.Game.AllPlayers)
+                {
+                    List<Skill> skills = [];
+                    foreach (GameLogic.Skill skill in player.PlayerSkills)
+                    {
+                        skills.Add(
+                            new()
+                            {
+                                Name = skill.Name.ToString(),
+                                MaxCooldown = skill.MaxCooldown,
+                                CurrentCooldown = skill.CurrentCooldown,
+                                IsActive = skill.IsActive
+                            }
+                        );
+                    }
+                    Publish(
+                        new PlayerInfoMessage()
+                        {
+                            Token = (player.Token == receiver.Token) ? player.Token : "",
+                            Weapon = new()
+                            {
+                                AttackSpeed = player.PlayerWeapon.AttackSpeed,
+                                BulletSpeed = player.PlayerWeapon.BulletSpeed,
+                                IsLaser = player.PlayerWeapon.IsLaser,
+                                AntiArmor = player.PlayerWeapon.AntiArmor,
+                                Damage = player.PlayerWeapon.Damage,
+                                MaxBullets = player.PlayerWeapon.MaxBullets,
+                                CurrentBullets = player.PlayerWeapon.CurrentBullets,
+                            },
+                            Armor = new()
+                            {
+                                CanReflect = player.PlayerArmor.CanReflect,
+                                ArmorValue = player.PlayerArmor.ArmorValue,
+                                Health = player.PlayerArmor.Health,
+                                GravityField = player.PlayerArmor.GravityField,
+                                Knife = player.PlayerArmor.Knife.ToString(),
+                                DodgeRate = player.PlayerArmor.DodgeRate,
+                            },
+                            Skills = [..skills],
+                            Position = new()
+                            {
+                                X = player.PlayerPosition.Xpos,
+                                Y = player.PlayerPosition.Ypos,
+                                Angle = player.PlayerPosition.Angle,
+                            }
+                        },
+                        receiver.Token
+                    );
+                }
+            }
+        }
+        else if (e.Game.RunningBattle.Stage == GameLogic.Battle.BattleStage.ChoosingAward)
+        {
+            List<string> buffNames = [];
+            foreach (GameLogic.Buff.Buff buff in e.Game.AvilableBuffsAfterCurrentBattle)
+            {
+                buffNames.Add(buff.ToString());
+            } 
+            Publish(
+                new AvailableBuffsMessage()
+                {
+                    AvailableBuffs = [..buffNames],
+                }
+            );
+        }
+    }
 
-    //     // Add player positions
-    //     List<EnvironmentInfoMessage.playerPositions> playerPositions = new();
-    //     foreach (playerPositions ArgsPlayerPosition in e.EnvironmentInfo.playerPositions)
-    //     {
-    //         playerPositions.Add(
-    //             new EnvironmentInfoMessage.playerPosition
-    //             {
-    //                 Position = new EnvironmentInfoMessage.position
-    //                 {
-    //                     X = ArgsPlayerPosition.position.x,
-    //                     Y = ArgsPlayerPosition.position.y,
-    //                     Angle = ArgsPlayerPosition.position.angle
-    //                 },
-    //                 Token = ArgsPlayerPosition.token
-    //             }
-    //         );
-    //     }
+    public void HandleAfterPlayerConnectEvent(object? sender, GameController.GameRunner.AfterPlayerConnectEventArgs e)
+    {
+        // Remove all items whose value is e.Token
+        List<Guid> keys = [];
+        foreach (KeyValuePair<Guid, string> pair in _socketTokens)
+        {
+            if (pair.Value == e.Token)
+            {
+                keys.Add(pair.Key);
+            }
+        }
+        foreach (Guid key in keys)
+        {
+            _socketTokens.TryRemove(key, out _);
+        }
 
-    //     //add player info
-    //     List<PlayerInfoMessage> playerInfos = new();
-    //     foreach (PlayerInfo ArgsPlayerInfo in e.PlayerInfo) {
-    //         //add weapon 
-    //         PlayerInfoMessage.weapon weapon = new()
-    //         {
-    //             AttackSpeed = ArgsPlayerInfo.weapon.attackSpeed,
-    //             BulletSpeed = ArgsPlayerInfo.weapon.bulletSpeed,
-    //             IsLaser = ArgsPlayerInfo.weapon.isLaser,
-    //             AntiArmor = ArgsPlayerInfo.weapon.antiArmor,
-    //             Damage = ArgsPlayerInfo.weapon.damage,
-    //             MaxBullets = ArgsPlayerInfo.weapon.maxBullets,
-    //             CurrentBullets = ArgsPlayerInfo.weapon.currentBullets
-    //         };
-
-    //         //add armor
-    //         PlayerInfoMessage.armor armor = new()
-    //         {
-    //             CanReflect = ArgsPlayerInfo.armor.canReflect,
-    //             ArmorValue = ArgsPlayerInfo.armor.armorValue,
-    //             Health = ArgsPlayerInfo.armor.health,
-    //             GravityField = ArgsPlayerInfo.armor.gravityField,
-    //             Knife = ArgsPlayerInfo.armor.knife,
-    //             DodgeRate = ArgsPlayerInfo.armor.dodgeRate
-    //         };
-
-    //         //add skills
-    //         List<PlayerInfoMessage.skill> skills = new();
-    //         foreach (skill ArgsSkill in ArgsPlayerInfo.skills) {
-    //             skills.Add(
-    //                 new PlayerInfoMessage.skill
-    //                 {
-    //                     Name = ArgsSkill.name,
-    //                     MaxCooldown = ArgsSkill.maxcooldown,
-    //                     CurrentCooldown = ArgsSkill.currentCooldown,
-    //                     IsActive = ArgsSkill.isActive
-    //                 }
-    //             );
-    //         }
-
-    //         PlayerInfoMessage.Position = new PlayerInfoMessage.position
-    //         {
-    //             X = ArgsPlayerInfo.position.x,
-    //             Y = ArgsPlayerInfo.position.y,
-    //             Angle = ArgsPlayerInfo.position.angle
-    //         };
-
-    //         playerInfos.Add(
-    //             new PlayerInfoMessage
-    //             {
-    //                 Token = ArgsPlayerInfo.token,
-    //                 Weapon = weapon,
-    //                 Armor = armor,
-    //                 Skills = skills,
-    //                 Position = position
-    //             }
-    //         );
-    //     }
-
-    //     //publish the message
-    //     //temporarily used last yera's code as template
-    //     Publish (
-    //         new EnvironmentInfoMessage
-    //         {
-    //             MessageType = "ENVIRONMENT_INFO",
-    //             Position = new EnvironmentInfoMessage.position
-    //             {
-    //                 X = e.EnvironmentInfo.Position.x,
-    //                 Y = e.EnvironmentInfo.Position.y,
-    //                 Angle = e.EnvironmentInfo.Position.angle
-    //             },
-    //             Walls = walls,
-    //             Fences = fences,
-    //             Bullets = bullets,
-    //             PlayerPositions = playerPositions
-    //         }
-    //     );
-
-    //     foreach (PlayerInfoMessage playerInfomessage in playerInfos)
-    //     {
-    //         Publish(playerInfomessage);
-    //     }
-    // }
-
-    // public void HandleAfterPlayerConnectEvent(object? sender, AfterPlayerConnect e)
-    // {
-    //     // Remove all items whose value is e.Token
-    //     List<Guid> keys = [];
-    //     foreach (KeyValuePair<Guid, string> pair in _socketTokens)
-    //     {
-    //         if (pair.Value == e.Token)
-    //         {
-    //             keys.Add(pair.Key);
-    //         }
-    //     }
-    //     foreach (Guid key in keys)
-    //     {
-    //         _socketTokens.TryRemove(key, out _);
-    //     }
-
-    //     _socketTokens.AddOrUpdate(e.SocketId, e.Token, (key, oldValue) => e.Token);
-    // }
+        _socketTokens.AddOrUpdate(e.SocketId, e.Token, (key, oldValue) => e.Token);
+    }
 }

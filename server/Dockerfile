@@ -12,7 +12,5 @@ RUN dotnet publish src \
 FROM mcr.microsoft.com/dotnet/runtime:8.0.12-alpine3.21
 WORKDIR /app
 COPY --from=build-env /app/bin/server .
-RUN mkdir /results \
- && ln -s /results results
 ENTRYPOINT ["./server"]
 EXPOSE 14514
