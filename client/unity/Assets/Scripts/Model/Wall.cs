@@ -18,18 +18,18 @@ namespace BattleCity
 
         private static readonly string[] horiWallPrefabNames =
         {
-            "horiWall00",
-            "horiWall01",
+            "horiWall00"
+            /*"horiWall01",
             "horiWall02",
             "horiWall03",
-            "horiWall04"
+            "horiWall04"*/
         };
 
         private static readonly string[] vertWallPrefabNames =
         {
-            "vertWall00",
-            "vertWall01",
-            "vertWall02"
+            "vertWall00"
+            /*"vertWall01",
+            "vertWall02"*/
         };
         public Wall(Position wallpos)
         {

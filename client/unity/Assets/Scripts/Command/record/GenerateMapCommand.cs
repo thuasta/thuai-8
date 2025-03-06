@@ -10,15 +10,15 @@ public class GenerateMapCommand : AbstractCommand
 {
     private static readonly string[] floorPrefabNames =
         {
-            "Floor00",
-            "Floor01",
+            "Floor00"
+           /* "Floor01",
             "Floor02",
             "Floor03",
             "Floor04",
             "Floor05",
             "Floor06",
             "Floor07",
-            "Floor08"
+            "Floor08"*/
         };
     private Map map;
     public JObject mapData;
