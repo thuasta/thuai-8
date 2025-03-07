@@ -6,6 +6,8 @@ using Newtonsoft.Json.Linq;
 using QFramework;
 using System.IO;
 using System.Linq;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace BattleCity
 {
@@ -16,11 +18,14 @@ namespace BattleCity
         private Map mMap;
 
         private JArray _recordArray;
-        private string _recordFile;
+        public string _recordFile;
         public RecordInfo _recordInfo;
 
         private bool BattleStart;
 
+        private Coroutine updateTickCoroutine; // 协程引用存储
+        public Button exitButton;
+        public GameObject BuffSeclectPanel;
 
         // Start is called before the first frame update
         void Start()
@@ -31,11 +36,20 @@ namespace BattleCity
             mMap = this.GetModel<Map>();
 
             //UI
+            exitButton = GameObject.Find("Canvas/Exit").GetComponent<Button>();
+            exitButton.onClick.AddListener(() => OnExitButtonClicked());
 
             //record
             BattleStart = true;
             _recordInfo = this.GetModel<RecordInfo>();
-            _recordFile = Path.Combine("Assets/Scripts/", "BattleInfo.json");
+            if (!string.IsNullOrEmpty(SceneData.FilePath))
+            {
+                _recordFile = SceneData.FilePath;
+            }
+            else
+            {
+                Debug.LogError("文件路径未提供！");
+            }
             if (_recordFile == null)
             {
                 Debug.Log("Loading file error!");
@@ -67,7 +81,20 @@ namespace BattleCity
 
         public void PlayRecord()
         {
-            StartCoroutine(UpdateTick());
+            updateTickCoroutine = StartCoroutine(UpdateTick());
+        }
+
+        public void OnExitButtonClicked()
+        {
+            // 停止正在运行的协程
+            if (updateTickCoroutine != null)
+            {
+                StopCoroutine(updateTickCoroutine);
+                updateTickCoroutine = null;
+            }
+
+            // 加载开始场景
+            SceneManager.LoadScene("Start"); // 替换为你的开始场景名称
         }
 
 
@@ -230,11 +257,13 @@ namespace BattleCity
 
         }
 
-        private void BuffSelect(JObject buffInfo)
+        private IEnumerator BuffSelect(JObject buffInfo)
         {
             int id = buffInfo["token"].ToObject<int>();
             string buff = buffInfo["buff"].ToString();
-            
+            BuffSeclectPanel.SetActive(true);
+            yield return new WaitForSeconds(3);
+            BuffSeclectPanel.SetActive(false);
         }
 
 
@@ -258,7 +287,7 @@ namespace BattleCity
                             UpdateBattle(message);
                             break;
                         case "BUFF_SELECT":
-                            BuffSelect(message);
+                            yield return BuffSelect(message);
                             break;
                         default:
                             Debug.LogWarning("Unknown message type: " + messageType);
