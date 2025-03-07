@@ -25,6 +25,7 @@ namespace BattleCity
 
         private Coroutine updateTickCoroutine; // 协程引用存储
         public Button exitButton;
+        public GameObject BuffSeclectPanel;
 
         // Start is called before the first frame update
         void Start()
@@ -256,11 +257,13 @@ namespace BattleCity
 
         }
 
-        private void BuffSelect(JObject buffInfo)
+        private IEnumerator BuffSelect(JObject buffInfo)
         {
             int id = buffInfo["token"].ToObject<int>();
             string buff = buffInfo["buff"].ToString();
-            
+            BuffSeclectPanel.SetActive(true);
+            yield return new WaitForSeconds(5);
+            BuffSeclectPanel.SetActive(false);
         }
 
 
