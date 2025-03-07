@@ -21,13 +21,12 @@ namespace BattleCity
         public CameraStatus _cameraStatus;
 
         public UnityEngine.Transform initialTransform;
-        private int _playerNumber;
+        private int _playerNumber = 0;
         private List<TankModel> _players;
 
         UnityEngine.Vector3 offset;//相机跟随的偏移量
         public float rotationSpeed;//摄像机旋转速度
-        public float zoomSpeed = 1f; // 视野的缩放速度
-        float zoom;//滚轮滚动量
+        public float zoomSpeed;         // 缩放速度
 
         //左右旋转、上下旋转功能:
         public bool isRotating, lookup;
@@ -44,12 +43,13 @@ namespace BattleCity
             _players = new();
             offset = new Vector3(5, 5, 5);
             initialTransform = transform;
-            RotateSpeed = 100f;
+            RotateSpeed = 200f;
             rotationSpeed = 75f;
             MoveSpeed = 0.1f;
             FreeMoveSpeed = 10f;
             _cameraStatus = CameraStatus.freeCamera;
             targetTank = null;
+            zoomSpeed = 30;
         }
 
         public IArchitecture GetArchitecture()
@@ -65,12 +65,13 @@ namespace BattleCity
                 Rollup();
                 ExchangeStatus();
                 Follow();
+                Zoom();
             }
             else
             {
                 Move();
                 ExchangeStatus();
-                Zoom();
+                FreeZoom();
             }
 
         }
@@ -87,29 +88,24 @@ namespace BattleCity
                 }
                 if (_cameraStatus == CameraStatus.player)
                 {
-                    // Retry target
-                    if (_players.Count - 1 >= _playerNumber)
+                    _cameraStatus = CameraStatus.freeCamera;
+                    if (_players.Count - 1 > _playerNumber)
                     {
-                        targetTank = _players[_playerNumber];
-                        Debug.Log(transform.position);
-                        Debug.Log($"target {targetTank.TankObject.transform.position}");
-                        //visualAngleReset(transform.position, GetHeadPos(targetTank.TankObject.transform.position));
-                        Debug.Log($"after {transform.position}");
                         _playerNumber += 1;
                     }
                     else
                     {
-                        _cameraStatus = CameraStatus.freeCamera;
                         _playerNumber = 0;
                     }
-
                 }
                 else if (_cameraStatus == CameraStatus.freeCamera && _players.Count != 0)
                 {
                     _cameraStatus = CameraStatus.player;
-                    targetTank = _players[_playerNumber];
+                    
                     //visualAngleReset(transform.position, GetHeadPos(targetTank.TankObject.transform.position));
-                    _playerNumber += 1;
+                    //_playerNumber += 1;
+                    
+                    targetTank = _players[_playerNumber];
                 }
             }
         }
@@ -121,11 +117,6 @@ namespace BattleCity
         void Follow()
         {
             //视野缩放
-            zoom = Input.GetAxis("Mouse ScrollWheel") * zoomSpeed; // 获取滚轮滚动量
-            if (zoom != 0) // 如果有滚动
-            {
-                offset -= zoom * offset;
-            }
             offset = new Vector3(5.7f, 14.6f, -5.2f);
             Vector3 targetPosition = targetTank.TankObject.transform.TransformPoint(offset);
             transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 2);
@@ -150,6 +141,25 @@ namespace BattleCity
                 if (Camera.main.orthographicSize >= 1)
                     Camera.main.orthographicSize -= 0.5F;
             }
+        }
+
+
+        void FreeZoom()
+        {
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll == 0) return;
+
+            // 使用更精确的移动计算
+            float moveAmount = scroll * zoomSpeed;
+
+            Debug.Log($"Scroll: {scroll} | Origin Move: {moveAmount} | zoom speed: {zoomSpeed}");
+
+            // 直接限制移动量而非累计值
+            moveAmount = Mathf.Clamp(moveAmount, -10f, 10f);
+
+            // 使用世界坐标系移动（更稳定）
+            transform.position += transform.forward * moveAmount;
+            Debug.Log($"Scroll: {scroll} | Move: {moveAmount}");
         }
 
         void Rotate()
