@@ -3,21 +3,22 @@
         {
             "record": [
                 {
-                    "messageType": "STAGE",
-                    "currentTicks": 0,
-                    "targetStage": "REST"
+                    "messageType": "STAGE_INFO",
+                    "totalTicks": 0,
+                    "currentStage": "REST"
                 }
             ]
         },
         {
             "record": [
                 {
-                    "messageType": "STAGE",
-                    "currentTicks": 1,
-                    "targetStage": "BATTLE"
+                    "messageType": "STAGE_INFO",
+                    "totalTicks": 1,
+                    "currentStage": "BATTLE"
                 },
                 {
                     "messageType": "BATTLE_UPDATE",
+                    "battleTicks": 0,
                     "events": [
                         {
                             "eventType": "PLAYER_UPDATE_EVENT",
@@ -173,12 +174,13 @@
         {
             "record": [
                 {
-                    "messageType": "STAGE",
-                    "currentTicks": 2,
-                    "targetStage": "BATTLE"
+                    "messageType": "STAGE_INFO",
+                    "totalTicks": 2,
+                    "currentStage": "BATTLE"
                 },
                 {
                     "messageType": "BATTLE_UPDATE",
+                    "battleTicks": 2,
                     "events": [
                         {
                             "eventType": "PLAYER_UPDATE_EVENT",
@@ -347,9 +349,9 @@
         {
             "record": [
                 {
-                    "messageType": "STAGE_CHANGE",
-                    "currentTicks": 3,
-                    "targetStage": "END"
+                    "messageType": "STAGE_INFO",
+                    "totalTicks": 3,
+                    "currentStage": "END"
                 },
                 {
                     "messageType": "BUFF_SELECT",

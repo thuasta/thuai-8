@@ -262,7 +262,7 @@ namespace BattleCity
             int id = buffInfo["token"].ToObject<int>();
             string buff = buffInfo["buff"].ToString();
             BuffSeclectPanel.SetActive(true);
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(3);
             BuffSeclectPanel.SetActive(false);
         }
 
@@ -287,7 +287,7 @@ namespace BattleCity
                             UpdateBattle(message);
                             break;
                         case "BUFF_SELECT":
-                            BuffSelect(message);
+                            yield return BuffSelect(message);
                             break;
                         default:
                             Debug.LogWarning("Unknown message type: " + messageType);
