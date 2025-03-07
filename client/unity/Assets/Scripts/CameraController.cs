@@ -74,14 +74,10 @@ namespace BattleCity
             }
 
         }
-        void visualAngleReset(Vector3 from, Vector3 to)
-        {
-            //offset = (from - to) * 8 / (from - to).magnitude;
-            offset = new Vector3(10.7f, 28.6f, -10.2f);
-        }
+        
         void ExchangeStatus()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
                 Dictionary<int, TankModel> dict = mTanks.GetTankDictCopy();
                 _players.Clear();
