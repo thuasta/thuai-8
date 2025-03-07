@@ -106,9 +106,9 @@ public class JsonUtility
                     foreach (JObject recordItem in record)
                     {
                         JToken messageTypeToken = recordItem["messageType"];
-                        if (messageTypeToken?.ToString() == "STAGE")
+                        if (messageTypeToken?.ToString() == "STAGE_INFO")
                         {
-                            JToken tickToken = recordItem["currentTicks"];
+                            JToken tickToken = recordItem["totalTicks"];
                             if (tickToken != null && tickToken.Type == JTokenType.Integer)
                             {
                                 indexAndTicks[nowRecordIndex].Item2 = (int)tickToken;
