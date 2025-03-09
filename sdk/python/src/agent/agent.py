@@ -3,7 +3,7 @@ import logging
 from typing import List, Optional
 
 from . import messages
-from .enviroment_info import EnvironmentInfo, Wall, Fence, Bullet, PlayerPosition
+from .environment_info import EnvironmentInfo, Wall, Fence, Bullet, PlayerPosition
 from .player_info import PlayerInfo, WeaponInfo, ArmorInfo, SkillInfo
 from .position import Position
 from .position_int import PositionInt

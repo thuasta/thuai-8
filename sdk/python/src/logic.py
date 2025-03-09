@@ -1,12 +1,12 @@
 import logging
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from pathfinding.core.grid import Grid
 from pathfinding.finder.best_first import BestFirst
 
 from agent.agent import Agent
 from agent.position import Position
-from agent.enviroment_info import Wall, Fence, Bullet
+from agent.environment_info import Wall, Fence, Bullet
 
 wall_list: Optional[List[Wall]] = None
 fence_list: Optional[List[Fence]] = None
@@ -71,7 +71,7 @@ async def loop(agent: Agent):
     await agent.attack()
 
 
-def find_path(start: Position, end: Position, walls: List[Wall], fences: List[Fence], bullets: List[Bullet]) -> List[(float, float)]:
+def find_path(start: Position, end: Position, walls: List[Wall], fences: List[Fence], bullets: List[Bullet]) -> List[Tuple[float, float]]:
     # Your code here.
     # Design a pathfinding algorithm based on the positions of walls and bullets in the environment
     # Return a list of the optimal path from start to end, each element being a tuple (angle, distance)
