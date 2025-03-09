@@ -8,4 +8,4 @@ WORKDIR /app
 COPY --from=build-env /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY . .
 ENV PYTHONPATH=/usr/local/lib/python3.11/site-packages
-ENTRYPOINT ["python", "main.py"]
+ENTRYPOINT ["python", "src/main.py"]
