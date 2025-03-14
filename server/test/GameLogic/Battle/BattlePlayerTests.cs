@@ -81,7 +81,7 @@ public class BattlePlayerTests
         var player1 = new Player("Player1", 1);
         var player2 = new Player("Player2", 2);
         var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(MBT: 0), players);
+        Battle battle = new Battle(new(){MaxBattleTicks = 0}, players);
 
         // Act
         battle.Tick();

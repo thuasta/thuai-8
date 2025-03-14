@@ -1,5 +1,5 @@
 using Thuai.Server.GameLogic;
-using Thuai.GameServer.MapGenerator;
+using Thuai.Server.GameLogic.MapGenerator;
 
 namespace Thuai.Server.Test.GameLogic;
 
@@ -78,7 +78,7 @@ public class BattleBulletTests
         battle.Tick();
 
         // Assert
-        Assert.Equal(health, player2.PlayerArmor.health);
+        Assert.Equal(health, player2.PlayerArmor.Health);
     }
 
     [Theory]
@@ -104,7 +104,7 @@ public class BattleBulletTests
         battle.Tick();
 
         // Assert
-        Assert.Equal(health, player2.PlayerArmor.health);
+        Assert.Equal(health, player2.PlayerArmor.Health);
     }
 
     [Theory]
@@ -156,7 +156,7 @@ public class BattleBulletTests
         battle.Tick();
 
         // Assert
-        Assert.Equal(health, player2.PlayerArmor.health);
+        Assert.Equal(health, player2.PlayerArmor.Health);
         Assert.Empty(battle.Bullets);
     }
 
@@ -246,8 +246,8 @@ public class BattleBulletTests
         battle.Tick();
 
         // Assert
-        Assert.Equal(health2, player2.PlayerArmor.health);
-        Assert.Equal(health3, player3.PlayerArmor.health);
+        Assert.Equal(health2, player2.PlayerArmor.Health);
+        Assert.Equal(health3, player3.PlayerArmor.Health);
         Assert.Empty(battle.Bullets);
     }
 
