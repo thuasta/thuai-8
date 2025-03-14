@@ -31,8 +31,8 @@ public class PlayerTests
         Player player = new("", 0);
 
         // Act.
-        player.Token = "token";
-        player.ID = 1;
+        //player.Token = "token";
+        //player.ID = 1;
         player.Speed = 1.0;
         player.TurnSpeed = 1.0;
         player.PlayerPosition = new();
@@ -56,15 +56,15 @@ public class PlayerTests
     {
         // Arrange.
         Player player = new("", 0);
-        player.PlayerArmor.armorValue = 10;
-        player.PlayerArmor.health = 10;
+        player.PlayerArmor.ArmorValue = 10;
+        player.PlayerArmor.Health = 10;
 
         // Act.
         player.Injured(5);
 
         // Assert.
-        Assert.Equal(5, player.PlayerArmor.armorValue);
-        Assert.Equal(10, player.PlayerArmor.health);
+        Assert.Equal(5, player.PlayerArmor.ArmorValue);
+        Assert.Equal(10, player.PlayerArmor.Health);
     }
 
     [Fact]
@@ -72,15 +72,15 @@ public class PlayerTests
     {
         // Arrange.
         Player player = new("", 0);
-        player.PlayerArmor.armorValue = 5;
-        player.PlayerArmor.health = 10;
+        player.PlayerArmor.ArmorValue = 5;
+        player.PlayerArmor.Health = 10;
 
         // Act.
         player.Injured(10);
 
         // Assert.
-        Assert.Equal(0, player.PlayerArmor.armorValue);
-        Assert.Equal(5, player.PlayerArmor.health);
+        Assert.Equal(0, player.PlayerArmor.ArmorValue);
+        Assert.Equal(5, player.PlayerArmor.Health);
     }
 
     [Fact]

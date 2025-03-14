@@ -14,7 +14,7 @@ namespace Thuai.Server.Test.GameLogic
             var skill = new Skill(skillName);
 
             // Assert
-            Assert.Equal(skillName, skill.name);
+            Assert.Equal(skillName, skill.Name);
         }
 
         [Fact]
@@ -23,15 +23,14 @@ namespace Thuai.Server.Test.GameLogic
             // Arrange
             var skill = new Skill(SkillName.BLACK_OUT)
             {
-                maxCooldown = 5,
-                currentCooldown = 3
+                CurrentCooldown = 3
             };
 
             // Act
             skill.UpdateCoolDown();
 
             // Assert
-            Assert.Equal(2, skill.currentCooldown);  // Cooldown should decrease by 1
+            Assert.Equal(2, skill.CurrentCooldown);  // Cooldown should decrease by 1
         }
 
         [Fact]
@@ -40,15 +39,14 @@ namespace Thuai.Server.Test.GameLogic
             // Arrange
             var skill = new Skill(SkillName.FLASH)
             {
-                maxCooldown = 5,
-                currentCooldown = 0
+                CurrentCooldown = 0
             };
 
             // Act
             skill.UpdateCoolDown();
 
             // Assert
-            Assert.Equal(0, skill.currentCooldown);  // Cooldown should stay at 0
+            Assert.Equal(0, skill.CurrentCooldown);  // Cooldown should stay at 0
         }
 
         [Fact]
