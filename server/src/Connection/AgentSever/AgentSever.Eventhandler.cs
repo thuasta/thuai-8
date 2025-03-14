@@ -1,3 +1,5 @@
+using System.Security.Cryptography.X509Certificates;
+
 namespace Thuai.Server.Connection;
 
 public partial class AgentServer
@@ -63,11 +65,12 @@ public partial class AgentServer
                     Walls = [..walls],
                     Fences = [],                    // TODO: Implement Fences
                     Bullets = [..bullets],
-                    PlayerPositions = []
+                    MapSize = e.Game.RunningBattle.Map.Height
                 }
             );
             foreach (GameLogic.Player receiver in e.Game.AllPlayers)
             {
+                List<Player> players = [];
                 foreach(GameLogic.Player player in e.Game.AllPlayers)
                 {
                     List<Skill> skills = [];
@@ -83,8 +86,8 @@ public partial class AgentServer
                             }
                         );
                     }
-                    Publish(
-                        new PlayerInfoMessage()
+                    players.Add(
+                        new Player()
                         {
                             Token = (player.Token == receiver.Token) ? player.Token : "",
                             Weapon = new()
@@ -113,10 +116,16 @@ public partial class AgentServer
                                 Y = player.PlayerPosition.Ypos,
                                 Angle = player.PlayerPosition.Angle,
                             }
-                        },
-                        receiver.Token
+                        }
                     );
                 }
+                Publish(
+                    new AllPlayerInfoMessage()
+                    {
+                        Players = [..players]
+                    },
+                    receiver.Token
+                );
             }
         }
         else if (e.Game.RunningBattle.Stage == GameLogic.Battle.BattleStage.ChoosingAward)
