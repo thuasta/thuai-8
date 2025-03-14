@@ -206,10 +206,10 @@ public class BattleBulletTests
     }
 
     [Theory]
-    [InlineData(0, -1, 0, -1, 0, 0, 1)]
-    [InlineData(0, -10, 0, -1, 0, 1, 0)]
-    [InlineData(Math.PI / 4, -1.292893, 0.707106, -0.192031, 2.192031, 0, 1)]
-    [InlineData(Math.PI / 4, -10, 0.707106, -0.192031, 2.192031, 1, 0)]
+    [InlineData(0, 1, 0, -1, 0, 0, 1)]
+    [InlineData(0, 2, 0, 1, 0, 1, 0)]
+    [InlineData(Math.PI / 4, 1.012345, 1.012345, -1.22, -1.33, 0, 1)]
+    [InlineData(Math.PI / 4, 3.44, 3.44, 1.12, 1.12, 1, 0)]
     public void UpdateBullets_IntersectHitPlayer_ShouldRemove(
         double startAngle, double delta2X, double delta2Y, double delta3X, double delta3Y, int health2, int health3)
     {
@@ -233,13 +233,13 @@ public class BattleBulletTests
             {
                 if (wall.X > 0 && wall.Y > 0 && wall.Angle == 90)
                 {
-                    wallX = wall.X * Constants.WALL_LENGTH;
-                    wallY = wall.Y * Constants.WALL_LENGTH;
+                    wallX = wall.X * Constants.WALL_LENGTH - 5;
+                    wallY = wall.Y * Constants.WALL_LENGTH - 5;
                     break;
                 }
             }
         }
-        player1.PlayerPosition = new Position(wallX - 2, wallY, startAngle);
+        player1.PlayerPosition = new Position(wallX, wallY, startAngle);
         player2.PlayerPosition = new Position(wallX + delta2X, wallY + delta2Y, 0);
         player3.PlayerPosition = new Position(wallX + delta3X, wallY + delta3Y, 0);
         player1.PlayerAttack();
