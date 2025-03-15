@@ -62,16 +62,16 @@ public partial class AgentServer
             Publish(
                 new EnvironmentInfoMessage()
                 {
-                    Walls = [..walls],
+                    Walls = [.. walls],
                     Fences = [],                    // TODO: Implement Fences
-                    Bullets = [..bullets],
+                    Bullets = [.. bullets],
                     MapSize = e.Game.RunningBattle.Map.Height
                 }
             );
             foreach (GameLogic.Player receiver in e.Game.AllPlayers)
             {
                 List<Player> players = [];
-                foreach(GameLogic.Player player in e.Game.AllPlayers)
+                foreach (GameLogic.Player player in e.Game.AllPlayers)
                 {
                     List<Skill> skills = [];
                     foreach (GameLogic.Skill skill in player.PlayerSkills)
@@ -109,7 +109,7 @@ public partial class AgentServer
                                 Knife = player.PlayerArmor.Knife.ToString(),
                                 DodgeRate = player.PlayerArmor.DodgeRate,
                             },
-                            Skills = [..skills],
+                            Skills = [.. skills],
                             Position = new()
                             {
                                 X = player.PlayerPosition.Xpos,
@@ -122,7 +122,7 @@ public partial class AgentServer
                 Publish(
                     new AllPlayerInfoMessage()
                     {
-                        Players = [..players]
+                        Players = [.. players]
                     },
                     receiver.Token
                 );
@@ -134,11 +134,11 @@ public partial class AgentServer
             foreach (GameLogic.Buff.Buff buff in e.Game.AvilableBuffsAfterCurrentBattle)
             {
                 buffNames.Add(buff.ToString());
-            } 
+            }
             Publish(
                 new AvailableBuffsMessage()
                 {
-                    AvailableBuffs = [..buffNames],
+                    AvailableBuffs = [.. buffNames],
                 }
             );
         }
