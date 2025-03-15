@@ -9,7 +9,7 @@ namespace Thuai.Server.Test.GameLogic
         {
             // Arrange.
             var position = new Position(0, 0); // Assuming a Position class constructor that takes X and Y.
-            var bullet = new Bullet(position, 10.0, 5.0, true);
+            var bullet = new Bullet(position, 10.0, 5, true);
 
             // Act.
             // No need to act as we are testing default constructor values.
@@ -27,7 +27,7 @@ namespace Thuai.Server.Test.GameLogic
         {
             // Arrange.
             var position = new Position(1, 1); // Another position for LaserBullet.
-            var laserBullet = new LaserBullet(position, 15.0, 10.0, false);
+            var laserBullet = new LaserBullet(position, 15.0, 10, false);
 
             // Act.
             // No need to act as we are testing default constructor values.
@@ -45,7 +45,7 @@ namespace Thuai.Server.Test.GameLogic
         {
             // Arrange.
             var position = new Position(2, 2);
-            var bullet = new Bullet(position, 20.0, 15.0);
+            var bullet = new Bullet(position, 20.0, 15);
 
             // Act.
             // No additional action needed, this test focuses on default value for AntiArmor.
