@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Thuai.Server.Connection;
+namespace Thuai.Server.Protocol.Messages;
 
 public record BattleUpdateMessage : Message
 {
@@ -12,15 +12,15 @@ public record BattleUpdateMessage : Message
     public int CurrentTicks { get; init; } = 0;
 
     [JsonPropertyName("players")]
-    public List<Player> Players { get; init; } = [];
+    public List<Scheme.Player> Players { get; init; } = [];
 
     [JsonPropertyName("events")]
     [JsonConverter(typeof(EventConverter))]
-    public List<Events> Events { get; init; } = [];
+    public List<Scheme.Events> Events { get; init; } = [];
 
-    public class EventConverter : JsonConverter<Events>
+    public class EventConverter : JsonConverter<Scheme.Events>
     {
-        public override Events? Read(
+        public override Scheme.Events? Read(
             ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             JsonElement jsonObject = JsonDocument.ParseValue(ref reader).RootElement;
@@ -29,16 +29,16 @@ public record BattleUpdateMessage : Message
 
             return eventType switch
             {
-                "APPEAR_EVENT" => JsonSerializer.Deserialize<AppearEvent>(jsonObject.GetRawText(), options),
-                "BOB_EVENT" => JsonSerializer.Deserialize<BobEvent>(jsonObject.GetRawText(), options),
-                "COLLISION_EVENT" => JsonSerializer.Deserialize<CollisionEvent>(jsonObject.GetRawText(), options),
-                "DESTORY_EVENT" => JsonSerializer.Deserialize<DestoryEvent>(jsonObject.GetRawText(), options),
+                "APPEAR_EVENT" => JsonSerializer.Deserialize<Scheme.AppearEvent>(jsonObject.GetRawText(), options),
+                "BOB_EVENT" => JsonSerializer.Deserialize<Scheme.BobEvent>(jsonObject.GetRawText(), options),
+                "COLLISION_EVENT" => JsonSerializer.Deserialize<Scheme.CollisionEvent>(jsonObject.GetRawText(), options),
+                "DESTORY_EVENT" => JsonSerializer.Deserialize<Scheme.DestoryEvent>(jsonObject.GetRawText(), options),
                 _ => throw new NotSupportedException(),
             };
         }
 
         public override void Write(
-            Utf8JsonWriter writer, Events value, JsonSerializerOptions options)
+            Utf8JsonWriter writer, Scheme.Events value, JsonSerializerOptions options)
         {
             JsonSerializer.Serialize(writer, (object)value, options);
         }

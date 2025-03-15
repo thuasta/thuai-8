@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 using Serilog;
 
-namespace Thuai.Server.Connection;
+namespace Thuai.Server.Protocol.Messages;
 
 public record Message
 {

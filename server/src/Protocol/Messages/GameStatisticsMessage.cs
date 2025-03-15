@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Thuai.Server.Connection;
+namespace Thuai.Server.Protocol.Messages;
 
 public record GameStatisticsMessage : Message
 {
@@ -17,6 +17,6 @@ public record GameStatisticsMessage : Message
     public int Ticks { get; init; } = 0;
 
     [JsonPropertyName("scores")]
-    public List<Score> Scores { get; init; } = [];
+    public List<Scheme.Score> Scores { get; init; } = [];
 
 }

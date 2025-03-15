@@ -6,11 +6,11 @@ public partial class AgentServer
 {
     public const int MESSAGE_SENDING_INTERVAL = 10;
 
-    private readonly ConcurrentDictionary<Guid, ConcurrentQueue<Message>> _socketMessageSendingQueue = new();
+    private readonly ConcurrentDictionary<Guid, ConcurrentQueue<Protocol.Messages.Message>> _socketMessageSendingQueue = new();
     private readonly ConcurrentDictionary<Guid, Task> _tasksForSendingMessage = new();
     private readonly ConcurrentDictionary<Guid, CancellationTokenSource> _ctsForSendingMessage = new();
 
-    public void Publish(Message message, string? token = null)
+    public void Publish(Protocol.Messages.Message message, string? token = null)
     {
         try
         {
@@ -21,7 +21,7 @@ public partial class AgentServer
                     if (token is null || (_socketTokens.TryGetValue(connectionId, out string? val) && val == token))
                     {
                         if (_socketMessageSendingQueue.TryGetValue(
-                            connectionId, out ConcurrentQueue<Message>? queue
+                            connectionId, out ConcurrentQueue<Protocol.Messages.Message>? queue
                             ) && queue is not null)
                         {
                             queue.Enqueue(message);
@@ -30,8 +30,8 @@ public partial class AgentServer
                         {
                             _socketMessageSendingQueue.AddOrUpdate(
                                 connectionId,
-                                new ConcurrentQueue<Message>(),
-                                (key, oldValue) => new ConcurrentQueue<Message>()
+                                new ConcurrentQueue<Protocol.Messages.Message>(),
+                                (key, oldValue) => new ConcurrentQueue<Protocol.Messages.Message>()
                             );
                             _socketMessageSendingQueue[connectionId].Enqueue(message);
                         }
@@ -81,7 +81,7 @@ public partial class AgentServer
 
                 try
                 {
-                    if (_socketMessageSendingQueue.TryGetValue(socketId, out ConcurrentQueue<Message>? queue))
+                    if (_socketMessageSendingQueue.TryGetValue(socketId, out ConcurrentQueue<Protocol.Messages.Message>? queue))
                     {
                         if (queue.Count > MAXIMUM_MESSAGE_QUEUE_SIZE)
                         {
@@ -92,7 +92,7 @@ public partial class AgentServer
                             queue.Clear();
                         }
 
-                        if (queue.TryDequeue(out Message? message) && message is not null)
+                        if (queue.TryDequeue(out Protocol.Messages.Message? message) && message is not null)
                         {
                             _sockets[socketId].Send(message.Json);
                             _logger.Debug($"Sent message \"{message.MessageType}\" to {GetAddress(socketId)}.");

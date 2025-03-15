@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Thuai.Server.Connection;
+namespace Thuai.Server.Protocol.Messages;
 
 public record EnvironmentInfoMessage : Message
 {
@@ -8,13 +8,13 @@ public record EnvironmentInfoMessage : Message
     public override string MessageType { get; init; } = "ENVIRONMENT_INFO";
 
     [JsonPropertyName("walls")]
-    public List<Wall> Walls { get; init; } = [];
+    public List<Scheme.Wall> Walls { get; init; } = [];
 
     [JsonPropertyName("fences")]
-    public List<Fence> Fences { get; init; } = [];
+    public List<Scheme.Fence> Fences { get; init; } = [];
 
     [JsonPropertyName("bullets")]
-    public List<Bullet> Bullets { get; init; } = [];
+    public List<Scheme.Bullet> Bullets { get; init; } = [];
 
     [JsonPropertyName("mapSize")]
     public int MapSize { get; init; } = 100;
