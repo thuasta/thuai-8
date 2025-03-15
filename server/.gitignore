@@ -51,3 +51,6 @@ msbuild.wrn
 # replay files
 **/result.json
 *.dat
+
+# token files
+TOKENS
