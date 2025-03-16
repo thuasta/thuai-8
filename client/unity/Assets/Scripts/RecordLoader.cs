@@ -280,7 +280,7 @@ namespace BattleCity
                     string messageType = message["messageType"].ToString();
                     switch (messageType)
                     {
-                        case "STAGE":
+                        case "STAGE_INFO":
                             UpdateStage(message);
                             break;
                         case "BATTLE_UPDATE":

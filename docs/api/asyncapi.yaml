@@ -249,16 +249,28 @@ components:
         additionalProperties: false
         required:
           - messageType
+          - details
           - token
           - buff
         properties:
           messageType:
             type: string
             const: BUFF_SELECT
-          token:
-            type: string
-          buff:
-            $ref: '#/components/schemas/BuffName'
+          details:
+            type: array
+            items:
+              type: object
+              required:
+                - token
+                - buff
+              properties:
+                token:
+                  type: string
+                buff:
+                  $ref: "#/components/schemas/BuffName"
+            description: 每个玩家的token及选择的buff
+
+          
 
     Error:
       title: "Error"
@@ -714,11 +726,13 @@ components:
       type: object
       additionalProperties: false
       properties:
-        messageType:
+        eventType:
           type: string
           const: PLAYER_UPDATE_EVENT
         player:
-          $ref: '#/components/schemas/Player'
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
       required:
         - messageType
         - player
@@ -729,7 +743,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        messageType:
+        eventType:
           type: string
           const: BULLETS_UPDATE_EVENT
         bullets:
@@ -746,7 +760,7 @@ components:
       type: object
       addtionalProperties: false
       properties:
-        messageType:
+        eventType:
           type: string
           const: MAP_UPDATE_EVENT
         walls:
@@ -778,7 +792,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        messageType:
+        eventType:
           type: string
           const: BUFF_ACTIVE_EVENT
         buffName:
@@ -796,7 +810,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        messageType:
+        eventType:
           type: string
           const: BUFF_DISACTIVE_EVENT
         buffName:
