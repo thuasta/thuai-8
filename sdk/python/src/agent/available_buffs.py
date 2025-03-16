@@ -1,6 +1,7 @@
 from typing import List
 from .buffname import BuffName
 
+
 class AvailableBuffs:
     def __init__(self, buffs: List[BuffName]):
         self.buffs = buffs

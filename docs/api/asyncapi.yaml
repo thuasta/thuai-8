@@ -130,16 +130,18 @@ components:
           - ticks
           - scores
 
-    PlayerInfo:
-      title: "PlayerInfo"
+    AllPlayerInfo:
+      title: "AllPlayerInfo"
       summary: "玩家属性"
       payload:
         properties:
           messageType:
             type: string
-            const: PLAYER_INFO
-          items:
-            $ref: '#/components/schemas/Player'
+            const: ALL_PLAYER_INFO
+          players:
+            type: array
+            items:
+              $ref: '#/components/schemas/Player'
 
     EnvironmentInfo:
       title: "EnvironmentInfo"
@@ -162,24 +164,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Bullet'  # 所有在场子弹
-          traps:
-            type: array
-            items:
-              $ref: '#/components/schemas/Trap'  # 所有陷阱位置
-          laser:
-            type: array
-            items:
-              $ref: '#/components/schemas/Laser'  # 所有激光位置
-          PlayerPositions:
-            type: array
-            items:
-              type: object
-              properties:
-                token:
-                  type: string
-                position:
-                  $ref: '#/components/schemas/Position'
-              additionalProperties: false
           mapSize:                   # 新增的地图大小属性
             type: integer
             example: 100
@@ -249,16 +233,28 @@ components:
         additionalProperties: false
         required:
           - messageType
+          - details
           - token
           - buff
         properties:
           messageType:
             type: string
             const: BUFF_SELECT
-          token:
-            type: string
-          buff:
-            $ref: '#/components/schemas/BuffName'
+          details:
+            type: array
+            items:
+              type: object
+              required:
+                - token
+                - buff
+              properties:
+                token:
+                  type: string
+                buff:
+                  $ref: "#/components/schemas/BuffName"
+            description: 每个玩家的token及选择的buff
+
+          
 
     Error:
       title: "Error"
@@ -714,11 +710,13 @@ components:
       type: object
       additionalProperties: false
       properties:
-        messageType:
+        eventType:
           type: string
           const: PLAYER_UPDATE_EVENT
         player:
-          $ref: '#/components/schemas/Player'
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
       required:
         - messageType
         - player
@@ -729,7 +727,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        messageType:
+        eventType:
           type: string
           const: BULLETS_UPDATE_EVENT
         bullets:
@@ -746,7 +744,7 @@ components:
       type: object
       addtionalProperties: false
       properties:
-        messageType:
+        eventType:
           type: string
           const: MAP_UPDATE_EVENT
         walls:
@@ -778,7 +776,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        messageType:
+        eventType:
           type: string
           const: BUFF_ACTIVE_EVENT
         buffName:
@@ -796,7 +794,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        messageType:
+        eventType:
           type: string
           const: BUFF_DISACTIVE_EVENT
         buffName:

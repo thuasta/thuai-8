@@ -16,6 +16,6 @@ public record EnvironmentInfoMessage : Message
     [JsonPropertyName("bullets")]
     public List<Bullet> Bullets { get; init; } = [];
 
-    [JsonPropertyName("playerPositions")]
-    public List<playerPositions> PlayerPositions { get; init; } = [];
+    [JsonPropertyName("mapSize")]
+    public int MapSize { get; init; } = 100;
 }

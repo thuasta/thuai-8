@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class BuffName(Enum):
     BULLET_COUNT = "BULLET_COUNT"
     BULLET_SPEED = "BULLET_SPEED"

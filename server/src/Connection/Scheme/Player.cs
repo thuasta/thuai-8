@@ -7,7 +7,7 @@ public record Player
     public string Token { get; init; } = "";
 
     [JsonPropertyName("weapon")]
-    public List<Weapon> Weapon { get; init; } = [];
+    public Weapon Weapon { get; init; } = new();
 
     [JsonPropertyName("armor")]
     public Armor Armor { get; init; } = new();
