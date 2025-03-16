@@ -259,8 +259,14 @@ namespace BattleCity
 
         private IEnumerator BuffSelect(JObject buffInfo)
         {
-            int id = buffInfo["token"].ToObject<int>();
-            string buff = buffInfo["buff"].ToString();
+            JArray details = (JArray)buffInfo["details"];
+            foreach (JObject info in details)
+            {
+                int id = info["token"].ToObject<int>();
+                string buff = info["buff"].ToString();
+                //TODO
+            }
+            
             BuffSeclectPanel.SetActive(true);
             yield return new WaitForSeconds(3);
             BuffSeclectPanel.SetActive(false);
