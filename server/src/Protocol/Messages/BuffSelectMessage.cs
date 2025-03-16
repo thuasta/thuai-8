@@ -7,12 +7,9 @@ public record BuffSelectMessage : Message
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "BUFF_SELECT";
 
-    [JsonPropertyName("currentTicks")]
-    public int CurrentTicks { get; init; } = 0;
-
     [JsonPropertyName("token")]
-    public string Token { get; init; } = "";
+    public required string Token { get; init; }
 
     [JsonPropertyName("buff")]
-    public string Buff { get; init; } = "";
+    public required string Buff { get; init; }
 }
