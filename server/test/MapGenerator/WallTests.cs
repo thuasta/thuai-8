@@ -1,4 +1,4 @@
-using Thuai.GameServer.MapGenerator;
+using Thuai.Server.GameLogic.MapGenerator;
 using Xunit;
 
 namespace Thuai.Server.Test.GameLogic

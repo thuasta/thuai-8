@@ -1,4 +1,4 @@
-using Thuai.GameServer.MapGenerator;
+using Thuai.Server.GameLogic.MapGenerator;
 using Thuai.Server.GameLogic;
 
 namespace Thuai.Server.Test.GameLogic;
@@ -245,7 +245,7 @@ public class BattleMapTests
 
         // Assert
         Assert.Equal([], battle.Bullets);
-        Assert.Equal(0, player1.PlayerArmor.health);
+        Assert.Equal(0, player1.PlayerArmor.Health);
     }
 
     [Fact]
@@ -268,7 +268,7 @@ public class BattleMapTests
 
         // Assert
         Assert.NotEqual([], battle.Bullets);
-        Assert.Equal(1, player1.PlayerArmor.health);
+        Assert.Equal(1, player1.PlayerArmor.Health);
     }
 
     [Fact]
