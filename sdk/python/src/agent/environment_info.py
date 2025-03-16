@@ -3,23 +3,28 @@ from typing import List
 from .position import Position
 from .position_int import PositionInt
 
+
 class Wall:
     def __init__(self, position: PositionInt):
         self.position = position
 
     def __str__(self):
         return f"Wall(position={self.position})"
-    
+
+
 class Fence:
     def __init__(self, position: PositionInt, health: int):
         self.position = position
         self.health = health
 
     def __str__(self):
-        return f"Fence(position={self.position}, health={self.health})" 
+        return f"Fence(position={self.position}, health={self.health})"
+
 
 class Bullet:
-    def __init__(self, position: Position, speed: float, damage: float, traveled_distance: float):
+    def __init__(
+        self, position: Position, speed: float, damage: float, traveled_distance: float
+    ):
         self.position = position
         self.speed = speed
         self.damage = damage
@@ -27,6 +32,7 @@ class Bullet:
 
     def __str__(self):
         return f"Bullet(position={self.position}, speed={self.speed}, damage={self.damage}, traveled_distance={self.traveled_distance})"
+
 
 class PlayerPosition:
     def __init__(self, token: str, position: Position):
@@ -36,18 +42,19 @@ class PlayerPosition:
     def __str__(self):
         return f"PlayerPosition(token={self.token}, position={self.position})"
 
+
 class EnvironmentInfo:
     def __init__(
         self,
         walls: List[Wall],
         fences: List[Fence],
         bullets: List[Bullet],
-        player_positions: List[PlayerPosition]
+        map_size: int,
     ):
         self.walls = walls
         self.fences = fences
         self.bullets = bullets
-        self.player_positions = player_positions
+        self.map_size = map_size
 
     def __str__(self):
-        return f"EnvironmentInfo(walls={self.walls}, fences={self.fences}, bullets={self.bullets}, player_positions={self.player_positions})"
+        return f"EnvironmentInfo(walls={self.walls}, fences={self.fences}, bullets={self.bullets}, map_size={self.map_size})"

@@ -14,7 +14,7 @@ class Options:
         self.token = token
 
 
-DEFAULT_LOGGING_LEVEL = logging.INFO
+DEFAULT_LOGGING_LEVEL = logging.DEBUG
 DEFAULT_SERVER_ADDRESS = "ws://localhost:14514"
 DEFAULT_TOKEN = "1919810"
 DEFAULT_LOOP_INTERVAL = 0.2  # In seconds.

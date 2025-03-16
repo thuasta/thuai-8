@@ -103,8 +103,7 @@ public partial class Battle
                     double delta_x = bullet.BulletSpeed * Math.Cos(bullet.BulletPosition.Angle);
                     double delta_y = bullet.BulletSpeed * Math.Sin(bullet.BulletPosition.Angle);
                     Position endPos = new(delta_x, delta_y);
-                    Position? interPos = null;
-                    Position? finalPos = GetBulletFinalPos(bullet.BulletPosition, endPos, out interPos);
+                    Position? finalPos = GetBulletFinalPos(bullet.BulletPosition, endPos, out Position? interPos);
                     if (finalPos != null)
                     {
                         Player? finalPlayer = null;

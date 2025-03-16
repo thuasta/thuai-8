@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 
 namespace Thuai.Server.Connection;
-public record playerPositions
+public record PlayerPositions
 {
     [JsonPropertyName("position")]
     public Position Position { get; init; } = new();
