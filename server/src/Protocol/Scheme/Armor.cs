@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Thuai.Server.Connection;
+namespace Thuai.Server.Protocol.Scheme;
 
 public record Armor
 {

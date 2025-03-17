@@ -1,5 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
-
 namespace Thuai.Server.Connection;
 
 public partial class AgentServer
@@ -24,12 +22,12 @@ public partial class AgentServer
                 _logger.Error("Cannot get map from RunningBattle, skipping.");
                 return;
             }
-            List<Wall> walls = [];
-            List<Bullet> bullets = [];
+            List<Protocol.Scheme.Wall> walls = [];
+            List<Protocol.Scheme.Bullet> bullets = [];
             foreach (GameLogic.MapGenerator.Wall wall in e.Game.RunningBattle.Map.Walls)
             {
                 walls.Add(
-                    new Wall()
+                    new Protocol.Scheme.Wall()
                     {
                         Position = new()
                         {
@@ -43,7 +41,7 @@ public partial class AgentServer
             foreach (GameLogic.IBullet bullet in e.Game.RunningBattle.Bullets)
             {
                 bullets.Add(
-                    new Bullet()
+                    new Protocol.Scheme.Bullet()
                     {
                         Position = new()
                         {
@@ -60,20 +58,20 @@ public partial class AgentServer
                 );
             }
             Publish(
-                new EnvironmentInfoMessage()
+                new Protocol.Messages.EnvironmentInfoMessage()
                 {
-                    Walls = [..walls],
+                    Walls = [.. walls],
                     Fences = [],                    // TODO: Implement Fences
-                    Bullets = [..bullets],
+                    Bullets = [.. bullets],
                     MapSize = e.Game.RunningBattle.Map.Height
                 }
             );
             foreach (GameLogic.Player receiver in e.Game.AllPlayers)
             {
-                List<Player> players = [];
-                foreach(GameLogic.Player player in e.Game.AllPlayers)
+                List<Protocol.Scheme.Player> players = [];
+                foreach (GameLogic.Player player in e.Game.AllPlayers)
                 {
-                    List<Skill> skills = [];
+                    List<Protocol.Scheme.Skill> skills = [];
                     foreach (GameLogic.Skill skill in player.PlayerSkills)
                     {
                         skills.Add(
@@ -87,7 +85,7 @@ public partial class AgentServer
                         );
                     }
                     players.Add(
-                        new Player()
+                        new Protocol.Scheme.Player()
                         {
                             Token = (player.Token == receiver.Token) ? player.Token : "",
                             Weapon = new()
@@ -109,7 +107,7 @@ public partial class AgentServer
                                 Knife = player.PlayerArmor.Knife.ToString(),
                                 DodgeRate = player.PlayerArmor.DodgeRate,
                             },
-                            Skills = [..skills],
+                            Skills = [.. skills],
                             Position = new()
                             {
                                 X = player.PlayerPosition.Xpos,
@@ -120,9 +118,9 @@ public partial class AgentServer
                     );
                 }
                 Publish(
-                    new AllPlayerInfoMessage()
+                    new Protocol.Messages.AllPlayerInfoMessage()
                     {
-                        Players = [..players]
+                        Players = [.. players]
                     },
                     receiver.Token
                 );
@@ -134,11 +132,11 @@ public partial class AgentServer
             foreach (GameLogic.Buff.Buff buff in e.Game.AvailableBuffsAfterCurrentBattle)
             {
                 buffNames.Add(buff.ToString());
-            } 
+            }
             Publish(
-                new AvailableBuffsMessage()
+                new Protocol.Messages.AvailableBuffsMessage()
                 {
-                    AvailableBuffs = [..buffNames],
+                    AvailableBuffs = [.. buffNames],
                 }
             );
         }

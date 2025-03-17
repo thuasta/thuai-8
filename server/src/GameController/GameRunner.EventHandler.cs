@@ -6,7 +6,7 @@ public partial class GameRunner
     {
         try
         {
-            if (e.Message is not Connection.PerformMessage message)
+            if (e.Message is not Protocol.Messages.PerformMessage message)
             {
                 _logger.Error(
                     $"message \"{Utility.Tools.LogHandler.Truncate(e.Message.MessageType, 32)}\" shouldn't come from a player."
@@ -14,7 +14,7 @@ public partial class GameRunner
                 return;
             }
 
-            Connection.PerformMessage performMessage = message;
+            Protocol.Messages.PerformMessage performMessage = message;
             _logger.Debug(
                 $"Received message \"{Utility.Tools.LogHandler.Truncate(performMessage.MessageType, 32)}\" "
                 + $"from player {Utility.Tools.LogHandler.Truncate(performMessage.Token, 8)}."
@@ -33,7 +33,7 @@ public partial class GameRunner
 
             switch (performMessage)
             {
-                case Connection.PerformMoveMessage moveMessage:
+                case Protocol.Messages.PerformMoveMessage moveMessage:
                     GameLogic.MoveDirection moveDirection = moveMessage.Direction switch
                     {
                         "FORTH" => GameLogic.MoveDirection.FORTH,
@@ -43,7 +43,7 @@ public partial class GameRunner
                     player.MoveDirection = moveDirection;
                     break;
 
-                case Connection.PerformTurnMessage turnMessage:
+                case Protocol.Messages.PerformTurnMessage turnMessage:
                     GameLogic.TurnDirection turnDirection = turnMessage.Direction switch
                     {
                         "CLOCKWISE" => GameLogic.TurnDirection.CLOCKWISE,
@@ -53,7 +53,7 @@ public partial class GameRunner
                     player.TurnDirection = turnDirection;
                     break;
 
-                case Connection.PerformAttackMessage attackMessage:
+                case Protocol.Messages.PerformAttackMessage attackMessage:
                     if (Game.Stage != GameLogic.Game.GameStage.InBattle
                         || Game.RunningBattle == null
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.InBattle)
@@ -67,7 +67,7 @@ public partial class GameRunner
                     player.PlayerAttack();
                     break;
 
-                case Connection.PerformSkillMessage skillMessage:
+                case Protocol.Messages.PerformSkillMessage skillMessage:
                     if (Game.Stage != GameLogic.Game.GameStage.InBattle
                         || Game.RunningBattle == null
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.InBattle)
@@ -81,7 +81,7 @@ public partial class GameRunner
                     player.PlayerPerformSkill(GameLogic.Skill.SkillNameFromString(skillMessage.SkillName));
                     break;
 
-                case Connection.PerformSelectMessage selectMessage:
+                case Protocol.Messages.PerformSelectMessage selectMessage:
                     if (Game.Stage != GameLogic.Game.GameStage.InBattle
                         || Game.RunningBattle == null
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.ChoosingAward)

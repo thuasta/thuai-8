@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
-namespace Thuai.Server.Connection;
+namespace Thuai.Server.Protocol.Scheme;
 public record Laser
 {
     [JsonPropertyName("start")]
-    public Position start { get; init; } = new();
+    public Position Start { get; init; } = new();
 
     [JsonPropertyName("end")]
     public Position End { get; init; } = new();

@@ -6,10 +6,11 @@ namespace Thuai.Server.Test.GameLogic
     public class WeaponTests
     {
         [Fact]
-        public void Weapon_DefaultConstructor_IsCorrect() {
+        public void Weapon_DefaultConstructor_IsCorrect()
+        {
             //Arrange
             Weapon weapon = new Weapon();
-            
+
             //Act
             //No need to act
 
@@ -22,12 +23,13 @@ namespace Thuai.Server.Test.GameLogic
             Assert.Equal(Constants.INITIAL_BULLETS, weapon.MaxBullets);
             Assert.Equal(Constants.INITIAL_BULLETS, weapon.CurrentBullets);
         }
-        
+
         [Fact]
-        public void Weapon_SetValues_Correctly() {
+        public void Weapon_SetValues_Correctly()
+        {
             //Arrange
             Weapon weapon = new Weapon();
-            
+
             //Act
             weapon.AttackSpeed = 0.42;
             weapon.BulletSpeed = 0.6;

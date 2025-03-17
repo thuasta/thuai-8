@@ -32,8 +32,9 @@ namespace Thuai.Server.Test.GameLogic
             int height = 10;
             var maps = mapGenerator.GenerateMaps(2000, width, height);
 
-            foreach (var map in maps) {
-                 var walls = map.Walls;
+            foreach (var map in maps)
+            {
+                var walls = map.Walls;
 
                 // Assert
                 Assert.True(walls.Count > 0, "Map should have walls");
@@ -49,7 +50,8 @@ namespace Thuai.Server.Test.GameLogic
             int height = 10;
             var maps = mapGenerator.GenerateMaps(2000, width, height);
 
-            foreach (var map in maps) {
+            foreach (var map in maps)
+            {
                 // Act
                 var walls = map.Walls;
 

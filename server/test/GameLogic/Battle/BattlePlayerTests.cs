@@ -74,10 +74,10 @@ public class BattlePlayerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var battle = new Battle(new(){MaxBattleTicks = ticks}, [player1, player2]);
+        var battle = new Battle(new() { MaxBattleTicks = ticks }, [player1, player2]);
 
         // Act
-        player1.PlayerArmor.Health = health1; 
+        player1.PlayerArmor.Health = health1;
         player2.PlayerArmor.Health = health2;
         battle.Tick();
         battle.Tick();
@@ -95,7 +95,7 @@ public class BattlePlayerTests
     {
         // Arrange
         List<Player> players = [new Player("Player1", 1), new Player("Player2", 2)];
-        players[0].PlayerArmor.Health = health1; 
+        players[0].PlayerArmor.Health = health1;
         players[1].PlayerArmor.Health = health2;
         Battle battle = new Battle(new(), players);
 
@@ -110,14 +110,14 @@ public class BattlePlayerTests
 
     [Theory]
     [InlineData(0, 0)]
-    [InlineData(1, 1)]    
+    [InlineData(1, 1)]
     public void DecideNoWinner_WhenPlayersAllAlive_OrDraw(
         int health1, int health2
     )
     {
         // Arrange
         List<Player> players = [new Player("Player1", 1), new Player("Player2", 2)];
-        players[0].PlayerArmor.Health = health1; 
+        players[0].PlayerArmor.Health = health1;
         players[1].PlayerArmor.Health = health2;
         Battle battle = new Battle(new(), players);
 

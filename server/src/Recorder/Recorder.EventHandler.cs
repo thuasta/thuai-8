@@ -51,7 +51,7 @@ public partial class Recorder
                             knife = player.PlayerArmor.Knife.ToString(),
                             dodgeRate = player.PlayerArmor.DodgeRate
                         },
-                        skills = [..skills],
+                        skills = [.. skills],
                         position = new()
                         {
                             x = player.PlayerPosition.Xpos,
@@ -64,7 +64,7 @@ public partial class Recorder
             BattleUpdate battleUpdate = new()
             {
                 currentTicks = e.Game.RunningBattle?.CurrentTick ?? 0,
-                Players = [..players],
+                Players = [.. players],
                 Events = []             // TODO: Add events
             };
 

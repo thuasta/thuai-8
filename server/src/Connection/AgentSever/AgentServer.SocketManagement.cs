@@ -19,8 +19,8 @@ public partial class AgentServer
 
             _socketMessageSendingQueue.AddOrUpdate(
                 socketId,
-                new ConcurrentQueue<Message>(),
-                (key, oldValue) => new ConcurrentQueue<Message>()
+                new ConcurrentQueue<Protocol.Messages.Message>(),
+                (key, oldValue) => new ConcurrentQueue<Protocol.Messages.Message>()
             );
 
             // Cancel the previous task if it exists

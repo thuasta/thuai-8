@@ -28,13 +28,13 @@ public class BattleBulletTests
 
         // Assert
         Assert.Equal(
-            endX, 
-            battle.Bullets[0].BulletPosition.Xpos - player1.PlayerPosition.Xpos, 
+            endX,
+            battle.Bullets[0].BulletPosition.Xpos - player1.PlayerPosition.Xpos,
             1e-5
         );
         Assert.Equal(
-            endY, 
-            battle.Bullets[0].BulletPosition.Ypos - player1.PlayerPosition.Ypos, 
+            endY,
+            battle.Bullets[0].BulletPosition.Ypos - player1.PlayerPosition.Ypos,
             1e-5
         );
         Assert.Equal(endAngle, battle.Bullets[0].BulletPosition.Angle, 1e-5);
@@ -45,7 +45,7 @@ public class BattleBulletTests
     [InlineData(1, 1, 0, 1.1, 1, 0)]
     [InlineData(1, 1, 0, 0.2, 1, 0)]
     public void RemoveBullet_WhenCalled_ShouldRemoveCorrectly(
-        double player1X, double player1Y, double player1Angle, 
+        double player1X, double player1Y, double player1Angle,
         double player2X, double player2Y, double player2Angle
     )
     {
@@ -191,13 +191,13 @@ public class BattleBulletTests
 
         // Assert
         Assert.Equal(
-            endX + player1.PlayerPosition.Xpos, 
-            battle.Bullets[0].BulletPosition.Xpos, 
+            endX + player1.PlayerPosition.Xpos,
+            battle.Bullets[0].BulletPosition.Xpos,
             1e-5
         );
         Assert.Equal(
-            endY + player1.PlayerPosition.Ypos, 
-            battle.Bullets[0].BulletPosition.Ypos, 
+            endY + player1.PlayerPosition.Ypos,
+            battle.Bullets[0].BulletPosition.Ypos,
             1e-5
         );
         Assert.Equal(endAngle, battle.Bullets[0].BulletPosition.Angle, 1e-5);

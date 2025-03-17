@@ -19,7 +19,7 @@ public partial class AgentServer
     {
         try
         {
-            Message? message = JsonSerializer.Deserialize<Message>(text)
+            Protocol.Messages.Message? message = JsonSerializer.Deserialize<Protocol.Messages.Message>(text)
                                ?? throw new Exception("failed to deserialize Message");
 
             _logger.Debug(
@@ -31,7 +31,7 @@ public partial class AgentServer
             {
                 case "PERFORM_MOVE":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformMoveMessage>(text)
+                        JsonSerializer.Deserialize<Protocol.Messages.PerformMoveMessage>(text)
                         ?? throw new Exception("failed to deserialize AvailableBuffs"),
                         socketId
                     ));
@@ -39,7 +39,7 @@ public partial class AgentServer
 
                 case "PERFORM_TURN":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformTurnMessage>(text)
+                        JsonSerializer.Deserialize<Protocol.Messages.PerformTurnMessage>(text)
                         ?? throw new Exception("failed to deserialize PerformTurn"),
                         socketId
                     ));
@@ -47,7 +47,7 @@ public partial class AgentServer
 
                 case "PERFORM_ATTACK":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformAttackMessage>(text)
+                        JsonSerializer.Deserialize<Protocol.Messages.PerformAttackMessage>(text)
                         ?? throw new Exception("failed to deserialize PerformAttack"),
                         socketId
                     ));
@@ -55,7 +55,7 @@ public partial class AgentServer
 
                 case "PERFORM_SKILL":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformSkillMessage>(text)
+                        JsonSerializer.Deserialize<Protocol.Messages.PerformSkillMessage>(text)
                         ?? throw new Exception("failed to deserialize PerformSkill"),
                         socketId
                     ));
@@ -63,7 +63,7 @@ public partial class AgentServer
 
                 case "PERFORM_SELECT":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<PerformSelectMessage>(text)
+                        JsonSerializer.Deserialize<Protocol.Messages.PerformSelectMessage>(text)
                         ?? throw new Exception("failed to deserialize PerformSelect"),
                         socketId
                     ));
@@ -71,7 +71,7 @@ public partial class AgentServer
 
                 case "GET_PLAYER_INFO":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<GetPlayerinfoMessage>(text)
+                        JsonSerializer.Deserialize<Protocol.Messages.GetPlayerinfoMessage>(text)
                         ?? throw new Exception("failed to deserialize GetPlayerinfo"),
                         socketId
                     ));
@@ -79,7 +79,7 @@ public partial class AgentServer
 
                 case "GET_ENVIRONMENT_INFO":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<GetEnvironmentInfoMessage>(text)
+                        JsonSerializer.Deserialize<Protocol.Messages.GetEnvironmentInfoMessage>(text)
                         ?? throw new Exception("failed to deserialize GetEnvironmentInfo"),
                         socketId
                     ));
@@ -87,7 +87,7 @@ public partial class AgentServer
 
                 case "GET_GAME_STATISTICS":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<GetGameStatisticsMessage>(text)
+                        JsonSerializer.Deserialize<Protocol.Messages.GetGameStatisticsMessage>(text)
                         ?? throw new Exception("failed to deserialize GetGameStatistics"),
                         socketId
                     ));
@@ -95,7 +95,7 @@ public partial class AgentServer
 
                 case "GET_AVAILABLE_BUFFS":
                     AfterMessageReceiveEvent?.Invoke(this, new AfterMessageReceiveEventArgs(
-                        JsonSerializer.Deserialize<GetAvailableBuffsMessage>(text)
+                        JsonSerializer.Deserialize<Protocol.Messages.GetAvailableBuffsMessage>(text)
                         ?? throw new Exception("failed to deserialize GetAvailableBuffs"),
                         socketId
                     ));
