@@ -1,6 +1,8 @@
 using Thuai.Server.GameLogic;
 
+
 namespace Thuai.Server.Test.GameLogic;
+
 
 //Checked original tests 03/17/2025 (except those with loggers and laser)
 public class BattleEventHandlerTests
@@ -8,6 +10,7 @@ public class BattleEventHandlerTests
     [Fact]
     public void OnPlayerMove_StageIsNotInBattle_LogError()
     {
+        
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);

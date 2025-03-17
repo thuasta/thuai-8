@@ -44,13 +44,13 @@ public partial class GameRunner
                     break;
 
                 case Connection.PerformTurnMessage turnMessage:
-                    GameLogic.TurnDirection trunDirection = turnMessage.Direction switch
+                    GameLogic.TurnDirection turnDirection = turnMessage.Direction switch
                     {
                         "CLOCKWISE" => GameLogic.TurnDirection.CLOCKWISE,
                         "COUNTER_CLOCKWISE" => GameLogic.TurnDirection.COUNTER_CLOCKWISE,
                         _ => GameLogic.TurnDirection.NONE
                     };
-                    player.TurnDirection = trunDirection;
+                    player.TurnDirection = turnDirection;
                     break;
 
                 case Connection.PerformAttackMessage attackMessage:
@@ -78,7 +78,7 @@ public partial class GameRunner
                         );
                         return;
                     }
-                    // TODO: Implement skill usage.
+                    player.PlayerPerformSkill(GameLogic.Skill.SkillNameFromString(skillMessage.SkillName));
                     break;
 
                 case Connection.PerformSelectMessage selectMessage:
@@ -100,7 +100,7 @@ public partial class GameRunner
                         );
                         return;
                     }
-                    if (!Game.AvilableBuffsAfterCurrentBattle.Any(buff => buff.ToString() == selectMessage.BuffName))
+                    if (!Game.AvailableBuffsAfterCurrentBattle.Any(buff => buff.ToString() == selectMessage.BuffName))
                     {
                         _logger.Error(
                             $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
@@ -110,7 +110,7 @@ public partial class GameRunner
                     }
 
                     int awardId = 0;
-                    foreach (GameLogic.Buff.Buff award in Game.AvilableBuffsAfterCurrentBattle)
+                    foreach (GameLogic.Buff.Buff award in Game.AvailableBuffsAfterCurrentBattle)
                     {
                         awardId++;
                         if (award.ToString() == selectMessage.BuffName)
