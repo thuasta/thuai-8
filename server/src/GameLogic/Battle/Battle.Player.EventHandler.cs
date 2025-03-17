@@ -7,12 +7,14 @@ public partial class Battle
         player.PlayerMoveEvent += OnPlayerMove;
         player.PlayerTurnEvent += OnPlayerTurn;
         player.PlayerAttackEvent += OnPlayerAttack;
+        player.PlayerPerformSkillEvent += OnPlayerPerformSkill;
     }
     public void UnsubscribePlayerEvents(Player player)
     {
         player.PlayerMoveEvent -= OnPlayerMove;
         player.PlayerTurnEvent -= OnPlayerTurn;
         player.PlayerAttackEvent -= OnPlayerAttack;
+        player.PlayerPerformSkillEvent -= OnPlayerPerformSkill;
     }
 
     private void OnPlayerMove(object? sender, Player.PlayerMoveEventArgs e)
@@ -174,4 +176,40 @@ public partial class Battle
         }
     }
 
+    private void OnPlayerPerformSkill(object? sender, Player.PlayerPerformSkillEventArgs e)
+    {
+        if (Stage != BattleStage.InBattle)
+        {
+            _logger.Error(
+                $"[Player {e.Player.ID}] Cannot perform skill when battle is at state {Stage}."
+            );
+            return;
+        }
+        try
+        {
+            lock (_lock)
+            {
+                Skill? skill = e.Player.PlayerSkills.Find(skill => skill.Name == e.SkillName);
+                if (skill is null)
+                {
+                    _logger.Error(
+                        $"[Player {e.Player.ID}] Don't have the skill {e.SkillName}."
+                    );
+                    return;
+                }
+                if (!skill.IsAvailable())
+                {
+                    _logger.Error(
+                        $"[Player {e.Player.ID}] The skill {e.SkillName} is still in cooldown."
+                    );
+                }
+                // TODO: implement the skills
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"[Player {e.Player.ID}] Failed to perform skill: {ex.Message}");
+            _logger.Debug($"{ex}");
+        }
+    }
 }

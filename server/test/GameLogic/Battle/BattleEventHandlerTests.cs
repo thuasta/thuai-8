@@ -1,17 +1,20 @@
 using Thuai.Server.GameLogic;
 
+
 namespace Thuai.Server.Test.GameLogic;
+
 
 public class BattleEventHandlerTests
 {
     [Fact]
     public void OnPlayerMove_StageIsNotInBattle_LogError()
     {
+        
         // Arrange
-        Player? player1 = new Player("Player1", 1);
-        Player player2 = new Player("Player2", 2);
+        Player? player1 = new("Player1", 1);
+        Player player2 = new("Player2", 2);
         var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new(new(), players);
         battle.SubscribePlayerEvents(player1);
 
         // Act

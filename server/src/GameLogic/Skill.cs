@@ -15,13 +15,26 @@ public enum SkillName
 public class Skill(SkillName skillName)
 {
     public SkillName Name { get; init; } = skillName;
-    public int MaxCooldown => Constants.SKILL_MAX_COOLDOWN;
+    public int MaxCooldown = Constants.SKILL_MAX_COOLDOWN;
     public int CurrentCooldown;
 
     public bool IsReady => CurrentCooldown == 0;
 
     // TODO: Implement activation logic
     public bool IsActive => false;
+
+    public static SkillName SkillNameFromString(String skill_name)
+    {
+        List<String> skillNames = [
+            "BLACK_OUT", "SPEED_UP", "FLASH", "DESTROY", "CONSTRUCT", "TRAP", "MISSILE", "KAMUI"
+        ];
+        int SkillID = skillNames.IndexOf(skill_name);
+        if (SkillID == -1)
+        {
+            throw new Exception("No such skills");
+        }
+        return (SkillName)SkillID;
+    }
 
     public void UpdateCoolDown()
     {
@@ -34,5 +47,10 @@ public class Skill(SkillName skillName)
     public void Recover()
     {
         CurrentCooldown = 0;
+    }
+
+    public bool IsAvailable()
+    {
+        return CurrentCooldown == 0;
     }
 }
