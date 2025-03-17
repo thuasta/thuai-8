@@ -12,5 +12,5 @@ public interface IObject
         BuffName
     }
 
-    public String ToString();
+    public string ToString();
 }

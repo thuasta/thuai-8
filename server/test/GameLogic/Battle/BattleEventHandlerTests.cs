@@ -10,7 +10,7 @@ public class BattleEventHandlerTests
     [Fact]
     public void OnPlayerMove_StageIsNotInBattle_LogError()
     {
-        
+
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);

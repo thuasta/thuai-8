@@ -23,10 +23,17 @@ public class Skill(SkillName skillName)
     // TODO: Implement activation logic
     public bool IsActive => false;
 
-    public static SkillName SkillNameFromString(String skill_name)
+    public static SkillName SkillNameFromString(string skill_name)
     {
-        List<String> skillNames = [
-            "BLACK_OUT", "SPEED_UP", "FLASH", "DESTROY", "CONSTRUCT", "TRAP", "MISSILE", "KAMUI"
+        List<string> skillNames = [
+            "BLACK_OUT",
+            "SPEED_UP",
+            "FLASH",
+            "DESTROY",
+            "CONSTRUCT",
+            "TRAP",
+            "MISSILE",
+            "KAMUI"
         ];
         int SkillID = skillNames.IndexOf(skill_name);
         if (SkillID == -1)
