@@ -1,6 +1,7 @@
 using Thuai.Server.GameLogic.MapGenerator;
 using Xunit;
 
+//Checked original tests 03/17/2025(although the tests are weak)
 namespace Thuai.Server.Test.GameLogic
 {
     public class WallTests

@@ -3,6 +3,7 @@ using Thuai.Server.GameLogic.MapGenerator;
 
 namespace Thuai.Server.Test.GameLogic;
 
+//Checked original tests 03/17/2025 (except those with loggers)
 public class BattleBulletTests
 {
     [Theory]
@@ -37,8 +38,6 @@ public class BattleBulletTests
             1e-5
         );
         Assert.Equal(endAngle, battle.Bullets[0].BulletPosition.Angle, 1e-5);
-        // No need to assert the NotInBattle case.
-        // No need to assert the Add Exception case.
     }
 
 
@@ -53,16 +52,18 @@ public class BattleBulletTests
         // Arrange
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
+        player1.PlayerPosition = new(player1X, player1Y, player1Angle);
+        player2.PlayerPosition = new(player2X, player2Y, player2Angle);
         Battle battle = new(new(), [player1, player2]);
 
         // Act
         battle.SubscribePlayerEvents(player1);
         battle.Initialize();
         battle.Tick();
-        player1.PlayerPosition = new(player1X, player1Y, player1Angle);
-        player2.PlayerPosition = new(player2X, player2Y, player2Angle);
         player1.PlayerAttack();
         battle.Tick();
+        // battle.Tick();
+        // NB: if another Tick() is used here, the assertion will be true
 
         // Assert
         Assert.Empty(battle.Bullets);
@@ -111,13 +112,13 @@ public class BattleBulletTests
         Player player1 = new("player1", 1);
         Player player2 = new("player2", 2);
         Battle battle = new(new(), [player1, player2]);
+        player1.PlayerPosition = new(1, 1, startAngle);
+        player2.PlayerPosition = new(20, 20, 0);
 
         // Act
         battle.SubscribePlayerEvents(player1);
         battle.Initialize();
         battle.Tick();
-        player1.PlayerPosition = new(1, 1, startAngle);
-        player2.PlayerPosition = new(20, 20, 0);
         player1.PlayerAttack();
         battle.Tick();
 

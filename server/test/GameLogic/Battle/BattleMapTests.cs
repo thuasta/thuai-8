@@ -3,6 +3,7 @@ using Thuai.Server.GameLogic;
 
 namespace Thuai.Server.Test.GameLogic;
 
+//Checked original tests 03/17/2025 (except those with map updating)
 public class BattleMapTests
 {
     [Fact]
@@ -18,7 +19,6 @@ public class BattleMapTests
 
         // Assert
         Assert.NotNull(battle.Map);
-        // Todo : need to implement the map generation test
     }
 
     [Fact]

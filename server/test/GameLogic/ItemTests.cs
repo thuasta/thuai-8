@@ -1,5 +1,6 @@
 using Thuai.Server.GameLogic;
 
+//Checked original tests 03/17/2025(although the class is not understoodable)
 namespace Thuai.Server.Test.GameLogic
 {
     public class ItemTests

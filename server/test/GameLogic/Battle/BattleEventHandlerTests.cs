@@ -2,6 +2,7 @@ using Thuai.Server.GameLogic;
 
 namespace Thuai.Server.Test.GameLogic;
 
+//Checked original tests 03/17/2025 (except those with loggers and laser)
 public class BattleEventHandlerTests
 {
     [Fact]
@@ -73,6 +74,7 @@ public class BattleEventHandlerTests
         Assert.Equal(expectedAngle, player1.PlayerPosition.Angle, 1e-5);
     }
 
+    //Confusing
     [Fact]
     public void OnPlayerMove_FinalPosIsInvalid_Nochanges()
     {
@@ -106,8 +108,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -124,8 +125,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -144,8 +144,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -161,8 +160,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -183,8 +181,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -205,8 +202,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
