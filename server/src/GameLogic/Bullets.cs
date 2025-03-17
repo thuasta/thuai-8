@@ -42,7 +42,7 @@ public class Bullet(Position position, double speed, int damage, bool antiArmor 
 
 public class LaserBullet(Position position, double speed, int damage, bool antiArmor = false) : IBullet
 {
-    public IBullet.BulletType Type => IBullet.BulletType.Bullet;
+    public IBullet.BulletType Type => IBullet.BulletType.LaserBullet;
 
     public Position BulletPosition { get; set; } = position;
 

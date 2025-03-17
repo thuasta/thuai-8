@@ -129,7 +129,7 @@ public partial class AgentServer
         else if (e.Game.RunningBattle.Stage == GameLogic.Battle.BattleStage.ChoosingAward)
         {
             List<string> buffNames = [];
-            foreach (GameLogic.Buff.Buff buff in e.Game.AvilableBuffsAfterCurrentBattle)
+            foreach (GameLogic.Buff.Buff buff in e.Game.AvailableBuffsAfterCurrentBattle)
             {
                 buffNames.Add(buff.ToString());
             }

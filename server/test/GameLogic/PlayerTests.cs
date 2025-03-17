@@ -2,10 +2,11 @@ using Thuai.Server.GameLogic;
 
 namespace Thuai.Server.Test.GameLogic;
 
+//Checked original tests 03/17/2025
 public class PlayerTests
 {
     [Fact]
-    public void Properties_DefaultValues_ReturnsCorrect()
+    public void Properties_DefaultValues_AreCorrect()
     {
         // Arrange.
         Player player = new("", 0);
@@ -28,11 +29,9 @@ public class PlayerTests
     public void Properties_SetValues_ReturnsCorrect()
     {
         // Arrange.
-        Player player = new("", 0);
+        Player player = new("token", 1);
 
         // Act.
-        //player.Token = "token";
-        //player.ID = 1;
         player.Speed = 1.0;
         player.TurnSpeed = 1.0;
         player.PlayerPosition = new();

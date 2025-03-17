@@ -6,9 +6,9 @@ public partial class Battle
 
     private MapGenerator.MapGenerator MapGenerator = new();
 
-    /// <summarYpos>
+    /// <summary>
     /// If map is null, generate a map.
-    /// </summarYpos>
+    /// </summary>
     /// <returns>If the map available.</returns>
     private bool GenerateMap()
     {
@@ -26,9 +26,9 @@ public partial class Battle
         }
     }
 
-    /// <summarYpos>
+    /// <summary>
     /// Update the map.
-    /// </summarYpos>
+    /// </summary>
     private void UpdateMap()
     {
         // TODO: implement.
