@@ -7,6 +7,7 @@ public partial class Player
         PlayerMove,
         PlayerAttack,
         PlayerTurn,
+        PlayerPerformSkill
     };
 
     public class PlayerMoveEventArgs(Player player, MoveDirection direction) : EventArgs
@@ -29,7 +30,17 @@ public partial class Player
 
         public TurnDirection Turndirection { get; set; } = direction;
     }
+
+    public class PlayerPerformSkillEventArgs(Player player, SkillName skill_name) : EventArgs
+    {
+        public const PlayerEventType EventName = PlayerEventType.PlayerPerformSkill;
+        public Player Player = player;
+        public SkillName SkillName = skill_name;
+    }
+
     public event EventHandler<PlayerMoveEventArgs>? PlayerMoveEvent;
     public event EventHandler<PlayerAttackEventArgs>? PlayerAttackEvent;
     public event EventHandler<PlayerTurnEventArgs>? PlayerTurnEvent;
+
+    public event EventHandler<PlayerPerformSkillEventArgs>? PlayerPerformSkillEvent;
 }

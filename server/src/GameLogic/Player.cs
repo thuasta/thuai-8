@@ -37,9 +37,9 @@ public partial class Player(string token, int playerId)
         }
         else if (PlayerArmor.ArmorValue < damage)
         {
-            int realDamege = damage - PlayerArmor.ArmorValue;
+            int realDamage = damage - PlayerArmor.ArmorValue;
             PlayerArmor.ArmorValue = 0;
-            PlayerArmor.Health -= realDamege;
+            PlayerArmor.Health -= realDamage;
         }
     }
 
@@ -52,6 +52,16 @@ public partial class Player(string token, int playerId)
             skill.Recover();
         }
         HasChosenAward = false;
+    }
+
+    /// <summary>
+    /// Publish a skill event.
+    /// </summary>
+    /// <param name="skill"></param>
+    public void PlayerPerformSkill(SkillName skill_name)
+    {
+        _logger.Debug($"Perform skill ({skill_name})");
+        PlayerPerformSkillEvent?.Invoke(this, new PlayerPerformSkillEventArgs(this, skill_name));
     }
 
     public void PlayerMove(MoveDirection direction)

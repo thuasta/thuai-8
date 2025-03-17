@@ -30,7 +30,7 @@ public partial class Battle
         }
     }
 
-    public void RemoveBullet(IBullet bullet)
+    private void RemoveBullet(IBullet bullet)
     {
         try
         {
@@ -135,7 +135,7 @@ public partial class Battle
             }
             catch (Exception ex)
             {
-                _logger.Error($"Bullet Failed to be uodated: {ex.Message}");
+                _logger.Error($"Bullet Failed to be updated: {ex.Message}");
                 _logger.Debug($"{ex}");
             }
         }

@@ -60,7 +60,7 @@ public class BattleMapTests
         Assert.NotEqual(100001, player1.PlayerPosition.Xpos);
     }
 
-    [Fact]// Invalid angle of wall dosen't exist!
+    [Fact] // Invalid angle of wall doesn't exist!
     public void GetPlayerFinalPos_MapIsNull_LogError()
     {
         // Arrange
@@ -120,7 +120,7 @@ public class BattleMapTests
         player1.PlayerPosition = new Position(1, 11, 0);
         player1.Speed = 100000;
         player1.PlayerMove(MoveDirection.FORTH);
-        // caculate the final x position
+        // calculate the final x position
         Map? map = battle.Map;
         if (map != null)
         {
@@ -156,7 +156,7 @@ public class BattleMapTests
         player1.PlayerPosition = new Position(11, 1, Math.PI / 2);
         player1.Speed = 100000;
         player1.PlayerMove(MoveDirection.FORTH);
-        // caculate the final y position
+        // calculate the final y position
         Map? map = battle.Map;
         if (map != null)
         {
@@ -193,7 +193,7 @@ public class BattleMapTests
         player1.PlayerPosition = new Position(1, 1, Math.PI / 4);
         player1.Speed = 100000;
         player1.PlayerMove(MoveDirection.FORTH);
-        // caculate the final y position
+        // calculate the final y position
         Map? map = battle.Map;
         if (map != null)
         {
