@@ -2,6 +2,7 @@ using Thuai.Server.GameLogic.MapGenerator;
 using Xunit;
 using System.Linq;
 
+//Checked original tests 03/17/2025 (except those with paths)
 namespace Thuai.Server.Test.GameLogic
 {
     public class MapGeneratorTests
@@ -11,7 +12,7 @@ namespace Thuai.Server.Test.GameLogic
         {
             // Arrange
             var mapGenerator = new MapGenerator();
-            int mapCount = 5;
+            int mapCount = 2000;
             int width = 10;
             int height = 10;
 
@@ -29,13 +30,14 @@ namespace Thuai.Server.Test.GameLogic
             var mapGenerator = new MapGenerator();
             int width = 10;
             int height = 10;
-            var map = new Map(width, height);
+            var maps = mapGenerator.GenerateMaps(2000, width, height);
 
-            // Act
-            var walls = map.Walls;
+            foreach (var map in maps) {
+                 var walls = map.Walls;
 
-            // Assert
-            Assert.True(walls.Count > 0, "Map should have walls");
+                // Assert
+                Assert.True(walls.Count > 0, "Map should have walls");
+            }
         }
 
         [Fact]
@@ -45,21 +47,23 @@ namespace Thuai.Server.Test.GameLogic
             var mapGenerator = new MapGenerator();
             int width = 10;
             int height = 10;
-            var map = new Map(width, height);
+            var maps = mapGenerator.GenerateMaps(2000, width, height);
 
-            // Act
-            var walls = map.Walls;
+            foreach (var map in maps) {
+                // Act
+                var walls = map.Walls;
 
-            // Assert
-            var distinctWalls = new HashSet<Wall>(walls); // Using HashSet to eliminate duplicates
-            Assert.Equal(walls.Count, distinctWalls.Count);
+                // Assert
+                var distinctWalls = new HashSet<Wall>(walls);  // Ensure uniqueness with GetHashCode
+                Assert.Equal(walls.Count, distinctWalls.Count);
+            }
         }
 
+        //Confusing
         [Fact]
         public void Map_ShouldHaveValidPathWithWalls()
         {
             // Arrange
-            var mapGenerator = new MapGenerator();
             int width = 10;
             int height = 10;
             var map = new Map(width, height);
@@ -78,23 +82,6 @@ namespace Thuai.Server.Test.GameLogic
                 remainingWalls.Remove(line);
             }
             Assert.True(remainingWalls.Count > 0, "There should still be some walls left after removing the path walls.");
-        }
-
-        [Fact]
-        public void Map_ShouldHaveUniqueWallsWithCorrectHashing()
-        {
-            // Arrange
-            var mapGenerator = new MapGenerator();
-            int width = 10;
-            int height = 10;
-            var map = new Map(width, height);
-
-            // Act
-            var walls = map.Walls;
-
-            // Assert
-            var distinctWalls = new HashSet<Wall>(walls);  // Ensure uniqueness with GetHashCode
-            Assert.Equal(walls.Count, distinctWalls.Count);
         }
     }
 }
