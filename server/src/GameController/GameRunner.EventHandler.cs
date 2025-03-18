@@ -96,7 +96,7 @@ public partial class GameRunner
                     {
                         _logger.Error(
                             $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
-                            + "Already chosen an award."
+                            + "An award is already chosen."
                         );
                         return;
                     }
@@ -121,6 +121,12 @@ public partial class GameRunner
                         }
                     }
 
+                    break;
+
+                case Protocol.Messages.GetPlayerinfoMessage getPlayerinfoMessage:
+                    _logger.Debug(
+                        $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] Requested player info."
+                    );
                     break;
 
                 default:

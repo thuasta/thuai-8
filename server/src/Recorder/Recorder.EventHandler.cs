@@ -4,71 +4,159 @@ public partial class Recorder
 {
     public void HandleAfterGameTickEvent(object? sender, GameLogic.Game.AfterGameTickEventArgs e)
     {
-        StageChange stageChange = new()
+        Protocol.Scheme.Stage currentStage;
+        if (e.Game.Stage == GameLogic.Game.GameStage.Finished)
         {
-            targetStage = e.Game.Stage.ToString(),
+            currentStage = Protocol.Scheme.Stage.END;
+        }
+        else if (e.Game.Stage == GameLogic.Game.GameStage.InBattle
+            && e.Game.RunningBattle != null
+            && e.Game.RunningBattle.Stage == GameLogic.Battle.BattleStage.InBattle)
+        {
+            currentStage = Protocol.Scheme.Stage.BATTLE;
+        }
+        else
+        {
+            currentStage = Protocol.Scheme.Stage.REST;
+        }
+        Protocol.Messages.StageInfoMessage stageInfo = new()
+        {
+            Stage = currentStage,
+            TotalTicks = e.Game.CurrentTick
         };
-        Record(stageChange);
+        Record(stageInfo);
 
-        if (e.Game.Stage == GameLogic.Game.GameStage.InBattle && e.Game.RunningBattle != null)
+        if (currentStage == Protocol.Scheme.Stage.BATTLE)
         {
-            List<playerType> players = [];
+            List<Protocol.Scheme.Player> players = [];
             foreach (GameLogic.Player player in e.Game.AllPlayers)
             {
-                List<playerType.skillType> skills = [];
+                List<Protocol.Scheme.Skill> skills = [];
                 foreach (GameLogic.Skill skill in player.PlayerSkills)
                 {
                     skills.Add(
-                        new playerType.skillType()
+                        new Protocol.Scheme.Skill()
                         {
-                            name = skill.Name.ToString(),
-                            maxCoolDown = skill.MaxCooldown,
-                            currentCoolDown = skill.CurrentCooldown,
-                            isActive = skill.IsActive
+                            Name = skill.Name.ToString(),
+                            MaxCooldown = skill.MaxCooldown,
+                            CurrentCooldown = skill.CurrentCooldown,
+                            IsActive = skill.IsActive
                         }
                     );
                 }
                 players.Add(
-                    new playerType()
+                    new Protocol.Scheme.Player()
                     {
-                        token = player.Token,
-                        weapon = new()
+                        Token = player.Token,
+                        Weapon = new()
                         {
-                            attackSpeed = player.PlayerWeapon.AttackSpeed,
-                            bulletSpeed = player.PlayerWeapon.BulletSpeed,
-                            isLaser = player.PlayerWeapon.IsLaser,
-                            antiArmor = player.PlayerWeapon.AntiArmor,
-                            damage = player.PlayerWeapon.Damage,
-                            maxBullets = player.PlayerWeapon.MaxBullets,
-                            currentBullets = player.PlayerWeapon.CurrentBullets
+                            AttackSpeed = player.PlayerWeapon.AttackSpeed,
+                            BulletSpeed = player.PlayerWeapon.BulletSpeed,
+                            IsLaser = player.PlayerWeapon.IsLaser,
+                            AntiArmor = player.PlayerWeapon.AntiArmor,
+                            Damage = player.PlayerWeapon.Damage,
+                            MaxBullets = player.PlayerWeapon.MaxBullets,
+                            CurrentBullets = player.PlayerWeapon.CurrentBullets
                         },
-                        armor = new()
+                        Armor = new()
                         {
-                            canReflect = player.PlayerArmor.CanReflect,
-                            armorValue = player.PlayerArmor.ArmorValue,
-                            health = player.PlayerArmor.Health,
-                            gravityField = player.PlayerArmor.GravityField,
-                            knife = player.PlayerArmor.Knife.ToString(),
-                            dodgeRate = player.PlayerArmor.DodgeRate
+                            CanReflect = player.PlayerArmor.CanReflect,
+                            ArmorValue = player.PlayerArmor.ArmorValue,
+                            Health = player.PlayerArmor.Health,
+                            GravityField = player.PlayerArmor.GravityField,
+                            Knife = player.PlayerArmor.Knife.ToString(),
+                            DodgeRate = player.PlayerArmor.DodgeRate
                         },
-                        skills = [.. skills],
-                        position = new()
+                        Skills = [.. skills],
+                        Position = new()
                         {
-                            x = player.PlayerPosition.Xpos,
-                            y = player.PlayerPosition.Ypos,
-                            angle = player.PlayerPosition.Angle
+                            X = player.PlayerPosition.Xpos,
+                            Y = player.PlayerPosition.Ypos,
+                            Angle = player.PlayerPosition.Angle
                         }
                     }
                 );
             }
-            BattleUpdate battleUpdate = new()
+
+            List<Protocol.Scheme.PlayerUpdateEvent> playerUpdateList = [];
+            foreach (Protocol.Scheme.Player player in players)
             {
-                currentTicks = e.Game.RunningBattle?.CurrentTick ?? 0,
-                Players = [.. players],
-                Events = []             // TODO: Add events
+                playerUpdateList.Add(
+                    new Protocol.Scheme.PlayerUpdateEvent()
+                    {
+                        Player = player
+                    }
+                );
+            }
+
+            List<Protocol.Scheme.Bullet> bullets = [];
+            foreach (GameLogic.IBullet bullet in e.Game.RunningBattle?.Bullets ?? [])
+            {
+                bullets.Add(
+                    new Protocol.Scheme.Bullet()
+                    {
+                        Position = new()
+                        {
+                            X = bullet.BulletPosition.Xpos,
+                            Y = bullet.BulletPosition.Ypos,
+                            Angle = bullet.BulletPosition.Angle
+                        },
+                        Speed = bullet.BulletSpeed,
+                        Damage = bullet.BulletDamage,
+                        TraveledDistance = 0
+                    }
+                );
+            }
+
+            Protocol.Scheme.BulletsUpdateEvent bulletsUpdate = new()
+            {
+                Bullets = [.. bullets]
+            };
+
+            List<Protocol.Scheme.Wall> walls = [];
+            foreach (GameLogic.MapGenerator.Wall wall in e.Game.RunningBattle?.Map?.Walls ?? [])
+            {
+                walls.Add(
+                    new Protocol.Scheme.Wall()
+                    {
+                        Position = new()
+                        {
+                            X = wall.X,
+                            Y = wall.Y,
+                            Angle = wall.Angle
+                        }
+                    }
+                );
+            }
+
+            Protocol.Scheme.MapUpdateEvent mapUpdate = new()
+            {
+                Walls = [.. walls],
+                // TODO: Add other map elements
+                Fences = [],
+                Traps = [],
+                Laser = []
+            };
+
+            List<Protocol.Scheme.BattleUpdateEvent> battleUpdateEvent = [];
+            foreach (Protocol.Scheme.PlayerUpdateEvent playerUpdate in playerUpdateList)
+            {
+                battleUpdateEvent.Add(playerUpdate);
+            }
+            battleUpdateEvent.Add(bulletsUpdate);
+            battleUpdateEvent.Add(mapUpdate);
+
+            Protocol.Messages.BattleUpdateMessage battleUpdate = new()
+            {
+                BattleTicks = e.Game.RunningBattle?.CurrentTick ?? 0,
+                Events = [.. battleUpdateEvent]
             };
 
             Record(battleUpdate);
+        }
+        else if (currentStage == Protocol.Scheme.Stage.REST)
+        {
+            // TODO: Add reward choosing information
         }
     }
 }

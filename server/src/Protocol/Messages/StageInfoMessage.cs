@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Thuai.Server.Protocol.Messages;
 
-public record StageInfoMessage : Message
+public record StageInfoMessage : Message, IRecordable
 {
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "STAGE_INFO";
