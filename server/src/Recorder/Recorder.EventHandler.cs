@@ -16,7 +16,7 @@ public partial class Recorder
             foreach (GameLogic.Player player in e.Game.AllPlayers)
             {
                 List<playerType.skillType> skills = [];
-                foreach (GameLogic.Skill skill in player.PlayerSkills)
+                foreach (GameLogic.ISkill skill in player.PlayerSkills)
                 {
                     skills.Add(
                         new playerType.skillType()

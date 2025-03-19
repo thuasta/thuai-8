@@ -189,7 +189,7 @@ public partial class Battle
         {
             lock (_lock)
             {
-                Skill? skill = e.Player.PlayerSkills.Find(skill => skill.Name == e.SkillName);
+                ISkill? skill = e.Player.PlayerSkills.Find(skill => skill.Name == e.SkillName);
                 if (skill is null)
                 {
                     _logger.Error(
@@ -204,6 +204,7 @@ public partial class Battle
                     );
                 }
                 // TODO: implement the skills
+                skill.Perform();
             }
         }
         catch (Exception ex)

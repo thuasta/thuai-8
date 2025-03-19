@@ -78,7 +78,7 @@ public partial class GameRunner
                         );
                         return;
                     }
-                    player.PlayerPerformSkill(GameLogic.Skill.SkillNameFromString(skillMessage.SkillName));
+                    player.PlayerPerformSkill(GameLogic.ISkill.SkillNameFromString(skillMessage.SkillName));
                     break;
 
                 case Connection.PerformSelectMessage selectMessage:
