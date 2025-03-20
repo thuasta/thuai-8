@@ -5,20 +5,20 @@ namespace Thuai.Server.Protocol.Scheme;
 public record Armor
 {
     [JsonPropertyName("canReflect")]
-    public bool CanReflect { get; init; }
+    public required bool CanReflect { get; init; }
 
     [JsonPropertyName("armorValue")]
-    public int ArmorValue { get; init; } = 0;
+    public required int ArmorValue { get; init; }
 
     [JsonPropertyName("health")]
-    public int Health { get; init; } = 0;
+    public required int Health { get; init; }
 
     [JsonPropertyName("gravityField")]
-    public bool GravityField { get; init; }
+    public required bool GravityField { get; init; }
 
     [JsonPropertyName("knife")]
-    public string Knife { get; init; } = "";
+    public required string Knife { get; init; }
 
     [JsonPropertyName("dodgeRate")]
-    public double DodgeRate { get; init; }
+    public required double DodgeRate { get; init; }
 }

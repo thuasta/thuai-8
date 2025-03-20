@@ -4,6 +4,32 @@ public partial class AgentServer
 {
     public void HandleAfterGameTickEvent(object? sender, GameLogic.Game.AfterGameTickEventArgs e)
     {
+        Protocol.Scheme.Stage currentStage;
+        if (e.Game.Stage == GameLogic.Game.GameStage.Finished)
+        {
+            currentStage = Protocol.Scheme.Stage.END;
+        }
+        else if (e.Game.Stage == GameLogic.Game.GameStage.InBattle
+            && e.Game.RunningBattle != null
+            && e.Game.RunningBattle.Stage == GameLogic.Battle.BattleStage.InBattle)
+        {
+            currentStage = Protocol.Scheme.Stage.BATTLE;
+        }
+        else
+        {
+            currentStage = Protocol.Scheme.Stage.REST;
+        }
+
+        Publish(
+            new Protocol.Messages.GameStatisticsMessage()
+            {
+                CurrentStage = currentStage.ToString(),
+                CountDown = 0,  // TODO: Implement countdown
+                Ticks = e.Game.CurrentTick,
+                Scores = []
+            }
+        );
+
         if (e.Game.Stage != GameLogic.Game.GameStage.InBattle)
         {
             _logger.Debug("Game stage is not InBattle, skipping.");

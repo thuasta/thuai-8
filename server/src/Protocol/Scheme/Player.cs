@@ -4,17 +4,17 @@ namespace Thuai.Server.Protocol.Scheme;
 public record Player
 {
     [JsonPropertyName("token")]
-    public string Token { get; init; } = "";
+    public required string Token { get; init; }
 
     [JsonPropertyName("weapon")]
-    public Weapon Weapon { get; init; } = new();
+    public required Weapon Weapon { get; init; }
 
     [JsonPropertyName("armor")]
-    public Armor Armor { get; init; } = new();
+    public required Armor Armor { get; init; }
 
     [JsonPropertyName("skills")]
-    public List<Skill> Skills { get; init; } = [];
+    public required List<Skill> Skills { get; init; }
 
     [JsonPropertyName("position")]
-    public Position Position { get; init; } = new();
+    public required Position Position { get; init; }
 }
