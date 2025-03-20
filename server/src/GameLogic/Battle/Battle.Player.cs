@@ -37,10 +37,12 @@ public partial class Battle
 
         foreach (Player player in AllPlayers)
         {
-            double x = _random.Next(0, Map.Width) + 0.5;
-            double y = _random.Next(0, Map.Height) + 0.5;
+            double x = Constants.WALL_LENGTH * (_random.Next(0, Map.Width) + 0.5);
+            double y = Constants.WALL_LENGTH * (_random.Next(0, Map.Height) + 0.5);
             double angle = _random.NextDouble() * 2 * Math.PI;
             player.PlayerPosition = new Position(x, y, angle);
+
+            _logger.Information($"Player {player.ID} spawned at ({x}, {y}) with angle {angle:F2} rad.");
         }
     }
 

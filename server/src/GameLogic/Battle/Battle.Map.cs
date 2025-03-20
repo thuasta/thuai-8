@@ -16,6 +16,7 @@ public partial class Battle
         {
             MapGenerator.MapGenerator mapGenerator = new();
             Map = mapGenerator.GenerateMaps(1, 10, 10)[0];
+            _logger.Information($"Map generated successfully.");
             return true;
         }
         catch (Exception e)
