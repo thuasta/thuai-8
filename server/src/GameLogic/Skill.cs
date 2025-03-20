@@ -49,15 +49,14 @@ public class GeneralContinuousSkill(
     public int RemainingActivationTicks { get; private set; } = 0;
 
     public int MaxCooldown { get; init; } = maxCoolDown;
-
     public int SkillDuration { get; init; } = skillDuration;
 
     public bool IsActive => RemainingActivationTicks > 0;
-    
 
     public bool IsAvailable()
     {
         return CurrentCooldown > 0;
+
     }
 
     public void Perform()

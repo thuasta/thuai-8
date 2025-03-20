@@ -33,6 +33,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     /// Current tick of the battle.
     /// </summary>
     public int CurrentTick { get; private set; } = 0;
+
     public int AwardChoosingTickLimit { get; init; } = 0;
 
     /// <summary>
@@ -46,13 +47,14 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     public Utility.Config.GameSettings GameSettings { get; init; } = setting;
 
     private int _currentAwardChoosingTick = 0;
+    private int _currentBattleTick = 0;
 
     private readonly Random _random = new();
     private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Battle");
     private readonly object _lock = new();
 
-    #endregion 
+    #endregion
 
     #region Methods
     public Result GetResult()
@@ -114,9 +116,14 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
                     UpdatePlayers();
                     UpdateBullets();
                     UpdateMap();
-                    ++CurrentTick;
+                    ++_currentBattleTick;
+                }
+                else if (Stage == BattleStage.ChoosingAward)
+                {
+                    ++_currentAwardChoosingTick;
                 }
                 StageControl();
+                ++CurrentTick;
             }
         }
         catch (Exception e)
@@ -128,7 +135,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
 
     public bool IsBattleOver()
     {
-        return CurrentTick > GameSettings.MaxBattleTicks || AlivePlayers() <= 1;
+        return _currentBattleTick > GameSettings.MaxBattleTicks || AlivePlayers() <= 1;
     }
 
     /// <summary>
@@ -158,7 +165,6 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
         }
         else if (Stage == BattleStage.ChoosingAward)
         {
-            _currentAwardChoosingTick++;
             if (_currentAwardChoosingTick >= AwardChoosingTickLimit)
             {
                 Stage = BattleStage.Finished;
