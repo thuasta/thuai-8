@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -7,38 +6,23 @@ using Thuai.Server.Utility;
 
 namespace Thuai.Server.Recorder;
 
-public partial class Recorder : IRecorder, IDisposable
+public partial class Recorder : IDisposable
 {
     public const int MaxRecordsBeforeSave = 10000;
-    public ILogger _logger = Tools.LogHandler.CreateLogger("Recorder");
 
-    public JsonNode Json
+    private readonly RecordPage _recordPage = new();
+
+    private readonly ILogger _logger = Tools.LogHandler.CreateLogger("Recorder");
+    private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
-        get
-        {
-            JsonObject recordJson = new()
-            {
-                ["type"] = "record"
-            };
-
-            JsonArray records = [];
-            foreach (IRecord rec in _recordQueue.ToArray())
-            {
-                records.Add(rec.Json);
-            }
-
-            recordJson["records"] = records;
-
-            return recordJson;
-        }
-    }
+        WriteIndented = true
+    };
 
     private readonly string _recordsDir;
     private readonly string _targetRecordFileName;
     private readonly string _targetResultFileName;
     private readonly string _copyRecordDir;
 
-    private readonly ConcurrentQueue<IRecord> _recordQueue = new();
     private readonly object _saveLock = new();
 
     #region Constructors and finalizers
@@ -79,7 +63,7 @@ public partial class Recorder : IRecorder, IDisposable
         Save();
     }
 
-    public void Record(IRecord record)
+    public void Record(Protocol.IRecordable record)
     {
         // Record should not be null
         if (record is null)
@@ -89,11 +73,9 @@ public partial class Recorder : IRecorder, IDisposable
         }
 
         _logger.Debug($"Adding record {record.GetType().Name} to the queue.");
-        _logger.Verbose($"Record: {record.Json}");
 
-        _recordQueue.Enqueue(record);
-
-        if (_recordQueue.Count >= MaxRecordsBeforeSave)
+        _recordPage.Record(record);
+        if (_recordPage.Length >= MaxRecordsBeforeSave)
         {
             Save();
         }
@@ -107,14 +89,12 @@ public partial class Recorder : IRecorder, IDisposable
             {
                 lock (_saveLock)
                 {
-                    if (_recordQueue.Count == 0)
+                    if (_recordPage.Length == 0)
                     {
                         return;
                     }
 
-                    JsonNode recordJson = Json;
-
-                    _recordQueue.Clear();
+                    string recordJson = _recordPage.Export();
 
                     string recordFilePath = Path.Combine(_recordsDir, _targetRecordFileName);
 
@@ -134,7 +114,7 @@ public partial class Recorder : IRecorder, IDisposable
                     using ZipArchive archive = new(zipFile, ZipArchiveMode.Update);
                     ZipArchiveEntry entry = archive.CreateEntry(pageName, CompressionLevel.SmallestSize);
                     using StreamWriter writer = new(entry.Open());
-                    writer.Write(recordJson.ToString());
+                    writer.Write(recordJson);
                     writer.Close();
 
                     // Create a copy of the record file.
@@ -144,7 +124,7 @@ public partial class Recorder : IRecorder, IDisposable
                     ZipArchiveEntry copyEntry
                         = copyArchive.CreateEntry("record.json", CompressionLevel.SmallestSize);
                     using StreamWriter copyWriter = new(copyEntry.Open());
-                    copyWriter.Write(recordJson.ToString());
+                    copyWriter.Write(recordJson);
                     copyWriter.Close();
                 }
             }
@@ -180,13 +160,7 @@ public partial class Recorder : IRecorder, IDisposable
         string resultFilePath = Path.Combine(_recordsDir, _targetResultFileName);
         File.WriteAllText(
             resultFilePath,
-            JsonSerializer.Serialize(
-                results,
-                new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                }
-            )
+            JsonSerializer.Serialize(results, _jsonSerializerOptions)
         );
     }
     #endregion

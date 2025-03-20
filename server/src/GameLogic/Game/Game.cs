@@ -23,6 +23,8 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     /// </summary>
     public Utility.Config.GameSettings GameSettings { get; init; } = gameSettings;
 
+    public int CurrentTick { get; private set; } = 0;
+
     /// <summary>
     /// The current running battle.
     /// </summary>
@@ -76,12 +78,13 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
             {
                 RunningBattle?.Tick();
                 StageControl();
+                ++CurrentTick;
             }
             AfterGameTickEvent?.Invoke(this, new AfterGameTickEventArgs(this));
         }
         catch (Exception e)
         {
-            _logger.Error($"An exception occurred while ticking the game:");
+            _logger.Error($"An exception occurred while running tick {CurrentTick}:");
             Utility.Tools.LogHandler.LogException(_logger, e);
         }
     }

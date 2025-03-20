@@ -5,23 +5,23 @@ namespace Thuai.Server.Protocol.Scheme;
 public record Weapon
 {
     [JsonPropertyName("attackSpeed")]
-    public double AttackSpeed { get; init; }
+    public required double AttackSpeed { get; init; }
 
     [JsonPropertyName("bulletSpeed")]
-    public double BulletSpeed { get; init; }
+    public required double BulletSpeed { get; init; }
 
     [JsonPropertyName("isLaser")]
-    public bool IsLaser { get; init; }
+    public required bool IsLaser { get; init; }
 
     [JsonPropertyName("antiArmor")]
-    public bool AntiArmor { get; init; }
+    public required bool AntiArmor { get; init; }
 
     [JsonPropertyName("damage")]
-    public int Damage { get; init; } = 0;
+    public required int Damage { get; init; }
 
     [JsonPropertyName("maxBullets")]
-    public int MaxBullets { get; init; } = 0;
+    public required int MaxBullets { get; init; }
 
     [JsonPropertyName("currentBullets")]
-    public int CurrentBullets { get; init; } = 0;
+    public required int CurrentBullets { get; init; }
 }

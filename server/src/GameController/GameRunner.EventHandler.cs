@@ -96,7 +96,7 @@ public partial class GameRunner
                     {
                         _logger.Error(
                             $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
-                            + "Already chosen an award."
+                            + "An award is already chosen."
                         );
                         return;
                     }
@@ -121,6 +121,63 @@ public partial class GameRunner
                         }
                     }
 
+                    break;
+
+                case Protocol.Messages.GetPlayerinfoMessage getPlayerinfoMessage:
+                    _logger.Debug(
+                        $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] Requested player info."
+                    );
+
+                    List<Protocol.Scheme.Player> players = [];
+                    foreach (GameLogic.Player p in Game.AllPlayers)
+                    {
+                        List<Protocol.Scheme.Skill> skills = [];
+                        foreach (GameLogic.Skill s in p.PlayerSkills)
+                        {
+                            skills.Add(new Protocol.Scheme.Skill
+                            {
+                                Name = s.Name.ToString(),
+                                MaxCooldown = s.MaxCooldown,
+                                CurrentCooldown = s.CurrentCooldown,
+                                IsActive = s.IsActive
+                            });
+                        }
+                        players.Add(new Protocol.Scheme.Player
+                        {
+                            Token = player.Token == p.Token ? p.Token : "",
+                            Weapon = new()
+                            {
+                                AttackSpeed = p.PlayerWeapon.AttackSpeed,
+                                BulletSpeed = p.PlayerWeapon.BulletSpeed,
+                                IsLaser = p.PlayerWeapon.IsLaser,
+                                AntiArmor = p.PlayerWeapon.AntiArmor,
+                                Damage = p.PlayerWeapon.Damage,
+                                MaxBullets = p.PlayerWeapon.MaxBullets,
+                                CurrentBullets = p.PlayerWeapon.CurrentBullets
+                            },
+                            Armor = new()
+                            {
+                                CanReflect = p.PlayerArmor.CanReflect,
+                                ArmorValue = p.PlayerArmor.ArmorValue,
+                                Health = p.PlayerArmor.Health,
+                                GravityField = p.PlayerArmor.GravityField,
+                                Knife = p.PlayerArmor.Knife.ToString(),
+                                DodgeRate = p.PlayerArmor.DodgeRate
+                            },
+                            Skills = [.. skills],
+                            Position = new()
+                            {
+                                X = p.PlayerPosition.Xpos,
+                                Y = p.PlayerPosition.Ypos,
+                                Angle = p.PlayerPosition.Angle
+                            },
+                        });
+                    }
+                    Protocol.Messages.AllPlayerInfoMessage response = new()
+                    {
+                        Players = [.. players]
+                    };
+                    AfterPlayerRequestEvent?.Invoke(this, new AfterPlayerRequestEventArgs(player.Token, response));
                     break;
 
                 default:
