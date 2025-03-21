@@ -87,11 +87,14 @@ public class GenerateMapCommand : AbstractCommand
 
                 if (floor != null)
                 {
-                   GameObject floorObject =  Object.Instantiate(floor, position, Quaternion.identity);
-                   floorObject.transform.SetParent(wallController.transform);
-                   floorObject.transform.localScale *= 20f;
+                    GameObject floorObject = Object.Instantiate(floor, wallController.transform);
+                    // 设置本地坐标和旋转
+                    floorObject.transform.localPosition = position;
+                    floorObject.transform.localRotation = Quaternion.identity;
+                    // 调整缩放
+                    floorObject.transform.localScale *= 20f;
 
-                   map.CityFloors.Add(floorObject);
+                    map.CityFloors.Add(floorObject);
                 }
                 else
                 {

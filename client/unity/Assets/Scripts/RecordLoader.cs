@@ -48,6 +48,7 @@ namespace BattleCity
             }
             else
             {
+                _recordFile = Path.Combine("Assets/Scripts/", "BattleInfo.json");
                 Debug.LogError("文件路径未提供！");
             }
             if (_recordFile == null)
@@ -213,14 +214,14 @@ namespace BattleCity
 
         private void UpdateStage(JObject stageInfo)
         {
-            string targetStage = stageInfo["targetStage"].ToString();
+            string targetStage = stageInfo["currentStage"].ToString();
             if (!Enum.TryParse(typeof(PlayState), targetStage, true, out var result))
             {
                 Debug.LogError("this stage is invaild: " + targetStage);
                 result = PlayState.Rest;
             }
             _recordInfo.NowPlayState = (PlayState)result;
-            int currentTick = stageInfo["currentTicks"].ToObject<int>();
+            int currentTick = stageInfo["totalTicks"].ToObject<int>();
             _recordInfo.NowTick = currentTick;
         }
 
@@ -279,7 +280,12 @@ namespace BattleCity
         {                
             foreach (JObject recordObj in _recordArray)
             {
-                Debug.Log("NowRecordNum：" + _recordInfo.NowRecordNum);
+                if (_recordInfo == null)
+                {
+                    Debug.LogError("RecordInfo 未初始化！");
+                    yield break; // 或尝试重新初始化
+                }
+                //Debug.Log("NowRecordNum：" + _recordInfo.NowRecordNum);
                 JArray record = (JArray)recordObj["record"];
                 foreach (JObject message in record)
                 {

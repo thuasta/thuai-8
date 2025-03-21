@@ -12,27 +12,35 @@ namespace BattleCity
     {
         protected override void Init()
         {
-            // 获取当前活动场景 
-            Scene currentScene = SceneManager.GetActiveScene();
-            // 获取场景名称 
-            string sceneName = currentScene.name;
+            RegisterBattleModels();
+            Debug.Log("GameApp Initialized");
+            TypeEventSystem.Global.Register<BattleStageEvent>(e =>
+            {
+                Debug.Log($"GameApp {SceneData.GameStage}");
+                RegisterBattleModels();
+            });
 
-            
+
             // this.RegisterModel(new AmmoText());
             // this.RegisterModel(new CountdownText());
-            if (sceneName == "Game")
+            
+                
+            if(SceneData.GameStage == "End")
             {
-                this.RegisterModel(new HealthShow());
+                this.RegisterModel(new EndInfo());
+            }                
+        }
+
+        private void RegisterBattleModels()
+        {
+            if (SceneData.GameStage == "Battle")
+            {
+                /*this.RegisterModel(new HealthShow());
                 this.RegisterModel(new ArmorShow());
                 this.RegisterModel(new BuffShow());
                 this.RegisterModel(new ScoresShow());
                 this.RegisterModel(new RoundsShow());
-                this.RegisterModel(new SkillsShow());
-            }
-                
-            if (sceneName == "test_Game")
-            {
-                Debug.Log("test_Game");
+                this.RegisterModel(new SkillsShow());*/
                 this.RegisterModel(new AmmoText());
                 this.RegisterModel(new CountdownText());
                 this.RegisterModel(new HealthShow());
@@ -45,14 +53,11 @@ namespace BattleCity
                 this.RegisterModel(new Bullets());
                 this.RegisterModel(new Map());
                 this.RegisterModel(new RecordInfo());
+                Debug.Log("Game Stage Change!");
             }
-                
-            if(sceneName == "End")
-            {
-                this.RegisterModel(new EndInfo());
-            }                
         }
-        
+
+
     }
 }
 
