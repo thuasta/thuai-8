@@ -98,7 +98,7 @@ public partial class AgentServer
                 foreach (GameLogic.Player player in e.Game.AllPlayers)
                 {
                     List<Protocol.Scheme.Skill> skills = [];
-                    foreach (GameLogic.Skill skill in player.PlayerSkills)
+                    foreach (GameLogic.ISkill skill in player.PlayerSkills)
                     {
                         skills.Add(
                             new()
