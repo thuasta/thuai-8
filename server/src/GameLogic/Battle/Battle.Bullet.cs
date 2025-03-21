@@ -77,7 +77,7 @@ public partial class Battle
         double line_len = PointDistance(startPos, endPos);
         foreach (Player player in AllPlayers)
         {
-            if (LineDistance(startPos, player.PlayerPosition) < Constants.PLAYER_RADIO)
+            if (LineDistance(startPos, player.PlayerPosition) < Constants.PLAYER_RADIUS)
             {
                 tempPlayers.Add(player);
             }
@@ -85,7 +85,7 @@ public partial class Battle
         foreach (Player player in tempPlayers)
         {
             double tempProj = ProjectLength(player.PlayerPosition, startPos);
-            if (tempProj > -Constants.PLAYER_RADIO && tempProj <= line_len)
+            if (tempProj > -Constants.PLAYER_RADIUS && tempProj <= line_len)
             {
                 if (min_proj > tempProj)
                 {

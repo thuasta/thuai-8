@@ -31,11 +31,11 @@ public partial class Player
         public TurnDirection Turndirection { get; set; } = direction;
     }
 
-    public class PlayerPerformSkillEventArgs(Player player, SkillName skill_name) : EventArgs
+    public class PlayerPerformSkillEventArgs(Player player, SkillName skillName) : EventArgs
     {
         public const PlayerEventType EventName = PlayerEventType.PlayerPerformSkill;
         public Player Player = player;
-        public SkillName SkillName = skill_name;
+        public SkillName SkillName = skillName;
     }
 
     public event EventHandler<PlayerMoveEventArgs>? PlayerMoveEvent;

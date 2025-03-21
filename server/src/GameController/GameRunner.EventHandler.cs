@@ -41,6 +41,12 @@ public partial class GameRunner
                         _ => GameLogic.MoveDirection.NONE
                     };
                     player.MoveDirection = moveDirection;
+
+                    _logger.Information(
+                        $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
+                        + $"Move direction set to {moveDirection}."
+                    );
+
                     break;
 
                 case Protocol.Messages.PerformTurnMessage turnMessage:
@@ -51,6 +57,12 @@ public partial class GameRunner
                         _ => GameLogic.TurnDirection.NONE
                     };
                     player.TurnDirection = turnDirection;
+
+                    _logger.Information(
+                        $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
+                        + $"Turn direction set to {turnDirection}."
+                    );
+
                     break;
 
                 case Protocol.Messages.PerformAttackMessage attackMessage:
