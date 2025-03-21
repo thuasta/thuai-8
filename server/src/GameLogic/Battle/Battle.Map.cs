@@ -6,6 +6,13 @@ public partial class Battle
 
     private MapGenerator.MapGenerator MapGenerator = new();
 
+    public static double PointDistance(Position p1, Position p2)
+    {
+        double dx = p2.Xpos - p1.Xpos;
+        double dy = p2.Ypos - p1.Ypos;
+        return Math.Sqrt(dx * dx + dy * dy);
+    }
+
     /// <summary>
     /// If map is null, generate a map.
     /// </summary>
@@ -34,13 +41,6 @@ public partial class Battle
     {
         // TODO: implement.
         _logger.Debug("Map updated.");
-    }
-
-    private double PointDistance(Position p1, Position p2)
-    {
-        double dx = p2.Xpos - p1.Xpos;
-        double dy = p2.Ypos - p1.Ypos;
-        return Math.Sqrt(dx * dx + dy * dy);
     }
 
     private double LineDistance(Position line, Position point)
