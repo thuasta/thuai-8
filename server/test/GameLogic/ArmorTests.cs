@@ -2,6 +2,7 @@ using Thuai.Server.GameLogic;
 
 namespace Thuai.Server.Test.GameLogic;
 
+//Checked Original Tests 03/17/2025
 public class ArmorTests
 {
     [Fact]
@@ -15,11 +16,13 @@ public class ArmorTests
 
         // Assert.
         Assert.False(armor.CanReflect);
+        Assert.Equal(Constants.INITIAL_ARMOR_VALUE, armor.MaximumArmorValue);
         Assert.Equal(Constants.INITIAL_ARMOR_VALUE, armor.ArmorValue);
         Assert.Equal(Constants.INITIAL_HEALTH_VALUE, armor.Health);
+        Assert.Equal(Constants.INITIAL_HEALTH_VALUE, armor.MaximumHealth);
         Assert.False(armor.GravityField);
         Assert.Equal(ArmorKnife.NOT_OWNED, armor.Knife);
-        Assert.Equal(0, armor.DodgeRate);
+        Assert.Equal(Constants.INITIAL_DODGE_PERCENTAGE, armor.DodgeRate);
     }
 
     [Theory]

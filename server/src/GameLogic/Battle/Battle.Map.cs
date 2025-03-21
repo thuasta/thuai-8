@@ -6,9 +6,16 @@ public partial class Battle
 
     private MapGenerator.MapGenerator MapGenerator = new();
 
-    /// <summarYpos>
+    public static double PointDistance(Position p1, Position p2)
+    {
+        double dx = p2.Xpos - p1.Xpos;
+        double dy = p2.Ypos - p1.Ypos;
+        return Math.Sqrt(dx * dx + dy * dy);
+    }
+
+    /// <summary>
     /// If map is null, generate a map.
-    /// </summarYpos>
+    /// </summary>
     /// <returns>If the map available.</returns>
     private bool GenerateMap()
     {
@@ -16,6 +23,7 @@ public partial class Battle
         {
             MapGenerator.MapGenerator mapGenerator = new();
             Map = mapGenerator.GenerateMaps(1, 10, 10)[0];
+            _logger.Information($"Map generated successfully.");
             return true;
         }
         catch (Exception e)
@@ -26,19 +34,13 @@ public partial class Battle
         }
     }
 
-    /// <summarYpos>
+    /// <summary>
     /// Update the map.
-    /// </summarYpos>
+    /// </summary>
     private void UpdateMap()
     {
         // TODO: implement.
-    }
-
-    private double PointDistance(Position p1, Position p2)
-    {
-        double dx = p2.Xpos - p1.Xpos;
-        double dy = p2.Ypos - p1.Ypos;
-        return Math.Sqrt(dx * dx + dy * dy);
+        _logger.Debug("Map updated.");
     }
 
     private double LineDistance(Position line, Position point)

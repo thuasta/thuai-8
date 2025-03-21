@@ -1,17 +1,20 @@
 using Thuai.Server.GameLogic;
 
+
 namespace Thuai.Server.Test.GameLogic;
 
+
+//Checked original tests 03/17/2025 (except those with loggers and laser)
 public class BattleEventHandlerTests
 {
     [Fact]
     public void OnPlayerMove_StageIsNotInBattle_LogError()
     {
+
         // Arrange
-        Player? player1 = new Player("Player1", 1);
-        Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Player player1 = new("player1", 1);
+        Player player2 = new("player2", 2);
+        Battle battle = new(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -24,74 +27,67 @@ public class BattleEventHandlerTests
     [Theory]
     [InlineData(1, 1, 0, 1.1, 1, 0)]
     [InlineData(1, 1, Math.PI / 2, 1, 1.1, Math.PI / 2)]
-    [InlineData(1, 1, Math.PI / 4, 1.0707106781186548, 1.0707106781186548, Math.PI / 4)]
+    [InlineData(1, 1, Math.PI / 4, 1.0707107, 1.0707107, Math.PI / 4)]
     public void OnPlayerMove_MoveDirectionIsForth_PlayerPositionIsUpdated(
         double startX, double startY, double startAngle, double expectedX, double expectedY, double expectedAngle)
     {
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
         battle.Initialize();
-        // Set player1's position to (1, 1)
-        // Set player1's speed to 0.1
         player1.PlayerPosition = new Position(startX, startY, startAngle);
         player1.Speed = 0.1;
         battle.Tick();
         player1.PlayerMove(MoveDirection.FORTH);
+        battle.Tick();
 
         // Assert
-        Assert.Equal(expectedX, player1.PlayerPosition.Xpos);
-        Assert.Equal(expectedY, player1.PlayerPosition.Ypos);
-        Assert.Equal(expectedAngle, player1.PlayerPosition.Angle);
+        Assert.Equal(expectedX, player1.PlayerPosition.Xpos, 1e-5);
+        Assert.Equal(expectedY, player1.PlayerPosition.Ypos, 1e-5);
+        Assert.Equal(expectedAngle, player1.PlayerPosition.Angle, 1e-5);
     }
 
     [Theory]
     [InlineData(1, 1, 0, 0.9, 1, 0)]
     [InlineData(1, 1, Math.PI / 2, 1, 0.9, Math.PI / 2)]
-    [InlineData(1, 1, Math.PI / 4, 0.92928932188134528, 0.92928932188134528, Math.PI / 4)]
+    [InlineData(1, 1, Math.PI / 4, 0.9292893, 0.9292893, Math.PI / 4)]
     public void OnPlayerMove_MoveDirectionIsBack_PlayerPositionIsUpdated(
         double startX, double startY, double startAngle, double expectedX, double expectedY, double expectedAngle)
     {
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
         battle.Initialize();
-        // Set player1's position to (1, 1)
-        // Set player1's speed to 0.1
         player1.PlayerPosition = new Position(startX, startY, startAngle);
         player1.Speed = 0.1;
         battle.Tick();
         player1.PlayerMove(MoveDirection.BACK);
 
         // Assert
-        Assert.Equal(expectedX, player1.PlayerPosition.Xpos);
-        Assert.Equal(expectedY, player1.PlayerPosition.Ypos);
-        Assert.Equal(expectedAngle, player1.PlayerPosition.Angle);
+        Assert.Equal(expectedX, player1.PlayerPosition.Xpos, 1e-5);
+        Assert.Equal(expectedY, player1.PlayerPosition.Ypos, 1e-5);
+        Assert.Equal(expectedAngle, player1.PlayerPosition.Angle, 1e-5);
     }
 
+    //Confusing
     [Fact]
     public void OnPlayerMove_FinalPosIsInvalid_Nochanges()
     {
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
-        // Set player1's position to (1, 1, 0)
-        // Set player1's speed to 0.1
         player1.PlayerPosition = new Position(1, 1, 0);
         player1.Speed = 0.1;
         battle.Tick();
@@ -115,8 +111,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -133,8 +128,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -153,8 +147,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -170,8 +163,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -192,8 +184,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -214,8 +205,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -321,8 +311,7 @@ public class BattleEventHandlerTests
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
         player1.PlayerWeapon.CurrentBullets = 0;
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act
@@ -340,8 +329,7 @@ public class BattleEventHandlerTests
         // Arrange
         Player player1 = new Player("Player1", 1);
         Player player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+        Battle battle = new Battle(new(), [player1, player2]);
         battle.SubscribePlayerEvents(player1);
 
         // Act

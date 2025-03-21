@@ -36,6 +36,13 @@ public partial class Game
     /// <returns>If the adding succeeds.</returns>
     public bool AddPlayer(string token)
     {
+        if (FindPlayer(token) != null)
+        {
+            _logger.Error(
+                $"Cannot add player: Player with token {Utility.Tools.LogHandler.Truncate(token, 8)} already exists."
+            );
+            return false;
+        }
         if (Stage != GameStage.Waiting)
         {
             _logger.Error("Cannot add player: The game is already started.");

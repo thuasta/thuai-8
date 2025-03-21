@@ -6,7 +6,7 @@ public partial class GameRunner
     {
         try
         {
-            if (e.Message is not Connection.PerformMessage message)
+            if (e.Message is not Protocol.Messages.PerformMessage message)
             {
                 _logger.Error(
                     $"message \"{Utility.Tools.LogHandler.Truncate(e.Message.MessageType, 32)}\" shouldn't come from a player."
@@ -14,7 +14,7 @@ public partial class GameRunner
                 return;
             }
 
-            Connection.PerformMessage performMessage = message;
+            Protocol.Messages.PerformMessage performMessage = message;
             _logger.Debug(
                 $"Received message \"{Utility.Tools.LogHandler.Truncate(performMessage.MessageType, 32)}\" "
                 + $"from player {Utility.Tools.LogHandler.Truncate(performMessage.Token, 8)}."
@@ -33,7 +33,7 @@ public partial class GameRunner
 
             switch (performMessage)
             {
-                case Connection.PerformMoveMessage moveMessage:
+                case Protocol.Messages.PerformMoveMessage moveMessage:
                     GameLogic.MoveDirection moveDirection = moveMessage.Direction switch
                     {
                         "FORTH" => GameLogic.MoveDirection.FORTH,
@@ -41,19 +41,31 @@ public partial class GameRunner
                         _ => GameLogic.MoveDirection.NONE
                     };
                     player.MoveDirection = moveDirection;
+
+                    _logger.Information(
+                        $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
+                        + $"Move direction set to {moveDirection}."
+                    );
+
                     break;
 
-                case Connection.PerformTurnMessage turnMessage:
-                    GameLogic.TurnDirection trunDirection = turnMessage.Direction switch
+                case Protocol.Messages.PerformTurnMessage turnMessage:
+                    GameLogic.TurnDirection turnDirection = turnMessage.Direction switch
                     {
                         "CLOCKWISE" => GameLogic.TurnDirection.CLOCKWISE,
                         "COUNTER_CLOCKWISE" => GameLogic.TurnDirection.COUNTER_CLOCKWISE,
                         _ => GameLogic.TurnDirection.NONE
                     };
-                    player.TurnDirection = trunDirection;
+                    player.TurnDirection = turnDirection;
+
+                    _logger.Information(
+                        $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
+                        + $"Turn direction set to {turnDirection}."
+                    );
+
                     break;
 
-                case Connection.PerformAttackMessage attackMessage:
+                case Protocol.Messages.PerformAttackMessage attackMessage:
                     if (Game.Stage != GameLogic.Game.GameStage.InBattle
                         || Game.RunningBattle == null
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.InBattle)
@@ -67,7 +79,7 @@ public partial class GameRunner
                     player.PlayerAttack();
                     break;
 
-                case Connection.PerformSkillMessage skillMessage:
+                case Protocol.Messages.PerformSkillMessage skillMessage:
                     if (Game.Stage != GameLogic.Game.GameStage.InBattle
                         || Game.RunningBattle == null
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.InBattle)
@@ -78,10 +90,10 @@ public partial class GameRunner
                         );
                         return;
                     }
-                    // TODO: Implement skill usage.
+                    player.PlayerPerformSkill(GameLogic.ISkill.SkillNameFromString(skillMessage.SkillName));
                     break;
 
-                case Connection.PerformSelectMessage selectMessage:
+                case Protocol.Messages.PerformSelectMessage selectMessage:
                     if (Game.Stage != GameLogic.Game.GameStage.InBattle
                         || Game.RunningBattle == null
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.ChoosingAward)
@@ -96,11 +108,11 @@ public partial class GameRunner
                     {
                         _logger.Error(
                             $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
-                            + "Already chosen an award."
+                            + "An award is already chosen."
                         );
                         return;
                     }
-                    if (!Game.AvilableBuffsAfterCurrentBattle.Any(buff => buff.ToString() == selectMessage.BuffName))
+                    if (!Game.AvailableBuffsAfterCurrentBattle.Any(buff => buff.ToString() == selectMessage.BuffName))
                     {
                         _logger.Error(
                             $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
@@ -110,7 +122,7 @@ public partial class GameRunner
                     }
 
                     int awardId = 0;
-                    foreach (GameLogic.Buff.Buff award in Game.AvilableBuffsAfterCurrentBattle)
+                    foreach (GameLogic.Buff.Buff award in Game.AvailableBuffsAfterCurrentBattle)
                     {
                         awardId++;
                         if (award.ToString() == selectMessage.BuffName)
@@ -121,6 +133,63 @@ public partial class GameRunner
                         }
                     }
 
+                    break;
+
+                case Protocol.Messages.GetPlayerinfoMessage getPlayerinfoMessage:
+                    _logger.Debug(
+                        $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] Requested player info."
+                    );
+
+                    List<Protocol.Scheme.Player> players = [];
+                    foreach (GameLogic.Player p in Game.AllPlayers)
+                    {
+                        List<Protocol.Scheme.Skill> skills = [];
+                        foreach (GameLogic.ISkill s in p.PlayerSkills)
+                        {
+                            skills.Add(new Protocol.Scheme.Skill
+                            {
+                                Name = s.Name.ToString(),
+                                MaxCooldown = s.MaxCooldown,
+                                CurrentCooldown = s.CurrentCooldown,
+                                IsActive = s.IsActive
+                            });
+                        }
+                        players.Add(new Protocol.Scheme.Player
+                        {
+                            Token = player.Token == p.Token ? p.Token : "",
+                            Weapon = new()
+                            {
+                                AttackSpeed = p.PlayerWeapon.AttackSpeed,
+                                BulletSpeed = p.PlayerWeapon.BulletSpeed,
+                                IsLaser = p.PlayerWeapon.IsLaser,
+                                AntiArmor = p.PlayerWeapon.AntiArmor,
+                                Damage = p.PlayerWeapon.Damage,
+                                MaxBullets = p.PlayerWeapon.MaxBullets,
+                                CurrentBullets = p.PlayerWeapon.CurrentBullets
+                            },
+                            Armor = new()
+                            {
+                                CanReflect = p.PlayerArmor.CanReflect,
+                                ArmorValue = p.PlayerArmor.ArmorValue,
+                                Health = p.PlayerArmor.Health,
+                                GravityField = p.PlayerArmor.GravityField,
+                                Knife = p.PlayerArmor.Knife.ToString(),
+                                DodgeRate = p.PlayerArmor.DodgeRate
+                            },
+                            Skills = [.. skills],
+                            Position = new()
+                            {
+                                X = p.PlayerPosition.Xpos,
+                                Y = p.PlayerPosition.Ypos,
+                                Angle = p.PlayerPosition.Angle
+                            },
+                        });
+                    }
+                    Protocol.Messages.AllPlayerInfoMessage response = new()
+                    {
+                        Players = [.. players]
+                    };
+                    AfterPlayerRequestEvent?.Invoke(this, new AfterPlayerRequestEventArgs(player.Token, response));
                     break;
 
                 default:

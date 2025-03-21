@@ -72,7 +72,7 @@ public class Program
                     )
                 );
                 Console.WriteLine(e.StackTrace ?? "No stack trace available.");
-                return;
+                Environment.Exit(1);
             }
 
             _logger.Fatal($"Program crashed with exception:");
@@ -82,6 +82,7 @@ public class Program
                 )
             );
             _logger.Fatal(e.StackTrace ?? "No stack trace available.");
+            Environment.Exit(1);
         }
     }
 
