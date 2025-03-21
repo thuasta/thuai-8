@@ -1,4 +1,5 @@
 using Serilog;
+
 namespace Thuai.Server.GameLogic;
 
 /// <summary>
@@ -26,20 +27,35 @@ public partial class Player(string token, int playerId)
 
     public bool IsAlive => PlayerArmor.Health > 0;
 
+    private readonly Random _random = new();
+
     private readonly ILogger _logger = Log.ForContext("Component", $"Player {playerId}");
 
     public void Injured(int damage)
     {
         // TODO: Implement more complex logic for damage calculation.
+        if (_random.Next(0, 100) < PlayerArmor.DodgeRate)
+        {
+            _logger.Information("Player dodged the attack.");
+            return;
+        }
+
         if (PlayerArmor.ArmorValue >= damage)
         {
             PlayerArmor.ArmorValue -= damage;
+            _logger.Information($"Armor absorbed {damage} damage.");
         }
         else if (PlayerArmor.ArmorValue < damage)
         {
             int realDamage = damage - PlayerArmor.ArmorValue;
+            _logger.Information($"Armor absorbed {PlayerArmor.ArmorValue} damage.");
             PlayerArmor.ArmorValue = 0;
             PlayerArmor.Health -= realDamage;
+            _logger.Information($"Player took {realDamage} damage.");
+            if (PlayerArmor.Health <= 0)
+            {
+                _logger.Information("Player died.");
+            }
         }
     }
 
@@ -52,6 +68,7 @@ public partial class Player(string token, int playerId)
             skill.Recover();
         }
         HasChosenAward = false;
+        _logger.Information("Recovered.");
     }
 
     /// <summary>
@@ -60,7 +77,8 @@ public partial class Player(string token, int playerId)
     /// <param name="skill_name">The type of the skill.</param>
     public void PlayerPerformSkill(SkillName skill_name)
     {
-        _logger.Debug($"Perform skill ({skill_name})");
+        // TODO: Check whether the player has can perform the skill or not.
+        _logger.Information($"Perform skill ({skill_name})");
         PlayerPerformSkillEvent?.Invoke(this, new PlayerPerformSkillEventArgs(this, skill_name));
     }
 
@@ -78,7 +96,8 @@ public partial class Player(string token, int playerId)
 
     public void PlayerAttack()
     {
-        _logger.Debug($"Player attack.");
+        // TODO: Check whether the player has can perform the attack or not.
+        _logger.Information($"Attacking.");
         PlayerAttackEvent?.Invoke(this, new PlayerAttackEventArgs(this));
     }
 }

@@ -9,8 +9,8 @@ public static class Constants
     public const int INITIAL_ARMOR_VALUE = 0;
     public const int ARMOR_VALUE_INCREASE = 1;
     public const int INITIAL_HEALTH_VALUE = 1;
-    public const int INITIAL_DODGE_PERCENTAGE = 0;          // 0%
-    public const int DODGE_PERCENTAGE_INCREASE = 10;        // 10%
+    public const int INITIAL_DODGE_PERCENTAGE = 0;      // 0%
+    public const int DODGE_PERCENTAGE_INCREASE = 10;    // 10%
 
     //Weapon
     public const double INITIAL_ATTACK_SPEED = 0.1;

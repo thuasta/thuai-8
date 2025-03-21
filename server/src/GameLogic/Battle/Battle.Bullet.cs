@@ -20,6 +20,16 @@ public partial class Battle
         try
         {
             Bullets.Add(bullet);
+
+            _logger.Debug(
+                $"A bullet has been added at ({bullet.BulletPosition.Xpos:F2}, {bullet.BulletPosition.Ypos:F2})"
+                + $" with angle {bullet.BulletPosition.Angle:F2}"
+            );
+            _logger.Verbose("Type: " + bullet.Type.ToString());
+            _logger.Verbose("Speed: " + bullet.BulletSpeed);
+            _logger.Verbose("Damage: " + bullet.BulletDamage);
+            _logger.Verbose("AntiArmor: " + bullet.AntiArmor);
+
             return true;
         }
         catch (Exception e)
@@ -35,6 +45,8 @@ public partial class Battle
         try
         {
             Bullets.Remove(bullet);
+
+            _logger.Debug($"A bullet at ({bullet.BulletPosition.Xpos:F2}, {bullet.BulletPosition.Ypos:F2}) has been removed.");
         }
         catch (Exception e)
         {
@@ -131,6 +143,8 @@ public partial class Battle
 
                         bullet.BulletPosition = finalPos;
                     }
+
+                    _logger.Debug($"Bullets updated.");
                 }
             }
             catch (Exception ex)
