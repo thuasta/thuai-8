@@ -22,7 +22,7 @@ public partial class Player(string token, int playerId)
 
     public Armor PlayerArmor { get; set; } = new();
 
-    public List<Skill> PlayerSkills { get; set; } = [];
+    public List<ISkill> PlayerSkills { get; set; } = [];
     public bool HasChosenAward { get; set; } = false;
 
     public bool IsAlive => PlayerArmor.Health > 0;
@@ -63,7 +63,7 @@ public partial class Player(string token, int playerId)
     {
         PlayerArmor.Recover();
         PlayerWeapon.Recover();
-        foreach (Skill skill in PlayerSkills)
+        foreach (ISkill skill in PlayerSkills)
         {
             skill.Recover();
         }
@@ -74,7 +74,7 @@ public partial class Player(string token, int playerId)
     /// <summary>
     /// Publish a skill event.
     /// </summary>
-    /// <param name="skill"></param>
+    /// <param name="skill_name">The type of the skill.</param>
     public void PlayerPerformSkill(SkillName skill_name)
     {
         // TODO: Check whether the player has can perform the skill or not.

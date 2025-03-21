@@ -1,10 +1,12 @@
 namespace Thuai.Server.GameLogic.MapGenerator;
 
-public class Wall(int x, int y, int angle)
+public class Wall(int x, int y, int angle, bool breakable=false)
 {
     public int X { get; } = x;
     public int Y { get; } = y;
     public int Angle { get; } = angle;
+    public bool Breakable { get; } = breakable;
+    public int WallDurability { get; private set;} = Constants.BREAKABLE_WALL_MAX_COLLIDE_COUNT;
     public override bool Equals(object? obj)
     {
         if (obj is Wall other)
@@ -18,4 +20,19 @@ public class Wall(int x, int y, int angle)
     {
         return HashCode.Combine(X, Y, Angle);
     }
+
+    /// <summary>
+    /// Should be called if collide on the wall.
+    /// </summary>
+    /// <returns>If the wall should disappear.</returns>
+    public bool CollideOnWall()
+    {
+        if (!Breakable)
+        {
+            return false;
+        }
+        --WallDurability;
+        return WallDurability <= 0;
+    }
+
 }

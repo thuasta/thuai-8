@@ -33,4 +33,10 @@ public static class Constants
     //Map
     public const int WALL_LENGTH = 10;
     public const double WALL_THICK = 0.1;
+
+    // Wall
+    public const int BREAKABLE_WALL_MAX_COLLIDE_COUNT = 3;
+
+    // Skills
+    public const int SKILL_DURATION = 200;
 }
