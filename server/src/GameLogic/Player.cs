@@ -50,6 +50,15 @@ public partial class Player(string token, int playerId)
             int realDamage = damage - PlayerArmor.ArmorValue;
             _logger.Information($"Armor absorbed {PlayerArmor.ArmorValue} damage.");
             PlayerArmor.ArmorValue = 0;
+
+            if (realDamage >= PlayerArmor.Health && PlayerArmor.Knife == ArmorKnife.AVAILABLE)
+            {
+                // TODO: Set activation interval
+                PlayerArmor.Knife = ArmorKnife.BROKEN;
+                realDamage = PlayerArmor.Health - 1;
+                _logger.Debug("Invulnerability invoked by taking damage.");
+            }
+
             PlayerArmor.Health -= realDamage;
             _logger.Information($"Player took {realDamage} damage.");
             if (PlayerArmor.Health <= 0)
