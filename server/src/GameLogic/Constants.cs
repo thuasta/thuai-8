@@ -11,6 +11,8 @@ public static class Constants
     public const int INITIAL_HEALTH_VALUE = 2;
     public const int INITIAL_DODGE_PERCENTAGE = 0;      // 0%
     public const int DODGE_PERCENTAGE_INCREASE = 10;    // 10%
+    public const double GRAVITY_FIELD_RADIUS = 1.5;
+    public const double GRAVITY_FIELD_STRENGTH = 0.5;
 
     //Weapon
     public const double INITIAL_ATTACK_SPEED = 0.1;
@@ -29,11 +31,11 @@ public static class Constants
     //Player
     public const double MOVE_SPEED = 0.1;
     public const double TURN_SPEED = Math.PI / 60;
-    public const double PLAYER_RADIO = 0.3;
+    public const double PLAYER_RADIUS = 0.3;
     public const double BULLET_GENERATE_DISTANCE = 0.5;
 
     // Bullet
-    public const double BULLET_RADIO = 0.1;
+    public const double BULLET_RADIUS = 0.1;
 
     //Map
     public const int WALL_LENGTH = 10;
