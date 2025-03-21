@@ -10,6 +10,7 @@ public static class D_Buff
     public static void REFLECT(Player player)
     {
         // 反弹
+        player.PlayerArmor.MaximumArmorValue += Constants.ARMOR_VALUE_INCREASE;
         player.PlayerArmor.CanReflect = true;
     }
     public static void DODGE(Player player)

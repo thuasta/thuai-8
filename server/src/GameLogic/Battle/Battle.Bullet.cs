@@ -77,7 +77,7 @@ public partial class Battle
         double line_len = PointDistance(startPos, endPos);
         foreach (Player player in AllPlayers)
         {
-            if (LineDistance(startPos, player.PlayerPosition) < Constants.PLAYER_RADIO)
+            if (LineDistance(startPos, player.PlayerPosition) < Constants.PLAYER_RADIUS)
             {
                 tempPlayers.Add(player);
             }
@@ -85,7 +85,7 @@ public partial class Battle
         foreach (Player player in tempPlayers)
         {
             double tempProj = ProjectLength(player.PlayerPosition, startPos);
-            if (tempProj > -Constants.PLAYER_RADIO && tempProj <= line_len)
+            if (tempProj > -Constants.PLAYER_RADIUS && tempProj <= line_len)
             {
                 if (min_proj > tempProj)
                 {
@@ -112,19 +112,38 @@ public partial class Battle
             {
                 lock (_lock)
                 {
-                    double delta_x = bullet.BulletSpeed * Math.Cos(bullet.BulletPosition.Angle);
-                    double delta_y = bullet.BulletSpeed * Math.Sin(bullet.BulletPosition.Angle);
+                    double speed = bullet.BulletSpeed;
+
+                    foreach (Player player in AllPlayers)
+                    {
+                        if (
+                            player.IsAlive == true
+                            && player.PlayerArmor.GravityField == true
+                            && PointDistance(player.PlayerPosition, bullet.BulletPosition) < Constants.GRAVITY_FIELD_RADIUS
+                        )
+                        {
+                            speed *= Constants.GRAVITY_FIELD_STRENGTH;
+                            break;  // Gravity field only affects the bullet once
+                        }
+                    }
+
+                    double delta_x = speed * Math.Cos(bullet.BulletPosition.Angle);
+                    double delta_y = speed * Math.Sin(bullet.BulletPosition.Angle);
                     Position endPos = new(delta_x, delta_y);
                     Position? finalPos = GetBulletFinalPos(bullet.BulletPosition, endPos, out Position? interPos);
                     if (finalPos != null)
                     {
+                        // TODO: Refactor this part
                         Player? finalPlayer = null;
                         if (interPos != null)
                         {
                             finalPlayer = TakeDamage(bullet.BulletPosition, interPos);
                             if (finalPlayer != null)
                             {
-                                finalPlayer.Injured(bullet.BulletDamage);
+                                finalPlayer.Injured(bullet.BulletDamage, bullet.AntiArmor, out _);
+
+                                // TODO: Implement reflection
+
                                 RemoveBullet(bullet);
                                 continue;
                             }
@@ -136,7 +155,10 @@ public partial class Battle
                         }
                         if (finalPlayer != null)
                         {
-                            finalPlayer.Injured(bullet.BulletDamage);
+                            finalPlayer.Injured(bullet.BulletDamage, bullet.AntiArmor, out _);
+
+                            // TODO: Implement reflection
+
                             RemoveBullet(bullet);
                             continue;
                         }

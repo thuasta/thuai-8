@@ -35,8 +35,24 @@ public partial class Battle
                     return;
                 }
 
-                double delta_x = e.Player.Speed * Math.Cos(e.Player.PlayerPosition.Angle);
-                double delta_y = e.Player.Speed * Math.Sin(e.Player.PlayerPosition.Angle);
+                double speed = e.Player.Speed;
+
+                foreach (Player player in AllPlayers)
+                {
+                    if (
+                        player.ID != e.Player.ID
+                        && player.IsAlive == true
+                        && player.PlayerArmor.GravityField == true
+                        && PointDistance(player.PlayerPosition, e.Player.PlayerPosition) <= Constants.GRAVITY_FIELD_RADIUS
+                    )
+                    {
+                        speed *= Constants.GRAVITY_FIELD_STRENGTH;
+                        break;  // Gravity field only affects the player once.
+                    }
+                }
+
+                double delta_x = speed * Math.Cos(e.Player.PlayerPosition.Angle);
+                double delta_y = speed * Math.Sin(e.Player.PlayerPosition.Angle);
                 if (e.Movedirection == MoveDirection.BACK)
                 {
                     double endXpos = e.Player.PlayerPosition.Xpos - delta_x;
@@ -126,6 +142,7 @@ public partial class Battle
             );
             return;
         }
+
         try
         {
             lock (_lock)

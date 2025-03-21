@@ -31,25 +31,54 @@ public partial class Player(string token, int playerId)
 
     private readonly ILogger _logger = Log.ForContext("Component", $"Player {playerId}");
 
-    public void Injured(int damage)
-    {
+    public void Injured(int damage, bool antiArmor, out bool reflected)
+    { 
+        reflected = false;
+
+        if (IsAlive == false)
+        {
+            _logger.Error("Cannot take damage: Player is already dead.");
+            return;
+        }
+
         // TODO: Implement more complex logic for damage calculation.
         if (_random.Next(0, 100) < PlayerArmor.DodgeRate)
         {
+            // Dodged
             _logger.Information("Player dodged the attack.");
             return;
         }
 
-        if (PlayerArmor.ArmorValue >= damage)
+        int realDamage = damage;
+        if (antiArmor && PlayerArmor.ArmorValue > 0)
         {
-            PlayerArmor.ArmorValue -= damage;
-            _logger.Information($"Armor absorbed {damage} damage.");
+            realDamage *= Constants.ANTI_ARMOR_FACTOR;
         }
-        else if (PlayerArmor.ArmorValue < damage)
+
+        if (PlayerArmor.ArmorValue > 0)
         {
-            int realDamage = damage - PlayerArmor.ArmorValue;
-            _logger.Information($"Armor absorbed {PlayerArmor.ArmorValue} damage.");
-            PlayerArmor.ArmorValue = 0;
+            if (PlayerArmor.CanReflect == true && realDamage <= PlayerArmor.ArmorValue)
+            {
+                // The bullet will be reflected
+                reflected = true;
+                _logger.Information("Armor reflected the bullet.");
+            }
+
+            // Damage absorbed by armor
+            realDamage = Math.Min(realDamage, PlayerArmor.ArmorValue);
+            PlayerArmor.ArmorValue -= realDamage;
+            _logger.Information($"Armor absorbed {realDamage} damage.");
+        }
+        else
+        {
+            if (realDamage >= PlayerArmor.Health && PlayerArmor.Knife == ArmorKnife.AVAILABLE)
+            {
+                // TODO: Set activation interval
+                PlayerArmor.Knife = ArmorKnife.BROKEN;
+                realDamage = PlayerArmor.Health - 1;
+                _logger.Debug("Invulnerability invoked by taking damage.");
+            }
+
             PlayerArmor.Health -= realDamage;
             _logger.Information($"Player took {realDamage} damage.");
             if (PlayerArmor.Health <= 0)
@@ -75,11 +104,27 @@ public partial class Player(string token, int playerId)
     /// Publish a skill event.
     /// </summary>
     /// <param name="skill_name">The type of the skill.</param>
-    public void PlayerPerformSkill(SkillName skill_name)
+    public void PlayerPerformSkill(SkillName skillName)
     {
+        if (IsAlive == false)
+        {
+            _logger.Error("Failed to perform skill: Player is dead.");
+            return;
+        }
+        if (PlayerSkills.Any(skill => skill.Name == skillName) == false)
+        {
+            _logger.Error($"Failed to perform skill: Player does not have the skill ({skillName}).");
+            return;
+        }
+        if (PlayerSkills.First(skill => skill.Name == skillName).CurrentCooldown > 0)
+        {
+            _logger.Error($"Failed to perform skill: Skill ({skillName}) is on cooldown.");
+            return;
+        }
+
         // TODO: Check whether the player has can perform the skill or not.
-        _logger.Information($"Perform skill ({skill_name})");
-        PlayerPerformSkillEvent?.Invoke(this, new PlayerPerformSkillEventArgs(this, skill_name));
+        _logger.Information($"Perform skill ({skillName})");
+        PlayerPerformSkillEvent?.Invoke(this, new PlayerPerformSkillEventArgs(this, skillName));
     }
 
     public void PlayerMove(MoveDirection direction)
@@ -96,6 +141,17 @@ public partial class Player(string token, int playerId)
 
     public void PlayerAttack()
     {
+        if (IsAlive == false)
+        {
+            _logger.Error("Failed to attack: Player is dead.");
+            return;
+        }
+        if (PlayerWeapon.CurrentBullets <= 0)
+        {
+            _logger.Error("Failed to attack: No bullets.");
+            return;
+        }
+
         // TODO: Check whether the player has can perform the attack or not.
         _logger.Information($"Attacking.");
         PlayerAttackEvent?.Invoke(this, new PlayerAttackEventArgs(this));
