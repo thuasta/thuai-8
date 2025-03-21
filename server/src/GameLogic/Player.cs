@@ -31,26 +31,37 @@ public partial class Player(string token, int playerId)
 
     private readonly ILogger _logger = Log.ForContext("Component", $"Player {playerId}");
 
-    public void Injured(int damage)
+    public void Injured(int damage, bool antiArmor)
     {
+        if (IsAlive == false)
+        {
+            _logger.Error("Cannot take damage: Player is already dead.");
+            return;
+        }
+
         // TODO: Implement more complex logic for damage calculation.
         if (_random.Next(0, 100) < PlayerArmor.DodgeRate)
         {
+            // Dodged
             _logger.Information("Player dodged the attack.");
             return;
         }
 
-        if (PlayerArmor.ArmorValue >= damage)
+        int realDamage = damage;
+        if (antiArmor && PlayerArmor.ArmorValue > 0)
         {
-            PlayerArmor.ArmorValue -= damage;
-            _logger.Information($"Armor absorbed {damage} damage.");
+            realDamage *= Constants.ANTI_ARMOR_FACTOR;
         }
-        else if (PlayerArmor.ArmorValue < damage)
-        {
-            int realDamage = damage - PlayerArmor.ArmorValue;
-            _logger.Information($"Armor absorbed {PlayerArmor.ArmorValue} damage.");
-            PlayerArmor.ArmorValue = 0;
 
+        if (PlayerArmor.ArmorValue > 0)
+        {
+            // Damage absorbed by armor
+            realDamage = Math.Min(realDamage, PlayerArmor.ArmorValue);
+            PlayerArmor.ArmorValue -= realDamage;
+            _logger.Information($"Armor absorbed {realDamage} damage.");
+        }
+        else
+        {
             if (realDamage >= PlayerArmor.Health && PlayerArmor.Knife == ArmorKnife.AVAILABLE)
             {
                 // TODO: Set activation interval

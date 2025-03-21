@@ -124,7 +124,7 @@ public partial class Battle
                             finalPlayer = TakeDamage(bullet.BulletPosition, interPos);
                             if (finalPlayer != null)
                             {
-                                finalPlayer.Injured(bullet.BulletDamage);
+                                finalPlayer.Injured(bullet.BulletDamage, bullet.AntiArmor);
                                 RemoveBullet(bullet);
                                 continue;
                             }
@@ -136,7 +136,7 @@ public partial class Battle
                         }
                         if (finalPlayer != null)
                         {
-                            finalPlayer.Injured(bullet.BulletDamage);
+                            finalPlayer.Injured(bullet.BulletDamage, bullet.AntiArmor);
                             RemoveBullet(bullet);
                             continue;
                         }

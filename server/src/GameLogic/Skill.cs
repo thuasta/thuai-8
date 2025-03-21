@@ -36,9 +36,9 @@ public interface ISkill
 }
 
 public class GeneralContinuousSkill(
-    SkillName skillName, 
-    int maxCoolDown=Constants.SKILL_MAX_COOLDOWN,
-    int skillDuration=Constants.SKILL_DURATION
+    SkillName skillName,
+    int maxCoolDown = Constants.SKILL_MAX_COOLDOWN,
+    int skillDuration = Constants.SKILL_DURATION
 ) : ISkill
 {
     public SkillName Name { get; init; } = skillName;
@@ -83,8 +83,8 @@ public class GeneralContinuousSkill(
 }
 
 public class InstantSkill(
-    SkillName skillName, 
-    int maxCoolDown=Constants.SKILL_MAX_COOLDOWN
+    SkillName skillName,
+    int maxCoolDown = Constants.SKILL_MAX_COOLDOWN
 ) : ISkill
 {
     public SkillName Name { get; init; } = skillName;
@@ -158,7 +158,7 @@ public class SkillKamui(SkillName skillName) : ISkill
     public int MaxCooldown { get => throw new NotImplementedException(); init => throw new NotImplementedException(); }
 
     bool ISkill.IsActive => throw new NotImplementedException();
-    
+
     public bool IsAvailable()
     {
         throw new NotImplementedException();

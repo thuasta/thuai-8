@@ -126,6 +126,7 @@ public partial class Battle
             );
             return;
         }
+
         try
         {
             lock (_lock)
