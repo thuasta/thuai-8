@@ -31,8 +31,10 @@ public partial class Player(string token, int playerId)
 
     private readonly ILogger _logger = Log.ForContext("Component", $"Player {playerId}");
 
-    public void Injured(int damage, bool antiArmor)
-    {
+    public void Injured(int damage, bool antiArmor, out bool reflected)
+    { 
+        reflected = false;
+
         if (IsAlive == false)
         {
             _logger.Error("Cannot take damage: Player is already dead.");
@@ -55,6 +57,13 @@ public partial class Player(string token, int playerId)
 
         if (PlayerArmor.ArmorValue > 0)
         {
+            if (PlayerArmor.CanReflect == true && realDamage <= PlayerArmor.ArmorValue)
+            {
+                // The bullet will be reflected
+                reflected = true;
+                _logger.Information("Armor reflected the bullet.");
+            }
+
             // Damage absorbed by armor
             realDamage = Math.Min(realDamage, PlayerArmor.ArmorValue);
             PlayerArmor.ArmorValue -= realDamage;
