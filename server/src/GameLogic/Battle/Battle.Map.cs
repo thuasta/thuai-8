@@ -33,6 +33,7 @@ public partial class Battle
     private void UpdateMap()
     {
         // TODO: implement.
+        _logger.Debug("Map updated.");
     }
 
     private double PointDistance(Position p1, Position p2)

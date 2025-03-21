@@ -22,6 +22,7 @@ public partial class Battle
             player.PlayerMove(player.MoveDirection);
             player.PlayerTurn(player.TurnDirection);
         }
+        _logger.Debug("Players updated.");
     }
 
     /// <summary>
