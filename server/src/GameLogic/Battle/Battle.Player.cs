@@ -43,7 +43,7 @@ public partial class Battle
             double angle = _random.NextDouble() * 2 * Math.PI;
             player.PlayerPosition = new Position(x, y, angle);
 
-            _logger.Information($"Player {player.ID} spawned at ({x}, {y}) with angle {angle:F2} rad.");
+            _logger.Information($"Player {player.ID} spawned at ({x:F2}, {y:F2}) with angle {angle:F2} rad.");
         }
     }
 
