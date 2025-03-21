@@ -38,7 +38,7 @@ public static class Constants
     public const double BULLET_RADIUS = 0.1;
 
     //Map
-    public const int WALL_LENGTH = 10;
+    public const double WALL_LENGTH = 1.2;
     public const double WALL_THICK = 0.1;
 
     // Wall
