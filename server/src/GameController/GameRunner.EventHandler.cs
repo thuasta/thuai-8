@@ -132,7 +132,7 @@ public partial class GameRunner
                     foreach (GameLogic.Player p in Game.AllPlayers)
                     {
                         List<Protocol.Scheme.Skill> skills = [];
-                        foreach (GameLogic.Skill s in p.PlayerSkills)
+                        foreach (GameLogic.ISkill s in p.PlayerSkills)
                         {
                             skills.Add(new Protocol.Scheme.Skill
                             {

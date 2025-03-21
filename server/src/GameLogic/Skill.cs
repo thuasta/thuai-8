@@ -1,5 +1,3 @@
-using Thuai.Server.Connection;
-
 namespace Thuai.Server.GameLogic;
 
 public enum SkillName
