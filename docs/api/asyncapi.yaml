@@ -241,7 +241,7 @@ components:
                 - $ref: '#/components/schemas/MapUpdateEvent'
                 - $ref: '#/components/schemas/BuffActivateEvent'
                 - $ref: '#/components/schemas/BuffDisactivateEvent'
-    
+
     BuffSelect:
       title: "BuffSelect"
       payload:
@@ -250,8 +250,6 @@ components:
         required:
           - messageType
           - details
-          - token
-          - buff
         properties:
           messageType:
             type: string
@@ -269,8 +267,6 @@ components:
                 buff:
                   $ref: "#/components/schemas/BuffName"
             description: 每个玩家的token及选择的buff
-
-          
 
     Error:
       title: "Error"

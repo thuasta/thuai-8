@@ -7,12 +7,14 @@ public partial class Battle
         player.PlayerMoveEvent += OnPlayerMove;
         player.PlayerTurnEvent += OnPlayerTurn;
         player.PlayerAttackEvent += OnPlayerAttack;
+        player.PlayerPerformSkillEvent += OnPlayerPerformSkill;
     }
     public void UnsubscribePlayerEvents(Player player)
     {
         player.PlayerMoveEvent -= OnPlayerMove;
         player.PlayerTurnEvent -= OnPlayerTurn;
         player.PlayerAttackEvent -= OnPlayerAttack;
+        player.PlayerPerformSkillEvent -= OnPlayerPerformSkill;
     }
 
     private void OnPlayerMove(object? sender, Player.PlayerMoveEventArgs e)
@@ -33,8 +35,24 @@ public partial class Battle
                     return;
                 }
 
-                double delta_x = e.Player.Speed * Math.Cos(e.Player.PlayerPosition.Angle);
-                double delta_y = e.Player.Speed * Math.Sin(e.Player.PlayerPosition.Angle);
+                double speed = e.Player.Speed;
+
+                foreach (Player player in AllPlayers)
+                {
+                    if (
+                        player.ID != e.Player.ID
+                        && player.IsAlive == true
+                        && player.PlayerArmor.GravityField == true
+                        && PointDistance(player.PlayerPosition, e.Player.PlayerPosition) <= Constants.GRAVITY_FIELD_RADIUS
+                    )
+                    {
+                        speed *= Constants.GRAVITY_FIELD_STRENGTH;
+                        break;  // Gravity field only affects the player once.
+                    }
+                }
+
+                double delta_x = speed * Math.Cos(e.Player.PlayerPosition.Angle);
+                double delta_y = speed * Math.Sin(e.Player.PlayerPosition.Angle);
                 if (e.Movedirection == MoveDirection.BACK)
                 {
                     double endXpos = e.Player.PlayerPosition.Xpos - delta_x;
@@ -124,6 +142,7 @@ public partial class Battle
             );
             return;
         }
+
         try
         {
             lock (_lock)
@@ -174,4 +193,41 @@ public partial class Battle
         }
     }
 
+    private void OnPlayerPerformSkill(object? sender, Player.PlayerPerformSkillEventArgs e)
+    {
+        if (Stage != BattleStage.InBattle)
+        {
+            _logger.Error(
+                $"[Player {e.Player.ID}] Cannot perform skill when battle is at state {Stage}."
+            );
+            return;
+        }
+        try
+        {
+            lock (_lock)
+            {
+                ISkill? skill = e.Player.PlayerSkills.Find(skill => skill.Name == e.SkillName);
+                if (skill is null)
+                {
+                    _logger.Error(
+                        $"[Player {e.Player.ID}] Don't have the skill {e.SkillName}."
+                    );
+                    return;
+                }
+                if (!skill.IsAvailable())
+                {
+                    _logger.Error(
+                        $"[Player {e.Player.ID}] The skill {e.SkillName} is still in cooldown."
+                    );
+                }
+                // TODO: implement the skills
+                skill.Perform();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"[Player {e.Player.ID}] Failed to perform skill: {ex.Message}");
+            _logger.Debug($"{ex}");
+        }
+    }
 }

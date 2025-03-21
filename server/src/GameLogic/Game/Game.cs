@@ -23,6 +23,8 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     /// </summary>
     public Utility.Config.GameSettings GameSettings { get; init; } = gameSettings;
 
+    public int CurrentTick { get; private set; } = 0;
+
     /// <summary>
     /// The current running battle.
     /// </summary>
@@ -31,7 +33,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     public int AwardCount => GameSettings.BattleCount - 1;
     public GameStage Stage { get; private set; } = GameStage.Waiting;
     public int WaitingTick { get; private set; } = 0;
-    public Buff.Buff[] AvilableBuffsAfterCurrentBattle { get; private set; } = new Buff.Buff[3];
+    public List<Buff.Buff> AvailableBuffsAfterCurrentBattle { get; private set; } = [];
     public BuffSelector BuffSelector { get; private set; } = new();
 
     private readonly ILogger _logger =
@@ -76,12 +78,13 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
             {
                 RunningBattle?.Tick();
                 StageControl();
+                ++CurrentTick;
             }
             AfterGameTickEvent?.Invoke(this, new AfterGameTickEventArgs(this));
         }
         catch (Exception e)
         {
-            _logger.Error($"An exception occurred while ticking the game:");
+            _logger.Error($"An exception occurred while running tick {CurrentTick}:");
             Utility.Tools.LogHandler.LogException(_logger, e);
         }
     }
@@ -110,7 +113,11 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
         {
             if (BattleNumber < AwardCount)
             {
-                AvilableBuffsAfterCurrentBattle = BuffSelector.ShowBuff(BattleNumber + 1);
+                AvailableBuffsAfterCurrentBattle = [.. BuffSelector.ShowBuff(BattleNumber + 1)];
+            }
+            else
+            {
+                AvailableBuffsAfterCurrentBattle = [];
             }
 
             if (BattleNumber < GameSettings.BattleCount || NeedAdditionalBattle())

@@ -11,7 +11,7 @@ public partial class GameRunner(Utility.Config.GameSettings gameSettings)
     public GameLogic.Game Game { get; private set; } = new(gameSettings);
 
     public bool IsRunning { get; private set; } = false;
-    private readonly Utility.ClockProvider _clockProvider = new(1000 / gameSettings.TicksPerSecond);
+    private readonly Utility.ClockProvider _clockProvider = new((int)(TpsClockFixRatio * 1000 / gameSettings.TicksPerSecond));
 
     private readonly ILogger _logger = Utility.Tools.LogHandler.CreateLogger("GameRunner");
 
@@ -30,8 +30,28 @@ public partial class GameRunner(Utility.Config.GameSettings gameSettings)
         IsRunning = true;
         Task.Run(() =>
         {
+            DateTime lastCheckTime = DateTime.Now;
+            int lastCheckedTick = 0;
+
             while (IsRunning)
             {
+                if (Game.CurrentTick - lastCheckedTick >= TpsCheckInterval)
+                {
+                    double tps = (Game.CurrentTick - lastCheckedTick) / (DateTime.Now - lastCheckTime).TotalSeconds;
+                    lastCheckTime = DateTime.Now;
+                    lastCheckedTick = Game.CurrentTick;
+
+                    _logger.Information($"TPS: {tps:F2} Expected: {GameSettings.TicksPerSecond:F2}");
+                    if (tps > GameSettings.TicksPerSecond * TpsUpperBoundRatio)
+                    {
+                        _logger.Warning($"TPS is too high: {tps:F2} > {GameSettings.TicksPerSecond:F2}");
+                    }
+                    else if (tps < GameSettings.TicksPerSecond * TpsLowerBoundRatio)
+                    {
+                        _logger.Warning($"TPS is too low: {tps:F2} < {GameSettings.TicksPerSecond:F2}");
+                    }
+                }
+
                 Task clock = _clockProvider.CreateClock();
                 Game.Tick();
 

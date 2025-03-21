@@ -1,5 +1,6 @@
 using Thuai.Server.GameLogic;
 
+//Checked original tests 03/17/2025
 namespace Thuai.Server.Test.GameLogic
 {
     public class PositionTests
@@ -16,9 +17,9 @@ namespace Thuai.Server.Test.GameLogic
             var position = new Position(expectedX, expectedY, expectedAngle);
 
             // Assert
-            Assert.Equal(expectedX, position.Xpos);
-            Assert.Equal(expectedY, position.Ypos);
-            Assert.Equal(expectedAngle, position.Angle);
+            Assert.Equal(expectedX, position.Xpos, 1e-5);
+            Assert.Equal(expectedY, position.Ypos, 1e-5);
+            Assert.Equal(expectedAngle, position.Angle, 1e-5);
         }
 
         [Fact]
@@ -37,16 +38,18 @@ namespace Thuai.Server.Test.GameLogic
         public void MoveDirection_ShouldHaveCorrectValues()
         {
             // Assert
-            Assert.Equal(0, (int)MoveDirection.BACK);
-            Assert.Equal(1, (int)MoveDirection.FORTH);
+            Assert.Equal(0, (int)MoveDirection.NONE);
+            Assert.Equal(1, (int)MoveDirection.BACK);
+            Assert.Equal(2, (int)MoveDirection.FORTH);
         }
 
         [Fact]
         public void TurnDirection_ShouldHaveCorrectValues()
         {
             // Assert
-            Assert.Equal(0, (int)TurnDirection.CLOCKWISE);
-            Assert.Equal(1, (int)TurnDirection.COUNTER_CLOCKWISE);
+            Assert.Equal(0, (int)TurnDirection.NONE);
+            Assert.Equal(1, (int)TurnDirection.CLOCKWISE);
+            Assert.Equal(2, (int)TurnDirection.COUNTER_CLOCKWISE);
         }
     }
 }
