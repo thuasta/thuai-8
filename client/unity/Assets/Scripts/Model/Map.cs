@@ -156,5 +156,38 @@ namespace BattleCity
             RemoveTrap(trap.trapPos);
         }
 
+        public void DeleteMap()
+        {
+            // 使用临时列表来避免在遍历时修改集合
+            List<Trap> trapsToRemove = new List<Trap>(Traps);
+            foreach (Trap trap in trapsToRemove)
+            {
+                RemoveTrap(trap);
+            }
+
+            List<Wall> wallsToRemove = new List<Wall>(CityWall);
+            foreach (Wall wall in wallsToRemove)
+            {
+                RemoveWall(wall);
+            }
+
+            List<Wall> fencesToRemove = new List<Wall>(CityFence);
+            foreach (Wall fence in fencesToRemove)
+            {
+                RemoveFence(fence);
+            }
+
+            foreach (GameObject floor in CityFloors)
+            {
+                Object.Destroy(floor);
+            }
+
+            // 清空列表
+            Traps.Clear();
+            CityWall.Clear();
+            CityFence.Clear();
+            CityFloors.Clear();
+        }
+
     }
 }

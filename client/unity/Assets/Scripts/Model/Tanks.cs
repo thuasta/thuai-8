@@ -54,11 +54,22 @@ namespace BattleCity
         {
             if (TankDict.ContainsKey(id))
             {
+                TankDict[id].DestroyTank();
                 TankDict.Remove(id);
                 return true;
             }
                         
             return false;
+        }
+
+        public void DelAllTanks()
+        {
+            Dictionary<int, TankModel> TankToDelete = new Dictionary<int,TankModel>(TankDict);
+            foreach (var tank in TankToDelete.Values)
+            {
+                DelTankModel(tank.Id);
+            }
+            TankDict.Clear();
         }
 
     }

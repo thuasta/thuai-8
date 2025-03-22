@@ -56,15 +56,17 @@ namespace BattleCity
             if (wallPos.Angle == 90)
             {
                 Vector3 position = new Vector3((float)(wallPos.X + Constants.WALL_XBIAS), (float)(wallPos.Y + Constants.Y_BIAS), (float)(wallPos.Z ));
-                createdWallObject = Object.Instantiate(vertWall, position, Quaternion.identity);
-                createdWallObject.transform.SetParent(wallController.transform);
+                createdWallObject = Object.Instantiate(vertWall, wallController.transform);
+                createdWallObject.transform.localPosition = position;
+                createdWallObject.transform.localRotation = Quaternion.identity;
                 createdWallObject.transform.localScale *= 20f;
             }
             else if (wallPos.Angle == 0)
             {
                 Vector3 position = new Vector3((float)(wallPos.X ), (float)(wallPos.Y + Constants.Y_BIAS), (float)(wallPos.Z + Constants.WALL_ZBIAS));
-                createdWallObject = Object.Instantiate(horiWall, position, Quaternion.identity);
-                createdWallObject.transform.SetParent(wallController.transform);
+                createdWallObject = Object.Instantiate(horiWall, wallController.transform);
+                createdWallObject.transform.localPosition = position;
+                createdWallObject.transform.localRotation = Quaternion.identity;
                 createdWallObject.transform.localScale *= 20f;
             }
             else

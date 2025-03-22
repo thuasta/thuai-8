@@ -14,6 +14,7 @@ namespace BattleCity
 
         public BulletModel(int id, Position bulletPosition, int speed, int damage, bool isMissile = false, bool isAntiArmor = false, float traveledDistance = 0)
         {
+            GameObject wallController = GameObject.Find("WallController");
             Id = id;
             GameObject prefab;
 
@@ -38,7 +39,9 @@ namespace BattleCity
 
                 Quaternion rotation = Quaternion.Euler(0, (float)bulletPosition.Angle, 0); // 假设 Y 轴旋转
 
-                BulletObject = Object.Instantiate(prefab, position, rotation);
+                BulletObject = Object.Instantiate(prefab, wallController.transform);
+                BulletObject.transform.localPosition = position;
+                BulletObject.transform.localRotation = rotation;
             }
             else
             {
@@ -53,10 +56,10 @@ namespace BattleCity
             if (BulletObject != null)
             {
                 Vector3 newPosition = new Vector3((float)bulletPosition.X, (float)bulletPosition.Y, (float)bulletPosition.Z);
-                BulletObject.transform.position = newPosition;
+                BulletObject.transform.localPosition = newPosition;
 
                 Quaternion newRotation = Quaternion.Euler(0, (float)bulletPosition.Angle, 0); // 假设 Y 轴旋转
-                BulletObject.transform.rotation = newRotation;
+                BulletObject.transform.localRotation = newRotation;
             }
             else
             {
