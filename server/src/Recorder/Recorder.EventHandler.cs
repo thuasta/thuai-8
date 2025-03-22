@@ -79,16 +79,10 @@ public partial class Recorder
                 );
             }
 
-            List<Protocol.Scheme.PlayerUpdateEvent> playerUpdateList = [];
-            foreach (Protocol.Scheme.Player player in players)
+            Protocol.Scheme.PlayerUpdateEvent playerUpdate = new()
             {
-                playerUpdateList.Add(
-                    new Protocol.Scheme.PlayerUpdateEvent()
-                    {
-                        Player = player
-                    }
-                );
-            }
+                Players = [.. players]
+            };
 
             List<Protocol.Scheme.Bullet> bullets = [];
             foreach (GameLogic.IBullet bullet in e.Game.RunningBattle?.Bullets ?? [])
@@ -140,10 +134,7 @@ public partial class Recorder
             };
 
             List<Protocol.Scheme.BattleUpdateEvent> battleUpdateEvent = [];
-            foreach (Protocol.Scheme.PlayerUpdateEvent playerUpdate in playerUpdateList)
-            {
-                battleUpdateEvent.Add(playerUpdate);
-            }
+            battleUpdateEvent.Add(playerUpdate);
             battleUpdateEvent.Add(bulletsUpdate);
             battleUpdateEvent.Add(mapUpdate);
 
