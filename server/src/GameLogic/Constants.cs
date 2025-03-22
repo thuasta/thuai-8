@@ -27,6 +27,7 @@ public static class Constants
 
     //Skill
     public const int SKILL_MAX_COOLDOWN = 200;
+    public const int SKILL_DURATION = 100;
 
     //Player
     public const double MOVE_SPEED = 0.1;
@@ -43,7 +44,4 @@ public static class Constants
 
     // Wall
     public const int BREAKABLE_WALL_MAX_COLLIDE_COUNT = 3;
-
-    // Skills
-    public const int SKILL_DURATION = 200;
 }

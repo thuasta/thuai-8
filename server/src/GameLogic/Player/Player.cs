@@ -9,8 +9,8 @@ public partial class Player(string token, int playerId)
 {
     public string Token => token;
     public int ID => playerId;
-    public double Speed { get; set; } = Constants.MOVE_SPEED;
 
+    public double Speed { get; set; } = Constants.MOVE_SPEED;
     public double TurnSpeed { get; set; } = Constants.TURN_SPEED;
 
     public MoveDirection MoveDirection { get; set; } = MoveDirection.NONE;
@@ -19,12 +19,10 @@ public partial class Player(string token, int playerId)
     public Position PlayerPosition { get; set; } = new();
 
     public Weapon PlayerWeapon { get; set; } = new();
-
     public Armor PlayerArmor { get; set; } = new();
-
     public List<ISkill> PlayerSkills { get; set; } = [];
-    public bool HasChosenAward { get; set; } = false;
 
+    public bool HasChosenAward { get; set; } = false;
     public bool IsAlive => PlayerArmor.Health > 0;
 
     private readonly Random _random = new();
@@ -111,20 +109,31 @@ public partial class Player(string token, int playerId)
             _logger.Error("Failed to perform skill: Player is dead.");
             return;
         }
-        if (PlayerSkills.Any(skill => skill.Name == skillName) == false)
+
+        ISkill? skill = PlayerSkills.Find(skill => skill.Name == skillName);
+        if (skill is null)
         {
             _logger.Error($"Failed to perform skill: Player does not have the skill ({skillName}).");
             return;
         }
-        if (PlayerSkills.First(skill => skill.Name == skillName).CurrentCooldown > 0)
+        if (skill.IsAvailable == false)
         {
             _logger.Error($"Failed to perform skill: Skill ({skillName}) is on cooldown.");
             return;
         }
 
         // TODO: Check whether the player has can perform the skill or not.
-        _logger.Information($"Perform skill ({skillName})");
-        PlayerPerformSkillEvent?.Invoke(this, new PlayerPerformSkillEventArgs(this, skillName));
+        try
+        {
+            _logger.Information($"Performing skill ({skillName})");
+            skill.Activate();
+            SkillActivationEvent?.Invoke(this, new SkillActivationEventArgs(this, skill.Name));
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Failed to perform skill ({skillName}):");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
+        }
     }
 
     public void PlayerMove(MoveDirection direction)

@@ -7,14 +7,14 @@ public partial class Battle
         player.PlayerMoveEvent += OnPlayerMove;
         player.PlayerTurnEvent += OnPlayerTurn;
         player.PlayerAttackEvent += OnPlayerAttack;
-        player.PlayerPerformSkillEvent += OnPlayerPerformSkill;
+        player.SkillActivationEvent += OnSkillActivation;
     }
     public void UnsubscribePlayerEvents(Player player)
     {
         player.PlayerMoveEvent -= OnPlayerMove;
         player.PlayerTurnEvent -= OnPlayerTurn;
         player.PlayerAttackEvent -= OnPlayerAttack;
-        player.PlayerPerformSkillEvent -= OnPlayerPerformSkill;
+        player.SkillActivationEvent -= OnSkillActivation;
     }
 
     private void OnPlayerMove(object? sender, Player.PlayerMoveEventArgs e)
@@ -150,14 +150,14 @@ public partial class Battle
                 if (e.Player.PlayerWeapon.CurrentBullets > 0)
                 {
                     e.Player.PlayerWeapon.CurrentBullets -= 1;
-                    double delta_x = Constants.WALL_THICK * Math.Cos(e.Player.PlayerPosition.Angle);
-                    double delta_y = Constants.WALL_THICK * Math.Sin(e.Player.PlayerPosition.Angle);
+                    double delta_x = Constants.BULLET_GENERATE_DISTANCE * Math.Cos(e.Player.PlayerPosition.Angle);
+                    double delta_y = Constants.BULLET_GENERATE_DISTANCE * Math.Sin(e.Player.PlayerPosition.Angle);
                     Position bulletPosition = new(
                         e.Player.PlayerPosition.Xpos + delta_x,
                         e.Player.PlayerPosition.Ypos + delta_y,
                         e.Player.PlayerPosition.Angle
                     );
-                    //The bullet will be spawned in front of the player!
+
                     if (e.Player.PlayerWeapon.IsLaser == false)
                     {
                         Bullet bullet = new(
@@ -193,7 +193,7 @@ public partial class Battle
         }
     }
 
-    private void OnPlayerPerformSkill(object? sender, Player.PlayerPerformSkillEventArgs e)
+    private void OnSkillActivation(object? sender, Player.SkillActivationEventArgs e)
     {
         if (Stage != BattleStage.InBattle)
         {
@@ -214,14 +214,13 @@ public partial class Battle
                     );
                     return;
                 }
-                if (!skill.IsAvailable())
+                if (!skill.IsAvailable)
                 {
                     _logger.Error(
                         $"[Player {e.Player.ID}] The skill {e.SkillName} is still in cooldown."
                     );
                 }
                 // TODO: implement the skills
-                skill.Perform();
             }
         }
         catch (Exception ex)

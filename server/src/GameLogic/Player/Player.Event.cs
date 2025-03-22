@@ -31,16 +31,16 @@ public partial class Player
         public TurnDirection Turndirection { get; set; } = direction;
     }
 
-    public class PlayerPerformSkillEventArgs(Player player, SkillName skillName) : EventArgs
+    public class SkillActivationEventArgs(Player player, SkillName skillName) : EventArgs
     {
         public const PlayerEventType EventName = PlayerEventType.PlayerPerformSkill;
         public Player Player = player;
         public SkillName SkillName = skillName;
     }
 
-    public event EventHandler<PlayerMoveEventArgs>? PlayerMoveEvent;
-    public event EventHandler<PlayerAttackEventArgs>? PlayerAttackEvent;
-    public event EventHandler<PlayerTurnEventArgs>? PlayerTurnEvent;
+    public event EventHandler<PlayerMoveEventArgs>? PlayerMoveEvent = delegate { };
+    public event EventHandler<PlayerAttackEventArgs>? PlayerAttackEvent = delegate { };
+    public event EventHandler<PlayerTurnEventArgs>? PlayerTurnEvent = delegate { };
 
-    public event EventHandler<PlayerPerformSkillEventArgs>? PlayerPerformSkillEvent;
+    public event EventHandler<SkillActivationEventArgs>? SkillActivationEvent = delegate { };
 }
