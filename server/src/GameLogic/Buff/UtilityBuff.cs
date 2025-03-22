@@ -5,12 +5,7 @@ public static class U_Buff
     public static void BLACK_OUT(Player player)
     {
         // 视野限制
-        player.PlayerSkills.Add(
-            new BlackOut(Constants.SkillCooldown.BLACK_OUT, Constants.SkillDuration.BLACK_OUT)
-            {
-                Owner = player
-            }
-        );
+        player.PlayerSkills.Add(new BlackOut() { Owner = player });
     }
 
     public static void SPEED_UP(Player player)

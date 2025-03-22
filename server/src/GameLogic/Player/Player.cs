@@ -127,7 +127,6 @@ public partial class Player(string token, int playerId)
         {
             _logger.Information($"Performing skill ({skillName})");
             skill.Activate();
-            SkillActivationEvent?.Invoke(this, new SkillActivationEventArgs(this, skill.Name));
         }
         catch (Exception ex)
         {

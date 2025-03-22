@@ -1,6 +1,9 @@
 namespace Thuai.Server.GameLogic;
 
-public class BlackOut(int maxCooldown, int duration) : ISkill
+public class BlackOut(
+    int maxCooldown = Constants.SkillCooldown.BLACK_OUT,
+    int duration = Constants.SkillDuration.BLACK_OUT
+) : ISkill
 {
     public event EventHandler<ISkill.OnActivationEventArgs>? OnActivationEvent = delegate { };
     public event EventHandler<ISkill.OnDeactivationEventArgs>? OnDeactivationEvent = delegate { };
