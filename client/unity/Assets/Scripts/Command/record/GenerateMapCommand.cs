@@ -92,7 +92,7 @@ public class GenerateMapCommand : AbstractCommand
                     floorObject.transform.localPosition = position;
                     floorObject.transform.localRotation = Quaternion.identity;
                     // µ÷ÕûËõ·Å
-                    floorObject.transform.localScale *= 20f;
+                    floorObject.transform.localScale *= Constants.ZOOM;
 
                     map.CityFloors.Add(floorObject);
                 }
