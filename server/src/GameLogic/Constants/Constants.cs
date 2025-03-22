@@ -13,6 +13,7 @@ public static partial class Constants
     public const int DODGE_PERCENTAGE_INCREASE = 10;    // 10%
     public const double GRAVITY_FIELD_RADIUS = 1.5;
     public const double GRAVITY_FIELD_STRENGTH = 0.5;
+    public const int KNIFE_REMAINING_TIME = 10;
 
     //Weapon
     public const double INITIAL_ATTACK_SPEED = 0.1;

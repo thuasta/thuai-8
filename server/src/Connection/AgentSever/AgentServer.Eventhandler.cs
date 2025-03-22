@@ -137,7 +137,7 @@ public partial class AgentServer
                                 ArmorValue = player.PlayerArmor.ArmorValue,
                                 Health = player.PlayerArmor.Health,
                                 GravityField = player.PlayerArmor.GravityField,
-                                Knife = player.PlayerArmor.Knife.ToString(),
+                                Knife = player.PlayerArmor.Knife.State.ToString(),
                                 DodgeRate = player.PlayerArmor.DodgeRate,
                             },
                             Skills = [.. skills],

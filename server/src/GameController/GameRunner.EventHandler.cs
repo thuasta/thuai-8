@@ -155,7 +155,7 @@ public partial class GameRunner
                                 ArmorValue = p.PlayerArmor.ArmorValue,
                                 Health = p.PlayerArmor.Health,
                                 GravityField = p.PlayerArmor.GravityField,
-                                Knife = p.PlayerArmor.Knife.ToString(),
+                                Knife = p.PlayerArmor.Knife.State.ToString(),
                                 DodgeRate = p.PlayerArmor.DodgeRate
                             },
                             Skills = [.. skills],

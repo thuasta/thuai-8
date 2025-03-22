@@ -29,6 +29,16 @@ public partial class Player(string token, int playerId)
 
     private readonly ILogger _logger = Log.ForContext("Component", $"Player {playerId}");
 
+    public void Update()
+    {
+        PlayerArmor.Knife.Update();
+        PlayerWeapon.Update();
+        foreach (ISkill skill in PlayerSkills)
+        {
+            skill.Update();
+        }
+    }
+
     public void Injured(int damage, bool antiArmor, out bool reflected)
     {
         reflected = false;
@@ -40,6 +50,13 @@ public partial class Player(string token, int playerId)
         }
 
         // TODO: Implement more complex logic for damage calculation.
+        if (PlayerArmor.Knife.IsActivated == true)
+        {
+            // Invulnerability
+            _logger.Information("Player is invulnerable.");
+            return;
+        }
+
         if (_random.Next(0, 100) < PlayerArmor.DodgeRate)
         {
             // Dodged
@@ -69,10 +86,10 @@ public partial class Player(string token, int playerId)
         }
         else
         {
-            if (realDamage >= PlayerArmor.Health && PlayerArmor.Knife == ArmorKnife.AVAILABLE)
+            if (realDamage >= PlayerArmor.Health && PlayerArmor.Knife.IsAvailable == true)
             {
                 // TODO: Set activation interval
-                PlayerArmor.Knife = ArmorKnife.BROKEN;
+                PlayerArmor.Knife.Activate();
                 realDamage = PlayerArmor.Health - 1;
                 _logger.Debug("Invulnerability invoked by taking damage.");
             }
