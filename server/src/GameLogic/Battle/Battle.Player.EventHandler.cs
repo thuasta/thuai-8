@@ -8,6 +8,7 @@ public partial class Battle
         player.PlayerTurnEvent += OnPlayerTurn;
         player.PlayerAttackEvent += OnPlayerAttack;
         player.SkillActivationEvent += OnSkillActivation;
+        player.SkillDeactivationEvent += OnSkillDeactivation;
     }
     public void UnsubscribePlayerEvents(Player player)
     {
@@ -15,6 +16,7 @@ public partial class Battle
         player.PlayerTurnEvent -= OnPlayerTurn;
         player.PlayerAttackEvent -= OnPlayerAttack;
         player.SkillActivationEvent -= OnSkillActivation;
+        player.SkillDeactivationEvent -= OnSkillDeactivation;
     }
 
     private void OnPlayerMove(object? sender, Player.PlayerMoveEventArgs e)
@@ -81,15 +83,13 @@ public partial class Battle
                 {
                     _logger.Error($"[Player {e.Player.ID}] Failed to move: MoveDirection is invalid!");
                 }
-
             }
         }
         catch (Exception ex)
         {
-            _logger.Error($"[Player {e.Player.ID}] Failed to move: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"[Player {e.Player.ID}] Failed to move:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
-
     }
 
     private void OnPlayerTurn(object? sender, Player.PlayerTurnEventArgs e)
@@ -128,8 +128,8 @@ public partial class Battle
         }
         catch (Exception ex)
         {
-            _logger.Error($"[Player {e.Player.ID}] Failed to turn: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"[Player {e.Player.ID}] Failed to turn:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
     }
 
@@ -206,13 +206,62 @@ public partial class Battle
         {
             lock (_lock)
             {
-                // TODO: Implement skill activation
+                switch (e.SkillName)
+                {
+                    case SkillName.BLACK_OUT:
+                        foreach (Player player in AllPlayers)
+                        {
+                            if (player.ID != e.Player.ID && player.IsAlive == true && player.IsBlinded == false)
+                            {
+                                player.IsBlinded = true;
+                                _logger.Information($"[Player {player.ID}] is blinded.");
+                            }
+                        }
+                        break;
+
+                    default:
+                        _logger.Error($"[Player {e.Player.ID}] Invalid skill name: {e.SkillName}");
+                        break;
+                }
             }
         }
         catch (Exception ex)
         {
-            _logger.Error($"[Player {e.Player.ID}] Failed to activate skill: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"[Player {e.Player.ID}] Failed to activate skill:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
+        }
+    }
+
+    private void OnSkillDeactivation(object? sender, Player.SkillDeactivationEventArgs e)
+    {
+        // Deactivation works in any stage.
+        try
+        {
+            lock (_lock)
+            {
+                switch (e.SkillName)
+                {
+                    case SkillName.BLACK_OUT:
+                        foreach (Player player in AllPlayers)
+                        {
+                            if (player.ID != e.Player.ID && player.IsBlinded == true)
+                            {
+                                player.IsBlinded = false;
+                                _logger.Information($"[Player {player.ID}] recovered from blindness.");
+                            }
+                        }
+                        break;
+
+                    default:
+                        _logger.Error($"[Player {e.Player.ID}] Invalid skill name: {e.SkillName}");
+                        break;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"[Player {e.Player.ID}] Failed to deactivate skill:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
     }
 }

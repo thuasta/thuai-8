@@ -13,7 +13,6 @@ public class BlackOut(
     public int CurrentCooldown => _cooldown.CurrentCount;
     public bool IsAvailable => _cooldown.IsZero == true;
     public bool IsActive => _activation.IsZero == false;
-    public required Player Owner { get; init; }
 
     private readonly Counter _cooldown = new(maxCooldown);
     private readonly Counter _activation = new(duration);
@@ -21,11 +20,15 @@ public class BlackOut(
     public void Update()
     {
         _cooldown.Decrease();
-        _activation.Decrease();
 
-        if (IsActive == false)
+        if (IsActive == true)
         {
-            Deactivate();
+            _activation.Decrease();
+
+            if (IsActive == false)
+            {
+                Deactivate();
+            }
         }
     }
 
@@ -33,6 +36,7 @@ public class BlackOut(
     {
         _cooldown.Clear();
         _activation.Clear();
+        Deactivate();
     }
 
     public void Activate()
@@ -49,6 +53,7 @@ public class BlackOut(
 
     public void Deactivate()
     {
+        _activation.Clear();
         OnDeactivationEvent?.Invoke(this, new(Name));
     }
 }

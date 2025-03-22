@@ -58,7 +58,7 @@ public partial class Game
                 Scoreboard.Add(player, 0);
 
                 _logger.Information(
-                    $"Player {Utility.Tools.LogHandler.Truncate(player.Token, 32)} with id {player.ID} added."
+                    $"Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)} with id {player.ID} added."
                 );
 
                 ++_playerId;

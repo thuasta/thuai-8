@@ -83,17 +83,24 @@ public partial class AgentServer
                     }
                 );
             }
-            Publish(
-                new Protocol.Messages.EnvironmentInfoMessage()
-                {
-                    Walls = [.. walls],
-                    Fences = [],                    // TODO: Implement Fences
-                    Bullets = [.. bullets],
-                    MapSize = e.Game.RunningBattle.Map.Height
-                }
-            );
             foreach (GameLogic.Player receiver in e.Game.AllPlayers)
             {
+                if (receiver.IsBlinded == true)
+                {
+                    _logger.Debug($"Player {receiver.ID} is blinded, skipping.");
+                    continue;
+                }
+
+                Publish(
+                    new Protocol.Messages.EnvironmentInfoMessage()
+                    {
+                        Walls = [.. walls],
+                        Fences = [],                    // TODO: Implement Fences
+                        Bullets = [.. bullets],
+                        MapSize = e.Game.RunningBattle.Map.Height
+                    },
+                    receiver.Token
+                );
                 List<Protocol.Scheme.Player> players = [];
                 foreach (GameLogic.Player player in e.Game.AllPlayers)
                 {

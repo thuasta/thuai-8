@@ -7,7 +7,6 @@ public partial interface ISkill
     public int CurrentCooldown { get; }
     public bool IsAvailable { get; }
     public bool IsActive { get; }
-    public Player Owner { get; }
 
     public static SkillName SkillNameFromString(string skillName)
     {
