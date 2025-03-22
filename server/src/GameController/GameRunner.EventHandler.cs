@@ -56,7 +56,7 @@ public partial class GameRunner
                     player.TurnDirection = turnDirection;
 
                     _logger.Information($"[Player {player.ID}] Turn direction set to {turnDirection}.");
-                    
+
 
                     break;
 

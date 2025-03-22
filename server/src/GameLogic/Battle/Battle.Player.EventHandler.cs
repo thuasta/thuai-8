@@ -198,7 +198,7 @@ public partial class Battle
         if (Stage != BattleStage.InBattle)
         {
             _logger.Error(
-                $"[Player {e.Player.ID}] Cannot perform skill when battle is at state {Stage}."
+                $"[Player {e.Player.ID}] Cannot activate skill when battle is at state {Stage}."
             );
             return;
         }
@@ -206,26 +206,12 @@ public partial class Battle
         {
             lock (_lock)
             {
-                ISkill? skill = e.Player.PlayerSkills.Find(skill => skill.Name == e.SkillName);
-                if (skill is null)
-                {
-                    _logger.Error(
-                        $"[Player {e.Player.ID}] Don't have the skill {e.SkillName}."
-                    );
-                    return;
-                }
-                if (!skill.IsAvailable)
-                {
-                    _logger.Error(
-                        $"[Player {e.Player.ID}] The skill {e.SkillName} is still in cooldown."
-                    );
-                }
-                // TODO: implement the skills
+                // TODO: Implement skill activation
             }
         }
         catch (Exception ex)
         {
-            _logger.Error($"[Player {e.Player.ID}] Failed to perform skill: {ex.Message}");
+            _logger.Error($"[Player {e.Player.ID}] Failed to activate skill: {ex.Message}");
             _logger.Debug($"{ex}");
         }
     }

@@ -3,7 +3,7 @@ namespace Thuai.Server.GameLogic;
 /// <summary>
 /// Constants used in the game.
 /// </summary>
-public static class Constants
+public static partial class Constants
 {
     //Armor
     public const int INITIAL_ARMOR_VALUE = 0;
@@ -24,10 +24,6 @@ public static class Constants
     public const int INITIAL_BULLETS = 10;
     public const int BULLETS_INCREASE = 1;
     public const int ANTI_ARMOR_FACTOR = 2;
-
-    //Skill
-    public const int SKILL_MAX_COOLDOWN = 200;
-    public const int SKILL_DURATION = 100;
 
     //Player
     public const double MOVE_SPEED = 0.1;

@@ -86,7 +86,7 @@ public class BuffSelector
     public bool BuffInit()
     {
         OffensiveBuff = [.. OffensiveBuff.OrderBy(x => _random.Next())];
-        DefensiveBuff = [.. DefensiveBuff.OrderBy(x =>_random.Next())];
+        DefensiveBuff = [.. DefensiveBuff.OrderBy(x => _random.Next())];
         UtilityBuff = [.. UtilityBuff.OrderBy(x => _random.Next())];
         return true;
     }

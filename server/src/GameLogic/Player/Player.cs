@@ -30,7 +30,7 @@ public partial class Player(string token, int playerId)
     private readonly ILogger _logger = Log.ForContext("Component", $"Player {playerId}");
 
     public void Injured(int damage, bool antiArmor, out bool reflected)
-    { 
+    {
         reflected = false;
 
         if (IsAlive == false)
