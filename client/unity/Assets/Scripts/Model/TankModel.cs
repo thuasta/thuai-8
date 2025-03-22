@@ -92,6 +92,21 @@ namespace BattleCity
             Position position = new Position(x, y, angle);
             UpdateTankPosition (position);
         }
+
+        public void DestroyTank()
+        {
+            if (TankObject != null)
+            {
+                // 销毁游戏对象
+                Object.Destroy(TankObject);
+                TankObject = null;  // 清空引用避免野指针
+                                
+            }
+            else
+            {
+                Debug.LogWarning($"TankObject already destroyed for tank ID: {Id}");
+            }
+        }
     }
 }
 

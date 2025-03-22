@@ -59,6 +59,16 @@ namespace BattleCity
             return false; // 没有找到该ID的子弹模型
         }
 
+        public void DelAllBullets()
+        {
+            List<BulletModel> BulletsToDel = new List<BulletModel>(BulletsList);
+            foreach (BulletModel bullet in BulletsToDel)
+            {
+                DelBulletModel(bullet.Id) ;
+            }
+            BulletsList.Clear();
+        }
+
     }
 }
 

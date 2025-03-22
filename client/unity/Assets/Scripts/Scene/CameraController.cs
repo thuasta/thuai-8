@@ -36,6 +36,9 @@ namespace BattleCity
         public Vector3 lookatPositionvelocity = Vector3.zero;
         public Vector3 lookatPosition;
 
+        private Vector3 initialPosition;
+        private Quaternion initialRotation;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -50,6 +53,9 @@ namespace BattleCity
             _cameraStatus = CameraStatus.freeCamera;
             targetTank = null;
             zoomSpeed = 30;
+
+            initialPosition = transform.position;
+            initialRotation = transform.rotation;
         }
 
         public IArchitecture GetArchitecture()
@@ -59,6 +65,33 @@ namespace BattleCity
 
         void Update()
         {
+            if (SceneData.GameStage == "Battle")
+            {
+                CameraMove();
+            }
+            else
+            {
+                CameraStay();
+            }
+        }
+        void CameraStay()
+        {
+            transform.position = Vector3.SmoothDamp(
+            transform.position,
+            initialPosition,
+            ref velocity,
+            0.2f
+        );
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                initialRotation,
+                Time.deltaTime * 5
+            );
+        }
+        void CameraMove()
+        {
+            mTanks = this.GetModel<Tanks>();
             if (_cameraStatus == CameraStatus.player)
             {
                 Rotate();
@@ -75,7 +108,7 @@ namespace BattleCity
             }
 
         }
-        
+
         void ExchangeStatus()
         {
             if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())

@@ -17,7 +17,7 @@ public class FileManager : MonoBehaviour
     private Button Exit;
     public GameObject GameCanvas;
     public GameObject StartCanvas;
-    public GameObject RecordPlay;
+    // public GameObject RecordPlay;
     public static List<string> SelectedFilePaths { get; private set; } = new List<string>();
 
     public Transform contentParent; // ScrollView的Content对象
@@ -30,6 +30,7 @@ public class FileManager : MonoBehaviour
 
     void Start()
     {
+        SceneData.GameStage = "Start";
         GameObject mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         if (mainCamera != null)
         {
@@ -130,16 +131,10 @@ public class FileManager : MonoBehaviour
         GameCanvas.SetActive(true);
         SceneData.GameStage = "Battle";
         TypeEventSystem.Global.Send( new BattleStageEvent());
-        RecordPlay.SetActive(true);
-        cameraController.enabled = !cameraController.enabled;
-        // 切换到test_Game场景
-        // SceneManager.LoadScene("test_Game");
+        // RecordPlay.SetActive(true);
+        // cameraController.enabled = !cameraController.enabled;
     }
 }
 
-public static class SceneData
-{
-    public static string FilePath { get; set; }
-    public static string GameStage {  get; set; }
-}
+
 

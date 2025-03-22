@@ -26,11 +26,39 @@ namespace BattleCity
         private Coroutine updateTickCoroutine; // 协程引用存储
         public Button exitButton;
         public GameObject BuffSeclectPanel;
+        public GameObject StartCanvas;
+        public GameObject GameCanvas;
 
         // Start is called before the first frame update
         void Start()
         {
-            //model
+            TypeEventSystem.Global.Register<BattleStageEvent>(e =>
+            {
+                PlayRecord();
+            });
+        }
+
+        public IArchitecture GetArchitecture()
+        {
+            return GameApp.Interface;
+        }
+
+        private JArray LoadRecordData()
+        {
+            JObject recordJsonObject = JsonUtility.UnzipRecord(_recordFile);
+            // Load the record array
+            JArray recordArray = (JArray)recordJsonObject["records"];
+
+            if (recordArray == null)
+            {
+                Debug.Log("Record file is empty!");
+                return null;
+            }
+            return recordArray;
+        }
+
+        public void PlayRecord()
+        {
             mTanks = this.GetModel<Tanks>();
             mBullets = this.GetModel<Bullets>();
             mMap = this.GetModel<Map>();
@@ -57,31 +85,6 @@ namespace BattleCity
                 return;
             }
             _recordArray = LoadRecordData();
-            PlayRecord();
-
-        }
-
-        public IArchitecture GetArchitecture()
-        {
-            return GameApp.Interface;
-        }
-
-        private JArray LoadRecordData()
-        {
-            JObject recordJsonObject = JsonUtility.UnzipRecord(_recordFile);
-            // Load the record array
-            JArray recordArray = (JArray)recordJsonObject["records"];
-
-            if (recordArray == null)
-            {
-                Debug.Log("Record file is empty!");
-                return null;
-            }
-            return recordArray;
-        }
-
-        public void PlayRecord()
-        {
             updateTickCoroutine = StartCoroutine(UpdateTick());
         }
 
@@ -93,9 +96,13 @@ namespace BattleCity
                 StopCoroutine(updateTickCoroutine);
                 updateTickCoroutine = null;
             }
+            mTanks.DelAllTanks();
+            mBullets.DelAllBullets();
+            mMap.DeleteMap();
 
-            // 加载开始场景
-            SceneManager.LoadScene("Start"); // 替换为你的开始场景名称
+            SceneData.GameStage = "Start";
+            GameCanvas.SetActive(false);
+            StartCanvas.SetActive(true);
         }
 
 
