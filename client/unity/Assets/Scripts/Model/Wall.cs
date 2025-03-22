@@ -59,7 +59,7 @@ namespace BattleCity
                 createdWallObject = Object.Instantiate(vertWall, wallController.transform);
                 createdWallObject.transform.localPosition = position;
                 createdWallObject.transform.localRotation = Quaternion.identity;
-                createdWallObject.transform.localScale *= 20f;
+                createdWallObject.transform.localScale *= Constants.ZOOM;
             }
             else if (wallPos.Angle == 0)
             {
@@ -67,7 +67,7 @@ namespace BattleCity
                 createdWallObject = Object.Instantiate(horiWall, wallController.transform);
                 createdWallObject.transform.localPosition = position;
                 createdWallObject.transform.localRotation = Quaternion.identity;
-                createdWallObject.transform.localScale *= 20f;
+                createdWallObject.transform.localScale *= Constants.ZOOM;
             }
             else
             {
