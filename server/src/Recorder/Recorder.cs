@@ -65,7 +65,7 @@ public partial class Recorder : IDisposable
     public void Record(params Protocol.IRecordable[] records)
     {
         // Record should not be null
-        foreach(Protocol.IRecordable record in records)
+        foreach (Protocol.IRecordable record in records)
         {
             if (record is null)
             {
