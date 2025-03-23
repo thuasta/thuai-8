@@ -209,9 +209,9 @@ class Agent:
                     walls=[
                         Wall(
                             PositionInt(
-                                x=wall["position"]["x"],
-                                y=wall["position"]["y"],
-                                angle=wall["position"]["angle"],
+                                x=wall["x"],
+                                y=wall["y"],
+                                angle=wall["angle"],
                             )
                         )
                         for wall in msg_dict["walls"]

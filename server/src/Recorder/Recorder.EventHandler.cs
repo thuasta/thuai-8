@@ -113,12 +113,9 @@ public partial class Recorder
                 walls.Add(
                     new Protocol.Scheme.Wall()
                     {
-                        Position = new()
-                        {
-                            X = wall.X,
-                            Y = wall.Y,
-                            Angle = wall.Angle
-                        }
+                        X = wall.X,
+                        Y = wall.Y,
+                        Angle = wall.Angle
                     }
                 );
             }
