@@ -47,7 +47,7 @@ public partial class Recorder
                 players.Add(
                     new Protocol.Scheme.Player()
                     {
-                        Token = player.ID.ToString(),   // Because client actually reads ID
+                        Token = (player.ID + 1).ToString(),   // Because client actually reads ID and it starts from 1 ...
                         Weapon = new()
                         {
                             AttackSpeed = player.PlayerWeapon.AttackSpeed,
