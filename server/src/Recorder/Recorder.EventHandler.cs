@@ -24,7 +24,6 @@ public partial class Recorder
             CurrentStage = currentStage,
             TotalTicks = e.Game.CurrentTick
         };
-        Record(stageInfo);
 
         if (currentStage == Protocol.Scheme.Stage.BATTLE)
         {
@@ -144,11 +143,15 @@ public partial class Recorder
                 Events = [.. battleUpdateEvent]
             };
 
-            Record(battleUpdate);
+            Record(stageInfo, battleUpdate);
         }
         else if (currentStage == Protocol.Scheme.Stage.REST)
         {
             // TODO: Add reward choosing information
+        }
+        else
+        {
+            Record(stageInfo);
         }
     }
 }
