@@ -16,7 +16,7 @@ public class RecordPage
     [JsonPropertyName("type")]
     public string Type => "record";
 
-    [JsonPropertyName("records")]
+    [JsonPropertyName("record")]
     public ConcurrentQueue<Protocol.IRecordable> Records { get; private set; } = new();
 
     [JsonIgnore]

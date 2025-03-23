@@ -42,7 +42,10 @@ public class JsonUtility
                 }
             }
         }
-        else if (File.Exists(path) && Path.GetExtension(path).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+        else if (
+            File.Exists(path)
+            && (Path.GetExtension(path).Equals(".zip", StringComparison.OrdinalIgnoreCase) || Path.GetExtension(path).Equals(".dat", StringComparison.OrdinalIgnoreCase))
+        )
         {
             Debug.Log("Record is a Zipped File.");
             ZipArchive ncLevelDataZipFile = ZipFile.OpenRead($"{path}");

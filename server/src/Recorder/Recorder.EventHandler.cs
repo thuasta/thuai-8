@@ -21,7 +21,7 @@ public partial class Recorder
         }
         Protocol.Messages.StageInfoMessage stageInfo = new()
         {
-            Stage = currentStage,
+            CurrentStage = currentStage,
             TotalTicks = e.Game.CurrentTick
         };
         Record(stageInfo);
