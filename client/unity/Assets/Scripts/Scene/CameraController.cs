@@ -56,6 +56,10 @@ namespace BattleCity
 
             initialPosition = transform.position;
             initialRotation = transform.rotation;
+            TypeEventSystem.Global.Register<BattleStageEvent>(e =>
+            {
+                ResetCamera();
+            });
         }
 
         public IArchitecture GetArchitecture()
@@ -109,6 +113,11 @@ namespace BattleCity
 
         }
 
+        void ResetCamera()
+        {
+            _cameraStatus = CameraStatus.freeCamera;
+        }
+
         void ExchangeStatus()
         {
             if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
@@ -149,6 +158,7 @@ namespace BattleCity
         }
         void Follow()
         {
+            Debug.Log($"player num is {mTanks.GetPlayerNum()}");
             //视野缩放
             offset = new Vector3(5.7f, 14.6f, -5.2f);
             Vector3 targetPosition = targetTank.TankObject.transform.TransformPoint(offset);
