@@ -8,6 +8,7 @@ namespace Thuai.Server.GameLogic;
 public partial class Player(string token, int playerId)
 {
     public string Token => token;
+    public string TruncatedToken => Utility.Tools.LogHandler.Truncate(Token, 8);
     public int ID => playerId;
 
     public double Speed { get; set; } = Constants.MOVE_SPEED;
