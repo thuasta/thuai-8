@@ -70,8 +70,9 @@ public partial class Recorder
                         Skills = [.. skills],
                         Position = new()
                         {
-                            X = player.PlayerPosition.Xpos,
-                            Y = player.PlayerPosition.Ypos,
+                            // Relavant to the wall length
+                            X = player.PlayerPosition.Xpos / GameLogic.Constants.WALL_LENGTH,
+                            Y = player.PlayerPosition.Ypos / GameLogic.Constants.WALL_LENGTH,
                             Angle = player.PlayerPosition.Angle
                         }
                     }
@@ -91,8 +92,9 @@ public partial class Recorder
                     {
                         Position = new()
                         {
-                            X = bullet.BulletPosition.Xpos,
-                            Y = bullet.BulletPosition.Ypos,
+                            // Relavant to the wall length
+                            X = bullet.BulletPosition.Xpos / GameLogic.Constants.WALL_LENGTH,
+                            Y = bullet.BulletPosition.Ypos / GameLogic.Constants.WALL_LENGTH,
                             Angle = bullet.BulletPosition.Angle
                         },
                         Speed = bullet.BulletSpeed,

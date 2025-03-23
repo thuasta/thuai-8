@@ -55,9 +55,9 @@ public partial class AgentServer
                 walls.Add(
                     new Protocol.Scheme.Wall()
                     {
-                            X = wall.X,
-                            Y = wall.Y,
-                            Angle = wall.Angle,
+                        X = wall.X,
+                        Y = wall.Y,
+                        Angle = wall.Angle,
                     }
                 );
             }
