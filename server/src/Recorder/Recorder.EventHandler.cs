@@ -148,6 +148,7 @@ public partial class Recorder
         else if (currentStage == Protocol.Scheme.Stage.REST)
         {
             // TODO: Add reward choosing information
+            Record(stageInfo);
         }
         else
         {
