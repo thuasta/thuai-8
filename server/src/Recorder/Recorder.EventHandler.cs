@@ -73,7 +73,7 @@ public partial class Recorder
                             // Relavant to the wall length
                             X = player.PlayerPosition.Xpos / GameLogic.Constants.WALL_LENGTH,
                             Y = player.PlayerPosition.Ypos / GameLogic.Constants.WALL_LENGTH,
-                            Angle = player.PlayerPosition.Angle
+                            Angle = player.PlayerPosition.Angle * 180 / Math.PI // Convert to degree
                         }
                     }
                 );
@@ -95,7 +95,7 @@ public partial class Recorder
                             // Relavant to the wall length
                             X = bullet.BulletPosition.Xpos / GameLogic.Constants.WALL_LENGTH,
                             Y = bullet.BulletPosition.Ypos / GameLogic.Constants.WALL_LENGTH,
-                            Angle = bullet.BulletPosition.Angle
+                            Angle = bullet.BulletPosition.Angle * 180 / Math.PI // Convert to degree
                         },
                         Speed = bullet.BulletSpeed,
                         Damage = bullet.BulletDamage,
