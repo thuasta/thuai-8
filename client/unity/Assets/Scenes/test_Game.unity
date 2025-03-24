@@ -2524,7 +2524,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: da69d62d8f9005f4ea3f347daa1a4bca, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 47
+      value: 54
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: da69d62d8f9005f4ea3f347daa1a4bca, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4255,11 +4255,11 @@ Transform:
   m_GameObject: {fileID: 989717449}
   serializedVersion: 2
   m_LocalRotation: {x: 0.08320358, y: -0.66389126, z: -0.10140208, w: 0.73623586}
-  m_LocalPosition: {x: 12590, y: 1017, z: -5135}
+  m_LocalPosition: {x: 4956, y: 1017, z: -5135}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1537558633}
   m_LocalEulerAnglesHint: {x: -0.695, y: -83.992, z: -15.059}
 --- !u!114 &989717453
 MonoBehaviour:
@@ -4336,13 +4336,17 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 989717449}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a62071f25ebc5a4aa3882da91964e9d, type: 3}
+  m_Script: {fileID: 11500000, guid: 625099a3e18c2384ba3369f86f6e56fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   BlackHole: {fileID: 0}
   orbitSpeed: 1
+  normalDuration: 60
+  acceleratedDuration: 4
+  useAcceleration: 0
+  velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &998256606
 GameObject:
   m_ObjectHideFlags: 0
@@ -7133,6 +7137,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 621308702}
+  - {fileID: 989717452}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1537558634
@@ -7144,11 +7149,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1537558629}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a62071f25ebc5a4aa3882da91964e9d, type: 3}
+  m_Script: {fileID: 11500000, guid: 625099a3e18c2384ba3369f86f6e56fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   BlackHole: {fileID: 0}
   orbitSpeed: 1
+  normalDuration: 60
+  acceleratedDuration: 4
+  useAcceleration: 0
+  velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &1541049637
 GameObject:
   m_ObjectHideFlags: 0
@@ -23930,7 +23939,6 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 989717452}
   - {fileID: 1796797181}
   - {fileID: 1259794218}
   - {fileID: 1195684209}

@@ -100,9 +100,12 @@ namespace BattleCity
             mBullets.DelAllBullets();
             mMap.DeleteMap();
 
+            TypeEventSystem.Global.Send(new BattleEndEvent());
+
             SceneData.GameStage = "Start";
             GameCanvas.SetActive(false);
             StartCanvas.SetActive(true);
+            
         }
 
 
