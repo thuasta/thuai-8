@@ -7,8 +7,8 @@ public record StageInfoMessage : Message, IRecordable
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "STAGE_INFO";
 
-    [JsonPropertyName("stage")]
-    public required Scheme.Stage Stage { get; init; }
+    [JsonPropertyName("currentStage")]
+    public required Scheme.Stage CurrentStage { get; init; }
 
     [JsonPropertyName("totalTicks")]
     public required int TotalTicks { get; init; }

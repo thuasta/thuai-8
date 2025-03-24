@@ -19,6 +19,7 @@ public partial class Battle
     {
         foreach (Player player in AllPlayers)
         {
+            player.Update();
             player.PlayerMove(player.MoveDirection);
             player.PlayerTurn(player.TurnDirection);
         }

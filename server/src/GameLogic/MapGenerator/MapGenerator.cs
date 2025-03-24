@@ -13,44 +13,78 @@ public class Map
         Height = height;
         GenerateRandomWalls();
     }
+
+    public const int PathIteration = 2;
+
     public int Width { get; }
     public int Height { get; }
     public List<Wall> Walls { get; } = [];
-    private static readonly Random random = new Random();
+    private static readonly Random random = new();
     private void GenerateRandomWalls()
     {
         // lines on the path, should be maintained
         List<Line> lines = [];
+        for (int i = 0; i < PathIteration; i++)
+        {
+            CreateRandomPath(ref lines);
+        }
+
+        List<Wall> allPossibleWalls = GetAllPossibleWallsWithoutBoarder();
+        foreach (var line in lines)
+        {
+            Wall wall = line.GetCorrespondingWall();
+            allPossibleWalls.Remove(wall);
+        }
+        Walls.AddRange(allPossibleWalls);
+        Walls.AddRange(GetBoarders());
+    }
+
+    private List<Wall> GetAllPossibleWallsWithoutBoarder()
+    {
+        List<Wall> walls = [];
+        for (int i = 1; i < Width; i++)
+        {
+            for (int j = 1; j <= Height; j++)
+            {
+                walls.Add(new Wall(i, j, 90));
+            }
+        }
+        for (int j = 1; j < Height; j++)
+        {
+            for (int i = 1; i <= Width; i++)
+            {
+                walls.Add(new Wall(i, j, 0));
+            }
+        }
+        return walls;
+    }
+
+    private void CreateRandomPath(ref List<Line> lines)
+    {
+        int startX = random.Next(Width);
+        int startY = random.Next(Height);
+        Point startPoint = new(startX, startY);
         // points that have been visited, should be maintained
         List<Point> closedPoints = [];
         // points that are on the path and have not been visited
-        Stack<Point> openPoints = new Stack<Point>();
-        // random select a path from the top-left point
-        Point startPoint = new Point(0, 0);
+        Stack<Point> openPoints = new();
         openPoints.Push(startPoint);
         closedPoints.Add(startPoint);
+
         while (openPoints.Count > 0)
         {
             Point currentPoint = openPoints.Pop();
-            Point nextPoint = TakeOneStep(currentPoint, ref closedPoints, ref lines);
+            Point nextPoint = ChooseNeighbor(currentPoint, ref closedPoints, ref lines);
             while (nextPoint.X != -1)
             {
                 openPoints.Push(nextPoint);
                 currentPoint = nextPoint;
-                nextPoint = TakeOneStep(currentPoint, ref closedPoints, ref lines);
+                nextPoint = ChooseNeighbor(currentPoint, ref closedPoints, ref lines);
             }
         }
-        List<Wall> allPossibleWalls = GetAllPossibleWalls();
-
-        foreach (var line in lines)
-        {
-            Wall wall = line.GetCorrespondingWall();
-            // Console.WriteLine("remove wall: " + wall.X + " " + wall.Y + " " + wall.Angle);
-            allPossibleWalls.Remove(wall);
-        }
-        Walls.AddRange(allPossibleWalls);
     }
-    private Point TakeOneStep(Point currentPoint, ref List<Point> closedPoints, ref List<Line> lines)
+
+    private Point ChooseNeighbor(Point currentPoint, ref List<Point> closedPoints, ref List<Line> lines)
     {
         // random select a valid direction
         List<Point> validDirections = [];
@@ -78,30 +112,43 @@ public class Map
         int index = random.Next(validDirections.Count);
         Point newPoint = validDirections[index];
         closedPoints.Add(newPoint);  // add the new point to the closedPoints
-        lines.Add(new Line(currentPoint.X, currentPoint.Y, newPoint.X, newPoint.Y));  // add the line to the lines
+
+        if (newPoint.X > currentPoint.X)
+        {
+            // Go right
+            lines.Add(new Line(currentPoint.X + 1, currentPoint.Y + 1, currentPoint.X + 1, currentPoint.Y));
+        }
+        else if (newPoint.X < currentPoint.X)
+        {
+            // Go left
+            lines.Add(new Line(currentPoint.X, currentPoint.Y + 1, currentPoint.X, currentPoint.Y));
+        }
+        else if (newPoint.Y > currentPoint.Y)
+        {
+            // Go up
+            lines.Add(new Line(currentPoint.X, currentPoint.Y + 1, currentPoint.X + 1, currentPoint.Y + 1));
+        }
+        else
+        {
+            // Go down
+            lines.Add(new Line(currentPoint.X, currentPoint.Y, currentPoint.X + 1, currentPoint.Y));
+        }
+
         return newPoint;
     }
-    private List<Wall> GetAllPossibleWalls()
+
+    private List<Wall> GetBoarders()
     {
         List<Wall> walls = [];
-        for (int i = 0; i < Height; i++)
+        for (int i = 1; i <= Width; i++)
         {
-            for (int j = 0; j < Width; j++)
-            {
-                if (i == 0 && j != 0)
-                {
-                    walls.Add(new Wall(i, j, 90));
-                }
-                else if (j == 0 && i != 0)
-                {
-                    walls.Add(new Wall(i, j, 0));
-                }
-                else if (i != 0 && j != 0)
-                {
-                    walls.Add(new Wall(i, j, 0));
-                    walls.Add(new Wall(i, j, 90));
-                }
-            }
+            walls.Add(new Wall(i, 0, 0));
+            walls.Add(new Wall(i, Height, 0));
+        }
+        for (int j = 1; j <= Height; j++)
+        {
+            walls.Add(new Wall(0, j, 90));
+            walls.Add(new Wall(Width, j, 90));
         }
         return walls;
     }

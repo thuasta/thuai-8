@@ -85,11 +85,11 @@ public class JsonUtility
                             if (tickToken != null && tickToken.Type == JTokenType.Integer)
                             {
                                 indexAndTicks[nowRecordIndex].Item2 = (int)tickToken;
-                                break; // ÕÒµ½µÚÒ»¸öÓĞĞ§tickºóÌø³ö
+                                break; // æ‰¾åˆ°ç¬¬ä¸€ä¸ªæœ‰æ•ˆtickåè·³å‡º
                             }
                         }
                     }
-                    // Èç¹ûÒÑÕÒµ½ÓĞĞ§tickÔò²»ÔÙ¼ì²éºóĞørecord
+                    // å¦‚æœå·²æ‰¾åˆ°æœ‰æ•ˆtickåˆ™ä¸å†æ£€æŸ¥åç»­record
                     if (indexAndTicks[nowRecordIndex].Item2 != -1) break;
                 }
                 nowRecordIndex++;

@@ -34,8 +34,8 @@ public class BuffSelector
     /// <summary>
     /// Three types of buffs.
     /// </summary>
-    private Buff[] OffensiveBuff = new Buff[]
-    {
+    private Buff[] OffensiveBuff =
+    [
         Buff.BULLET_COUNT,
         Buff.BULLET_COUNT,
         Buff.BULLET_SPEED,
@@ -44,9 +44,9 @@ public class BuffSelector
         Buff.DAMAGE,
         Buff.LASER,
         Buff.ANTI_ARMOR
-    };
-    private Buff[] DefensiveBuff = new Buff[]
-    {
+    ];
+    private Buff[] DefensiveBuff =
+    [
         Buff.ARMOR,
         Buff.ARMOR,
         Buff.ARMOR,
@@ -55,9 +55,9 @@ public class BuffSelector
         Buff.GRAVITY,
         Buff.DODGE,
         Buff.DODGE
-    };
-    private Buff[] UtilityBuff = new Buff[]
-    {
+    ];
+    private Buff[] UtilityBuff =
+    [
         Buff.BLACK_OUT,
         Buff.SPEED_UP,
         Buff.FLASH,
@@ -66,9 +66,11 @@ public class BuffSelector
         Buff.KAMUI,
         Buff.MISSILE,
         Buff.TRAP
-    };
+    ];
 
     private int _round = 1;
+
+    private readonly Random _random = new();
 
     /// <summary>
     /// Contructor.
@@ -83,12 +85,9 @@ public class BuffSelector
     /// </summary>
     public bool BuffInit()
     {
-        Random offensiverand = new Random();
-        Random defensiverand = new Random();
-        Random Utilityrand = new Random();
-        OffensiveBuff = OffensiveBuff.OrderBy(x => offensiverand.Next()).ToArray();
-        DefensiveBuff = DefensiveBuff.OrderBy(x => defensiverand.Next()).ToArray();
-        UtilityBuff = UtilityBuff.OrderBy(x => Utilityrand.Next()).ToArray();
+        OffensiveBuff = [.. OffensiveBuff.OrderBy(x => _random.Next())];
+        DefensiveBuff = [.. DefensiveBuff.OrderBy(x => _random.Next())];
+        UtilityBuff = [.. UtilityBuff.OrderBy(x => _random.Next())];
         return true;
     }
 
