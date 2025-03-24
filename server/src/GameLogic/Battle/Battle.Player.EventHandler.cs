@@ -7,14 +7,16 @@ public partial class Battle
         player.PlayerMoveEvent += OnPlayerMove;
         player.PlayerTurnEvent += OnPlayerTurn;
         player.PlayerAttackEvent += OnPlayerAttack;
-        player.PlayerPerformSkillEvent += OnPlayerPerformSkill;
+        player.SkillActivationEvent += OnSkillActivation;
+        player.SkillDeactivationEvent += OnSkillDeactivation;
     }
     public void UnsubscribePlayerEvents(Player player)
     {
         player.PlayerMoveEvent -= OnPlayerMove;
         player.PlayerTurnEvent -= OnPlayerTurn;
         player.PlayerAttackEvent -= OnPlayerAttack;
-        player.PlayerPerformSkillEvent -= OnPlayerPerformSkill;
+        player.SkillActivationEvent -= OnSkillActivation;
+        player.SkillDeactivationEvent -= OnSkillDeactivation;
     }
 
     private void OnPlayerMove(object? sender, Player.PlayerMoveEventArgs e)
@@ -81,15 +83,13 @@ public partial class Battle
                 {
                     _logger.Error($"[Player {e.Player.ID}] Failed to move: MoveDirection is invalid!");
                 }
-
             }
         }
         catch (Exception ex)
         {
-            _logger.Error($"[Player {e.Player.ID}] Failed to move: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"[Player {e.Player.ID}] Failed to move:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
-
     }
 
     private void OnPlayerTurn(object? sender, Player.PlayerTurnEventArgs e)
@@ -128,8 +128,8 @@ public partial class Battle
         }
         catch (Exception ex)
         {
-            _logger.Error($"[Player {e.Player.ID}] Failed to turn: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"[Player {e.Player.ID}] Failed to turn:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
     }
 
@@ -150,14 +150,14 @@ public partial class Battle
                 if (e.Player.PlayerWeapon.CurrentBullets > 0)
                 {
                     e.Player.PlayerWeapon.CurrentBullets -= 1;
-                    double delta_x = Constants.WALL_THICK * Math.Cos(e.Player.PlayerPosition.Angle);
-                    double delta_y = Constants.WALL_THICK * Math.Sin(e.Player.PlayerPosition.Angle);
+                    double delta_x = Constants.BULLET_GENERATE_DISTANCE * Math.Cos(e.Player.PlayerPosition.Angle);
+                    double delta_y = Constants.BULLET_GENERATE_DISTANCE * Math.Sin(e.Player.PlayerPosition.Angle);
                     Position bulletPosition = new(
                         e.Player.PlayerPosition.Xpos + delta_x,
                         e.Player.PlayerPosition.Ypos + delta_y,
                         e.Player.PlayerPosition.Angle
                     );
-                    //The bullet will be spawned in front of the player!
+
                     if (e.Player.PlayerWeapon.IsLaser == false)
                     {
                         Bullet bullet = new(
@@ -193,12 +193,12 @@ public partial class Battle
         }
     }
 
-    private void OnPlayerPerformSkill(object? sender, Player.PlayerPerformSkillEventArgs e)
+    private void OnSkillActivation(object? sender, Player.SkillActivationEventArgs e)
     {
         if (Stage != BattleStage.InBattle)
         {
             _logger.Error(
-                $"[Player {e.Player.ID}] Cannot perform skill when battle is at state {Stage}."
+                $"[Player {e.Player.ID}] Cannot activate skill when battle is at state {Stage}."
             );
             return;
         }
@@ -206,28 +206,62 @@ public partial class Battle
         {
             lock (_lock)
             {
-                ISkill? skill = e.Player.PlayerSkills.Find(skill => skill.Name == e.SkillName);
-                if (skill is null)
+                switch (e.SkillName)
                 {
-                    _logger.Error(
-                        $"[Player {e.Player.ID}] Don't have the skill {e.SkillName}."
-                    );
-                    return;
+                    case SkillName.BLACK_OUT:
+                        foreach (Player player in AllPlayers)
+                        {
+                            if (player.ID != e.Player.ID && player.IsAlive == true && player.IsBlinded == false)
+                            {
+                                player.IsBlinded = true;
+                                _logger.Information($"[Player {player.ID}] is blinded.");
+                            }
+                        }
+                        break;
+
+                    default:
+                        _logger.Error($"[Player {e.Player.ID}] Invalid skill name: {e.SkillName}");
+                        break;
                 }
-                if (!skill.IsAvailable())
-                {
-                    _logger.Error(
-                        $"[Player {e.Player.ID}] The skill {e.SkillName} is still in cooldown."
-                    );
-                }
-                // TODO: implement the skills
-                skill.Perform();
             }
         }
         catch (Exception ex)
         {
-            _logger.Error($"[Player {e.Player.ID}] Failed to perform skill: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"[Player {e.Player.ID}] Failed to activate skill:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
+        }
+    }
+
+    private void OnSkillDeactivation(object? sender, Player.SkillDeactivationEventArgs e)
+    {
+        // Deactivation works in any stage.
+        try
+        {
+            lock (_lock)
+            {
+                switch (e.SkillName)
+                {
+                    case SkillName.BLACK_OUT:
+                        foreach (Player player in AllPlayers)
+                        {
+                            if (player.ID != e.Player.ID && player.IsBlinded == true)
+                            {
+                                player.IsBlinded = false;
+                                _logger.Information($"[Player {player.ID}] recovered from blindness.");
+                            }
+                        }
+                        break;
+
+                    default:
+                        _logger.Error($"[Player {e.Player.ID}] Invalid skill name: {e.SkillName}");
+                        break;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"[Player {e.Player.ID}] Failed to deactivate skill:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
     }
 }

@@ -8,9 +8,10 @@ namespace Thuai.Server.GameLogic;
 public partial class Player(string token, int playerId)
 {
     public string Token => token;
+    public string TruncatedToken => Utility.Tools.LogHandler.Truncate(Token, 8);
     public int ID => playerId;
-    public double Speed { get; set; } = Constants.MOVE_SPEED;
 
+    public double Speed { get; set; } = Constants.MOVE_SPEED;
     public double TurnSpeed { get; set; } = Constants.TURN_SPEED;
 
     public MoveDirection MoveDirection { get; set; } = MoveDirection.NONE;
@@ -19,20 +20,28 @@ public partial class Player(string token, int playerId)
     public Position PlayerPosition { get; set; } = new();
 
     public Weapon PlayerWeapon { get; set; } = new();
-
     public Armor PlayerArmor { get; set; } = new();
-
     public List<ISkill> PlayerSkills { get; set; } = [];
-    public bool HasChosenAward { get; set; } = false;
 
+    public bool HasChosenAward { get; set; } = false;
     public bool IsAlive => PlayerArmor.Health > 0;
 
     private readonly Random _random = new();
 
     private readonly ILogger _logger = Log.ForContext("Component", $"Player {playerId}");
 
+    public void Update()
+    {
+        PlayerArmor.Knife.Update();
+        PlayerWeapon.Update();
+        foreach (ISkill skill in PlayerSkills)
+        {
+            skill.Update();
+        }
+    }
+
     public void Injured(int damage, bool antiArmor, out bool reflected)
-    { 
+    {
         reflected = false;
 
         if (IsAlive == false)
@@ -42,6 +51,13 @@ public partial class Player(string token, int playerId)
         }
 
         // TODO: Implement more complex logic for damage calculation.
+        if (PlayerArmor.Knife.IsActivated == true)
+        {
+            // Invulnerability
+            _logger.Information("Player is invulnerable.");
+            return;
+        }
+
         if (_random.Next(0, 100) < PlayerArmor.DodgeRate)
         {
             // Dodged
@@ -71,10 +87,10 @@ public partial class Player(string token, int playerId)
         }
         else
         {
-            if (realDamage >= PlayerArmor.Health && PlayerArmor.Knife == ArmorKnife.AVAILABLE)
+            if (realDamage >= PlayerArmor.Health && PlayerArmor.Knife.IsAvailable == true)
             {
                 // TODO: Set activation interval
-                PlayerArmor.Knife = ArmorKnife.BROKEN;
+                PlayerArmor.Knife.Activate();
                 realDamage = PlayerArmor.Health - 1;
                 _logger.Debug("Invulnerability invoked by taking damage.");
             }
@@ -111,20 +127,30 @@ public partial class Player(string token, int playerId)
             _logger.Error("Failed to perform skill: Player is dead.");
             return;
         }
-        if (PlayerSkills.Any(skill => skill.Name == skillName) == false)
+
+        ISkill? skill = PlayerSkills.Find(skill => skill.Name == skillName);
+        if (skill is null)
         {
             _logger.Error($"Failed to perform skill: Player does not have the skill ({skillName}).");
             return;
         }
-        if (PlayerSkills.First(skill => skill.Name == skillName).CurrentCooldown > 0)
+        if (skill.IsAvailable == false)
         {
             _logger.Error($"Failed to perform skill: Skill ({skillName}) is on cooldown.");
             return;
         }
 
         // TODO: Check whether the player has can perform the skill or not.
-        _logger.Information($"Perform skill ({skillName})");
-        PlayerPerformSkillEvent?.Invoke(this, new PlayerPerformSkillEventArgs(this, skillName));
+        try
+        {
+            _logger.Information($"Performing skill ({skillName})");
+            skill.Activate();
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Failed to perform skill ({skillName}):");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
+        }
     }
 
     public void PlayerMove(MoveDirection direction)

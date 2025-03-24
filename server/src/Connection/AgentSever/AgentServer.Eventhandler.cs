@@ -55,12 +55,9 @@ public partial class AgentServer
                 walls.Add(
                     new Protocol.Scheme.Wall()
                     {
-                        Position = new()
-                        {
-                            X = wall.X,
-                            Y = wall.Y,
-                            Angle = wall.Angle,
-                        }
+                        X = wall.X,
+                        Y = wall.Y,
+                        Angle = wall.Angle,
                     }
                 );
             }
@@ -83,17 +80,24 @@ public partial class AgentServer
                     }
                 );
             }
-            Publish(
-                new Protocol.Messages.EnvironmentInfoMessage()
-                {
-                    Walls = [.. walls],
-                    Fences = [],                    // TODO: Implement Fences
-                    Bullets = [.. bullets],
-                    MapSize = e.Game.RunningBattle.Map.Height
-                }
-            );
             foreach (GameLogic.Player receiver in e.Game.AllPlayers)
             {
+                if (receiver.IsBlinded == true)
+                {
+                    _logger.Debug($"Player {receiver.ID} is blinded, skipping.");
+                    continue;
+                }
+
+                Publish(
+                    new Protocol.Messages.EnvironmentInfoMessage()
+                    {
+                        Walls = [.. walls],
+                        Fences = [],                    // TODO: Implement Fences
+                        Bullets = [.. bullets],
+                        MapSize = e.Game.RunningBattle.Map.Height
+                    },
+                    receiver.Token
+                );
                 List<Protocol.Scheme.Player> players = [];
                 foreach (GameLogic.Player player in e.Game.AllPlayers)
                 {
@@ -130,7 +134,7 @@ public partial class AgentServer
                                 ArmorValue = player.PlayerArmor.ArmorValue,
                                 Health = player.PlayerArmor.Health,
                                 GravityField = player.PlayerArmor.GravityField,
-                                Knife = player.PlayerArmor.Knife.ToString(),
+                                Knife = player.PlayerArmor.Knife.State.ToString(),
                                 DodgeRate = player.PlayerArmor.DodgeRate,
                             },
                             Skills = [.. skills],

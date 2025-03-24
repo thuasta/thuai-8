@@ -62,18 +62,20 @@ public partial class Recorder : IDisposable
         Save();
     }
 
-    public void Record(Protocol.IRecordable record)
+    public void Record(params Protocol.IRecordable[] records)
     {
         // Record should not be null
-        if (record is null)
+        foreach (Protocol.IRecordable record in records)
         {
-            _logger.Error("Null record passed to Recorder.Record().");
-            return;
+            if (record is null)
+            {
+                _logger.Error("Null record passed to Recorder.Record().");
+                return;
+            }
+            _logger.Debug($"Adding record {record.GetType().Name}");
         }
 
-        _logger.Debug($"Adding record {record.GetType().Name} to the queue.");
-
-        _recordPage.Record(record);
+        _recordPage.Record(records);
         if (_recordPage.Length >= MaxRecordsBeforeSave)
         {
             Save();

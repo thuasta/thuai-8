@@ -44,7 +44,11 @@ public partial class AgentServer
                 }
             }
 
-            _logger.Debug($"Message \"{message.MessageType}\" published{(token is null ? "" : (" to " + token))}.");
+            _logger.Debug(
+                $"Message \"{message.MessageType}\" published{(
+                    token is null ? "" : (" to " + Utility.Tools.LogHandler.Truncate(token, 8))
+                )}."
+            );
             _logger.Verbose(message.Json);
         }
         catch (Exception ex)

@@ -63,13 +63,19 @@ public class UpdateMapCommand : AbstractCommand
                 map.UpdateWall(position);
             }            
         }
+
         // delete wall
+        List<Wall> toDelete = new();
         foreach (Wall wall in map.CityWall)
         {
             if (!currentWalls.Contains(wall.wallPos))
             {
-                map.RemoveWall(wall);
+                toDelete.Add(wall);
             }
+        }
+        foreach (var wall in toDelete)
+        {
+            map.RemoveWall(wall);
         }
         // map.CityWall.RemoveAll(w => !currentWalls.Contains(w.wallPos));
     }
@@ -97,13 +103,18 @@ public class UpdateMapCommand : AbstractCommand
         }
 
         // delete the fence
+        List<Wall> toDelete = new();
         foreach (Wall wall in map.CityFence)
         {
             if (!currentFences.Contains(wall.wallPos))
             {
-                map.RemoveFence(wall);
+                toDelete.Add(wall);
             }
-        }        
+        }
+        foreach (Wall wall in toDelete)
+        {
+            map.RemoveFence(wall);
+        }
     }
 
     private void UpdateTraps()
@@ -135,12 +146,17 @@ public class UpdateMapCommand : AbstractCommand
         }
 
         // delete the fence
+        List<Trap> toDelete = new();
         foreach (Trap trap in map.Traps)
         {
             if (!currentTraps.Contains(trap.trapPos))
             {
-                map.RemoveTrap(trap);
+                toDelete.Add(trap);
             }
+        }
+        foreach (Trap trap in toDelete)
+        {
+            map.RemoveTrap(trap);
         }
     }
 

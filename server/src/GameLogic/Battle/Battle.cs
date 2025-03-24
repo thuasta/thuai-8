@@ -77,19 +77,22 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
         _logger.Information("Initializing battle...");
         try
         {
-            bool success = GenerateMap();
-            if (!success)
+            lock (_lock)
             {
-                throw new Exception("Generate Map Failed");
+                bool success = GenerateMap();
+                if (!success)
+                {
+                    throw new Exception("Generate Map Failed");
+                }
+                foreach (Player player in AllPlayers)
+                {
+                    player.Recover();
+                    SubscribePlayerEvents(player);
+                }
+                ChooseSpawnpoint();
+                _logger.Information("Initialized battle successfully.");
+                return true;
             }
-            foreach (Player player in AllPlayers)
-            {
-                player.Recover();
-                SubscribePlayerEvents(player);
-            }
-            ChooseSpawnpoint();
-            _logger.Information("Initialized battle successfully.");
-            return true;
         }
         catch (Exception e)
         {

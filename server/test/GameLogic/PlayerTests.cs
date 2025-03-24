@@ -59,7 +59,7 @@ public class PlayerTests
         player.PlayerArmor.Health = 10;
 
         // Act.
-        player.Injured(5);
+        player.Injured(5, false, out _);
 
         // Assert.
         Assert.Equal(5, player.PlayerArmor.ArmorValue);
@@ -75,7 +75,7 @@ public class PlayerTests
         player.PlayerArmor.Health = 10;
 
         // Act.
-        player.Injured(10);
+        player.Injured(10, false, out _);
 
         // Assert.
         Assert.Equal(0, player.PlayerArmor.ArmorValue);

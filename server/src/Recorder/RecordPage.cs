@@ -17,7 +17,7 @@ public class RecordPage
     public string Type => "record";
 
     [JsonPropertyName("records")]
-    public ConcurrentQueue<Protocol.IRecordable> Records { get; private set; } = new();
+    public ConcurrentQueue<RecordElement> Records { get; private set; } = new();
 
     [JsonIgnore]
     private JsonSerializerOptions _jsonSerializerOptions = new()
@@ -29,9 +29,9 @@ public class RecordPage
     /// Add a record.
     /// </summary>
     /// <param name="record">Record to save.</param>
-    public void Record(Protocol.IRecordable record)
+    public void Record(params Protocol.IRecordable[] records)
     {
-        Records.Enqueue(record);
+        Records.Enqueue(new RecordElement { Record = [.. records] });
     }
 
     /// <summary>

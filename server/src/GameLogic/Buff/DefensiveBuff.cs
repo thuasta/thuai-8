@@ -21,7 +21,7 @@ public static class D_Buff
     public static void KNIFE(Player player)
     {
         // 名刀
-        player.PlayerArmor.Knife = ArmorKnife.AVAILABLE;
+        player.PlayerArmor.Knife.Acquire();
     }
     public static void GRAVITY(Player player)
     {

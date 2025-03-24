@@ -3,7 +3,7 @@ namespace Thuai.Server.GameLogic;
 /// <summary>
 /// Constants used in the game.
 /// </summary>
-public static class Constants
+public static partial class Constants
 {
     //Armor
     public const int INITIAL_ARMOR_VALUE = 0;
@@ -13,6 +13,7 @@ public static class Constants
     public const int DODGE_PERCENTAGE_INCREASE = 10;    // 10%
     public const double GRAVITY_FIELD_RADIUS = 1.5;
     public const double GRAVITY_FIELD_STRENGTH = 0.5;
+    public const int KNIFE_REMAINING_TIME = 10;
 
     //Weapon
     public const double INITIAL_ATTACK_SPEED = 0.1;
@@ -24,9 +25,6 @@ public static class Constants
     public const int INITIAL_BULLETS = 10;
     public const int BULLETS_INCREASE = 1;
     public const int ANTI_ARMOR_FACTOR = 2;
-
-    //Skill
-    public const int SKILL_MAX_COOLDOWN = 200;
 
     //Player
     public const double MOVE_SPEED = 0.1;
@@ -43,7 +41,4 @@ public static class Constants
 
     // Wall
     public const int BREAKABLE_WALL_MAX_COLLIDE_COUNT = 3;
-
-    // Skills
-    public const int SKILL_DURATION = 200;
 }

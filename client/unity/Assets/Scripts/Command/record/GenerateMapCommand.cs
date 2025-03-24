@@ -75,9 +75,9 @@ public class GenerateMapCommand : AbstractCommand
     private void GenerateFloor()
     {
         GameObject wallController = GameObject.Find("WallController");
-        for (int i = 0; i <= map.MapSize; i++)
+        for (int i = 0; i < map.MapSize; i++)
         {
-            for (int j = 0; j <= map.MapSize; j++)
+            for (int j = 0; j < map.MapSize; j++)
             {
                 Vector3 position = new Vector3((float)i * Constants.FLOOR_LEN + Constants.POS_BIAS, (float)(Constants.YPOS + Constants.Y_BIAS), (float)j * Constants.FLOOR_LEN + Constants.POS_BIAS);
                 int randomIndex = Random.Range(0, floorPrefabNames.Length);

@@ -42,10 +42,7 @@ public partial class GameRunner
                     };
                     player.MoveDirection = moveDirection;
 
-                    _logger.Information(
-                        $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
-                        + $"Move direction set to {moveDirection}."
-                    );
+                    _logger.Information($"[Player {player.ID}] Move direction set to {moveDirection}.");
 
                     break;
 
@@ -58,10 +55,8 @@ public partial class GameRunner
                     };
                     player.TurnDirection = turnDirection;
 
-                    _logger.Information(
-                        $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
-                        + $"Turn direction set to {turnDirection}."
-                    );
+                    _logger.Information($"[Player {player.ID}] Turn direction set to {turnDirection}.");
+
 
                     break;
 
@@ -70,10 +65,7 @@ public partial class GameRunner
                         || Game.RunningBattle == null
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.InBattle)
                     {
-                        _logger.Error(
-                            $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
-                            + "Cannot attack when not in battle."
-                        );
+                        _logger.Error($"[Player {player.ID}] Cannot attack when not in battle.");
                         return;
                     }
                     player.PlayerAttack();
@@ -84,10 +76,7 @@ public partial class GameRunner
                         || Game.RunningBattle == null
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.InBattle)
                     {
-                        _logger.Error(
-                            $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
-                            + "Cannot use skill when not in battle."
-                        );
+                        _logger.Error($"[Player {player.ID}] Cannot use skill when not in battle.");
                         return;
                     }
                     player.PlayerPerformSkill(GameLogic.ISkill.SkillNameFromString(skillMessage.SkillName));
@@ -99,25 +88,18 @@ public partial class GameRunner
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.ChoosingAward)
                     {
                         _logger.Error(
-                            $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
-                            + "Cannot select when not in battle or battle stage is not ChoosingAward."
+                            $"[Player {player.ID}] Cannot select when not in battle or battle stage is not ChoosingAward."
                         );
                         return;
                     }
                     if (player.HasChosenAward)
                     {
-                        _logger.Error(
-                            $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
-                            + "An award is already chosen."
-                        );
+                        _logger.Error($"[Player {player.ID}] An award is already chosen.");
                         return;
                     }
                     if (!Game.AvailableBuffsAfterCurrentBattle.Any(buff => buff.ToString() == selectMessage.BuffName))
                     {
-                        _logger.Error(
-                            $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] "
-                            + "Cannot choose a buff that is not in given awards."
-                        );
+                        _logger.Error($"[Player {player.ID}] Cannot choose a buff that is not in given awards.");
                         return;
                     }
 
@@ -137,7 +119,7 @@ public partial class GameRunner
 
                 case Protocol.Messages.GetPlayerinfoMessage getPlayerinfoMessage:
                     _logger.Debug(
-                        $"[Player {Utility.Tools.LogHandler.Truncate(player.Token, 8)}] Requested player info."
+                        $"[Player {player.ID}] Requested player info."
                     );
 
                     List<Protocol.Scheme.Player> players = [];
@@ -173,7 +155,7 @@ public partial class GameRunner
                                 ArmorValue = p.PlayerArmor.ArmorValue,
                                 Health = p.PlayerArmor.Health,
                                 GravityField = p.PlayerArmor.GravityField,
-                                Knife = p.PlayerArmor.Knife.ToString(),
+                                Knife = p.PlayerArmor.Knife.State.ToString(),
                                 DodgeRate = p.PlayerArmor.DodgeRate
                             },
                             Skills = [.. skills],

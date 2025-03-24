@@ -21,10 +21,9 @@ public partial class Recorder
         }
         Protocol.Messages.StageInfoMessage stageInfo = new()
         {
-            Stage = currentStage,
+            CurrentStage = currentStage,
             TotalTicks = e.Game.CurrentTick
         };
-        Record(stageInfo);
 
         if (currentStage == Protocol.Scheme.Stage.BATTLE)
         {
@@ -48,7 +47,7 @@ public partial class Recorder
                 players.Add(
                     new Protocol.Scheme.Player()
                     {
-                        Token = player.Token,
+                        Token = (player.ID + 1).ToString(),   // Because client actually reads ID and it starts from 1 ...
                         Weapon = new()
                         {
                             AttackSpeed = player.PlayerWeapon.AttackSpeed,
@@ -65,30 +64,25 @@ public partial class Recorder
                             ArmorValue = player.PlayerArmor.ArmorValue,
                             Health = player.PlayerArmor.Health,
                             GravityField = player.PlayerArmor.GravityField,
-                            Knife = player.PlayerArmor.Knife.ToString(),
+                            Knife = player.PlayerArmor.Knife.State.ToString(),
                             DodgeRate = player.PlayerArmor.DodgeRate
                         },
                         Skills = [.. skills],
                         Position = new()
                         {
-                            X = player.PlayerPosition.Xpos,
-                            Y = player.PlayerPosition.Ypos,
+                            // Relavant to the wall length
+                            X = player.PlayerPosition.Xpos / GameLogic.Constants.WALL_LENGTH,
+                            Y = player.PlayerPosition.Ypos / GameLogic.Constants.WALL_LENGTH,
                             Angle = player.PlayerPosition.Angle
                         }
                     }
                 );
             }
 
-            List<Protocol.Scheme.PlayerUpdateEvent> playerUpdateList = [];
-            foreach (Protocol.Scheme.Player player in players)
+            Protocol.Scheme.PlayerUpdateEvent playerUpdate = new()
             {
-                playerUpdateList.Add(
-                    new Protocol.Scheme.PlayerUpdateEvent()
-                    {
-                        Player = player
-                    }
-                );
-            }
+                Players = [.. players]
+            };
 
             List<Protocol.Scheme.Bullet> bullets = [];
             foreach (GameLogic.IBullet bullet in e.Game.RunningBattle?.Bullets ?? [])
@@ -98,8 +92,9 @@ public partial class Recorder
                     {
                         Position = new()
                         {
-                            X = bullet.BulletPosition.Xpos,
-                            Y = bullet.BulletPosition.Ypos,
+                            // Relavant to the wall length
+                            X = bullet.BulletPosition.Xpos / GameLogic.Constants.WALL_LENGTH,
+                            Y = bullet.BulletPosition.Ypos / GameLogic.Constants.WALL_LENGTH,
                             Angle = bullet.BulletPosition.Angle
                         },
                         Speed = bullet.BulletSpeed,
@@ -120,12 +115,9 @@ public partial class Recorder
                 walls.Add(
                     new Protocol.Scheme.Wall()
                     {
-                        Position = new()
-                        {
-                            X = wall.X,
-                            Y = wall.Y,
-                            Angle = wall.Angle
-                        }
+                        X = wall.X,
+                        Y = wall.Y,
+                        Angle = wall.Angle
                     }
                 );
             }
@@ -140,10 +132,7 @@ public partial class Recorder
             };
 
             List<Protocol.Scheme.BattleUpdateEvent> battleUpdateEvent = [];
-            foreach (Protocol.Scheme.PlayerUpdateEvent playerUpdate in playerUpdateList)
-            {
-                battleUpdateEvent.Add(playerUpdate);
-            }
+            battleUpdateEvent.Add(playerUpdate);
             battleUpdateEvent.Add(bulletsUpdate);
             battleUpdateEvent.Add(mapUpdate);
 
@@ -153,11 +142,16 @@ public partial class Recorder
                 Events = [.. battleUpdateEvent]
             };
 
-            Record(battleUpdate);
+            Record(stageInfo, battleUpdate);
         }
         else if (currentStage == Protocol.Scheme.Stage.REST)
         {
             // TODO: Add reward choosing information
+            Record(stageInfo);
+        }
+        else
+        {
+            Record(stageInfo);
         }
     }
 }

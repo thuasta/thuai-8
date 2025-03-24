@@ -15,8 +15,8 @@ public record PlayerUpdateEvent : BattleUpdateEvent
     [JsonPropertyName("eventType")]
     public override string EventType { get; init; } = "PLAYER_UPDATE_EVENT";
 
-    [JsonPropertyName("player")]
-    public required Player Player { get; init; }
+    [JsonPropertyName("players")]
+    public required List<Player> Players { get; init; }
 }
 
 public record BulletsUpdateEvent : BattleUpdateEvent
