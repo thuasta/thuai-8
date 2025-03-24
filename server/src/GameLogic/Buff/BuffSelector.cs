@@ -31,6 +31,8 @@ public enum Buff
 /// </summary>
 public class BuffSelector
 {
+    public const int BUFF_KINDS = 3;
+
     /// <summary>
     /// Three types of buffs.
     /// </summary>

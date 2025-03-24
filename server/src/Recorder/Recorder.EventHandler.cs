@@ -47,7 +47,7 @@ public partial class Recorder
                 players.Add(
                     new Protocol.Scheme.Player()
                     {
-                        Token = (player.ID + 1).ToString(),   // Because client actually reads ID and it starts from 1 ...
+                        Token = player.RecordToken,
                         Weapon = new()
                         {
                             AttackSpeed = player.PlayerWeapon.AttackSpeed,
@@ -144,10 +144,25 @@ public partial class Recorder
 
             Record(stageInfo, battleUpdate);
         }
-        else if (currentStage == Protocol.Scheme.Stage.REST)
+        else if (currentStage == Protocol.Scheme.Stage.REST
+            && e.Game.RunningBattle?.Stage == GameLogic.Battle.BattleStage.Waiting)
         {
-            // TODO: Add reward choosing information
-            Record(stageInfo);
+            List<Protocol.Messages.Detail> buffDetails = [];
+            foreach (GameLogic.Player player in e.Game.AllPlayers)
+            {
+                buffDetails.Add(
+                    new()
+                    {
+                        Token = player.RecordToken,
+                        Buff = player.LastChosenBuff?.ToString() ?? ""
+                    }
+                );
+            }
+            Protocol.Messages.BuffSelectMessage buffSelect = new()
+            {
+                Details = [.. buffDetails]
+            };
+            Record(stageInfo, buffSelect);
         }
         else
         {

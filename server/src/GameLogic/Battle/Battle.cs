@@ -160,6 +160,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
                 foreach (Player player in AllPlayers)
                 {
                     UnsubscribePlayerEvents(player);
+                    player.LastChosenBuff = null;
                 }
                 Bullets.Clear();
 
