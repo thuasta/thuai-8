@@ -15,37 +15,7 @@ public class JsonUtility
         // Load all the record entry
         List<JObject> allRecordJsonObject = new();
 
-        if (Directory.Exists(path))
-        {
-            Debug.Log("Record is a Directory.");
-            string[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-            //Loop through each file
-            foreach (string file in files)
-            {
-                try
-                {
-                    if (!file.Contains("level.dat") && !file.EndsWith("/") && !file.Contains(".meta"))
-                    {
-                        using (Stream stream = File.OpenRead(file))
-                        {
-                            // Unzip the record
-                            ZipArchive recordZipArchive = new(stream);
-                            StreamReader recordStreamReader = new(recordZipArchive.Entries[0].Open());
-                            allRecordJsonObject.Add((JObject)JToken.ReadFrom(new JsonTextReader(recordStreamReader)));
-                            Debug.Log(recordStreamReader.ReadToEnd().ToString());
-                        }
-                    }
-                }
-                catch
-                {
-
-                }
-            }
-        }
-        else if (
-            File.Exists(path)
-            && (Path.GetExtension(path).Equals(".zip", StringComparison.OrdinalIgnoreCase) || Path.GetExtension(path).Equals(".dat", StringComparison.OrdinalIgnoreCase))
-        )
+        if (File.Exists(path) && (Path.GetExtension(path).Equals(".zip", StringComparison.OrdinalIgnoreCase)|| Path.GetExtension(path).Equals(".dat", StringComparison.OrdinalIgnoreCase)))
         {
             Debug.Log("Record is a Zipped File.");
             ZipArchive ncLevelDataZipFile = ZipFile.OpenRead($"{path}");
@@ -67,7 +37,7 @@ public class JsonUtility
                 }
             }
         }
-        else if(File.Exists(path) && (Path.GetExtension(path).Equals(".json", StringComparison.OrdinalIgnoreCase)|| Path.GetExtension(path).Equals(".dat", StringComparison.OrdinalIgnoreCase)))
+        else if(File.Exists(path) && (Path.GetExtension(path).Equals(".json", StringComparison.OrdinalIgnoreCase)))
         {
             try
             {
@@ -115,11 +85,11 @@ public class JsonUtility
                             if (tickToken != null && tickToken.Type == JTokenType.Integer)
                             {
                                 indexAndTicks[nowRecordIndex].Item2 = (int)tickToken;
-                                break; // ÕÒµ½µÚÒ»¸öÓĞĞ§tickºóÌø³ö
+                                break; // æ‰¾åˆ°ç¬¬ä¸€ä¸ªæœ‰æ•ˆtickåè·³å‡º
                             }
                         }
                     }
-                    // Èç¹ûÒÑÕÒµ½ÓĞĞ§tickÔò²»ÔÙ¼ì²éºóĞørecord
+                    // å¦‚æœå·²æ‰¾åˆ°æœ‰æ•ˆtickåˆ™ä¸å†æ£€æŸ¥åç»­record
                     if (indexAndTicks[nowRecordIndex].Item2 != -1) break;
                 }
                 nowRecordIndex++;

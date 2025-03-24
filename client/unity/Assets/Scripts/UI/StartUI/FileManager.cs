@@ -27,6 +27,11 @@ public class FileManager : MonoBehaviour
     private Color originalColor = Color.white; // ³õÊ¼ÑÕÉ«
     public CameraController cameraController;
 
+    private string GetStreamingAssetPath(string relativePath)
+    {
+        return Path.Combine(Application.streamingAssetsPath, relativePath);
+    }
+
 
     void Start()
     {
@@ -49,7 +54,7 @@ public class FileManager : MonoBehaviour
         originalColor = removeButtonImage.color;
         Remove.targetGraphic = removeButtonImage;
 
-        SelectedFilePaths.Add("Assets/Scripts/Test.json");
+        SelectedFilePaths.Add(GetStreamingAssetPath("Test.json"));
         UpdateFileListUI();
 
         AddFile.onClick.AddListener(() =>
