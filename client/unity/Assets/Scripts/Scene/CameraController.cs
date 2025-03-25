@@ -84,6 +84,20 @@ namespace BattleCity
         {
             transform.position = initialPosition;
             transform.rotation = initialRotation;
+
+            // 平滑重置
+            /*transform.position = Vector3.SmoothDamp(
+                transform.position,
+                initialPosition,
+                ref velocity,
+                0.2f
+                );
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                initialRotation,
+                Time.deltaTime * 5
+                );*/
             if (myCamera != null)
             {
                 myCamera.fieldOfView = 10f;
@@ -158,7 +172,7 @@ namespace BattleCity
             //视野缩放
             offset = new Vector3(5.7f, 14.6f, -5.2f);
             Vector3 targetPosition = targetTank.TankObject.transform.TransformPoint(offset);
-            transform.position = Vector3.Lerp(transform.position, targetPosition, (float)1.0);
+            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 10);
             transform.LookAt(targetTank.TankObject.transform);
         }
 
