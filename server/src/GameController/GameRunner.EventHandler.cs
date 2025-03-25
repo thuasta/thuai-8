@@ -57,7 +57,6 @@ public partial class GameRunner
 
                     _logger.Information($"[Player {player.ID}] Turn direction set to {turnDirection}.");
 
-
                     break;
 
                 case Protocol.Messages.PerformAttackMessage attackMessage:
@@ -88,7 +87,7 @@ public partial class GameRunner
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.ChoosingAward)
                     {
                         _logger.Error(
-                            $"[Player {player.ID}] Cannot select when not in battle or battle stage is not ChoosingAward."
+                            $"[Player {player.ID}] Cannot select award when not in battle or battle stage is not ChoosingAward."
                         );
                         return;
                     }
@@ -110,7 +109,6 @@ public partial class GameRunner
                         if (award.ToString() == selectMessage.BuffName)
                         {
                             Game.BuffSelector.SelectBuff(player, awardId);
-                            player.HasChosenAward = true;
                             break;
                         }
                     }

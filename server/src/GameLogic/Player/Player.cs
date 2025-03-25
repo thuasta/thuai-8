@@ -9,6 +9,7 @@ public partial class Player(string token, int playerId)
 {
     public string Token => token;
     public string TruncatedToken => Utility.Tools.LogHandler.Truncate(Token, 8);
+    public string RecordToken => (playerId + 1).ToString(); // Because client actually reads ID and it starts from 1 ...
     public int ID => playerId;
 
     public double Speed { get; set; } = Constants.MOVE_SPEED;
@@ -22,8 +23,9 @@ public partial class Player(string token, int playerId)
     public Weapon PlayerWeapon { get; set; } = new();
     public Armor PlayerArmor { get; set; } = new();
     public List<ISkill> PlayerSkills { get; set; } = [];
+    public Buff.Buff? LastChosenBuff { get; set; } = null;
 
-    public bool HasChosenAward { get; set; } = false;
+    public bool HasChosenAward => LastChosenBuff is not null;
     public bool IsAlive => PlayerArmor.Health > 0;
 
     private readonly Random _random = new();
@@ -50,8 +52,7 @@ public partial class Player(string token, int playerId)
             return;
         }
 
-        // TODO: Implement more complex logic for damage calculation.
-        if (PlayerArmor.Knife.IsActivated == true)
+        if (PlayerArmor.Knife.IsActivated == true || IsInvulnerable == true)
         {
             // Invulnerability
             _logger.Information("Player is invulnerable.");
@@ -89,7 +90,6 @@ public partial class Player(string token, int playerId)
         {
             if (realDamage >= PlayerArmor.Health && PlayerArmor.Knife.IsAvailable == true)
             {
-                // TODO: Set activation interval
                 PlayerArmor.Knife.Activate();
                 realDamage = PlayerArmor.Health - 1;
                 _logger.Debug("Invulnerability invoked by taking damage.");
@@ -112,7 +112,6 @@ public partial class Player(string token, int playerId)
         {
             skill.Recover();
         }
-        HasChosenAward = false;
         _logger.Information("Recovered.");
     }
 
@@ -140,7 +139,6 @@ public partial class Player(string token, int playerId)
             return;
         }
 
-        // TODO: Check whether the player has can perform the skill or not.
         try
         {
             _logger.Information($"Performing skill ({skillName})");
@@ -177,8 +175,12 @@ public partial class Player(string token, int playerId)
             _logger.Error("Failed to attack: No bullets.");
             return;
         }
+        if (PlayerWeapon.CanAttack == false)
+        {
+            _logger.Error("Failed to attack: Weapon is on cooldown.");
+            return;
+        }
 
-        // TODO: Check whether the player has can perform the attack or not.
         _logger.Information($"Attacking.");
         PlayerAttackEvent?.Invoke(this, new PlayerAttackEventArgs(this));
     }

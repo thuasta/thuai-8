@@ -74,7 +74,9 @@ namespace BattleCity
 
             if (TankObject != null)
             {
-                Vector3 newPosition = new Vector3((float)tankPosition.X, (float)tankPosition.Y, (float)tankPosition.Z);
+                Vector3 newPosition = new Vector3(
+                    (float)(tankPosition.X + Constants.GENERAL_XBIAS), (float)tankPosition.Y, (float)(tankPosition.Z + Constants.GENERAL_ZBIAS)
+                );
                 TankObject.transform.localPosition = newPosition;
 
                 Quaternion newRotation = Quaternion.Euler(0, (float)tankPosition.Angle, 0); // ¼ÙÉè Y ÖáÐý×ª
