@@ -17,9 +17,9 @@ public static partial class Constants
 
     //Weapon
     public const double INITIAL_ATTACK_SPEED = 0.1;
-    public const double ATTACK_SPEED_INCREASE = 0.1;
+    public const double ATTACK_SPEED_INCREASE_FACTOR = 2;
     public const double INITIAL_BULLET_SPEED = 2;
-    public const double BULLET_SPEED_INCREASE = 0.5;
+    public const double BULLET_SPEED_INCREASE_FACTOR = 2;
     public const int INITIAL_DAMAGE = 1;
     public const int DAMAGE_INCREASE = 1;
     public const int INITIAL_BULLETS = 5;
@@ -36,6 +36,7 @@ public static partial class Constants
     public const double BULLET_RADIUS = 0.1;
     public const int BULLET_REMAINING_TICKS = 100;
     public const double LASER_WIDTH = 0.1;
+    public const double LASER_LENGTH_EQUAVALENT_BULLET_FLYING_TICKS = 20;
 
     //Map
     public const double WALL_LENGTH = 10;

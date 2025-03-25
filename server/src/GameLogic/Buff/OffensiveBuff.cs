@@ -11,13 +11,13 @@ public static class O_Buff
     public static void BULLET_SPEED(Player player)
     {
         // 子弹移速
-        player.PlayerWeapon.BulletSpeed += Constants.BULLET_SPEED_INCREASE;
+        player.PlayerWeapon.BulletSpeed *= Constants.BULLET_SPEED_INCREASE_FACTOR;
         player.LastChosenBuff = Buff.BULLET_SPEED;
     }
     public static void ATTACK_SPEED(Player player)
     {
         // 攻速
-        player.PlayerWeapon.AttackSpeed += Constants.ATTACK_SPEED_INCREASE;
+        player.PlayerWeapon.AttackSpeed *= Constants.ATTACK_SPEED_INCREASE_FACTOR;
         player.LastChosenBuff = Buff.ATTACK_SPEED;
     }
     public static void LASER(Player player)
