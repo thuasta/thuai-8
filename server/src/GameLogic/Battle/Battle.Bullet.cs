@@ -165,7 +165,6 @@ public partial class Battle
                     bullet.BulletPosition = finalPos;
                 }
 
-                _logger.Debug($"Bullets updated.");
             }
             catch (Exception ex)
             {
@@ -173,6 +172,7 @@ public partial class Battle
                 _logger.Debug($"{ex}");
             }
         }
+        _logger.Debug($"Bullets updated.");
     }
     private void Apply_Laser(LaserBullet laserBullet)
     {
