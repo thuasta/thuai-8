@@ -96,13 +96,13 @@ public record Config
         /// Ticks for Buff Choosing.
         /// </summary>
         [JsonPropertyName("awardChooseTicks")]
-        public int AwardChooseTicks { get; init; } = 10 * 20;
+        public int AwardChooseTicks { get; init; } = 2 * 20;
 
         /// <summary>
         /// Time limit per battle. (in ticks) 
         /// </summary>
         [JsonPropertyName("maxBattleTicks")]
-        public int MaxBattleTicks { get; init; } = 120 * 20;
+        public int MaxBattleTicks { get; init; } = 60 * 20;
 
         /// <summary>
         /// The minimum player count to start a game.

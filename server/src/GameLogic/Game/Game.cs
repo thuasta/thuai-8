@@ -36,6 +36,8 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     public List<Buff.Buff> AvailableBuffsAfterCurrentBattle { get; private set; } = [];
     public BuffSelector BuffSelector { get; private set; } = new();
 
+    private Random _random = new();
+
     private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Game");
     private readonly object _lock = new();
@@ -111,6 +113,20 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
         }
         else if (Stage == GameStage.PreparingBattle)
         {
+            if (BattleNumber > 0 && BattleNumber <= AwardCount)
+            {
+                // Have buffs before the current battle.
+                foreach (Player player in AllPlayers)
+                {
+                    if (player.LastChosenBuff is null)
+                    {
+                        // Select a buff for the player.
+                        BuffSelector.SelectBuff(player, _random.Next(1, BuffSelector.BUFF_KINDS + 1));
+                    }
+                    _logger.Information($"[Player {player.ID}] Last buff: {player.LastChosenBuff}.");
+                }
+            }
+
             if (BattleNumber < AwardCount)
             {
                 AvailableBuffsAfterCurrentBattle = [.. BuffSelector.ShowBuff(BattleNumber + 1)];
@@ -127,6 +143,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
                     AwardChoosingTickLimit = GameSettings.AwardChooseTicks
                 };
                 RunningBattle.Initialize();
+
                 Stage = GameStage.InBattle;
                 _logger.Information($"Battle {BattleNumber} started.");
             }
