@@ -9,10 +9,13 @@ public class PlaneRevolve : MonoBehaviour
     public Transform BlackHole;
 
     [Tooltip("正常公转速度（度/秒）")]
-    public float orbitSpeed = 30f;
+    public float orbitSpeed = 1f;
 
     [Tooltip("正常模式持续时间（秒）")]
-    public float normalDuration = 60f;
+    public float normalDuration = 100f;
+
+    [Header("速度控制")]
+    private float speedFactor = 1f; // 新增时间流逝系数
 
     [Tooltip("加速模式持续时间（秒）")]
     public float acceleratedDuration = 4f;
@@ -51,6 +54,23 @@ public class PlaneRevolve : MonoBehaviour
         TypeEventSystem.Global.Register<BattleEndEvent>(e =>
         {
             ResetPosition();
+            Resume();
+        });
+        TypeEventSystem.Global.Register<SpeedUpEvent>(e =>
+        {
+            SpeedUp();
+        });
+        TypeEventSystem.Global.Register<SpeedDownEvent>(e =>
+        {
+            SpeedDown();
+        });
+        TypeEventSystem.Global.Register<StopEvent>(e =>
+        {
+            Stop();
+        });
+        TypeEventSystem.Global.Register<ResumeEvent>(e =>
+        {
+            Resume();
         });
     }
 
@@ -70,7 +90,7 @@ public class PlaneRevolve : MonoBehaviour
     {
         if (elapsedTime >= totalDuration) return;
 
-        elapsedTime += Time.deltaTime;
+        elapsedTime += Time.deltaTime * speedFactor;
         float progress = Mathf.Clamp01(elapsedTime / totalDuration);
 
         // 记录移动前的位置用于计算方向
@@ -93,18 +113,12 @@ public class PlaneRevolve : MonoBehaviour
         Vector3 moveDirection = newPosition - previousPosition;
         if (moveDirection != Vector3.zero)
         {
-            // 使用 LookRotation 并保持默认向上方向
-            // transform.rotation = Quaternion.LookRotation(moveDirection.normalized, Vector3.up);
-
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 targetRotation,
                 Time.deltaTime * 10f
             );
-
-            // 如果需要保持原有倾斜角度，可以添加额外旋转：
-            // transform.rotation *= Quaternion.Euler(0, 0, 原有倾斜角度);
         }
 
         
@@ -149,5 +163,28 @@ public class PlaneRevolve : MonoBehaviour
         useAcceleration = accelerated;
         // 重新初始化参数
         Start();
+    }
+
+    void SpeedUp()
+    {
+        speedFactor *= 2f;
+    }
+
+    void SpeedDown()
+    {
+        speedFactor /= 2f;
+    }
+
+    void Stop()
+    {
+        speedFactor = 0f;
+    }
+
+    void Resume()
+    {
+        // 根据当前模式恢复速度
+        speedFactor = useAcceleration ?
+            normalDuration / acceleratedDuration :
+            1f;
     }
 }
