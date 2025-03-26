@@ -26,6 +26,7 @@ public partial class Environment
                 fixture = result.CreateCircle(GameLogic.Constants.PLAYER_RADIUS, DEFAULT_DENSITY);
                 fixture.CollisionCategories = Categories.Player;
                 fixture.CollidesWith = CollisionList.PlayerCollidesWith;
+                fixture.Restitution = 0f;
                 return result;
 
             case Categories.Wall:

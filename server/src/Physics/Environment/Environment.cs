@@ -12,7 +12,6 @@ public partial class Environment
     public const int POSITION_ITERATIONS = 100;
     public const int TOI_VELOCITY_ITERATIONS = 100;
     public const int TOI_POSITION_ITERATIONS = 100;
-
     public const float DEFAULT_DENSITY = 1f;
 
     private static SolverIterations _solverIterations = new()

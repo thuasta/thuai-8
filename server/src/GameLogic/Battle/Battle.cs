@@ -49,6 +49,8 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     private int _currentAwardChoosingTick = 0;
     private int _currentBattleTick = 0;
 
+    private readonly Physics.Environment _env = new(setting.TicksPerSecond);
+
     private readonly Random _random = new();
     private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Battle");

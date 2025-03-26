@@ -11,19 +11,22 @@ public partial class Environment
         public const Category Bullet = Category.Cat3;
         public const Category Laser = Category.Cat4;
         public const Category Trap = Category.Cat5;
+        public const Category GravityField = Category.Cat6;
     }
 
     public static class CollisionList
     {
         public const Category PlayerCollidesWith =
-            Categories.Wall | Categories.Bullet | Categories.Laser | Categories.Trap;
+            Categories.Wall | Categories.Bullet | Categories.Laser | Categories.Trap | Categories.GravityField;
         public const Category WallCollidesWith =
             Categories.Player | Categories.Bullet;
         public const Category BulletCollidesWith =
-            Categories.Player | Categories.Wall;
+            Categories.Player | Categories.Wall | Categories.GravityField;
         public const Category LaserCollidesWith =
             Categories.Player;
         public const Category TrapCollidesWith =
             Categories.Player;
+        public const Category GravityFieldCollidesWith =
+            Categories.Player | Categories.Bullet;
     }
 }
