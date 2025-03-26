@@ -47,3 +47,10 @@ msbuild.wrn
 
 # Log files
 *.log
+
+# replay files
+**/result.json
+*.dat
+
+# token files
+TOKENS

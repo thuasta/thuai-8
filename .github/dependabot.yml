@@ -5,23 +5,22 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/client/web/" # Location of package manifests
-    target-branch: "develop"
+  - package-ecosystem: "npm"
+    directory: "/client/web/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: "pip" # See documentation for possible values
-    directory: "/sdk/python/" # Location of package manifests
-    target-branch: "develop"
+
+  - package-ecosystem: "pip"
+    directory: "/sdk/python/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: "nuget" # See documentation for possible values
-    directory: "/server/src/" # Location of package manifests
-    target-branch: "develop"
+
+  - package-ecosystem: "nuget"
+    directory: "/server/src/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: "nuget" # See documentation for possible values
-    directory: "/server/test/" # Location of package manifests
-    target-branch: "develop"
+
+  - package-ecosystem: "nuget"
+    directory: "/server/test/"
     schedule:
       interval: "weekly"

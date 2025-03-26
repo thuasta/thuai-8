@@ -1,7 +1,7 @@
 asyncapi: 3.0.0
 info:
   title: THUAI8 API
-  version: '0.2'
+  version: '0.3.0'
 # channels:
 # "用于玩家 SDK 与后端的通信频道。"
 channels:
@@ -26,8 +26,8 @@ channels:
     messages:
       Error:
         $ref: '#/components/messages/Error' # 错误信息
-      StageChange:
-        $ref: '#/components/messages/StageChange' # 阶段切换
+      StageInfo:
+        $ref: '#/components/messages/StageInfo' # 阶段切换
       BattleUpdate:
         $ref: '#/components/messages/BattleUpdate' # 战斗信息更新
       BuffSelect:
@@ -63,7 +63,7 @@ operations:
       $ref: '#/channels/~1competition~1Record'
     messages:
       - $ref: '#/channels/~1competition~1Record/messages/Error' # 错误信息
-      - $ref: '#/channels/~1competition~1Record/messages/StageChange' # 阶段切换
+      - $ref: '#/channels/~1competition~1Record/messages/StageInfo' # 阶段切换
       - $ref: '#/channels/~1competition~1Record/messages/BattleUpdate' # 战斗信息更新
       - $ref: '#/channels/~1competition~1Record/messages/BuffSelect' # 加成选择
 
@@ -77,27 +77,31 @@ components:
       title: "PlayerPerform"
       summary: "玩家行为"
       payload:
-        type: array
-        additionalProperties: false
-        items:
-          oneOf:
-            - $ref: '#/components/schemas/PerformMove' # 前后移动
-            - $ref: '#/components/schemas/PerformTurn' # 转向
-            - $ref: '#/components/schemas/PerformAttack' # 攻击
-            - $ref: '#/components/schemas/PerformSkill' # 使用技能
-            - $ref: '#/components/schemas/PerformSelect' # 选择加成
-            - $ref: '#/components/schemas/GetPlayerInfo' # 获取人物属性
-            - $ref: '#/components/schemas/GetEnvironmentInfo' # 获取环境属性
-            - $ref: '#/components/schemas/GetGameStatistics' # 获取统计信息
-            - $ref: '#/components/schemas/GetAvailableBuffs' # 获取可选加成
+        properties:
+          messageType:
+            type: string
+            const: PLAYER_PERFORM
+          perform:
+            oneOf:
+              - $ref: '#/components/schemas/PerformMove' # 前后移动
+              - $ref: '#/components/schemas/PerformTurn' # 转向
+              - $ref: '#/components/schemas/PerformAttack' # 攻击
+              - $ref: '#/components/schemas/PerformSkill' # 使用技能
+              - $ref: '#/components/schemas/PerformSelect' # 选择加成
+              - $ref: '#/components/schemas/GetPlayerInfo' # 获取人物属性
+              - $ref: '#/components/schemas/GetEnvironmentInfo' # 获取环境属性
+              - $ref: '#/components/schemas/GetGameStatistics' # 获取统计信息
+              - $ref: '#/components/schemas/GetAvailableBuffs' # 获取可选加成
 
     GameStatistics:
       title: "GameStatistics"
       summary: "比赛统计信息"
       payload:
-        type: object
         additionalProperties: false
         properties:
+          messageType:
+            type: string
+            const: GAME_STATISTICS
           currentStage:
             $ref: '#/components/schemas/Stage'
             description: "当前阶段"
@@ -130,15 +134,22 @@ components:
       title: "PlayerInfo"
       summary: "玩家属性"
       payload:
-        $ref: '#/components/schemas/Player'
+        properties:
+          messageType:
+            type: string
+            const: PLAYER_INFO
+          items:
+            $ref: '#/components/schemas/Player'
 
     EnvironmentInfo:
       title: "EnvironmentInfo"
       summary: "环境属性"
       payload:
         additionalProperties: false
-        type: object
         properties:
+          messageType:
+            type: string
+            const: ENVIRONMENT_INFO
           walls:
             type: array
             items:
@@ -151,6 +162,14 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Bullet'  # 所有在场子弹
+          traps:
+            type: array
+            items:
+              $ref: '#/components/schemas/Trap'  # 所有陷阱位置
+          laser:
+            type: array
+            items:
+              $ref: '#/components/schemas/Laser'  # 所有激光位置
           PlayerPositions:
             type: array
             items:
@@ -170,25 +189,33 @@ components:
       title: "AvailableBuffs"
       summary: "可选加成列表"
       payload:
-        type: array
-        additionalProperties: false
-        items:
-          $ref: '#/components/schemas/BuffName'
+        properties:
+          messageType:
+            type: string
+            const: AVAILABLE_BUFFS
+          buffs:
+            type: array
+            additionalProperties: false
+            items:
+              $ref: '#/components/schemas/BuffName'
     
-    StageChange:
-      title: "StageChange"
+    StageInfo:
+      title: "StageInfo"
       payload:
         type: object
         additionalProperties: false
         required:
           - messageType
-          - targetStage
+          - totalTicks
+          - currentStage
         properties:
           messageType:
             type: string
-            const: STAGE_CHANGE
-          targetStage:
+            const: STAGE_INFO
+          currentStage:
             $ref: '#/components/schemas/Stage'
+          totalTicks:
+            type: integer
 
     BattleUpdate:
       title: "BattleUpdate"
@@ -197,28 +224,24 @@ components:
         additionalProperties: false
         required:
           - messageType
-          - currentTicks
-          - players
+          - battleTicks
           - events
         properties:
           messageType:
             type: string
             const: BATTLE_UPDATE
-          currentTicks:
+          battleTicks:
             type: integer
-          players:
-            type: array
-            items:
-              $ref: '#/components/schemas/Player'
           events:
             type: array
             items:
               oneOf:
-                - $ref: '#/components/schemas/AppearEvent'
-                - $ref: '#/components/schemas/BobEvent'
-                - $ref: '#/components/schemas/CollisionEvent'
-                - $ref: '#/components/schemas/DestroyEvent'
-    
+                - $ref: '#/components/schemas/PlayerUpdateEvent'
+                - $ref: '#/components/schemas/BulletsUpdateEvent'
+                - $ref: '#/components/schemas/MapUpdateEvent'
+                - $ref: '#/components/schemas/BuffActivateEvent'
+                - $ref: '#/components/schemas/BuffDisactivateEvent'
+
     BuffSelect:
       title: "BuffSelect"
       payload:
@@ -226,19 +249,24 @@ components:
         additionalProperties: false
         required:
           - messageType
-          - currentTicks
-          - token
-          - buff
+          - details
         properties:
           messageType:
             type: string
             const: BUFF_SELECT
-          currentTicks:
-            type: integer
-          token:
-            type: string
-          buff:
-            $ref: '#/components/schemas/BuffName'
+          details:
+            type: array
+            items:
+              type: object
+              required:
+                - token
+                - buff
+              properties:
+                token:
+                  type: string
+                buff:
+                  $ref: "#/components/schemas/BuffName"
+            description: 每个玩家的token及选择的buff
 
     Error:
       title: "Error"
@@ -247,6 +275,9 @@ components:
         type: object
         additionalProperties: false
         properties:
+          messageType:
+            type: string
+            const: ERROR
           errorCode:
             type: integer
           message:
@@ -432,6 +463,12 @@ components:
       type: object
       additionalProperties: false
       properties:
+        no: # 子弹编号
+          type: integer
+        isMissile:
+          type: boolean
+        isAntiArmor:
+          type: boolean
         position:
           $ref: '#/components/schemas/Position'
         speed:
@@ -441,6 +478,7 @@ components:
         traveledDistance:
           type: number  # 子弹已经过路程
       required:
+        - no
         - position
         - speed
         - damage
@@ -477,6 +515,41 @@ components:
         - x
         - y
         - angle
+
+    Trap:
+      title: "Trap"
+      type: object
+      additionalProperties: false
+      properties:
+        position:
+          $ref: '#/components/schemas/PositionInt'
+        isActive:
+          type: boolean
+      required:
+        - position
+        - isActive
+    
+    GameResults:
+      title: "GameResults"
+      type: object
+      additionalProperties: false
+      properties:
+        historyScoreA:
+          type: integer
+        historyScoreB:
+          type: integer
+        winnerToken:
+          type: string
+        infoA:
+          $ref: '#/components/schemas/Player'
+        infoB:
+          $ref: '#/components/schemas/Player'
+      required:
+        - historyScoreA
+        - historyScoreB
+        - winnerToken
+        - infoA
+        - infoB
 
     PerformMove:
       title: "PerformMove"
@@ -643,77 +716,104 @@ components:
           - start
           - end
     
-    Object:
-      oneOf:
-        - $ref: '#/components/schemas/Player'
-        - $ref: '#/components/schemas/Wall'
-        - $ref: '#/components/schemas/Fence'
-        - $ref: '#/components/schemas/Bullet'
-        - $ref: '#/components/schemas/Laser'
-        - $ref: '#/components/schemas/BuffName'
-    
-    AppearEvent:
-      title: "AppearEvent"
+    PlayerUpdateEvent:
+      title: "PlayerUpdateEvent"
+      description: 玩家信息更新，并据此进行移动、攻击、使用技能等
       type: object
       additionalProperties: false
       properties:
-        messageType:
+        eventType:
           type: string
-          const: APPEAR_EVENT
-        target:
-          $ref: '#/components/schemas/Object'
-        position:
-          oneOf:
-            - $ref: '#/components/schemas/Object'
-            - $ref: '#/components/schemas/Position'
-      required:
-        - messageType
-        - target
-        - position
-    
-    BobEvent:
-      title: "BobEvent"
-      type: object
-      additionalProperties: false
-      properties:
-        messageType:
-          type: string
-          const: BOB_EVENT
-        target:
-          $ref: '#/components/schemas/Object'
-        end:
-          $ref: '#/components/schemas/Position'
-      required:
-        - messageType
-        - target
-        - end
-    
-    CollisionEvent:
-      title: "CollisionEvent"
-      type: object
-      additionalProperties: false
-      properties:
-        messageType:
-          type: string
-          const: COLLISION_EVENT
-        targets:
+          const: PLAYER_UPDATE_EVENT
+        players:
           type: array
           items:
-            $ref: '#/components/schemas/Object'
+            $ref: '#/components/schemas/Player'
       required:
         - messageType
-        - targets
-
-    DestroyEvent:
-      title: "DestroyEvent"
+        - players
+    
+    BulletsUpdateEvent:
+      title: "BulletsUpdateEvent"
+      description: 在场子弹信息更新，并据此进行移动等
       type: object
       additionalProperties: false
       properties:
-        messageType:
+        eventType:
           type: string
-          const: DESTROY_EVENT
-        target:
-          $ref: '#/components/schemas/Object'
+          const: BULLETS_UPDATE_EVENT
+        bullets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bullet'
       required:
         - messageType
-        - target
+        - bullets
+    
+    MapUpdateEvent:
+      title: "MapUpdateEvent"
+      description: 静态地图信息更新，并据此进行建立/摧毁等
+      type: object
+      addtionalProperties: false
+      properties:
+        eventType:
+          type: string
+          const: MAP_UPDATE_EVENT
+        walls:
+            type: array
+            items:
+              $ref: '#/components/schemas/Wall'  # 所有普通墙体
+        fences:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fence'  # 所有技能墙体
+        traps:
+          type: array
+          items:
+            $ref: '#/components/schemas/Trap'  # 所有陷阱位置
+        laser:
+          type: array
+          items:
+            $ref: '#/components/schemas/Laser'  # 所有激光位置
+      required:
+        - messageType
+        - walls
+        - fences
+        - traps
+        - laser
+
+    BuffActivateEvent: 
+      title: "BuffActiveEvent"
+      description: 主动技能使用或被动技能生效
+      type: object
+      additionalProperties: false
+      properties:
+        eventType:
+          type: string
+          const: BUFF_ACTIVE_EVENT
+        buffName:
+          $ref: '#/components/schemas/BuffName'
+        playerToken:
+          type: string
+      required:
+        - messageType
+        - buffName
+        - playerToken
+      
+    BuffDisactivateEvent:
+      title: "BuffDisactivateEvent"
+      description: 主动技能或被动技能效果结束
+      type: object
+      additionalProperties: false
+      properties:
+        eventType:
+          type: string
+          const: BUFF_DISACTIVE_EVENT
+        buffName:
+          $ref: '#/components/schemas/BuffName'
+        playerToken:
+          type: string
+      required:
+        - messageType
+        - buffName
+        - playerToken

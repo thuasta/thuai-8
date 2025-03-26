@@ -5,17 +5,16 @@
 #include <hv/Event.h>
 #include <hv/EventLoop.h>
 #include <hv/WebSocketClient.h>
+#include <spdlog/fmt/bundled/format.h>
 
 #include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
-#include <vector>
 
 #include "available_buffs.hpp"
 #include "environment_info.hpp"
 #include "game_statistics.hpp"
-#include "message.hpp"
 #include "player_info.hpp"
 
 namespace thuai8_agent {
@@ -26,18 +25,13 @@ class Agent {
         int loop_interval_ms);
 
   Agent(const Agent&) = delete;
-
   Agent(Agent&&) = delete;
-
   auto operator=(const Agent&) -> Agent& = delete;
-
   auto operator=(Agent&&) -> Agent& = delete;
 
-  ~Agent() = default;
+  ~Agent();
 
-  void Connect(const std::string& server_address) {
-    ws_client_->open(server_address.data());
-  }
+  void Connect(const std::string& server_address);
 
   [[nodiscard]] auto IsConnected() const -> bool {
     return ws_client_->isConnected();
@@ -67,7 +61,7 @@ class Agent {
     return environment_info_.value();
   }
 
-  [[nodiscard]] auto available_buffs() const -> const std::vector<BuffKind>& {
+  [[nodiscard]] auto available_buffs() const -> const AvailableBuffs& {
     return available_buffs_.value();
   }
 
@@ -86,21 +80,28 @@ class Agent {
   void SelectBuff(BuffKind buff) const;
 
  private:
-  void Loop();
-  void OnMessage(const Message& message);
+  void Loop() const;
+  void OnMessage(std::string_view message);
 
-  std::string token_;
-  hv::EventLoopPtr event_loop_;
-  hv::TimerID timer_id_;
-  std::unique_ptr<hv::WebSocketClient> ws_client_;
+  const std::string token_;
+  const hv::EventLoopPtr event_loop_;
+  const std::unique_ptr<hv::WebSocketClient> ws_client_;
+  const hv::TimerID timer_id_;
 
   std::optional<PlayerInfo> self_info_;
   std::optional<PlayerInfo> opponent_info_;
   std::optional<GameStatistics> game_statistics_;
   std::optional<EnvironmentInfo> environment_info_;
-  std::optional<std::vector<BuffKind>> available_buffs_;
+  std::optional<AvailableBuffs> available_buffs_;
 };
 
 }  // namespace thuai8_agent
+
+template <>
+struct fmt::formatter<thuai8_agent::Agent> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Agent& obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(), "Agent[{}]", obj.token());
+  }
+};
 
 #endif  // _THUAI8_AGENT_AGENT_HPP_

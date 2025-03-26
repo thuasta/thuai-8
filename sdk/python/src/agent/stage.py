@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Stage(Enum):
     REST = "REST"
     BATTLE = "BATTLE"
