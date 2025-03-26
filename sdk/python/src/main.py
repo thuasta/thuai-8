@@ -70,7 +70,7 @@ async def main():
 
 
 def parse_options() -> Options:
-    server_env = os.getenv("SERVER", default=DEFAULT_SERVER_ADDRESS)
+    server_env = os.getenv("GAME_HOST", default=DEFAULT_SERVER_ADDRESS)
     token_env = os.getenv("TOKEN", default=DEFAULT_TOKEN)
 
     parser = argparse.ArgumentParser("agent")
