@@ -1,3 +1,4 @@
+using nkast.Aether.Physics2D.Common;
 using Serilog;
 
 namespace Thuai.Server.GameLogic;
@@ -18,7 +19,32 @@ public partial class Player(string token, int playerId)
     public MoveDirection MoveDirection { get; set; } = MoveDirection.NONE;
     public TurnDirection TurnDirection { get; set; } = TurnDirection.NONE;
 
-    public Position PlayerPosition { get; set; } = new();
+    public Position PlayerPosition
+    {
+        get
+        {
+            if (Body is null)
+            {
+                _logger.Error("Player is not bound to a body.");
+                return new();
+            }
+            return new(Body.Position.X, Body.Position.Y, Body.Rotation);
+        }
+        set
+        {
+            if (Body is null)
+            {
+                _logger.Error("Player is not bound to a body.");
+                return;
+            }
+            Body.Position = new(value.Xpos, value.Ypos);
+            Body.Rotation = value.Angle;
+            float velocity = Body.LinearVelocity.Length();
+            Body.LinearVelocity = new(
+                (float)(velocity * Math.Cos(value.Angle)), (float)(velocity * Math.Sin(value.Angle))
+            );
+        }
+    }
 
     public Weapon PlayerWeapon { get; set; } = new();
     public Armor PlayerArmor { get; set; } = new();
