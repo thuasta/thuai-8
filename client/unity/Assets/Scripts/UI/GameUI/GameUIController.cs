@@ -89,7 +89,7 @@ public class GameUIController : MonoBehaviour, IController
         {
             _recordInfo = this.GetModel<RecordInfo>();
             if (_recordInfo != null)
-                this.SendCommand(new RoundsChangeCommand(_recordInfo.GameRounds, _recordInfo.CurrentBattle));
+                this.SendCommand(new RoundsChangeCommand(_recordInfo.GameRounds, _recordInfo.CurrentBattle + 1));
         }
     }
 
