@@ -168,8 +168,8 @@ namespace BattleCity
         }
         void Follow()
         {
-            Debug.Log($"player num is {mTanks.GetPlayerNum()}");
-            //视野缩放
+            // Debug.Log($"player num is {mTanks.GetPlayerNum()}");
+            // 视野缩放
             offset = new Vector3(5.7f, 14.6f, -5.2f);
             Vector3 targetPosition = targetTank.TankObject.transform.TransformPoint(offset);
             transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 10);
