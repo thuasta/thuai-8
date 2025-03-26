@@ -1,0 +1,360 @@
+on:
+  push:
+    paths:
+      - .github/workflows/build.yml
+      - client/**
+      - map_editor/**
+      - sdk/**
+      - server/**
+  pull_request_target:
+    paths:
+      - .github/workflows/build.yml
+      - client/**
+      - map_editor/**
+      - sdk/**
+      - server/**
+  workflow_dispatch:
+
+jobs:
+  client-unity-build:
+    # if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          - StandaloneLinux64
+          - StandaloneOSX
+          - StandaloneWindows64
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: client/unity
+          targetPlatform: ${{ matrix.targetPlatform }}
+          unityVersion: 2022.3.9f1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-client-unity-${{ matrix.targetPlatform }}-${{ github.sha }}
+          path: build/${{ matrix.targetPlatform }}
+
+  client-unity-test:
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: client/unity
+          unityVersion: 2022.3.9f1
+
+  client-web-build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: |
+          npm ci
+        working-directory: client/web
+
+      - run: |
+          npm run build
+        working-directory: client/web
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-client-web-${{ github.sha }}
+          path: client/web/build
+
+  client-web-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: |
+          npm ci
+        working-directory: client/web
+
+      - run: |
+          npm run test
+        working-directory: client/web
+
+  map-editor-build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      # TODO
+
+  sdk-cpp-build:
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - architecture: x86_64
+            platform: linux
+            runs-on: ubuntu-latest
+          - architecture: arm64
+            platform: macosx
+            runs-on: macos-latest
+          - architecture: x64
+            platform: windows
+            runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: xmake-io/github-action-setup-xmake@v1
+
+      - run: |
+          xmake repo -u -y
+          xmake f -m release -v -y
+        working-directory: sdk/cpp
+
+      - run: |
+          xmake -v -y
+        working-directory: sdk/cpp
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-sdk-cpp-${{ matrix.platform }}-${{ matrix.architecture }}-${{ github.sha }}
+          path: sdk/cpp/build/${{ matrix.platform }}/${{ matrix.architecture }}/release/
+
+  sdk-cpp-build-docker-image:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: sdk/cpp
+
+  sdk-cpp-check-style:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jidicula/clang-format-action@v4.14.0
+        with:
+          check-path: sdk/cpp
+          clang-format-version: 18
+
+  sdk-python-build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - run: |
+          pip install -r requirements.txt
+        working-directory: sdk/python
+
+  sdk-python-build-docker-image:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: sdk/python
+
+  sdk-python-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - run: |
+          pip install -r requirements.txt
+        working-directory: sdk/python
+
+      - run: |
+          python -m unittest discover -v
+        working-directory: sdk/python
+
+  sdk-python-check-style:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+
+  sdk-python-lint:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          python -m pip install --upgrade pip
+          pip install pylint
+
+      - run: |
+          pylint $(git ls-files '*.py')
+
+  server-build:
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runtime:
+          - linux-arm
+          - linux-arm64
+          - linux-x64
+          - linux-musl-arm
+          - linux-musl-arm64
+          - linux-musl-x64
+          - osx-arm64
+          - osx-x64
+          - win-arm64
+          - win-x64
+          - win-x86
+        include:
+          - runs-on: ubuntu-latest
+          - runs-on: macos-latest
+            runtime: osx-x64
+          - runs-on: macos-latest
+            runtime: osx-arm64
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - run: |
+          dotnet publish src -c Release -o bin --sc false \
+          -r ${{ matrix.runtime }} \
+          -p:DebugType=none \
+          -p:PublishSingleFile=true \
+          -p:Assemblyname=server
+        working-directory: server
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-server-${{ matrix.runtime }}-${{ github.sha }}
+          path: server/bin
+
+  server-build-docker-image:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: server
+
+  server-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - run: |
+          dotnet test test
+        working-directory: server
+
+  server-check-test-coverage:
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - run: |
+          dotnet test test --collect:"XPlat Code Coverage"
+        working-directory: server
+
+      - name: Check coverage threshold
+        run: |
+          coverage=$(grep -o 'line-rate="[^"]*"' server/test/TestResults/*/coverage.cobertura.xml | head -1 | cut -d'"' -f2)
+          coverage=$(echo "$coverage*100" | bc)
+          if (( $(echo "$coverage < 90" | bc -l) )); then
+            echo "Code coverage is below 90%: $coverage%"
+            exit 1
+          fi
+
+  server-check-style:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - run: |
+          dotnet format --verify-no-changes src
+          dotnet format --verify-no-changes test
+        working-directory: server

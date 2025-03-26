@@ -9,83 +9,13 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 
 public class JsonUtility
-{
-    /// <summary>
-    /// Unzip the level_data.dat
-    /// </summary>
-    /// <param name="levelDataZipArchive"></param>
-    /// <exception cref="Exception"></exception>
-    public static JObject UnzipLevel(string path)
-    {
-        Stream levelDataStream = null;
-
-        if (Directory.Exists(path))
-        {
-            levelDataStream = ZipFile.OpenRead($"{path}/level.dat").GetEntry("level_data.json").Open() ??
-             throw new Exception("Level data not found in zip archive.");
-        }
-        else if (File.Exists(path))
-        {
-            ZipArchive mcLevelDataZipFile = ZipFile.OpenRead(path);
-            //Stream mcLevelDataEntryStream = mcLevelDataZipFile.GetEntry("level.dat.old").Open() ??
-            //    (mcLevelDataZipFile.GetEntry("level.dat").Open() ??
-            //    throw new Exception("mcLevel data not found in zip archive."));
-            Stream mcLevelDataEntryStream = (mcLevelDataZipFile.GetEntry("level.dat").Open() ??
-            throw new Exception("mcLevel data not found in zip archive."));
-
-
-            ZipArchive levelDataZipFile = new ZipArchive(mcLevelDataEntryStream);
-            levelDataStream = levelDataZipFile.GetEntry("level_data.json").Open() ??
-             throw new Exception("Level data not found in zip archive.");
-        }
-
-
-        // Read the level data to a JSON string.
-        StreamReader levelDataStreamReader = new StreamReader(levelDataStream);
-
-        //Debug.Log(levelDataEntryStreamReader.ReadToEnd());
-
-        return (JObject)JToken.ReadFrom(new JsonTextReader(levelDataStreamReader));
-    }
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
+{    
     public static JObject UnzipRecord(string path)
     {
         // Load all the record entry
         List<JObject> allRecordJsonObject = new();
 
-        if (Directory.Exists(path))
-        {
-            Debug.Log("Record is a Directory.");
-            string[] files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-            //Loop through each file
-            foreach (string file in files)
-            {
-                try
-                {
-                    if (!file.Contains("level.dat") && !file.EndsWith("/") && !file.Contains(".meta"))
-                    {
-                        using (Stream stream = File.OpenRead(file))
-                        {
-                            // Unzip the record
-                            ZipArchive recordZipArchive = new(stream);
-                            StreamReader recordStreamReader = new(recordZipArchive.Entries[0].Open());
-                            allRecordJsonObject.Add((JObject)JToken.ReadFrom(new JsonTextReader(recordStreamReader)));
-                            Debug.Log(recordStreamReader.ReadToEnd().ToString());
-                        }
-                    }
-                }
-                catch
-                {
-
-                }
-            }
-        }
-        else if (File.Exists(path))
+        if (File.Exists(path) && (Path.GetExtension(path).Equals(".zip", StringComparison.OrdinalIgnoreCase)|| Path.GetExtension(path).Equals(".dat", StringComparison.OrdinalIgnoreCase)))
         {
             Debug.Log("Record is a Zipped File.");
             ZipArchive ncLevelDataZipFile = ZipFile.OpenRead($"{path}");
@@ -105,6 +35,19 @@ public class JsonUtility
                 {
                     Debug.Log(e.Message);
                 }
+            }
+        }
+        else if(File.Exists(path) && (Path.GetExtension(path).Equals(".json", StringComparison.OrdinalIgnoreCase)))
+        {
+            try
+            {
+                string jsonContent = File.ReadAllText(path);
+                JObject jsonObj = JObject.Parse(jsonContent);
+                allRecordJsonObject.Add(jsonObj);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Fail to open the json record : {ex.Message}");
             }
         }
 
@@ -128,39 +71,29 @@ public class JsonUtility
             JArray records = (JArray)jsonObject["records"];
             if (records != null && records.Count > 0)
             {
-                string messageType = records[0]["messageType"].ToString();
-                if (messageType != null && messageType == "MAP" && records.Count > 1)
+                foreach (JObject recordInfo in records)
                 {
-                    JValue tick = (JValue)records[1]["currentTicks"];
-                    if (tick != null)
+                    JArray record = (JArray)recordInfo["record"];
+                    if (record == null || record.Count == 0) continue;
+
+                    foreach (JObject recordItem in record)
                     {
-                        // The first tick
-                        indexAndTicks[nowRecordIndex].Item2 = (int)tick;
-                    }
-                    else
-                    {
-                        indexAndTicks[nowRecordIndex].Item2 = -1;
-                    }
-                }
-                else
-                {
-                    foreach (JToken recordInfo in records)
-                    {
-                        JValue tick = (JValue)recordInfo["currentTicks"];
-                        if (tick != null)
+                        JToken messageTypeToken = recordItem["messageType"];
+                        if (messageTypeToken?.ToString() == "STAGE_INFO")
                         {
-                            // The first tick
-                            indexAndTicks[nowRecordIndex].Item2 = (int)tick;
-                            break;
-                        }
-                        else
-                        {
-                            indexAndTicks[nowRecordIndex].Item2 = -2;
+                            JToken tickToken = recordItem["totalTicks"];
+                            if (tickToken != null && tickToken.Type == JTokenType.Integer)
+                            {
+                                indexAndTicks[nowRecordIndex].Item2 = (int)tickToken;
+                                break; // 找到第一个有效tick后跳出
+                            }
                         }
                     }
+                    // 如果已找到有效tick则不再检查后续record
+                    if (indexAndTicks[nowRecordIndex].Item2 != -1) break;
                 }
+                nowRecordIndex++;
             }
-            nowRecordIndex++;
         }
         // Rearrange the order of record file according to their first ticks
         List<(int, int)> indexAndTicksList = indexAndTicks.ToList<(int, int)>();
@@ -195,50 +128,5 @@ public class JsonUtility
         //allRecordJsonObject.OrderBy(record => (int)record["tick"]);
 
         return recordJsonObject;
-    }
-    /// <summary>
-    /// Parse the json file
-    /// </summary>
-    /// <param name="fileInfo">The file from class Upload.OpenFileName</param>
-    /// <returns></returns>
-    public static JsonTextReader ReadJsonFile(string filePath)
-    {
-        System.IO.StreamReader file = System.IO.File.OpenText(filePath);
-        return new JsonTextReader(file);
-    }
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="jsonPath">which is inner the resource folder</param>
-    /// <returns></returns>
-    public static Dictionary<string, int> ParseBlockDictJson(string jsonPath)
-    {
-        // "Json/Dict"
-        TextAsset text = Resources.Load(jsonPath) as TextAsset;
-        string json = text.text;
-        if (string.IsNullOrEmpty(json))
-        {
-            return null;
-        }
-        else
-        {
-            Dictionary<string, int> dict = JsonConvert.DeserializeObject<Dictionary<string, int>>(json);
-            // Delete the prefix "minecraft:" in keys
-            string prefix = "minecraft:";
-
-            string ReplaceKey(string key, int prefixIndex)
-            {
-                key = key.Substring(prefixIndex + prefix.Length);
-                // Capitalize the name 
-                key = key[..1].ToUpper() + key[1..];
-                return key;
-            };
-
-            dict = dict.ToDictionary(dictItem => dictItem.Key.IndexOf(prefix) == -1 ?
-                dictItem.Key : ReplaceKey(dictItem.Key, dictItem.Key.IndexOf(prefix)),
-                dictItem => dictItem.Value);
-
-            return dict;
-        }
-    }
+    }    
 }

@@ -2,7 +2,10 @@
 #ifndef _THUAI8_AGENT_PLAYER_INFO_HPP_
 #define _THUAI8_AGENT_PLAYER_INFO_HPP_
 
-#include <cstdint>
+#include <spdlog/fmt/bundled/format.h>
+#include <spdlog/fmt/bundled/ranges.h>
+
+#include <magic_enum/magic_enum.hpp>
 #include <string>
 #include <vector>
 
@@ -10,48 +13,48 @@
 
 namespace thuai8_agent {
 
-enum class ArmorKnifeState : std::uint8_t {
+enum class ArmorKnifeState : unsigned char {
   NotOwned,
   Available,
   Active,
   Broken
 };
 
-enum class SkillKind : std::uint8_t {
-  BlackOut,   // 视野限制
-  SpeedUp,    // 加速
-  Flash,      // 闪现
-  Destroy,    // 破坏墙体
-  Construct,  // 建造墙体
-  Trap,       // 陷阱
-  Missile,    // 导弹
-  Kamui       // 虚化
+enum class SkillKind : unsigned char {
+  BlackOut,
+  SpeedUp,
+  Flash,
+  Destroy,
+  Construct,
+  Trap,
+  Missile,
+  Kamui
 };
 
 struct Weapon {
-  bool isLaser{};    // 是否为激光
-  bool antiArmor{};  // 是否破甲
+  unsigned int attackSpeed{};
+  unsigned int bulletSpeed{};
+  bool isLaser{};
+  bool antiArmor{};
   unsigned int damage{};
-  unsigned int maxBullets{};      // 子弹最大存在数量
-  unsigned int currentBullets{};  // 当前存在的子弹数量
-  double attackSpeed{};           // 攻击速度
-  double bulletSpeed{};           // 子弹速度
+  unsigned int maxBullets{};
+  unsigned int currentBullets{};
 };
 
 struct Armor {
-  bool canReflect{};          // 是否可以反弹
-  bool gravityField{};        // 是否重力场
-  unsigned int armorValue{};  // 护盾值
-  unsigned int health{};      // 血量
-  double dodgeRate{};         // 闪避率
-  ArmorKnifeState knife{};    // 名刀
+  bool canReflect{};
+  bool gravityField{};
+  unsigned int armorValue{};
+  unsigned int health{};
+  double dodgeRate{};
+  ArmorKnifeState knife{};
 };
 
 struct Skill {
   SkillKind name{};
-  unsigned int maxCoolDown{};      // 最大冷却时间
-  unsigned int currentCoolDown{};  // 当前冷却时间
-  bool isActive{};                 // 是否正在生效
+  unsigned int maxCoolDown{};
+  unsigned int currentCoolDown{};
+  bool isActive{};
 };
 
 struct PlayerInfo {
@@ -63,5 +66,64 @@ struct PlayerInfo {
 };
 
 }  // namespace thuai8_agent
+
+template <>
+struct fmt::formatter<thuai8_agent::ArmorKnifeState>
+    : fmt::formatter<std::string> {
+  static auto format(thuai8_agent::ArmorKnifeState obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(), "{}", magic_enum::enum_name(obj));
+  }
+};
+
+template <>
+struct fmt::formatter<thuai8_agent::SkillKind> : fmt::formatter<std::string> {
+  static auto format(thuai8_agent::SkillKind obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(), "{}", magic_enum::enum_name(obj));
+  }
+};
+
+template <>
+struct fmt::formatter<thuai8_agent::Weapon> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Weapon& obj, format_context& ctx) {
+    return fmt::format_to(
+        ctx.out(),
+        "Weapon: {{AttackSpeed: {}, BulletSpeed: {}, IsLaser: {}, AntiArmor: "
+        "{}, Damage: {}, MaxBullets: {}, CurrentBullets: {}}}",
+        obj.attackSpeed, obj.bulletSpeed, obj.isLaser, obj.antiArmor,
+        obj.damage, obj.maxBullets, obj.currentBullets);
+  }
+};
+
+template <>
+struct fmt::formatter<thuai8_agent::Armor> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Armor& obj, format_context& ctx) {
+    return fmt::format_to(
+        ctx.out(),
+        "Armor: {{CanReflect: {}, GravityField: {}, ArmorValue: {}, Health: "
+        "{}, DodgeRate: {}, Knife: {}}}",
+        obj.canReflect, obj.gravityField, obj.armorValue, obj.health,
+        obj.dodgeRate, obj.knife);
+  }
+};
+
+template <>
+struct fmt::formatter<thuai8_agent::Skill> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Skill& obj, format_context& ctx) {
+    return fmt::format_to(ctx.out(),
+                          "Skill: {{Name: {}, MaxCoolDown: {}, "
+                          "CurrentCoolDown: {}, IsActive: {}}}",
+                          obj.name, obj.maxCoolDown, obj.currentCoolDown,
+                          obj.isActive);
+  }
+};
+
+template <>
+struct fmt::formatter<thuai8_agent::PlayerInfo> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::PlayerInfo& obj, format_context& ctx) {
+    return fmt::format_to(
+        ctx.out(), "PlayerInfo: {{Token: {}, {}, {}, {}, Skills: {}}}",
+        obj.token, obj.position, obj.weapon, obj.armor, obj.skills);
+  }
+};
 
 #endif  // _THUAI8_AGENT_PLAYER_INFO_HPP_

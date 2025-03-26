@@ -1,9 +1,0 @@
-site_name: THUAI8 Guide
-docs_dir: ./guide
-site_dir: ../site
-
-nav:
-  - "Home": index.md
-  - "FAQ": faq.md
-  - "For Developers":
-    - "Home": dev/index.md

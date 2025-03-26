@@ -1,17 +1,19 @@
-namespace Thuai.Server.GameLogic;
-
-/// <summary>
-/// Represents an item in the game.
-/// </summary>
-public class Item
+namespace Thuai.Server.GameLogic
 {
-    public enum ItemType
+    public class Item
     {
-        // TODO: Implement
-    }
+        public enum ItemType
+        {
+            None,
+            HealthPotion,
+            ArmorUpgrade
+        }
 
-    /// <summary>
-    /// The type of the item.
-    /// </summary>
-    public ItemType Type { get; }
+        public ItemType Type { get; }
+
+        public Item()
+        {
+            Type = ItemType.None;
+        }
+    }
 }

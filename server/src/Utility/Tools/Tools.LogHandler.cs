@@ -17,7 +17,7 @@ public static partial class Tools
         /// <summary>
         /// The maximum length of a log message.
         /// </summary>
-        public const int MaximumMessageLength = 65535;
+        public const int MaximumMessageLength = 65536;
 
         /// <summary>
         /// The template for Serilog (console).
@@ -149,9 +149,9 @@ public static partial class Tools
         /// </summary>
         /// <param name="component">Name of the component.</param>
         /// <returns>The logger.</returns>
-        public static ILogger CreateLogger(string component)
+        public static ILogger CreateLogger(string componentName)
         {
-            return Log.Logger.ForContext("Component", component);
+            return Log.Logger.ForContext("Component", componentName);
         }
 
         /// <summary>

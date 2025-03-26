@@ -1,6 +1,7 @@
 from typing import List
 from .stage import Stage
 
+
 class Score:
     def __init__(self, token: str, score: int):
         self.token = token
@@ -9,8 +10,11 @@ class Score:
     def __str__(self):
         return f"Score(token={self.token}, score={self.score})"
 
+
 class GameStatistics:
-    def __init__(self, current_stage: Stage, count_down: int, ticks: int, scores: List[Score]):
+    def __init__(
+        self, current_stage: Stage, count_down: int, ticks: int, scores: List[Score]
+    ):
         self.current_stage = current_stage
         self.count_down = count_down
         self.ticks = ticks

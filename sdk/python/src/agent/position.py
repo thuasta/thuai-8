@@ -1,4 +1,3 @@
-
 class Position:
     def __init__(self, x: float, y: float, angle: float):
         self.x = x
@@ -7,4 +6,3 @@ class Position:
 
     def __str__(self):
         return f"Position(x={self.x}, y={self.y}, angle={self.angle})"
-

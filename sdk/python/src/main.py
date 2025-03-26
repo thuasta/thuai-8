@@ -14,7 +14,7 @@ class Options:
         self.token = token
 
 
-DEFAULT_LOGGING_LEVEL = logging.INFO
+DEFAULT_LOGGING_LEVEL = logging.DEBUG
 DEFAULT_SERVER_ADDRESS = "ws://localhost:14514"
 DEFAULT_TOKEN = "1919810"
 DEFAULT_LOOP_INTERVAL = 0.2  # In seconds.
@@ -70,7 +70,7 @@ async def main():
 
 
 def parse_options() -> Options:
-    server_env = os.getenv("SERVER", default=DEFAULT_SERVER_ADDRESS)
+    server_env = os.getenv("GAME_HOST", default=DEFAULT_SERVER_ADDRESS)
     token_env = os.getenv("TOKEN", default=DEFAULT_TOKEN)
 
     parser = argparse.ArgumentParser("agent")
