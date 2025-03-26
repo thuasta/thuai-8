@@ -12,7 +12,7 @@ namespace BattleCity
 
         protected override void OnInit()
         {
-            Text Scores_Text = GameObject.Find("Canvas/Scores").GetComponent<Text>();
+            Text Scores_Text = null;//GameObject.Find("Canvas/Scores").GetComponent<Text>();
             scores = Scores_Text;
         }
     }
