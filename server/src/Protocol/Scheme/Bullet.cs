@@ -3,15 +3,24 @@ using System.Text.Json.Serialization;
 namespace Thuai.Server.Protocol.Scheme;
 public record Bullet
 {
+    [JsonPropertyName("no")]
+    public required int No { get; init; }
+
+    [JsonPropertyName("isMissile")]
+    public bool IsMissile { get; init; }
+
+    [JsonPropertyName("isAntiArmor")]
+    public bool IsAntiArmor { get; init; }
+
     [JsonPropertyName("position")]
-    public Position Position { get; init; } = new();
+    public required Position Position { get; init; }
 
     [JsonPropertyName("speed")]
-    public double Speed { get; init; }
+    public required double Speed { get; init; }
 
     [JsonPropertyName("damage")]
-    public double Damage { get; init; }
+    public required double Damage { get; init; }
 
     [JsonPropertyName("traveledDistance")]
-    public double TraveledDistance { get; init; }
+    public required double TraveledDistance { get; init; }
 }
