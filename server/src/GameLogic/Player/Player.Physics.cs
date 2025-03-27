@@ -7,6 +7,10 @@ namespace Thuai.Server.GameLogic;
 public partial class Player : Physics.IPhysicalObject
 {
     public Body? Body { get; private set; }
+    public Vector2 Orientation => new(
+        (float)Math.Cos(Body?.Rotation ?? 0),
+        (float)Math.Sin(Body?.Rotation ?? 0)
+    );
 
     public void Bind(Body body)
     {
@@ -65,25 +69,25 @@ public partial class Player : Physics.IPhysicalObject
             }
 
             Physics.Tag tag = (Physics.Tag)b.Body.Tag;
+
+            if (tag.AttachedData.ContainsKey("coveredFields") == false
+                || tag.AttachedData["coveredFields"] is not int)
+            {
+                tag.AttachedData["coveredFields"] = 0;
+            }
+
+            tag.AttachedData["coveredFields"] = (int)tag.AttachedData["coveredFields"] + 1;
+
             if (tag.Owner is Player player && player.IsInvulnerable == true)
             {
                 _logger.Debug($"Target player {player.ID} is invulnerable to gravity field.");
                 return false;
             }
-
-            if (tag.AttachedData.ContainsKey("slowed") == false || tag.AttachedData["slowed"] is not bool)
+            if ((int)tag.AttachedData["coveredFields"] == 1)
             {
-                tag.AttachedData["slowed"] = false;
+                b.Body.LinearVelocity *= Constants.GRAVITY_FIELD_STRENGTH;
+                b.Body.AngularVelocity *= Constants.GRAVITY_FIELD_STRENGTH;
             }
-
-            if ((bool)tag.AttachedData["slowed"] == true)
-            {
-                _logger.Debug("Target is already slowed down by gravity field.");
-                return true;
-            }
-
-            b.Body.LinearVelocity *= Constants.GRAVITY_FIELD_STRENGTH;
-            tag.AttachedData["slowed"] = true;
 
             return true;
         }
@@ -128,20 +132,35 @@ public partial class Player : Physics.IPhysicalObject
             }
 
             Physics.Tag tag = (Physics.Tag)b.Body.Tag;
-            if (tag.AttachedData.ContainsKey("slowed") == false || tag.AttachedData["slowed"] is not bool)
+            if (tag.AttachedData.ContainsKey("coveredFields") == false
+                || tag.AttachedData["coveredFields"] is not int)
             {
-                _logger.Error("Gravity field seperated with an object without a \"slowed\" tag.");
+                _logger.Error("Gravity field seperated with an object without a \"coveredFields\" tag.");
                 return;
             }
-
-            if ((bool)tag.AttachedData["slowed"] == false)
+            if ((int)tag.AttachedData["coveredFields"] < 0)
+            {
+                _logger.Error("Value of \"coveredFields\" tag if negative. Please contact the developer.");
+                return;
+            }
+            if ((int)tag.AttachedData["coveredFields"] == 0)
             {
                 _logger.Debug("Target is no longer slowed down.");
                 return;
             }
 
-            b.Body.LinearVelocity /= Constants.GRAVITY_FIELD_STRENGTH;
-            tag.AttachedData["slowed"] = false;
+            tag.AttachedData["coveredFields"] = (int)tag.AttachedData["coveredFields"] - 1;
+
+            if (tag.Owner is Player player && player.IsInvulnerable == true)
+            {
+                _logger.Debug($"Target player {player.ID} is invulnerable to gravity field.");
+                return;
+            }
+            if ((int)tag.AttachedData["coveredFields"] == 0)
+            {
+                b.Body.LinearVelocity /= Constants.GRAVITY_FIELD_STRENGTH;
+                b.Body.AngularVelocity /= Constants.GRAVITY_FIELD_STRENGTH;
+            }
         }
     }
 }
