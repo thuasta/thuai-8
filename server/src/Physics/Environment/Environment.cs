@@ -12,6 +12,7 @@ public partial class Environment
     public const int POSITION_ITERATIONS = 100;
     public const int TOI_VELOCITY_ITERATIONS = 100;
     public const int TOI_POSITION_ITERATIONS = 100;
+    public const float DEFAULT_DENSITY = 1f;
 
     private static SolverIterations _solverIterations = new()
     {
@@ -23,7 +24,7 @@ public partial class Environment
 
     public float TimeStep { get; init; }
 
-    private World _world = new(Vector2.Zero);
+    private readonly World _world = new(Vector2.Zero);
 
     private readonly ILogger _logger = Utility.Tools.LogHandler.CreateLogger("Environment");
 
@@ -39,6 +40,9 @@ public partial class Environment
         _logger.Debug($"TOI position iterations: {TOI_POSITION_ITERATIONS}");
     }
 
+    /// <summary>
+    /// Run the physics simulation for one step.
+    /// </summary>
     public void Step()
     {
         _world.Step(TimeStep, ref _solverIterations);

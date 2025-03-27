@@ -1,3 +1,5 @@
+using nkast.Aether.Physics2D.Common;
+
 using Serilog;
 
 namespace Thuai.Server.GameLogic;
@@ -49,6 +51,8 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     private int _currentAwardChoosingTick = 0;
     private int _currentBattleTick = 0;
 
+    private readonly Physics.Environment _env = new(setting.TicksPerSecond);
+
     private readonly Random _random = new();
     private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Battle");
@@ -82,11 +86,21 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
                 bool success = GenerateMap();
                 if (!success)
                 {
-                    throw new Exception("Generate Map Failed");
+                    throw new Exception("Generate Map Failed.");
                 }
+
+                AddWall(Map?.Walls ?? throw new Exception("Map is null."));
+
                 foreach (Player player in AllPlayers)
                 {
-                    player.Recover();
+                    player.InitializeWith(
+                        _env.CreateBody(
+                            Physics.Environment.Categories.Player,
+                            Vector2.Zero,
+                            0f
+                        )
+                    );
+
                     SubscribePlayerEvents(player);
                 }
                 ChooseSpawnpoint();
@@ -116,9 +130,14 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
             {
                 if (Stage == BattleStage.InBattle)
                 {
+                    UpdatePlayerSpeed();
+
+                    _env.Step();
+
                     UpdatePlayers();
                     UpdateBullets();
                     UpdateMap();
+
                     ++_currentBattleTick;
                 }
                 else if (Stage == BattleStage.ChoosingAward)

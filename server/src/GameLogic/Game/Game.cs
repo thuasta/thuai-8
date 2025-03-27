@@ -36,6 +36,9 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     public List<Buff.Buff> AvailableBuffsAfterCurrentBattle { get; private set; } = [];
     public BuffSelector BuffSelector { get; private set; } = new();
 
+    public bool HasAwardBeforeBattle => BattleNumber > 0 && BattleNumber <= AwardCount;
+    public bool HasAwardAfterBattle => BattleNumber < AwardCount;
+
     private Random _random = new();
 
     private readonly ILogger _logger =
@@ -113,7 +116,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
         }
         else if (Stage == GameStage.PreparingBattle)
         {
-            if (BattleNumber > 0 && BattleNumber <= AwardCount)
+            if (HasAwardBeforeBattle)
             {
                 // Have buffs before the current battle.
                 foreach (Player player in AllPlayers)
@@ -127,7 +130,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
                 }
             }
 
-            if (BattleNumber < AwardCount)
+            if (HasAwardAfterBattle)
             {
                 AvailableBuffsAfterCurrentBattle = [.. BuffSelector.ShowBuff(BattleNumber + 1)];
             }

@@ -1,11 +1,11 @@
 namespace Thuai.Server.GameLogic;
 
-public class Position(double x = 0, double y = 0, double angle = 0)
+public class Position(float x = 0, float y = 0, float angle = 0)
 {
-    public double Xpos { get; set; } = x;
-    public double Ypos { get; set; } = y;
+    public float Xpos { get; set; } = x;
+    public float Ypos { get; set; } = y;
 
-    public double Angle { get; set; } = angle;
+    public float Angle { get; set; } = angle;
 }
 
 public enum MoveDirection

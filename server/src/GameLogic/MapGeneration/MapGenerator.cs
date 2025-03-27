@@ -1,4 +1,4 @@
-namespace Thuai.Server.GameLogic.MapGenerator;
+namespace Thuai.Server.GameLogic.MapGeneration;
 
 using System;
 using System.Collections.Generic;
@@ -142,13 +142,13 @@ public class Map
         List<Wall> walls = [];
         for (int i = 1; i <= Width; i++)
         {
-            walls.Add(new Wall(i, 0, 0));
-            walls.Add(new Wall(i, Height, 0));
+            walls.Add(new Wall(i, 0, WallDirection.HORIZONTAL));
+            walls.Add(new Wall(i, Height, WallDirection.HORIZONTAL));
         }
         for (int j = 1; j <= Height; j++)
         {
-            walls.Add(new Wall(0, j, 90));
-            walls.Add(new Wall(Width, j, 90));
+            walls.Add(new Wall(0, j, WallDirection.VERTICAL));
+            walls.Add(new Wall(Width, j, WallDirection.VERTICAL));
         }
         return walls;
     }
@@ -177,13 +177,13 @@ struct Line(int x1, int y1, int x2, int y2)
         int y = 0;
         if (X1 == X2)
         {
-            angle = 90; // vertical
+            angle = WallDirection.VERTICAL;
             x = X1;
             y = Math.Max(Y1, Y2);
         }
         else if (Y1 == Y2)
         {
-            angle = 0; // horizontal
+            angle = WallDirection.HORIZONTAL;
             x = Math.Max(X1, X2);
             y = Y1;
         }
