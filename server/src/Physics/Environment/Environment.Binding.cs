@@ -26,6 +26,7 @@ public partial class Environment
                 fixture = result.CreateCircle(GameLogic.Constants.PLAYER_RADIUS, DEFAULT_DENSITY);
                 fixture.CollisionCategories = Categories.Player;
                 fixture.CollidesWith = CollisionList.PlayerCollidesWith;
+                fixture.Friction = 0f;
                 fixture.Restitution = 0f;
                 return result;
 
@@ -34,6 +35,7 @@ public partial class Environment
                 fixture = result.CreateEdge(new(0, 0), new(0, GameLogic.Constants.WALL_LENGTH));
                 fixture.CollisionCategories = Categories.Wall;
                 fixture.CollidesWith = CollisionList.WallCollidesWith;
+                fixture.Friction = 0f;
                 return result;
 
             case Categories.Bullet:
@@ -41,6 +43,8 @@ public partial class Environment
                 fixture = result.CreateCircle(GameLogic.Constants.BULLET_RADIUS, DEFAULT_DENSITY);
                 fixture.CollisionCategories = Categories.Bullet;
                 fixture.CollidesWith = CollisionList.BulletCollidesWith;
+                fixture.Friction = 0f;
+                fixture.Restitution = 1f;
                 return result;
 
             case Categories.Trap:
