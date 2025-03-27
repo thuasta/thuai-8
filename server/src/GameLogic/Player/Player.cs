@@ -1,4 +1,4 @@
-using nkast.Aether.Physics2D.Common;
+using nkast.Aether.Physics2D.Dynamics;
 using Serilog;
 
 namespace Thuai.Server.GameLogic;
@@ -13,8 +13,8 @@ public partial class Player(string token, int playerId)
     public string RecordToken => (playerId + 1).ToString(); // Because client actually reads ID and it starts from 1 ...
     public int ID => playerId;
 
-    public float Speed { get; set; } = Constants.MOVE_SPEED;
-    public float TurnSpeed { get; set; } = Constants.TURN_SPEED;
+    public float Speed => Constants.MOVE_SPEED;
+    public float TurnSpeed => Constants.TURN_SPEED;
 
     public MoveDirection MoveDirection { get; set; } = MoveDirection.NONE;
     public TurnDirection TurnDirection { get; set; } = TurnDirection.NONE;
@@ -58,6 +58,17 @@ public partial class Player(string token, int playerId)
 
     private readonly ILogger _logger = Log.ForContext("Component", $"Player {playerId}");
 
+    public void InitializeWith(Body body)
+    {
+        Bind(body);
+
+        if (PlayerArmor.GravityField == true)
+        {
+            AppendGravityField();
+        }
+        Recover();
+    }
+
     public void Update()
     {
         PlayerArmor.Knife.Update();
@@ -66,6 +77,40 @@ public partial class Player(string token, int playerId)
         {
             skill.Update();
         }
+    }
+
+    public void UpdateSpeed()
+    {
+        if (Body is null)
+        {
+            _logger.Error("Cannot update speed: player is not bound to a body.");
+            return;
+        }
+
+        Physics.Tag tag = (Physics.Tag)Body.Tag;
+        float linear = MoveDirection switch
+        {
+            MoveDirection.NONE => 0f,
+            MoveDirection.BACK => -(float)tag.AttachedData[Physics.Key.SpeedUpFactor] * Speed,
+            MoveDirection.FORTH => (float)tag.AttachedData[Physics.Key.SpeedUpFactor] * Speed,
+            _ => throw new ArgumentException("Unknown move direction.")
+        };
+        float angular = TurnDirection switch
+        {
+            TurnDirection.NONE => 0f,
+            TurnDirection.CLOCKWISE => -(float)tag.AttachedData[Physics.Key.SpeedUpFactor] * TurnSpeed,
+            TurnDirection.COUNTER_CLOCKWISE => (float)tag.AttachedData[Physics.Key.SpeedUpFactor] * TurnSpeed,
+            _ => throw new ArgumentException("Unknown turn direction.")
+        };
+
+        if ((int)tag.AttachedData[Physics.Key.CoveredFields] > 0)
+        {
+            linear *= Constants.GRAVITY_FIELD_STRENGTH;
+            angular *= Constants.GRAVITY_FIELD_STRENGTH;
+        }
+
+        Body.LinearVelocity = Orientation * linear;
+        Body.AngularVelocity = angular;
     }
 
     public void Injured(int damage, bool antiArmor, out bool reflected)
@@ -177,18 +222,6 @@ public partial class Player(string token, int playerId)
         }
     }
 
-    public void PlayerMove(MoveDirection direction)
-    {
-        _logger.Debug($"Move to ({direction}).");
-        PlayerMoveEvent?.Invoke(this, new PlayerMoveEventArgs(this, direction));
-    }
-
-    public void PlayerTurn(TurnDirection direction)
-    {
-        _logger.Debug($"Turn in ({direction}).");
-        PlayerTurnEvent?.Invoke(this, new PlayerTurnEventArgs(this, direction));
-    }
-
     public void PlayerAttack()
     {
         if (IsAlive == false)
@@ -196,7 +229,7 @@ public partial class Player(string token, int playerId)
             _logger.Error("Failed to attack: Player is dead.");
             return;
         }
-        if (PlayerWeapon.CurrentBullets <= 0)
+        if (PlayerWeapon.HasEnoughBullets == false)
         {
             _logger.Error("Failed to attack: No bullets.");
             return;
@@ -208,6 +241,10 @@ public partial class Player(string token, int playerId)
         }
 
         _logger.Information($"Attacking.");
+
+        --PlayerWeapon.CurrentBullets;
+        PlayerWeapon.Reset();
+
         PlayerAttackEvent?.Invoke(this, new PlayerAttackEventArgs(this));
     }
 }

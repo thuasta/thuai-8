@@ -16,6 +16,11 @@ public partial class Player : Physics.IPhysicalObject
     {
         Body = body;
         Body.Tag = new Physics.Tag() { Owner = this };
+
+        Physics.Tag tag = (Physics.Tag)Body!.Tag;
+        tag.AttachedData[Physics.Key.CoveredFields] = 0;
+        tag.AttachedData[Physics.Key.SpeedUpFactor] = 1f;
+
         Body.OnCollision += OnCollision;
         Body.OnSeparation += OnSeparation;
     }
@@ -70,20 +75,20 @@ public partial class Player : Physics.IPhysicalObject
 
             Physics.Tag tag = (Physics.Tag)b.Body.Tag;
 
-            if (tag.AttachedData.ContainsKey("coveredFields") == false
-                || tag.AttachedData["coveredFields"] is not int)
+            if (tag.AttachedData.ContainsKey(Physics.Key.CoveredFields) == false
+                || tag.AttachedData[Physics.Key.CoveredFields] is not int)
             {
-                tag.AttachedData["coveredFields"] = 0;
+                tag.AttachedData[Physics.Key.CoveredFields] = 0;
             }
 
-            tag.AttachedData["coveredFields"] = (int)tag.AttachedData["coveredFields"] + 1;
+            tag.AttachedData[Physics.Key.CoveredFields] = (int)tag.AttachedData[Physics.Key.CoveredFields] + 1;
 
             if (tag.Owner is Player player && player.IsInvulnerable == true)
             {
                 _logger.Debug($"Target player {player.ID} is invulnerable to gravity field.");
                 return false;
             }
-            if ((int)tag.AttachedData["coveredFields"] == 1)
+            if ((int)tag.AttachedData[Physics.Key.CoveredFields] == 1)
             {
                 b.Body.LinearVelocity *= Constants.GRAVITY_FIELD_STRENGTH;
                 b.Body.AngularVelocity *= Constants.GRAVITY_FIELD_STRENGTH;
@@ -132,31 +137,31 @@ public partial class Player : Physics.IPhysicalObject
             }
 
             Physics.Tag tag = (Physics.Tag)b.Body.Tag;
-            if (tag.AttachedData.ContainsKey("coveredFields") == false
-                || tag.AttachedData["coveredFields"] is not int)
+            if (tag.AttachedData.ContainsKey(Physics.Key.CoveredFields) == false
+                || tag.AttachedData[Physics.Key.CoveredFields] is not int)
             {
                 _logger.Error("Gravity field seperated with an object without a \"coveredFields\" tag.");
                 return;
             }
-            if ((int)tag.AttachedData["coveredFields"] < 0)
+            if ((int)tag.AttachedData[Physics.Key.CoveredFields] < 0)
             {
                 _logger.Error("Value of \"coveredFields\" tag if negative. Please contact the developer.");
                 return;
             }
-            if ((int)tag.AttachedData["coveredFields"] == 0)
+            if ((int)tag.AttachedData[Physics.Key.CoveredFields] == 0)
             {
                 _logger.Debug("Target is no longer slowed down.");
                 return;
             }
 
-            tag.AttachedData["coveredFields"] = (int)tag.AttachedData["coveredFields"] - 1;
+            tag.AttachedData[Physics.Key.CoveredFields] = (int)tag.AttachedData[Physics.Key.CoveredFields] - 1;
 
             if (tag.Owner is Player player && player.IsInvulnerable == true)
             {
                 _logger.Debug($"Target player {player.ID} is invulnerable to gravity field.");
                 return;
             }
-            if ((int)tag.AttachedData["coveredFields"] == 0)
+            if ((int)tag.AttachedData[Physics.Key.CoveredFields] == 0)
             {
                 b.Body.LinearVelocity /= Constants.GRAVITY_FIELD_STRENGTH;
                 b.Body.AngularVelocity /= Constants.GRAVITY_FIELD_STRENGTH;

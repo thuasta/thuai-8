@@ -23,12 +23,14 @@ public interface IBullet
     public int BulletDamage { get; }
 
     public bool AntiArmor { get; }
+
+    public Weapon Owner { get; }
 }
 
 /// <summary>
 /// Default bullet for a weapon. Used by Cannon.
 /// </summary>
-public class Bullet: IBullet, Physics.IPhysicalObject
+public class Bullet : IBullet, Physics.IPhysicalObject
 {
     public IBullet.BulletType Type => IBullet.BulletType.Bullet;
 
@@ -48,6 +50,7 @@ public class Bullet: IBullet, Physics.IPhysicalObject
     public int BulletDamage { get; }
     public bool AntiArmor { get; }
     public bool IsDestroyed => _remainingTicks.IsZero == true || Body?.Enabled == false;
+    public required Weapon Owner { get; init; }
 
     public Body? Body { get; private set; }
 
@@ -70,7 +73,13 @@ public class Bullet: IBullet, Physics.IPhysicalObject
     public void Bind(Body body)
     {
         Body = body;
+        Body.LinearVelocity = new(
+                (float)(BulletSpeed * Math.Cos(Body.Rotation)),
+                (float)(BulletSpeed * Math.Sin(Body.Rotation))
+            );
         Body.Tag = new Physics.Tag() { Owner = this };
+        Physics.Tag tag = (Physics.Tag)Body.Tag;
+        tag.AttachedData[Physics.Key.CoveredFields] = 0;
     }
 
     public void Unbind()
@@ -94,4 +103,6 @@ public class LaserBullet(Position position, float speed, int damage, bool antiAr
     public int BulletDamage { get; } = damage;
 
     public bool AntiArmor { get; } = antiArmor;
+
+    public required Weapon Owner { get; init; }
 }

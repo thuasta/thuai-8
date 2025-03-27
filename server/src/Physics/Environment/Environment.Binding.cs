@@ -14,7 +14,7 @@ public partial class Environment
     /// <returns>The body created.</returns>
     /// <exception cref="InvalidOperationException">Raises when creating a laser with this method.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Raises when the category is invalid.</exception>
-    public Body CreateBody(Category category, Vector2 position, float rotation = 0f)
+    public Body CreateBody(Category category, Vector2 position, float rotation)
     {
         Body? result;
         Fixture? fixture;

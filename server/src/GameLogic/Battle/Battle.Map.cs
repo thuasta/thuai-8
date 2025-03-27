@@ -6,6 +6,38 @@ public partial class Battle
 
     private MapGeneration.MapGenerator MapGenerator = new();
 
+    public void AddWall(MapGeneration.Wall wall)
+    {
+        if (wall.Angle == MapGeneration.WallDirection.HORIZONTAL)
+        {
+            wall.Bind(
+                _env.CreateBody(
+                    Physics.Environment.Categories.Wall,
+                    new(wall.X * Constants.WALL_LENGTH, wall.Y * Constants.WALL_LENGTH),
+                    (float)Math.PI
+                )
+            );
+        }
+        else
+        {
+            wall.Bind(
+                _env.CreateBody(
+                    Physics.Environment.Categories.Wall,
+                    new(wall.X * Constants.WALL_LENGTH, wall.Y * Constants.WALL_LENGTH),
+                    (float)(-Math.PI / 2)
+                )
+            );
+        }
+    }
+
+    public void AddWall(List<MapGeneration.Wall> walls)
+    {
+        foreach (var wall in walls)
+        {
+            AddWall(wall);
+        }
+    }
+
     public static float PointDistance(Position p1, Position p2)
     {
         float dx = p2.Xpos - p1.Xpos;
@@ -39,8 +71,44 @@ public partial class Battle
     /// </summary>
     private void UpdateMap()
     {
-        // TODO: implement.
+        if (Map is null)
+        {
+            _logger.Error("Failed to update map: Map is null.");
+            return;
+        }
+
+        List<MapGeneration.Wall> toDelete = [];
+        foreach (MapGeneration.Wall wall in Map.Walls)
+        {
+            if (wall.IsBroken == true)
+            {
+                toDelete.Add(wall);
+            }
+        }
+        RemoveWall(toDelete);
         _logger.Debug("Map updated.");
+    }
+
+    private void RemoveWall(List<MapGeneration.Wall> walls)
+    {
+        foreach (MapGeneration.Wall wall in walls)
+        {
+            RemoveWall(wall);
+        }
+    }
+
+    private void RemoveWall(MapGeneration.Wall wall)
+    {
+        try
+        {
+            Map?.Walls.Remove(wall);
+            _logger.Debug($"Removed wall at ({wall.X}, {wall.Y}) with angle {wall.Angle}");
+        }
+        catch (Exception e)
+        {
+            _logger.Error("Failed to remove wall:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
+        }
     }
 
     private float LineDistance(Position line, Position point)
@@ -208,7 +276,7 @@ public partial class Battle
                         float X = startPos.Xpos + ua * (endPos.Xpos - startPos.Xpos);
                         float Y = startPos.Ypos + ua * (endPos.Ypos - startPos.Ypos);
                         X -= (float)Math.Cos(startPos.Angle) / (float)Math.Abs(Math.Cos(startPos.Angle)) * Constants.WALL_THICK;
-                        Y -=(float) Math.Sin(startPos.Angle) / (float)Math.Abs(Math.Sin(startPos.Angle)) * Constants.WALL_THICK;
+                        Y -= (float)Math.Sin(startPos.Angle) / (float)Math.Abs(Math.Sin(startPos.Angle)) * Constants.WALL_THICK;
                         Position tempEndPosition = new(X, Y, endPos.Angle);
                         float tempDistance = PointDistance(startPos, tempEndPosition);
                         if (tempDistance < distance)

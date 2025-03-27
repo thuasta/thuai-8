@@ -11,6 +11,7 @@ public class Weapon
     public int CurrentBullets { get; set; } = Constants.INITIAL_BULLETS;
     public int MaximumCooldown => (int)Math.Ceiling(1 / AttackSpeed);
     public bool CanAttack => _currentCoolDown == 0;
+    public bool HasEnoughBullets => CurrentBullets > 0;
 
     private int _currentCoolDown = 0;
 
@@ -26,5 +27,10 @@ public class Weapon
         {
             _currentCoolDown--;
         }
+    }
+
+    public void Reset()
+    {
+        _currentCoolDown = MaximumCooldown;
     }
 }

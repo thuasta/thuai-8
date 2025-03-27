@@ -20,10 +20,17 @@ public partial class Battle
         foreach (Player player in AllPlayers)
         {
             player.Update();
-            player.PlayerMove(player.MoveDirection);
-            player.PlayerTurn(player.TurnDirection);
         }
         _logger.Debug("Players updated.");
+    }
+
+    public void UpdatePlayerSpeed()
+    {
+        foreach (Player player in AllPlayers)
+        {
+            player.UpdateSpeed();
+        }
+        _logger.Debug("Speed of players updated.");
     }
 
     /// <summary>
