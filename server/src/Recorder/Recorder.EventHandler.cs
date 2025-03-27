@@ -145,7 +145,8 @@ public partial class Recorder
             Record(stageInfo, battleUpdate);
         }
         else if (currentStage == Protocol.Scheme.Stage.REST
-            && e.Game.RunningBattle?.Stage == GameLogic.Battle.BattleStage.Waiting)
+            && e.Game.RunningBattle?.Stage == GameLogic.Battle.BattleStage.Waiting
+            && e.Game.HasAwardBeforeBattle == true)
         {
             List<Protocol.Messages.Detail> buffDetails = [];
             foreach (GameLogic.Player player in e.Game.AllPlayers)
