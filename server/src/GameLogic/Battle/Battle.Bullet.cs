@@ -55,16 +55,16 @@ public partial class Battle
         }
     }
 
-    private double ProjectLength(Position playerPos, Position line)
+    private float ProjectLength(Position playerPos, Position line)
     {
-        double dx = playerPos.Xpos - line.Xpos;
-        double dy = playerPos.Ypos - line.Ypos;
+        float dx = playerPos.Xpos - line.Xpos;
+        float dy = playerPos.Ypos - line.Ypos;
 
-        double angleInRadians = (double)(line.Angle * Math.PI / 180.0);
-        double lineDirX = (double)Math.Cos(angleInRadians);
-        double lineDirY = (double)Math.Sin(angleInRadians);
+        float angleInRadians = (float)(line.Angle * Math.PI / 180.0);
+        float lineDirX = (float)Math.Cos(angleInRadians);
+        float lineDirY = (float)Math.Sin(angleInRadians);
 
-        double projectionLength = dx * lineDirX + dy * lineDirY;
+        float projectionLength = dx * lineDirX + dy * lineDirY;
 
         return projectionLength;
     }
@@ -72,9 +72,9 @@ public partial class Battle
     private Player? TakeDamage(Position startPos, Position endPos)
     {
         List<Player> tempPlayers = [];
-        double min_proj = double.MaxValue;
+        float min_proj = float.MaxValue;
         Player? finalPlayer = null;
-        double line_len = PointDistance(startPos, endPos);
+        float line_len = PointDistance(startPos, endPos);
         foreach (Player player in AllPlayers)
         {
             if (LineDistance(startPos, player.PlayerPosition) < Constants.PLAYER_RADIUS)
@@ -84,7 +84,7 @@ public partial class Battle
         }
         foreach (Player player in tempPlayers)
         {
-            double tempProj = ProjectLength(player.PlayerPosition, startPos);
+            float tempProj = ProjectLength(player.PlayerPosition, startPos);
             if (tempProj > -Constants.PLAYER_RADIUS && tempProj <= line_len)
             {
                 if (min_proj > tempProj)
@@ -111,7 +111,7 @@ public partial class Battle
         {
             try
             {
-                double speed = bullet.BulletSpeed;
+                float speed = bullet.BulletSpeed;
 
                 foreach (Player player in AllPlayers)
                 {
@@ -126,8 +126,8 @@ public partial class Battle
                     }
                 }
 
-                double delta_x = speed * Math.Cos(bullet.BulletPosition.Angle);
-                double delta_y = speed * Math.Sin(bullet.BulletPosition.Angle);
+                float delta_x = speed * (float)Math.Cos(bullet.BulletPosition.Angle);
+                float delta_y = speed * (float)Math.Sin(bullet.BulletPosition.Angle);
                 Position endPos = new(delta_x, delta_y);
                 Position? finalPos = GetBulletFinalPos(bullet.BulletPosition, endPos, out Position? interPos);
                 if (finalPos != null)

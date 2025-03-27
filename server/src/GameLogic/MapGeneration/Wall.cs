@@ -1,4 +1,10 @@
-namespace Thuai.Server.GameLogic.MapGenerator;
+namespace Thuai.Server.GameLogic.MapGeneration;
+
+public static class WallDirection
+{
+    public const int HORIZONTAL = 0;
+    public const int VERTICAL = 90;
+}
 
 public class Wall(int x, int y, int angle, bool breakable = false)
 {

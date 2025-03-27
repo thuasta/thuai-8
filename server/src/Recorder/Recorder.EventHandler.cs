@@ -110,7 +110,7 @@ public partial class Recorder
             };
 
             List<Protocol.Scheme.Wall> walls = [];
-            foreach (GameLogic.MapGenerator.Wall wall in e.Game.RunningBattle?.Map?.Walls ?? [])
+            foreach (GameLogic.MapGeneration.Wall wall in e.Game.RunningBattle?.Map?.Walls ?? [])
             {
                 walls.Add(
                     new Protocol.Scheme.Wall()

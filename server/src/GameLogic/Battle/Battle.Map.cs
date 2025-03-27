@@ -2,15 +2,15 @@ namespace Thuai.Server.GameLogic;
 
 public partial class Battle
 {
-    public MapGenerator.Map? Map { get; private set; }
+    public MapGeneration.Map? Map { get; private set; }
 
-    private MapGenerator.MapGenerator MapGenerator = new();
+    private MapGeneration.MapGenerator MapGenerator = new();
 
-    public static double PointDistance(Position p1, Position p2)
+    public static float PointDistance(Position p1, Position p2)
     {
-        double dx = p2.Xpos - p1.Xpos;
-        double dy = p2.Ypos - p1.Ypos;
-        return Math.Sqrt(dx * dx + dy * dy);
+        float dx = p2.Xpos - p1.Xpos;
+        float dy = p2.Ypos - p1.Ypos;
+        return (float)Math.Sqrt(dx * dx + dy * dy);
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public partial class Battle
     {
         try
         {
-            MapGenerator.MapGenerator mapGenerator = new();
+            MapGeneration.MapGenerator mapGenerator = new();
             Map = mapGenerator.GenerateMaps(1, 10, 10)[0];
             _logger.Information($"Map generated successfully.");
             return true;
@@ -43,21 +43,21 @@ public partial class Battle
         _logger.Debug("Map updated.");
     }
 
-    private double LineDistance(Position line, Position point)
+    private float LineDistance(Position line, Position point)
     {
         // 计算直线的斜率
-        double m = Math.Tan(line.Angle);
+        float m = (float)Math.Tan(line.Angle);
 
         // 直线方程的截距b
-        double b = line.Ypos - m * line.Xpos;
+        float b = line.Ypos - m * line.Xpos;
 
         // 直线 Ax + By + C = 0 的形式
-        double A = m;
-        double B = -1;
-        double C = b;
+        float A = m;
+        float B = -1;
+        float C = b;
 
         // 计算点到直线的距离
-        double distance = Math.Abs(A * point.Xpos + B * point.Ypos + C) / Math.Sqrt(A * A + B * B);
+        float distance = (float)Math.Abs(A * point.Xpos + B * point.Ypos + C) / (float)Math.Sqrt(A * A + B * B);
 
         return distance;
 
@@ -69,7 +69,7 @@ public partial class Battle
         {
             Position? tempInterPos = null;
             int wall_Id = -1;
-            double distance = double.MaxValue;
+            float distance = float.MaxValue;
             int i = 0;
             foreach (var wall in Map.Walls)
             {
@@ -93,24 +93,24 @@ public partial class Battle
 
                 if (startWall != null && endWall != null)
                 {
-                    double denom = (endWall.Ypos - startWall.Ypos) * (endPos.Xpos - startPos.Xpos) - (endWall.Xpos - startWall.Xpos) * (endPos.Ypos - startPos.Ypos);
+                    float denom = (endWall.Ypos - startWall.Ypos) * (endPos.Xpos - startPos.Xpos) - (endWall.Xpos - startWall.Xpos) * (endPos.Ypos - startPos.Ypos);
 
                     if (denom == 0)
                     {
                         continue;
                     }
 
-                    double ua = ((endWall.Xpos - startWall.Xpos) * (startPos.Ypos - startWall.Ypos) - (endWall.Ypos - startWall.Ypos) * (startPos.Xpos - startWall.Xpos)) / denom;
-                    double ub = ((endPos.Xpos - startPos.Xpos) * (startPos.Ypos - startWall.Ypos) - (endPos.Ypos - startPos.Ypos) * (startPos.Xpos - startWall.Xpos)) / denom;
+                    float ua = ((endWall.Xpos - startWall.Xpos) * (startPos.Ypos - startWall.Ypos) - (endWall.Ypos - startWall.Ypos) * (startPos.Xpos - startWall.Xpos)) / denom;
+                    float ub = ((endPos.Xpos - startPos.Xpos) * (startPos.Ypos - startWall.Ypos) - (endPos.Ypos - startPos.Ypos) * (startPos.Xpos - startWall.Xpos)) / denom;
 
                     if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1)
                     {
-                        double X = startPos.Xpos + ua * (endPos.Xpos - startPos.Xpos);
-                        double Y = startPos.Ypos + ua * (endPos.Ypos - startPos.Ypos);
-                        X -= Math.Cos(startPos.Angle) / Math.Abs(Math.Cos(startPos.Angle)) * Constants.WALL_THICK;
-                        Y -= Math.Sin(startPos.Angle) / Math.Abs(Math.Sin(startPos.Angle)) * Constants.WALL_THICK;
+                        float X = startPos.Xpos + ua * (endPos.Xpos - startPos.Xpos);
+                        float Y = startPos.Ypos + ua * (endPos.Ypos - startPos.Ypos);
+                        X -= (float)(Math.Cos(startPos.Angle) / Math.Abs(Math.Cos(startPos.Angle)) * Constants.WALL_THICK);
+                        Y -= (float)(Math.Sin(startPos.Angle) / Math.Abs(Math.Sin(startPos.Angle)) * Constants.WALL_THICK);
                         Position tempPos = new Position(X, Y);
-                        double tempDistance = PointDistance(startPos, tempPos);
+                        float tempDistance = PointDistance(startPos, tempPos);
                         if (tempDistance < distance)
                         {
                             tempInterPos = tempPos;
@@ -129,21 +129,21 @@ public partial class Battle
             }
             else
             {
-                MapGenerator.Wall wall = Map.Walls[wall_Id];
-                if (wall.Angle == 0)
+                MapGeneration.Wall wall = Map.Walls[wall_Id];
+                if (wall.Angle == MapGeneration.WallDirection.HORIZONTAL)
                 {
-                    double finalXpos = endPos.Xpos;
-                    double finalYpos = endPos.Ypos - 2 * (endPos.Ypos - (wall.Y + 1) * Constants.WALL_LENGTH);
-                    double angle = -startPos.Angle;
+                    float finalXpos = endPos.Xpos;
+                    float finalYpos = endPos.Ypos - 2 * (endPos.Ypos - (wall.Y + 1) * Constants.WALL_LENGTH);
+                    float angle = -startPos.Angle;
                     Position finalEndPos = new(finalXpos, finalYpos, angle);
                     interPos = tempInterPos;
                     return finalEndPos;
                 }
-                else if (wall.Angle == 90)
+                else if (wall.Angle == MapGeneration.WallDirection.VERTICAL)
                 {
-                    double finalXpos = endPos.Xpos - 2 * (endPos.Xpos - (wall.X + 1) * Constants.WALL_LENGTH);
-                    double finalYpos = endPos.Ypos;
-                    double angle = Math.PI - startPos.Angle;
+                    float finalXpos = endPos.Xpos - 2 * (endPos.Xpos - (wall.X + 1) * Constants.WALL_LENGTH);
+                    float finalYpos = endPos.Ypos;
+                    float angle = (float)(Math.PI - startPos.Angle);
                     Position finalEndPos = new(finalXpos, finalYpos, angle);
                     interPos = tempInterPos;
                     return finalEndPos;
@@ -170,7 +170,7 @@ public partial class Battle
         if (Map != null)
         {
             Position finalEndPos = endPos;
-            double distance = double.MaxValue;
+            float distance = float.MaxValue;
             foreach (var wall in Map.Walls)
             {
                 Position? startWall = null;
@@ -193,24 +193,24 @@ public partial class Battle
 
                 if (startWall != null && endWall != null)
                 {
-                    double denom = (endWall.Ypos - startWall.Ypos) * (endPos.Xpos - startPos.Xpos) - (endWall.Xpos - startWall.Xpos) * (endPos.Ypos - startPos.Ypos);
+                    float denom = (endWall.Ypos - startWall.Ypos) * (endPos.Xpos - startPos.Xpos) - (endWall.Xpos - startWall.Xpos) * (endPos.Ypos - startPos.Ypos);
 
                     if (denom == 0)
                     {
                         continue;
                     }
 
-                    double ua = ((endWall.Xpos - startWall.Xpos) * (startPos.Ypos - startWall.Ypos) - (endWall.Ypos - startWall.Ypos) * (startPos.Xpos - startWall.Xpos)) / denom;
-                    double ub = ((endPos.Xpos - startPos.Xpos) * (startPos.Ypos - startWall.Ypos) - (endPos.Ypos - startPos.Ypos) * (startPos.Xpos - startWall.Xpos)) / denom;
+                    float ua = ((endWall.Xpos - startWall.Xpos) * (startPos.Ypos - startWall.Ypos) - (endWall.Ypos - startWall.Ypos) * (startPos.Xpos - startWall.Xpos)) / denom;
+                    float ub = ((endPos.Xpos - startPos.Xpos) * (startPos.Ypos - startWall.Ypos) - (endPos.Ypos - startPos.Ypos) * (startPos.Xpos - startWall.Xpos)) / denom;
 
                     if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1)
                     {
-                        double X = startPos.Xpos + ua * (endPos.Xpos - startPos.Xpos);
-                        double Y = startPos.Ypos + ua * (endPos.Ypos - startPos.Ypos);
-                        X -= Math.Cos(startPos.Angle) / Math.Abs(Math.Cos(startPos.Angle)) * Constants.WALL_THICK;
-                        Y -= Math.Sin(startPos.Angle) / Math.Abs(Math.Sin(startPos.Angle)) * Constants.WALL_THICK;
-                        Position tempEndPosition = new Position(X, Y, endPos.Angle);
-                        double tempDistance = PointDistance(startPos, tempEndPosition);
+                        float X = startPos.Xpos + ua * (endPos.Xpos - startPos.Xpos);
+                        float Y = startPos.Ypos + ua * (endPos.Ypos - startPos.Ypos);
+                        X -= (float)Math.Cos(startPos.Angle) / (float)Math.Abs(Math.Cos(startPos.Angle)) * Constants.WALL_THICK;
+                        Y -=(float) Math.Sin(startPos.Angle) / (float)Math.Abs(Math.Sin(startPos.Angle)) * Constants.WALL_THICK;
+                        Position tempEndPosition = new(X, Y, endPos.Angle);
+                        float tempDistance = PointDistance(startPos, tempEndPosition);
                         if (tempDistance < distance)
                         {
                             finalEndPos = tempEndPosition;

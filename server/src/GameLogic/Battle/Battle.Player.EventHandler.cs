@@ -37,7 +37,7 @@ public partial class Battle
                     return;
                 }
 
-                double speed = e.Player.Speed;
+                float speed = e.Player.Speed;
 
                 foreach (Player player in AllPlayers)
                 {
@@ -53,13 +53,17 @@ public partial class Battle
                     }
                 }
 
-                double delta_x = speed * Math.Cos(e.Player.PlayerPosition.Angle);
-                double delta_y = speed * Math.Sin(e.Player.PlayerPosition.Angle);
+                float delta_x = speed * (float)Math.Cos(e.Player.PlayerPosition.Angle);
+                float delta_y = speed * (float)Math.Sin(e.Player.PlayerPosition.Angle);
                 if (e.Movedirection == MoveDirection.BACK)
                 {
-                    double endXpos = e.Player.PlayerPosition.Xpos - delta_x;
-                    double endYpos = e.Player.PlayerPosition.Ypos - delta_y;
-                    Position startPos = new(e.Player.PlayerPosition.Xpos, e.Player.PlayerPosition.Ypos, e.Player.PlayerPosition.Angle - Math.PI);
+                    float endXpos = e.Player.PlayerPosition.Xpos - delta_x;
+                    float endYpos = e.Player.PlayerPosition.Ypos - delta_y;
+                    Position startPos = new(
+                        e.Player.PlayerPosition.Xpos,
+                        e.Player.PlayerPosition.Ypos,
+                        e.Player.PlayerPosition.Angle - (float)Math.PI
+                    );
                     Position endPos = new(endXpos, endYpos, e.Player.PlayerPosition.Angle);
                     Position? finalPos = GetPlayerFinalPos(startPos, endPos);
                     if (finalPos != null)
@@ -69,8 +73,8 @@ public partial class Battle
                 }
                 else if (e.Movedirection == MoveDirection.FORTH)
                 {
-                    double endXpos = e.Player.PlayerPosition.Xpos + delta_x;
-                    double endYpos = e.Player.PlayerPosition.Ypos + delta_y;
+                    float endXpos = e.Player.PlayerPosition.Xpos + delta_x;
+                    float endYpos = e.Player.PlayerPosition.Ypos + delta_y;
                     Position startPos = e.Player.PlayerPosition;
                     Position endPos = new(endXpos, endYpos);
                     Position? finalPos = GetPlayerFinalPos(startPos, endPos);
@@ -110,7 +114,7 @@ public partial class Battle
                     return;
                 }
 
-                double delta_angle = e.Player.TurnSpeed;
+                float delta_angle = e.Player.TurnSpeed;
                 if (e.Turndirection == TurnDirection.CLOCKWISE)
                 {
                     e.Player.PlayerPosition.Angle -= delta_angle;
@@ -150,8 +154,8 @@ public partial class Battle
                 if (e.Player.PlayerWeapon.CurrentBullets > 0)
                 {
                     e.Player.PlayerWeapon.CurrentBullets -= 1;
-                    double delta_x = Constants.BULLET_GENERATE_DISTANCE * Math.Cos(e.Player.PlayerPosition.Angle);
-                    double delta_y = Constants.BULLET_GENERATE_DISTANCE * Math.Sin(e.Player.PlayerPosition.Angle);
+                    float delta_x = Constants.BULLET_GENERATE_DISTANCE * (float)Math.Cos(e.Player.PlayerPosition.Angle);
+                    float delta_y = Constants.BULLET_GENERATE_DISTANCE * (float)Math.Sin(e.Player.PlayerPosition.Angle);
                     Position bulletPosition = new(
                         e.Player.PlayerPosition.Xpos + delta_x,
                         e.Player.PlayerPosition.Ypos + delta_y,
