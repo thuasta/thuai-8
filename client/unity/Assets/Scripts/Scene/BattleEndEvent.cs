@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BattleCity
 {
-    public class BattleEndEvent
+    public class SpeedUpEvent
     {
 
     }
