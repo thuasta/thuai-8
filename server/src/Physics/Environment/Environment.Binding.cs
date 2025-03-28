@@ -136,4 +136,34 @@ public partial class Environment
 
         return laserPath;
     }
+
+    public GameLogic.MapGeneration.Wall? GetFacingEdge(Vector2 startPoint, Vector2 direction)
+    {
+        Protocol.Scheme.PositionInt? result = null;
+        _world.RayCast((fixture, point, normal, fraction) =>
+        {
+            if (fixture.CollisionCategories != Categories.Grid)
+            {
+                return -1f;
+            }
+
+            Tag tag = (Tag)fixture.Body.Tag;
+            if (
+                tag.AttachedData.TryGetValue(
+                    Key.CorrespondingWallPosition, out object? value
+                ) && value is Protocol.Scheme.PositionInt position
+            )
+            {
+                result = position;
+            }
+            return 0;
+        }, startPoint, startPoint + direction * 2 * GameLogic.Constants.WALL_LENGTH);
+
+        if (result is null)
+        {
+            _logger.Error("Failed to find the wall in front of the player.");
+            return null;
+        }
+        return new(result.X, result.Y, result.Angle);
+    }
 }

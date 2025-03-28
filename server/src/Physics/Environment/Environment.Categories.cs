@@ -12,6 +12,7 @@ public partial class Environment
         public const Category Laser = Category.Cat4;
         public const Category Trap = Category.Cat5;
         public const Category GravityField = Category.Cat6;
+        public const Category Grid = Category.Cat7;
     }
 
     public static class CollisionList
@@ -28,5 +29,6 @@ public partial class Environment
             Categories.Player;
         public const Category GravityFieldCollidesWith =
             Categories.Player | Categories.Bullet;
+        public const Category GridCollidesWith = Category.None;
     }
 }

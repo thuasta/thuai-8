@@ -9,5 +9,6 @@ public class Tag
 public enum Key
 {
     CoveredFields,
-    SpeedUpFactor
+    SpeedUpFactor,
+    CorrespondingWallPosition
 }

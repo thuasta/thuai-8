@@ -158,11 +158,13 @@ public partial class Player : Physics.IPhysicalObject
 
             if (tag.Owner is Player player && player.IsInvulnerable == true)
             {
+                // Object was not affected by the gravity field before separation
                 _logger.Debug($"Target player {player.ID} is invulnerable to gravity field.");
                 return;
             }
             if ((int)tag.AttachedData[Physics.Key.CoveredFields] == 0)
             {
+                // Object has been affected by the gravity field before separation
                 b.Body.LinearVelocity /= Constants.GRAVITY_FIELD_STRENGTH;
                 b.Body.AngularVelocity /= Constants.GRAVITY_FIELD_STRENGTH;
             }
