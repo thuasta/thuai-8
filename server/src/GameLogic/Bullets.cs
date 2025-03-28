@@ -13,15 +13,19 @@ public interface IBullet
         LaserBullet
     }
 
+    public static Utility.IdProvider IdProvider { get; } = new();
+
     /// <summary>
     /// The type of the bullet.
     /// </summary>
     public BulletType Type { get; }
 
+    public int Id { get; }
     public Position BulletPosition { get; }
     public float BulletSpeed { get; }
     public int BulletDamage { get; }
 
+    public bool IsMissile { get; }
     public bool AntiArmor { get; }
 
     public Weapon Owner { get; }
@@ -46,8 +50,10 @@ public class Bullet : IBullet, Physics.IPhysicalObject
         }
     }
 
+    public int Id { get; }
     public float BulletSpeed { get; }
     public int BulletDamage { get; }
+    public bool IsMissile => false;     // TODO: Implement missile
     public bool AntiArmor { get; }
     public bool IsDestroyed => _remainingTicks.IsZero == true || Body?.Enabled == false;
     public required Weapon Owner { get; init; }
@@ -58,6 +64,7 @@ public class Bullet : IBullet, Physics.IPhysicalObject
 
     public Bullet(float speed, int damage, bool antiArmor = false)
     {
+        Id = IBullet.IdProvider.GetNextId();
         BulletSpeed = speed;
         BulletDamage = damage;
         AntiArmor = antiArmor;
@@ -99,9 +106,11 @@ public class LaserBullet(Position position, float speed, int damage, bool antiAr
 
     public Position BulletPosition { get; } = position;
 
+    public int Id => -1;    // TODO: Implement laser bullet ID
     public float BulletSpeed { get; } = speed;
     public int BulletDamage { get; } = damage;
 
+    public bool IsMissile => false; // Laser is not a missile
     public bool AntiArmor { get; } = antiArmor;
 
     public required Weapon Owner { get; init; }

@@ -90,6 +90,9 @@ public partial class Recorder
                 bullets.Add(
                     new Protocol.Scheme.Bullet()
                     {
+                        No = bullet.Id,
+                        IsMissile = bullet.IsMissile,
+                        IsAntiArmor = bullet.AntiArmor,
                         Position = new()
                         {
                             // Relavant to the wall length
