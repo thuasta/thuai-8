@@ -22,12 +22,19 @@ namespace BattleCity
         public RecordInfo _recordInfo;
 
         private bool BattleStart;
+        private bool isPaused = false;
 
         private Coroutine updateTickCoroutine; // 协程引用存储
         public Button exitButton;
         public GameObject BuffSeclectPanel;
         public GameObject StartCanvas;
         public GameObject GameCanvas;
+
+        private List<List<JObject>> _gameRounds = new List<List<JObject>>();
+        public Button[] Episodes;
+        public Button Fast;
+        public Button Slow;
+        public Button Pause;
 
         // Start is called before the first frame update
         void Start()
@@ -85,7 +92,106 @@ namespace BattleCity
                 return;
             }
             _recordArray = LoadRecordData();
+            PreprocessGameRounds();
+            Fast.onClick.AddListener(() =>
+            {
+                _recordInfo.FastSpeed();
+                TypeEventSystem.Global.Send(new SpeedUpEvent());
+            });
+            Slow.onClick.AddListener(() =>
+            {
+                _recordInfo.SlowSpeed();
+                TypeEventSystem.Global.Send(new SpeedDownEvent());
+            });
+            Pause.onClick.AddListener(() =>
+            {
+                TogglePause();
+                if (isPaused)
+                    TypeEventSystem.Global.Send(new StopEvent());
+                else
+                    TypeEventSystem.Global.Send(new ResumeEvent());
+
+            });
             updateTickCoroutine = StartCoroutine(UpdateTick());
+        }
+
+        public void PlaySpecificRound(int roundIndex)
+        {
+            if (roundIndex < 0 || roundIndex >= _gameRounds.Count)
+            {
+                Debug.LogError($"无效的局索引：{roundIndex}");
+                return;
+            }
+
+            // 停止当前播放
+            if (updateTickCoroutine != null)
+            {
+                StopCoroutine(updateTickCoroutine);
+            }
+            TypeEventSystem.Global.Send(new BattleEndEvent());
+
+            // 启动新协程
+            updateTickCoroutine = StartCoroutine(UpdateTick(roundIndex));
+        }
+
+        private void PreprocessGameRounds()
+        {
+            _gameRounds.Clear();
+            List<JObject> currentRound = new List<JObject>();
+            bool isFirstRound = true;
+
+            foreach (JObject recordObj in _recordArray)
+            {
+                // 将当前recordObj加入当前局
+                currentRound.Add(recordObj);
+
+                // 检查是否包含BUFF_SELECT消息
+                bool hasBuffSelect = false;
+                JArray record = (JArray)recordObj["record"];
+                foreach (JObject message in record)
+                {
+                    if (message["messageType"].ToString() == "BUFF_SELECT")
+                    {
+                        hasBuffSelect = true;
+                        break;
+                    }
+                }
+
+                // 遇到BUFF_SELECT时分割（前8局）
+                if (hasBuffSelect)
+                {
+                    // 第一局需要包含初始数据
+                    if (isFirstRound)
+                    {
+                        _gameRounds.Add(new List<JObject>(currentRound));
+                        currentRound.Clear();
+                        isFirstRound = false;
+                    }
+                    else
+                    {
+                        _gameRounds.Add(new List<JObject>(currentRound));
+                        currentRound.Clear();
+                    }
+                }
+            }
+
+            // 添加最后一局（没有BUFF_SELECT）
+            if (currentRound.Count > 0)
+            {
+                _gameRounds.Add(new List<JObject>(currentRound));
+            }
+            _recordInfo.GameRounds = _gameRounds.Count;
+            for (int i = 0; i < _gameRounds.Count; i++)
+            {
+                int currentIndex = i;
+                Episodes[i].onClick.AddListener(() => PlaySpecificRound(currentIndex));
+            }
+        }
+
+        void TogglePause()
+        {
+            isPaused = !isPaused;
+            Pause.transform.Find("Background/Label").GetComponentInChildren<Text>().text = isPaused ? "Resume" : "Pause";
         }
 
         public void OnExitButtonClicked()
@@ -177,7 +283,7 @@ namespace BattleCity
             {
                 if (!currentBulletIds.Contains(id)) 
                 {
-                    mBullets.DelBulletModel(id); 
+                    mBullets.DelBulletModel(id);
                 }
             }
         }
@@ -237,6 +343,8 @@ namespace BattleCity
 
         private void UpdateBattle(JObject battleInfo)
         {
+            int BattleTick = battleInfo["battleTicks"].ToObject<int>();
+            _recordInfo.BattleTick = BattleTick;
             JArray events = (JArray)battleInfo["events"];
             if (events != null)
             {
@@ -286,43 +394,47 @@ namespace BattleCity
 
         #endregion
 
-        IEnumerator UpdateTick()
-        {                
-            foreach (JObject recordObj in _recordArray)
+        IEnumerator UpdateTick(int i = 0)
+        {
+            for (;i< _gameRounds.Count;i++)
             {
-                if (_recordInfo == null)
+                _recordInfo.CurrentBattle = i;
+                foreach (JObject recordObj in _gameRounds[i])
                 {
-                    Debug.LogError("RecordInfo 未初始化！");
-                    yield break; // 或尝试重新初始化
-                }
-                //Debug.Log("NowRecordNum：" + _recordInfo.NowRecordNum);
-                JArray record = (JArray)recordObj["record"];
-                foreach (JObject message in record)
-                {
-                    string messageType = message["messageType"].ToString();
-                    switch (messageType)
+                    while (isPaused)
                     {
-                        case "STAGE_INFO":
-                            UpdateStage(message);
-                            break;
-                        case "BATTLE_UPDATE":
-                            UpdateBattle(message);
-                            break;
-                        case "BUFF_SELECT":
-                            yield return BuffSelect(message);
-                            break;
-                        default:
-                            Debug.LogWarning("Unknown message type: " + messageType);
-                            break;
-
+                        yield return null; // 暂停时挂起协程
                     }
+                    if (_recordInfo == null)
+                    {
+                        Debug.LogError("RecordInfo 未初始化！");
+                        yield break; // 或尝试重新初始化
+                    }
+                    //Debug.Log("NowRecordNum：" + _recordInfo.NowRecordNum);
+                    JArray record = (JArray)recordObj["record"];
+                    foreach (JObject message in record)
+                    {
+                        string messageType = message["messageType"].ToString();
+                        switch (messageType)
+                        {
+                            case "STAGE_INFO":
+                                UpdateStage(message);
+                                break;
+                            case "BATTLE_UPDATE":
+                                UpdateBattle(message);
+                                break;
+                            case "BUFF_SELECT":
+                                yield return BuffSelect(message);
+                                break;
+                            default:
+                                Debug.LogWarning("Unknown message type: " + messageType);
+                                break;
+                        }
+                    }
+                    _recordInfo.NowRecordNum++;
+                    yield return new WaitForSeconds(_recordInfo.FrameTime);
                 }
-                _recordInfo.NowRecordNum++;
-                yield return new WaitForSeconds(RecordInfo.FrameTime);
-
-            }
-                       
+            }             
         }
     }
-
 }

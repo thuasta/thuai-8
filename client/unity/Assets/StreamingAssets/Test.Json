@@ -99,7 +99,7 @@
                                     "isMissile": false,
                                     "isAntiArmor": true,
                                     "position": {
-                                        "x": 1.2,
+                                        "x": 3.6,
                                         "y": 2.2,
                                         "angle": 30
                                     },
@@ -163,7 +163,13 @@
                                     "angle": 90
                                 }
                             ],
-                            "fences": [],
+                            "fences": [
+                                {
+                                    "x": 5,
+                                    "y": 3,
+                                    "angle": 90
+                                }
+                            ],
                             "traps": [],
                             "laser": []
                         }
@@ -233,8 +239,8 @@
                                         "canReflect": true,
                                         "armorValue": 120,
                                         "health": 90,
-                                        "gravityField": false,
-                                        "knife": "NOT_OWNED",
+                                        "gravityField": true,
+                                        "knife": "ACTIVE",
                                         "dodgeRate": 0.25
                                     },
                                     "skills": [
@@ -285,6 +291,11 @@
                             ]
                         },
                         {
+                            "eventType": "BUFF_ACTIVE_EVENT",
+                            "playerToken": "1",
+                            "buffName": "SPEED_UP"
+                        },
+                        {
                             "eventType": "MAP_UPDATE_EVENT",
                             "walls": [
                                 {
@@ -331,15 +342,25 @@
                                     "x": 5,
                                     "y": 5,
                                     "angle": 0
-                                },
+                                }
+                            ],
+                            "fences": [
                                 {
-                                    "x": 8,
-                                    "y": 4,
+                                    "x": 5.5,
+                                    "y": 3.5,
                                     "angle": 90
                                 }
                             ],
-                            "fences": [],
-                            "traps": [],
+                            "traps": [
+                                {
+                                    "position": {
+                                        "x": 5,
+                                        "y": 3,
+                                        "angle": 90
+                                    },
+                                    "isActive": true
+                                }
+                            ],
                             "laser": []
                         }
                     ]

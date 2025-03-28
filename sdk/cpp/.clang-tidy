@@ -1,16 +1,16 @@
 ---
 Checks: '
-bugprone-*,
-clang-analyzer-*,
-concurrency-*,
-cppcoreguidelines-*,
-google-*,
-hicpp-*,
-misc-*,
-modernize-*,
-llvm-*
-performance-*,
-portability-*,
-readability-*
-'
+  bugprone-*,
+  clang-analyzer-*,
+  concurrency-*,
+  cppcoreguidelines-*,
+  google-*,
+  hicpp-*,
+  misc-*,
+  modernize-*,
+  llvm-*
+  performance-*,
+  portability-*,
+  readability-*
+  '
 ...

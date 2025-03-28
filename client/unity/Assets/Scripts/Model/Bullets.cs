@@ -50,6 +50,7 @@ namespace BattleCity
             BulletModel bullet = GetBullet(id);
             if (bullet != null)
             {
+                DelBulletEffect(bullet.BulletObject);
                 BulletsList.Remove(bullet);
                 BulletsId.Remove(bullet.Id);
                 bullet.SelfDestruct();
@@ -57,6 +58,28 @@ namespace BattleCity
             }
 
             return false; // 没有找到该ID的子弹模型
+        }
+
+        public void DelBulletEffect(GameObject bullet)
+        {
+            GameObject wallController = GameObject.Find("WallController");
+            GameObject effectPrefab = null;
+
+            // 加载特效预制件
+            effectPrefab = Resources.Load<GameObject>($"Effects/HURT");
+
+            if (effectPrefab != null)
+            {
+                // 实例化特效并将其放置在 player's TankObject 上
+                GameObject effectInstance = GameObject.Instantiate(effectPrefab, bullet.transform.position, Quaternion.identity, wallController.transform);
+
+                // 可选：设置特效实例的生命周期，假设特效在3秒后销毁
+                //GameObject.Destroy(effectInstance, 3f);
+            }
+            else
+            {
+                Debug.LogWarning($"特效 HURT 未找到!");
+            }
         }
 
         public void DelAllBullets()

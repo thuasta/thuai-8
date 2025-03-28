@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 
@@ -27,7 +28,7 @@ namespace BattleCity
             TankArmor = tankArmor;
             TankSkills = tankSkills;
             TankPosition = tankPosition;
-            GameObject prefab = Resources.Load<GameObject>($"Model/Tank/{1}");
+            GameObject prefab = Resources.Load<GameObject>($"Model/Tank/{Id}");
             if (prefab != null)
             {
                 Vector3 position = new Vector3((float)tankPosition.X, (float)tankPosition.Y, (float)tankPosition.Z);
@@ -51,7 +52,7 @@ namespace BattleCity
             TankArmor = new Armor();
             TankSkills = new Skills();
             TankPosition = new Position();
-            GameObject prefab = Resources.Load<GameObject>($"Model/Tank/{1}");
+            GameObject prefab = Resources.Load<GameObject>($"Model/Tank/{Id}");
             if (prefab != null)
             {
                 Vector3 position = new Vector3((float)TankPosition.X, (float)TankPosition.Y, (float)TankPosition.Z);
@@ -64,7 +65,7 @@ namespace BattleCity
             }
             else
             {
-                Debug.LogError($"Tank model {1} not found in Resources/Model/Tank");
+                Debug.LogError($"Tank model {Id} not found in Resources/Model/Tank");
             }
         }
 
@@ -77,10 +78,10 @@ namespace BattleCity
                 Vector3 newPosition = new Vector3(
                     (float)(tankPosition.X + Constants.GENERAL_XBIAS), (float)tankPosition.Y, (float)(tankPosition.Z + Constants.GENERAL_ZBIAS)
                 );
-                TankObject.transform.localPosition = newPosition;
+                TankObject.transform.localPosition =  Vector3.Lerp(TankObject.transform.localPosition, newPosition, 10 * Time.deltaTime);
 
                 Quaternion newRotation = Quaternion.Euler(0, (float)tankPosition.Angle, 0); // 假设 Y 轴旋转
-                TankObject.transform.localRotation = newRotation;
+                TankObject.transform.localRotation = Quaternion.RotateTowards(TankObject.transform.localRotation, newRotation, 10 * Time.deltaTime);
             }
             else
             {
@@ -99,6 +100,14 @@ namespace BattleCity
         {
             if (TankObject != null)
             {
+                Object.Destroy(TankArmor.GravityInstance);
+                TankArmor.GravityInstance = null;
+                Object.Destroy(TankArmor.Knife_AC_Instance);
+                TankArmor.Knife_AC_Instance = null;
+                Object.Destroy(TankArmor.Knife_AV_Instance);
+                TankArmor.Knife_AV_Instance = null;
+                Object.Destroy(TankArmor.Reflect_AV_Instance );
+                TankArmor.Reflect_AV_Instance= null;
                 // 销毁游戏对象
                 Object.Destroy(TankObject);
                 TankObject = null;  // 清空引用避免野指针

@@ -2,8 +2,8 @@ namespace Thuai.Server.GameLogic;
 
 public class Weapon
 {
-    public double AttackSpeed { get; set; } = Constants.INITIAL_ATTACK_SPEED;
-    public double BulletSpeed { get; set; } = Constants.INITIAL_BULLET_SPEED;
+    public float AttackSpeed { get; set; } = Constants.INITIAL_ATTACK_SPEED;
+    public float BulletSpeed { get; set; } = Constants.INITIAL_BULLET_SPEED;
     public bool IsLaser { get; set; } = false;
     public bool AntiArmor { get; set; } = false;
     public int Damage { get; set; } = Constants.INITIAL_DAMAGE;
@@ -11,6 +11,7 @@ public class Weapon
     public int CurrentBullets { get; set; } = Constants.INITIAL_BULLETS;
     public int MaximumCooldown => (int)Math.Ceiling(1 / AttackSpeed);
     public bool CanAttack => _currentCoolDown == 0;
+    public bool HasEnoughBullets => CurrentBullets > 0;
 
     private int _currentCoolDown = 0;
 
@@ -26,5 +27,10 @@ public class Weapon
         {
             _currentCoolDown--;
         }
+    }
+
+    public void Reset()
+    {
+        _currentCoolDown = MaximumCooldown;
     }
 }
