@@ -61,6 +61,11 @@ public partial class Battle
                 ++bullet.Owner.CurrentBullets;
             }
 
+            if (bullet is Bullet b && b.Body is not null)
+            {
+                _env.RemoveBody(b.Body);
+                b.Unbind();
+            }
             Bullets.Remove(bullet);
 
             _logger.Debug($"A bullet at ({bullet.BulletPosition.Xpos:F2}, {bullet.BulletPosition.Ypos:F2}) has been removed.");

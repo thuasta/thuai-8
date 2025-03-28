@@ -116,6 +116,11 @@ public partial class Battle
     {
         try
         {
+            if (wall.Body is not null)
+            {
+                _env.RemoveBody(wall.Body);
+                wall.Unbind();
+            }
             Map?.Walls.Remove(wall);
             _logger.Debug($"Removed wall at ({wall.X}, {wall.Y}) with angle {wall.Angle}");
         }
