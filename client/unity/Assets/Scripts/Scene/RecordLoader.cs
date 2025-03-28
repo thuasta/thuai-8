@@ -283,7 +283,7 @@ namespace BattleCity
             {
                 if (!currentBulletIds.Contains(id)) 
                 {
-                    mBullets.DelBulletModel(id); 
+                    mBullets.DelBulletModel(id);
                 }
             }
         }

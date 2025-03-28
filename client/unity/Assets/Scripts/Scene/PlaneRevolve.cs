@@ -12,7 +12,7 @@ public class PlaneRevolve : MonoBehaviour
     public float orbitSpeed = 1f;
 
     [Tooltip("正常模式持续时间（秒）")]
-    public float normalDuration = 100f;
+    public float normalDuration = 200f;
 
     [Header("速度控制")]
     private float speedFactor = 1f; // 新增时间流逝系数

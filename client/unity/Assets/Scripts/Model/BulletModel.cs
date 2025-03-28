@@ -10,7 +10,7 @@ namespace BattleCity
 
         public Position BulletPosition{ get; set; }
 
-        private GameObject BulletObject { get; set; }
+        public GameObject BulletObject { get; set; }
 
         public BulletModel(int id, Position bulletPosition, int speed, int damage, bool isMissile = false, bool isAntiArmor = false, float traveledDistance = 0)
         {
@@ -35,7 +35,7 @@ namespace BattleCity
 
             if (prefab != null)
             {
-                Vector3 position = new Vector3((float)bulletPosition.X, (float)bulletPosition.Y, (float)bulletPosition.Z);
+                Vector3 position = new Vector3((float)bulletPosition.X, (float)(bulletPosition.Y + 0.2), (float)bulletPosition.Z);
 
                 Quaternion rotation = Quaternion.Euler(0, (float)bulletPosition.Angle, 0); // 假设 Y 轴旋转
 
@@ -50,23 +50,23 @@ namespace BattleCity
         }
 
         public void UpdateBulletPosition(Position bulletPosition)
-        {                        
+        {
             BulletPosition = bulletPosition;
 
             if (BulletObject != null)
             {
-                Vector3 newPosition = new Vector3((float)bulletPosition.X, (float)bulletPosition.Y, (float)bulletPosition.Z);
-                BulletObject.transform.localPosition = newPosition;
+                Vector3 targetPosition = new Vector3((float)bulletPosition.X, (float)bulletPosition.Y, (float)bulletPosition.Z);
+                BulletObject.transform.localPosition = Vector3.Lerp(BulletObject.transform.localPosition, targetPosition, 10 * Time.deltaTime);
 
-                Quaternion newRotation = Quaternion.Euler(0, (float)bulletPosition.Angle, 0); // 假设 Y 轴旋转
-                BulletObject.transform.localRotation = newRotation;
+                Quaternion targetRotation = Quaternion.Euler(0, (float)bulletPosition.Angle, 0); // 假设 Y 轴旋转
+                BulletObject.transform.localRotation = Quaternion.RotateTowards(BulletObject.transform.localRotation, targetRotation, 10 * Time.deltaTime);
             }
             else
             {
                 Debug.LogWarning($"BulletObject is null for bullet with id {Id}. Cannot update position.");
             }
-
         }
+
         public void UpdateBulletPosition(float x, float y, float angle)
         {
             Position position = new Position(x, y, angle);
@@ -79,8 +79,6 @@ namespace BattleCity
             {
                 Object.Destroy(BulletObject);
                 BulletObject = null;
-
-                // - 播放爆炸特效
             }
         }
     }

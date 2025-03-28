@@ -15,12 +15,16 @@ namespace BattleCity
                
         public Trap(Position pos, bool isActive)
         {
+            GameObject wallController = GameObject.Find("WallController");
             trapPos = pos;
-            Vector3 position = new Vector3((float)(pos.X), (float)(pos.Y + Constants.Y_BIAS), (float)(pos.Z + Constants.WALL_ZBIAS));
-            string prefabPath = "Prefabs/Trap/";
+            Vector3 position = new Vector3((float)(pos.X + Constants.WALL_XBIAS), (float)(pos.Y + Constants.Y_BIAS + 0.02f), (float)(pos.Z + Constants.WALL_ZFIX));
+            string prefabPath = "Prefabs/Trap";
             GameObject TrapPrefab = Resources.Load<GameObject>(prefabPath);
-            createdTrapObject = Object.Instantiate(TrapPrefab, position, Quaternion.identity);
+            createdTrapObject = Object.Instantiate(TrapPrefab, wallController.transform);
             this.isActive = isActive;
+            createdTrapObject.transform.localPosition = position;
+            createdTrapObject.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+            createdTrapObject.transform.localScale *= Constants.ZOOM;
         }     
                
 

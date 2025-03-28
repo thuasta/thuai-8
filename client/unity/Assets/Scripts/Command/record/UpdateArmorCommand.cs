@@ -29,7 +29,7 @@ public class UpdateArmorCommand : AbstractCommand
                 bool gravityField = ArmorData["gravityField"].ToObject<bool>();
                 string knife = ArmorData["knife"].ToString();
                 float dodgeRate = ArmorData["dodgeRate"].ToObject<float>();
-                player.TankArmor.UpdateArmor(canReflect, armorValue, health, gravityField, knife, dodgeRate);
+                player.TankArmor.UpdateArmor(canReflect, armorValue, health, gravityField, knife, dodgeRate, player.TankObject);
 
                 this.SendCommand(new HealthChangeCommand(player.Id, health));
                 this.SendCommand(new ArmorValueChangeCommand(player.Id, armorValue));
