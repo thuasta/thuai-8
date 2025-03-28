@@ -1,14 +1,11 @@
 namespace Thuai.Server.GameLogic.Skills;
 
-public class BlackOut(
-    int maxCooldown = Constants.SkillCooldown.BLACK_OUT,
-    int duration = Constants.SkillDuration.BLACK_OUT
-) : ISkill
+public abstract class SkillWithDuration(int maxCooldown, int duration) : ISkill
 {
     public event EventHandler<ISkill.OnActivationEventArgs>? OnActivationEvent = delegate { };
     public event EventHandler<ISkill.OnDeactivationEventArgs>? OnDeactivationEvent = delegate { };
 
-    public SkillName Name => SkillName.BLACK_OUT;
+    public abstract SkillName Name { get; }
     public int MaxCooldown => _cooldown.MaxCount;
     public int CurrentCooldown => _cooldown.CurrentCount;
     public bool IsAvailable => _cooldown.IsZero == true;
@@ -56,4 +53,14 @@ public class BlackOut(
         _activation.Clear();
         OnDeactivationEvent?.Invoke(this, new(Name));
     }
+}
+
+public class BlackOut() : SkillWithDuration(Constants.SkillCooldown.BLACK_OUT, Constants.SkillDuration.BLACK_OUT)
+{
+    public override SkillName Name => SkillName.BLACK_OUT;
+}
+
+public class SpeedUp() : SkillWithDuration(Constants.SkillCooldown.SPEED_UP, Constants.SkillDuration.SPEED_UP)
+{
+    public override SkillName Name => SkillName.SPEED_UP;
 }

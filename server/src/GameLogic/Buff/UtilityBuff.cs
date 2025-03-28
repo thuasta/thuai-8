@@ -15,7 +15,11 @@ public static class U_Buff
     public static void SPEED_UP(Player player)
     {
         // 加速
-        // TODO: Implement
+        Skills.SpeedUp speedUp = new();
+        speedUp.OnActivationEvent += player.OnSkillActivation;
+        speedUp.OnDeactivationEvent += player.OnSkillDeactivation;
+        player.PlayerSkills.Add(speedUp);
+        player.LastChosenBuff = Buff.BLACK_OUT;
         player.LastChosenBuff = Buff.SPEED_UP;
     }
 

@@ -106,6 +106,10 @@ public partial class Battle
                         }
                         break;
 
+                    case SkillName.SPEED_UP:
+                        _logger.Information($"[Player {e.Player.ID}] activated SpeedUp skill.");
+                        break;
+
                     default:
                         _logger.Error($"[Player {e.Player.ID}] Invalid skill name: {e.SkillName}");
                         break;
@@ -137,6 +141,10 @@ public partial class Battle
                                 _logger.Information($"[Player {player.ID}] recovered from blindness.");
                             }
                         }
+                        break;
+
+                    case SkillName.SPEED_UP:
+                        _logger.Information($"[Player {e.Player.ID}] deactivated SpeedUp skill.");
                         break;
 
                     default:
