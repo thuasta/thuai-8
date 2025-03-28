@@ -14,6 +14,9 @@ public partial class Environment
     public const int TOI_POSITION_ITERATIONS = 100;
     public const float DEFAULT_DENSITY = 1f;
 
+    // A tick in game is equivalent to a second in physics simulation.
+    public const float TIME_STEP = 1f;
+
     private static SolverIterations _solverIterations = new()
     {
         VelocityIterations = VELOCITY_ITERATIONS,
@@ -22,18 +25,13 @@ public partial class Environment
         TOIPositionIterations = TOI_POSITION_ITERATIONS
     };
 
-    public float TimeStep { get; init; }
-
     private readonly World _world = new(Vector2.Zero);
 
     private readonly ILogger _logger = Utility.Tools.LogHandler.CreateLogger("Environment");
 
-    public Environment(int ticksPerSecond)
+    public Environment()
     {
-        TimeStep = 1f / ticksPerSecond;
-
         _logger.Debug("Environment settings:");
-        _logger.Debug($"Time step: {1000 * TimeStep:F2}ms");
         _logger.Debug($"Velocity iterations: {VELOCITY_ITERATIONS}");
         _logger.Debug($"Position iterations: {POSITION_ITERATIONS}");
         _logger.Debug($"TOI velocity iterations: {TOI_VELOCITY_ITERATIONS}");
@@ -45,6 +43,6 @@ public partial class Environment
     /// </summary>
     public void Step()
     {
-        _world.Step(TimeStep, ref _solverIterations);
+        _world.Step(TIME_STEP, ref _solverIterations);
     }
 }
