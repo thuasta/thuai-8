@@ -12,7 +12,7 @@ RECONNECT_INTERVAL = 3.0
 
 @dataclass
 class _Connection:
-    ws_client: websockets.WebSocketClientProtocol
+    ws_client: websockets.ClientProtocol
     receive_task: asyncio.Task
 
 
@@ -97,7 +97,7 @@ class WebsocketClient:
                 logging.error(f"encountered an error in receive loop: {e}")
 
     @staticmethod
-    async def _try_connect(url: str) -> websockets.WebSocketClientProtocol:
+    async def _try_connect(url: str) -> websockets.ClientProtocol:
         is_connected = False
 
         while not is_connected:
