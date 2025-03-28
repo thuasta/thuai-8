@@ -75,10 +75,11 @@ namespace BattleCity
         //用于移除墙体
         public void RemoveWall(Position wallPos) 
         {
-            Wall wall = new(wallPos);
-            Wall foundWall = CityWall.Find(w => w.wallPos.Equals(wall.wallPos));
+            //Wall wall = new(wallPos);
+            Wall foundWall = CityWall.Find(w => w.wallPos.Equals(wallPos));
             if (foundWall != null)
             {
+                RemoveWallEffect(foundWall);
                 foundWall.RemoveWall(); // 假设 RemoveWall 方法在 Wall 类中
                 CityWall.Remove(foundWall); // 从 CityWall 中移除找到的墙
             }
@@ -100,13 +101,14 @@ namespace BattleCity
         //用于移除fence
         public void RemoveFence(Position wallPos)
         {
-            Wall wall = new(wallPos);
-            CityFence.Remove(wall);
-            Wall foundFence = CityWall.Find(w => w.wallPos.Equals(wall.wallPos));
+            //Wall wall = new(wallPos);
+            Wall foundFence = CityFence.Find(w => w.wallPos.Equals(wallPos));
             if (foundFence != null)
             {
+                RemoveWallEffect(foundFence);
                 foundFence.RemoveWall(); 
                 CityFence.Remove(foundFence);
+                
             }
             else
             {
@@ -122,6 +124,27 @@ namespace BattleCity
         public void RemoveFence(Wall wall)
         {
             RemoveFence(wall.wallPos);
+        }
+
+        public void RemoveWallEffect(Wall wall)
+        {
+            GameObject effectPrefab = null;
+            GameObject wallController = GameObject.Find("WallController");
+            // 加载特效预制件
+            effectPrefab = Resources.Load<GameObject>($"Effects/REMOVE_WALL");
+
+            if (effectPrefab != null)
+            {
+                // 实例化特效并将其放置在 player's TankObject 上
+                GameObject effectInstance = GameObject.Instantiate(effectPrefab, wall.createdWallObject.transform.position + new Vector3(0,0.5f,0), Quaternion.identity, wallController.transform);
+
+                // 可选：设置特效实例的生命周期，假设特效在3秒后销毁
+                GameObject.Destroy(effectInstance, 3f);
+            }
+            else
+            {
+                Debug.LogWarning($"特效 CONSTRUCT 未找到!");
+            }
         }
 
         public void AddTrap(Position trapPos, bool isActive = false)
