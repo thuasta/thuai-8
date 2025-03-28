@@ -1,3 +1,5 @@
+using Thuai.Server.Protocol.Scheme;
+
 namespace Thuai.Server.GameLogic;
 
 public partial class Player
@@ -8,10 +10,6 @@ public partial class Player
         {
             switch (e.Name)
             {
-                case SkillName.BLACK_OUT:
-                    // Don't have effect on player itself
-                    break;
-
                 case SkillName.SPEED_UP:
                     if (Body is null)
                     {
@@ -34,6 +32,11 @@ public partial class Player
                         PlayerPosition.Angle
                     );
                     PlayerPosition = newPosition;
+                    break;
+
+                case SkillName.BLACK_OUT:
+                case SkillName.DESTROY:
+                    // Don't have effect on player itself
                     break;
 
                 default:
@@ -71,6 +74,7 @@ public partial class Player
 
                 // Instant skills do not have a deactivation event
                 case SkillName.FLASH:
+                case SkillName.DESTROY:
                     break;
 
                 default:

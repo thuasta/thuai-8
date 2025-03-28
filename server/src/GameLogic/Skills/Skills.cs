@@ -109,3 +109,8 @@ public class Flash() : InstantSkill(Constants.SkillCooldown.FLASH)
 {
     public override SkillName Name => SkillName.FLASH;
 }
+
+public class Destroy() : InstantSkill(Constants.SkillCooldown.DESTROY)
+{
+    public override SkillName Name => SkillName.DESTROY;
+}

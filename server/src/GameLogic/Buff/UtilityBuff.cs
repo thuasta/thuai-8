@@ -33,6 +33,7 @@ public static class U_Buff
     public static void DESTROY(Player player)
     {
         // 破坏墙体
+        AppendSkill(player, new Skills.Destroy());
         player.LastChosenBuff = Buff.DESTROY;
     }
 

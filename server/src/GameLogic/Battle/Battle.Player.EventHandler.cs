@@ -1,3 +1,5 @@
+using Thuai.Server.GameLogic.MapGeneration;
+
 namespace Thuai.Server.GameLogic;
 
 public partial class Battle
@@ -114,6 +116,25 @@ public partial class Battle
                         UpdateGravityFieldCoverage();
                         break;
 
+                    case SkillName.DESTROY:
+                        Wall? target = _env.GetFacingEdge(
+                            new(e.Player.PlayerPosition.Xpos, e.Player.PlayerPosition.Ypos),
+                            e.Player.Orientation
+                        );
+                        if (target is null)
+                        {
+                            _logger.Error($"[Player {e.Player.ID}] No edge found to destroy.");
+                        }
+                        else
+                        {
+                            _logger.Information(
+                                $"[Player {e.Player.ID}] targeted edge at ({target.X}, {target.Y})"
+                                + $" with angle {target.Angle}."
+                            );
+                            RemoveWall(target);
+                        }
+                        break;
+
                     default:
                         _logger.Error($"[Player {e.Player.ID}] Invalid skill name: {e.SkillName}");
                         break;
@@ -153,6 +174,7 @@ public partial class Battle
 
                     // Instant skills do not have deactivation effects.
                     case SkillName.FLASH:
+                    case SkillName.DESTROY:
                         break;
 
                     default:
