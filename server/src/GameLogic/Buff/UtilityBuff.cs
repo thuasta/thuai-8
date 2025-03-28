@@ -40,6 +40,7 @@ public static class U_Buff
     public static void CONSTRUCT(Player player)
     {
         // 建造墙体
+        AppendSkill(player, new Skills.Construct());
         player.LastChosenBuff = Buff.CONSTRUCT;
     }
 

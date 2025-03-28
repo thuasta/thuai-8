@@ -89,7 +89,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
                     throw new Exception("Generate Map Failed.");
                 }
 
-                AddWall(Map?.Walls ?? throw new Exception("Map is null."));
+                BindWall(Map?.Walls ?? throw new Exception("Map is null."));
 
                 foreach (Player player in AllPlayers)
                 {

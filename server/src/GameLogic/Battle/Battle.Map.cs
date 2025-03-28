@@ -4,9 +4,32 @@ public partial class Battle
 {
     public MapGeneration.Map? Map { get; private set; }
 
-    private MapGeneration.MapGenerator MapGenerator = new();
+    private static MapGeneration.MapGenerator MapGenerator = new();
 
     public void AddWall(MapGeneration.Wall wall)
+    {
+        if (Map is null)
+        {
+            _logger.Error("Cannot add wall: Map is null.");
+            return;
+        }
+        if (Map.Walls.Any(w => w == wall))
+        {
+            _logger.Error(
+                "Cannot add wall:"
+                + $" Wall at ({wall.X}, {wall.Y}) with angle {wall.Angle} already exists."
+            );
+            return;
+        }
+
+        Map.Walls.Add(wall);
+        BindWall(wall);
+        _logger.Debug(
+            $"Added wall at ({wall.X}, {wall.Y}) with angle {wall.Angle}"
+        );
+    }
+
+    public void BindWall(MapGeneration.Wall wall)
     {
         if (wall.Angle == MapGeneration.WallDirection.HORIZONTAL)
         {
@@ -30,11 +53,11 @@ public partial class Battle
         }
     }
 
-    public void AddWall(List<MapGeneration.Wall> walls)
+    public void BindWall(List<MapGeneration.Wall> walls)
     {
         foreach (var wall in walls)
         {
-            AddWall(wall);
+            BindWall(wall);
         }
     }
 
@@ -46,8 +69,7 @@ public partial class Battle
     {
         try
         {
-            MapGeneration.MapGenerator mapGenerator = new();
-            Map = mapGenerator.GenerateMaps(1, 10, 10)[0];
+            Map = MapGenerator.GenerateMaps(1, 10, 10)[0];
             _logger.Information($"Map generated successfully.");
             return true;
         }

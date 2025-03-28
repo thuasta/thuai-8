@@ -128,10 +128,33 @@ public partial class Battle
                         else
                         {
                             _logger.Information(
-                                $"[Player {e.Player.ID}] targeted edge at ({target.X}, {target.Y})"
+                                $"[Player {e.Player.ID}] Destroy skill"
+                                + $" targeted edge at ({target.X}, {target.Y})"
                                 + $" with angle {target.Angle}."
                             );
                             RemoveWall(target);
+                        }
+                        break;
+
+                    case SkillName.CONSTRUCT:
+                        Wall? edge = _env.GetFacingEdge(
+                            new(e.Player.PlayerPosition.Xpos, e.Player.PlayerPosition.Ypos),
+                            e.Player.Orientation
+                        );
+                        if (edge is null)
+                        {
+                            _logger.Error($"[Player {e.Player.ID}] No edge found to construct.");
+                        }
+                        else
+                        {
+                            _logger.Information(
+                                $"[Player {e.Player.ID}] Construct skill"
+                                + $" targeted edge at ({edge.X}, {edge.Y})"
+                                + $" with angle {edge.Angle}."
+                            );
+
+                            Wall wall = new(edge.X, edge.Y, edge.Angle, true);
+                            AddWall(wall);
                         }
                         break;
 

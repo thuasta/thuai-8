@@ -115,4 +115,16 @@ public partial class Environment
             }
         }
     }
+
+    /// <summary>
+    /// Remove a body from the world.
+    /// </summary>
+    /// <param name="body">Body to remove.</param>
+    public void RemoveBody(Body body)   // TODO: Apply this method to delete methods in battle.
+    {
+        lock (_lock)
+        {
+            _world.Remove(body);
+        }
+    }
 }

@@ -114,3 +114,8 @@ public class Destroy() : InstantSkill(Constants.SkillCooldown.DESTROY)
 {
     public override SkillName Name => SkillName.DESTROY;
 }
+
+public class Construct() : InstantSkill(Constants.SkillCooldown.CONSTRUCT)
+{
+    public override SkillName Name => SkillName.CONSTRUCT;
+}
