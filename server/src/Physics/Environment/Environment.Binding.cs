@@ -32,7 +32,7 @@ public partial class Environment
 
             case Categories.Wall:
                 result = _world.CreateBody(position, rotation, BodyType.Static);
-                fixture = result.CreateEdge(new(0, 0), new(0, GameLogic.Constants.WALL_LENGTH));
+                fixture = result.CreateEdge(new(0, 0), new(GameLogic.Constants.WALL_LENGTH, 0));
                 fixture.CollisionCategories = Categories.Wall;
                 fixture.CollidesWith = CollisionList.WallCollidesWith;
                 fixture.Friction = 0f;
