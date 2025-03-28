@@ -50,7 +50,7 @@ public partial class AgentServer
             }
             List<Protocol.Scheme.Wall> walls = [];
             List<Protocol.Scheme.Bullet> bullets = [];
-            foreach (GameLogic.MapGenerator.Wall wall in e.Game.RunningBattle.Map.Walls)
+            foreach (GameLogic.MapGeneration.Wall wall in e.Game.RunningBattle.Map.Walls)
             {
                 walls.Add(
                     new Protocol.Scheme.Wall()
@@ -66,6 +66,9 @@ public partial class AgentServer
                 bullets.Add(
                     new Protocol.Scheme.Bullet()
                     {
+                        No = bullet.Id,
+                        IsMissile = bullet.IsMissile,
+                        IsAntiArmor = bullet.AntiArmor,
                         Position = new()
                         {
                             X = bullet.BulletPosition.Xpos,
