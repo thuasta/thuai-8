@@ -110,6 +110,10 @@ public partial class Battle
                         _logger.Information($"[Player {e.Player.ID}] activated SpeedUp skill.");
                         break;
 
+                    case SkillName.FLASH:
+                        UpdateGravityFieldCoverage();
+                        break;
+
                     default:
                         _logger.Error($"[Player {e.Player.ID}] Invalid skill name: {e.SkillName}");
                         break;
@@ -145,6 +149,10 @@ public partial class Battle
 
                     case SkillName.SPEED_UP:
                         _logger.Information($"[Player {e.Player.ID}] deactivated SpeedUp skill.");
+                        break;
+
+                    // Instant skills do not have deactivation effects.
+                    case SkillName.FLASH:
                         break;
 
                     default:

@@ -19,13 +19,16 @@ public static class U_Buff
         speedUp.OnActivationEvent += player.OnSkillActivation;
         speedUp.OnDeactivationEvent += player.OnSkillDeactivation;
         player.PlayerSkills.Add(speedUp);
-        player.LastChosenBuff = Buff.BLACK_OUT;
         player.LastChosenBuff = Buff.SPEED_UP;
     }
 
     public static void FLASH(Player player)
     {
         // 闪现
+        Skills.Flash flash = new();
+        flash.OnActivationEvent += player.OnSkillActivation;
+        flash.OnDeactivationEvent += player.OnSkillDeactivation;
+        player.PlayerSkills.Add(flash);
         player.LastChosenBuff = Buff.FLASH;
     }
 

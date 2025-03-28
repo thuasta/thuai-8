@@ -9,7 +9,7 @@ public partial class Player
             switch (e.Name)
             {
                 case SkillName.BLACK_OUT:
-                    SkillActivationEvent?.Invoke(this, new(this, e.Name));
+                    // Don't have effect on player itself
                     break;
 
                 case SkillName.SPEED_UP:
@@ -22,9 +22,25 @@ public partial class Player
                     tag.AttachedData[Physics.Key.SpeedUpFactor] = Constants.SkillEffect.SPPED_UP_FACTOR;
                     break;
 
+                case SkillName.FLASH:
+                    if (Body is null)
+                    {
+                        _logger.Error("Cannot activate Flash skill: body is null.");
+                        return;
+                    }
+                    Position newPosition = new(
+                        PlayerPosition.Xpos + Constants.SkillEffect.FLASH_DISTANCE * Orientation.X,
+                        PlayerPosition.Ypos + Constants.SkillEffect.FLASH_DISTANCE * Orientation.Y,
+                        PlayerPosition.Angle
+                    );
+                    PlayerPosition = newPosition;
+                    break;
+
                 default:
                     throw new ArgumentException($"Invalid skill name {e.Name}.");
             }
+
+            SkillActivationEvent?.Invoke(this, new(this, e.Name));
         }
         catch (Exception ex)
         {
@@ -40,7 +56,7 @@ public partial class Player
             switch (e.Name)
             {
                 case SkillName.BLACK_OUT:
-                    SkillDeactivationEvent?.Invoke(this, new(this, e.Name));
+                    // Don't have effect on player itself
                     break;
 
                 case SkillName.SPEED_UP:
@@ -53,9 +69,15 @@ public partial class Player
                     tag.AttachedData[Physics.Key.SpeedUpFactor] = 1f;
                     break;
 
+                // Instant skills do not have a deactivation event
+                case SkillName.FLASH:
+                    break;
+
                 default:
                     throw new ArgumentException($"Invalid skill name {e.Name}.");
             }
+
+            SkillDeactivationEvent?.Invoke(this, new(this, e.Name));
         }
         catch (Exception ex)
         {
