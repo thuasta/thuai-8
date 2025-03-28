@@ -20,10 +20,17 @@ public partial class Battle
         foreach (Player player in AllPlayers)
         {
             player.Update();
-            player.PlayerMove(player.MoveDirection);
-            player.PlayerTurn(player.TurnDirection);
         }
         _logger.Debug("Players updated.");
+    }
+
+    public void UpdatePlayerSpeed()
+    {
+        foreach (Player player in AllPlayers)
+        {
+            player.UpdateSpeed();
+        }
+        _logger.Debug("Speed of players updated.");
     }
 
     /// <summary>
@@ -39,9 +46,9 @@ public partial class Battle
 
         foreach (Player player in AllPlayers)
         {
-            double x = Constants.WALL_LENGTH * (_random.Next(0, Map.Width) + 0.5);
-            double y = Constants.WALL_LENGTH * (_random.Next(0, Map.Height) + 0.5);
-            double angle = _random.Next(0, (int)(2 * Math.PI / Constants.TURN_SPEED)) * Constants.TURN_SPEED;
+            float x = Constants.WALL_LENGTH * (_random.Next(0, Map.Width) + 0.5f);
+            float y = Constants.WALL_LENGTH * (_random.Next(0, Map.Height) + 0.5f);
+            float angle = _random.Next(0, (int)(2 * Math.PI / Constants.TURN_SPEED)) * Constants.TURN_SPEED;
             player.PlayerPosition = new Position(x, y, angle);
 
             _logger.Information($"Player {player.ID} spawned at ({x:F2}, {y:F2}) with angle {angle:F2} rad.");

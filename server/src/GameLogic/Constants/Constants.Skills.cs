@@ -25,9 +25,10 @@ public static partial class Constants
 
     public static class SkillEffect
     {
-        public const double SPPED_UP_FACTOR = 4;
-        public const double FLASH_DISTANCE = 10;
+        public const float SPPED_UP_FACTOR = 4;
+        public const float FLASH_DISTANCE = 10;
         public const int CONSTRUCT_WALL_STRENGTH = 3;
+        public const float TRAP_RADIUS = PLAYER_RADIUS;
         public const int TRAP_EFFECT_TICKS = 10;
     }
 }

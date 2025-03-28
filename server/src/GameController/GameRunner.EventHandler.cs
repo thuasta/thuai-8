@@ -119,6 +119,15 @@ public partial class GameRunner
                     _logger.Debug(
                         $"[Player {player.ID}] Requested player info."
                     );
+                    if (
+                        Game.Stage != GameLogic.Game.GameStage.InBattle
+                        || Game.RunningBattle is null
+                        || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.InBattle
+                    )
+                    {
+                        _logger.Debug("No battle is running. PlayerInfo will not be provided.");
+                        return;
+                    }
 
                     List<Protocol.Scheme.Player> players = [];
                     foreach (GameLogic.Player p in Game.AllPlayers)

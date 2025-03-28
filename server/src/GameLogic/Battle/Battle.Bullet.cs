@@ -40,10 +40,27 @@ public partial class Battle
         }
     }
 
+    private void RemoveBullet(List<IBullet> bullets)
+    {
+        foreach (IBullet bullet in bullets)
+        {
+            RemoveBullet(bullet);
+        }
+    }
+
     private void RemoveBullet(IBullet bullet)
     {
         try
         {
+            if (bullet.Owner.CurrentBullets >= bullet.Owner.MaxBullets)
+            {
+                _logger.Error("Unexpected bullet deletion. Please contact the developer.");
+            }
+            else
+            {
+                ++bullet.Owner.CurrentBullets;
+            }
+
             Bullets.Remove(bullet);
 
             _logger.Debug($"A bullet at ({bullet.BulletPosition.Xpos:F2}, {bullet.BulletPosition.Ypos:F2}) has been removed.");
@@ -53,48 +70,6 @@ public partial class Battle
             _logger.Error($"Cannot remove bullet: {e.Message}");
             _logger.Debug($"{e}");
         }
-    }
-
-    private double ProjectLength(Position playerPos, Position line)
-    {
-        double dx = playerPos.Xpos - line.Xpos;
-        double dy = playerPos.Ypos - line.Ypos;
-
-        double angleInRadians = (double)(line.Angle * Math.PI / 180.0);
-        double lineDirX = (double)Math.Cos(angleInRadians);
-        double lineDirY = (double)Math.Sin(angleInRadians);
-
-        double projectionLength = dx * lineDirX + dy * lineDirY;
-
-        return projectionLength;
-    }
-
-    private Player? TakeDamage(Position startPos, Position endPos)
-    {
-        List<Player> tempPlayers = [];
-        double min_proj = double.MaxValue;
-        Player? finalPlayer = null;
-        double line_len = PointDistance(startPos, endPos);
-        foreach (Player player in AllPlayers)
-        {
-            if (LineDistance(startPos, player.PlayerPosition) < Constants.PLAYER_RADIUS)
-            {
-                tempPlayers.Add(player);
-            }
-        }
-        foreach (Player player in tempPlayers)
-        {
-            double tempProj = ProjectLength(player.PlayerPosition, startPos);
-            if (tempProj > -Constants.PLAYER_RADIUS && tempProj <= line_len)
-            {
-                if (min_proj > tempProj)
-                {
-                    min_proj = tempProj;
-                    finalPlayer = player;
-                }
-            }
-        }
-        return finalPlayer;
     }
 
     private void UpdateBullets()
@@ -107,65 +82,20 @@ public partial class Battle
             return;
         }
 
+        List<IBullet> toDelete = [];
+
         foreach (IBullet bullet in Bullets)
         {
             try
             {
-                double speed = bullet.BulletSpeed;
-
-                foreach (Player player in AllPlayers)
+                if (bullet is Bullet b)
                 {
-                    if (
-                        player.IsAlive == true
-                        && player.PlayerArmor.GravityField == true
-                        && PointDistance(player.PlayerPosition, bullet.BulletPosition) < Constants.GRAVITY_FIELD_RADIUS
-                    )
+                    b.Update();
+                    if (b.IsDestroyed == true)
                     {
-                        speed *= Constants.GRAVITY_FIELD_STRENGTH;
-                        break;  // Gravity field only affects the bullet once
+                        toDelete.Add(b);
                     }
                 }
-
-                double delta_x = speed * Math.Cos(bullet.BulletPosition.Angle);
-                double delta_y = speed * Math.Sin(bullet.BulletPosition.Angle);
-                Position endPos = new(delta_x, delta_y);
-                Position? finalPos = GetBulletFinalPos(bullet.BulletPosition, endPos, out Position? interPos);
-                if (finalPos != null)
-                {
-                    // TODO: Refactor this part
-                    Player? finalPlayer = null;
-                    if (interPos != null)
-                    {
-                        finalPlayer = TakeDamage(bullet.BulletPosition, interPos);
-                        if (finalPlayer != null)
-                        {
-                            finalPlayer.Injured(bullet.BulletDamage, bullet.AntiArmor, out _);
-
-                            // TODO: Implement reflection
-
-                            RemoveBullet(bullet);
-                            continue;
-                        }
-                        finalPlayer = TakeDamage(interPos, finalPos);
-                    }
-                    else
-                    {
-                        finalPlayer = TakeDamage(bullet.BulletPosition, finalPos);
-                    }
-                    if (finalPlayer != null)
-                    {
-                        finalPlayer.Injured(bullet.BulletDamage, bullet.AntiArmor, out _);
-
-                        // TODO: Implement reflection
-
-                        RemoveBullet(bullet);
-                        continue;
-                    }
-
-                    bullet.BulletPosition = finalPos;
-                }
-
-                _logger.Debug($"Bullets updated.");
             }
             catch (Exception ex)
             {
@@ -173,13 +103,19 @@ public partial class Battle
                 _logger.Debug($"{ex}");
             }
         }
+
+        RemoveBullet(toDelete);
+
+        _logger.Debug($"Bullets updated.");
     }
-    private void Apply_Laser(LaserBullet laserBullet)
+
+    private void ApplyLaser(LaserBullet laserBullet)
     {
         try
         {
             lock (_lock)
             {
+                // TODO: Implement
             }
         }
         catch (Exception ex)
