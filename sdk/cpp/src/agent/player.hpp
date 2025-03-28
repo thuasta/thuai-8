@@ -5,6 +5,7 @@
 #include <spdlog/fmt/bundled/format.h>
 #include <spdlog/fmt/bundled/ranges.h>
 
+#include <cstdint>
 #include <magic_enum/magic_enum.hpp>
 #include <string>
 #include <vector>
@@ -13,14 +14,14 @@
 
 namespace thuai8_agent {
 
-enum class ArmorKnifeState : unsigned char {
+enum class ArmorKnifeState : std::uint8_t {
   NotOwned,
   Available,
   Active,
   Broken
 };
 
-enum class SkillKind : unsigned char {
+enum class SkillKind : std::uint8_t {
   BlackOut,
   SpeedUp,
   Flash,
@@ -32,8 +33,8 @@ enum class SkillKind : unsigned char {
 };
 
 struct Weapon {
-  unsigned int attackSpeed{};
-  unsigned int bulletSpeed{};
+  double attackSpeed{};
+  double bulletSpeed{};
   bool isLaser{};
   bool antiArmor{};
   unsigned int damage{};
@@ -45,7 +46,7 @@ struct Armor {
   bool canReflect{};
   bool gravityField{};
   unsigned int armorValue{};
-  unsigned int health{};
+  int health{};
   double dodgeRate{};
   ArmorKnifeState knife{};
 };
@@ -57,13 +58,15 @@ struct Skill {
   bool isActive{};
 };
 
-struct PlayerInfo {
+struct Player {
   std::string token;
   Position<double> position{};
   Weapon weapon{};
   Armor armor{};
   std::vector<Skill> skills;
 };
+
+using Players = std::vector<Player>;
 
 }  // namespace thuai8_agent
 
@@ -118,11 +121,11 @@ struct fmt::formatter<thuai8_agent::Skill> : fmt::formatter<std::string> {
 };
 
 template <>
-struct fmt::formatter<thuai8_agent::PlayerInfo> : fmt::formatter<std::string> {
-  static auto format(const thuai8_agent::PlayerInfo& obj, format_context& ctx) {
+struct fmt::formatter<thuai8_agent::Player> : fmt::formatter<std::string> {
+  static auto format(const thuai8_agent::Player& obj, format_context& ctx) {
     return fmt::format_to(
-        ctx.out(), "PlayerInfo: {{Token: {}, {}, {}, {}, Skills: {}}}",
-        obj.token, obj.position, obj.weapon, obj.armor, obj.skills);
+        ctx.out(), "Player: {{Token: {}, {}, {}, {}, Skills: {}}}", obj.token,
+        obj.position, obj.weapon, obj.armor, obj.skills);
   }
 };
 
