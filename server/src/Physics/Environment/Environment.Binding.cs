@@ -19,47 +19,59 @@ public partial class Environment
         Body? result;
         Fixture? fixture;
 
-        switch (category)
+        lock (_lock)
         {
-            case Categories.Player:
-                result = _world.CreateBody(position, rotation, BodyType.Dynamic);
-                fixture = result.CreateCircle(GameLogic.Constants.PLAYER_RADIUS, DEFAULT_DENSITY);
-                fixture.CollisionCategories = Categories.Player;
-                fixture.CollidesWith = CollisionList.PlayerCollidesWith;
-                fixture.Friction = 0f;
-                fixture.Restitution = 0f;
-                return result;
+            try
+            {
+                switch (category)
+                {
+                    case Categories.Player:
+                        result = _world.CreateBody(position, rotation, BodyType.Dynamic);
+                        fixture = result.CreateCircle(GameLogic.Constants.PLAYER_RADIUS, DEFAULT_DENSITY);
+                        fixture.CollisionCategories = Categories.Player;
+                        fixture.CollidesWith = CollisionList.PlayerCollidesWith;
+                        fixture.Friction = 0f;
+                        fixture.Restitution = 0f;
+                        return result;
 
-            case Categories.Wall:
-                result = _world.CreateBody(position, rotation, BodyType.Static);
-                fixture = result.CreateEdge(new(0, 0), new(GameLogic.Constants.WALL_LENGTH, 0));
-                fixture.CollisionCategories = Categories.Wall;
-                fixture.CollidesWith = CollisionList.WallCollidesWith;
-                fixture.Friction = 0f;
-                return result;
+                    case Categories.Wall:
+                        result = _world.CreateBody(position, rotation, BodyType.Static);
+                        fixture = result.CreateEdge(new(0, 0), new(GameLogic.Constants.WALL_LENGTH, 0));
+                        fixture.CollisionCategories = Categories.Wall;
+                        fixture.CollidesWith = CollisionList.WallCollidesWith;
+                        fixture.Friction = 0f;
+                        return result;
 
-            case Categories.Bullet:
-                result = _world.CreateBody(position, rotation, BodyType.Dynamic);
-                fixture = result.CreateCircle(GameLogic.Constants.BULLET_RADIUS, DEFAULT_DENSITY);
-                fixture.CollisionCategories = Categories.Bullet;
-                fixture.CollidesWith = CollisionList.BulletCollidesWith;
-                fixture.Friction = 0f;
-                fixture.Restitution = 1f;
-                return result;
+                    case Categories.Bullet:
+                        result = _world.CreateBody(position, rotation, BodyType.Dynamic);
+                        fixture = result.CreateCircle(GameLogic.Constants.BULLET_RADIUS, DEFAULT_DENSITY);
+                        fixture.CollisionCategories = Categories.Bullet;
+                        fixture.CollidesWith = CollisionList.BulletCollidesWith;
+                        fixture.Friction = 0f;
+                        fixture.Restitution = 1f;
+                        return result;
 
-            case Categories.Trap:
-                result = _world.CreateBody(position, rotation, BodyType.Static);
-                fixture = result.CreateCircle(GameLogic.Constants.PLAYER_RADIUS, DEFAULT_DENSITY);
-                fixture.CollisionCategories = Categories.Trap;
-                fixture.CollidesWith = CollisionList.TrapCollidesWith;
-                fixture.IsSensor = true;
-                return result;
+                    case Categories.Trap:
+                        result = _world.CreateBody(position, rotation, BodyType.Static);
+                        fixture = result.CreateCircle(GameLogic.Constants.PLAYER_RADIUS, DEFAULT_DENSITY);
+                        fixture.CollisionCategories = Categories.Trap;
+                        fixture.CollidesWith = CollisionList.TrapCollidesWith;
+                        fixture.IsSensor = true;
+                        return result;
 
-            case Categories.Laser:
-                throw new InvalidOperationException("Laser should be created with CreateLaser method.");
+                    case Categories.Laser:
+                        throw new InvalidOperationException("Laser should be created with CreateLaser method.");
 
-            default:
-                throw new ArgumentOutOfRangeException(nameof(category), $"Invalid category.");
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(category), $"Invalid category.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("Failed to create body:");
+                Utility.Tools.LogHandler.LogException(_logger, ex);
+                throw;
+            }
         }
     }
 

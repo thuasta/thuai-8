@@ -28,6 +28,7 @@ public partial class Environment
     private readonly World _world = new(Vector2.Zero);
 
     private readonly ILogger _logger = Utility.Tools.LogHandler.CreateLogger("Environment");
+    private readonly object _lock = new();
 
     public Environment()
     {
@@ -43,6 +44,17 @@ public partial class Environment
     /// </summary>
     public void Step()
     {
-        _world.Step(TIME_STEP, ref _solverIterations);
+        lock (_lock)
+        {
+            try
+            {
+                _world.Step(TIME_STEP, ref _solverIterations);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("Error during physics step:");
+                Utility.Tools.LogHandler.LogException(_logger, ex);
+            }
+        }
     }
 }
