@@ -90,7 +90,6 @@ class WebsocketClient:
                     logging.error(f"failed to parse message from server: {e}")
                     continue
 
-                # logging.debug(f"received package: {message.msg}")
                 self._on_message(message)
 
             except Exception as e:

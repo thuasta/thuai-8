@@ -23,8 +23,18 @@ class Fence:
 
 class Bullet:
     def __init__(
-        self, position: Position, speed: float, damage: float, traveled_distance: float
+        self,
+        no: int,
+        isMissile: bool,
+        isAntiArmor: bool,
+        position: Position,
+        speed: float,
+        damage: float,
+        traveled_distance: float,
     ):
+        self.no = no
+        self.isMissile = isMissile
+        self.isAntiArmor = isAntiArmor
         self.position = position
         self.speed = speed
         self.damage = damage
@@ -32,15 +42,6 @@ class Bullet:
 
     def __str__(self):
         return f"Bullet(position={self.position}, speed={self.speed}, damage={self.damage}, traveled_distance={self.traveled_distance})"
-
-
-class PlayerPosition:
-    def __init__(self, token: str, position: Position):
-        self.token = token
-        self.position = position
-
-    def __str__(self):
-        return f"PlayerPosition(token={self.token}, position={self.position})"
 
 
 class EnvironmentInfo:
