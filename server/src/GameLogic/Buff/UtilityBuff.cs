@@ -5,7 +5,7 @@ public static class U_Buff
     public static void BLACK_OUT(Player player)
     {
         // 视野限制
-        BlackOut blackOut = new();
+        Skills.BlackOut blackOut = new();
         blackOut.OnActivationEvent += player.OnSkillActivation;
         blackOut.OnDeactivationEvent += player.OnSkillDeactivation;
         player.PlayerSkills.Add(blackOut);

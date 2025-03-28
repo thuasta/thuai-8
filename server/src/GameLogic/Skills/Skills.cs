@@ -1,4 +1,4 @@
-namespace Thuai.Server.GameLogic;
+namespace Thuai.Server.GameLogic.Skills;
 
 public class BlackOut(
     int maxCooldown = Constants.SkillCooldown.BLACK_OUT,
