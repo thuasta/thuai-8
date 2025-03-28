@@ -6,13 +6,14 @@
 #include <hv/hloop.h>
 #include <spdlog/spdlog.h>
 
+#include <exception>
 #include <memory>
 #include <string>
 #include <string_view>
 
 #include "available_buffs.hpp"
 #include "message.hpp"
-#include "player_info.hpp"
+#include "player.hpp"
 
 constexpr unsigned int kMinDelayMs{10};
 
@@ -79,30 +80,29 @@ void Agent::Loop() const {
     return;
   }
   ws_client_->send(Message::GetPlayerInfo(token_, "SELF"));
-  ws_client_->send(Message::GetPlayerInfo(token_, "OPPONENT"));
-  ws_client_->send(Message::GetGameStatistics(token_));
-  ws_client_->send(Message::GetEnvironmentInfo(token_));
-  ws_client_->send(Message::GetAvailableBuffs(token_));
 }
 
 void Agent::OnMessage(std::string_view message) {
-  if (auto msg_type{Message::ReadMessageType(message)};
-      msg_type == "PLAYER_INFO") {
-    if (token_ == Message::ReadToken(message)) {
-      Message::Read(self_info_, message);
-    } else {
-      Message::Read(opponent_info_, message);
+  try {
+    if (auto msg_type{Message::ReadMessageType(message)};
+        msg_type == "ALL_PLAYER_INFO") {
+      Message::Read<"players">(players_info_, message);
+    } else if (msg_type == "ENVIRONMENT_INFO") {
+      Message::Read(environment_info_, message);
+    } else if (msg_type == "GAME_STATISTICS") {
+      Message::Read(game_statistics_, message);
+    } else if (msg_type == "AVAILABLE_BUFFS") {
+      Message::Read<"buffs">(available_buffs_, message);
+    } else if (msg_type == "ERROR") {
+      auto [error_code, error_message]{Message::ReadError(message)};
+      spdlog::error("{} got an error from server: [{}] {}", *this, error_code,
+                    error_message);
     }
-  } else if (msg_type == "ENVIRONMENT_INFO") {
-    Message::Read(environment_info_, message);
-  } else if (msg_type == "GAME_STATISTICS") {
-    Message::Read(game_statistics_, message);
-  } else if (msg_type == "AVAILABLE_BUFFS") {
-    Message::Read<"buffs">(available_buffs_, message);
-  } else if (msg_type == "ERROR") {
-    auto [error_code, error_message]{Message::ReadError(message)};
-    spdlog::error("{} got an error from server: [{}] {}", *this, error_code,
-                  error_message);
+  } catch (const std::exception& e) {
+    spdlog::error("an error occurred in OnMessage({}): {}", *this, e.what());
+#ifdef NDEBUG
+    event_loop_->stop();
+#endif
   }
 }
 

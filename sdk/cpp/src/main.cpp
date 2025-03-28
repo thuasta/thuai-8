@@ -57,7 +57,7 @@ auto ParseOptions(int argc, char** argv)
   std::string token{kDefaultToken};
 
   // NOLINTBEGIN(concurrency-mt-unsafe)
-  if (auto* env_server{std::getenv("SERVER")}) {
+  if (auto* env_server{std::getenv("GAME_HOST")}) {
     server = env_server;
   }
   if (auto* env_token{std::getenv("TOKEN")}) {
@@ -100,6 +100,7 @@ auto ParseOptions(int argc, char** argv)
     spdlog::set_level(spdlog::level::trace);
   }
 #endif
+  spdlog::set_pattern("[%H:%M:%S.%e] [%^%l%$] %v");
 
   return std::make_pair(server, token);
 }
@@ -198,10 +199,6 @@ auto main(int argc, char* argv[]) -> int {
 #endif
   });
 
-  try {
-    event_loop->run();
-  } catch (const std::exception& e) {
-    spdlog::error("an error occurred in EventLoop({}): {}", agent, e.what());
-  }
+  event_loop->run();
 }
 // NOLINTEND(readability-function-cognitive-complexity)
