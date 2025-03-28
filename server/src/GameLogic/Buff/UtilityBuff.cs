@@ -2,33 +2,31 @@ namespace Thuai.Server.GameLogic.Buff;
 
 public static class U_Buff
 {
+    public static void AppendSkill(Player player, ISkill skill)
+    {
+        skill.OnActivationEvent += player.OnSkillActivation;
+        skill.OnDeactivationEvent += player.OnSkillDeactivation;
+        player.PlayerSkills.Add(skill);
+    }
+
     public static void BLACK_OUT(Player player)
     {
         // 视野限制
-        Skills.BlackOut blackOut = new();
-        blackOut.OnActivationEvent += player.OnSkillActivation;
-        blackOut.OnDeactivationEvent += player.OnSkillDeactivation;
-        player.PlayerSkills.Add(blackOut);
+        AppendSkill(player, new Skills.BlackOut());
         player.LastChosenBuff = Buff.BLACK_OUT;
     }
 
     public static void SPEED_UP(Player player)
     {
         // 加速
-        Skills.SpeedUp speedUp = new();
-        speedUp.OnActivationEvent += player.OnSkillActivation;
-        speedUp.OnDeactivationEvent += player.OnSkillDeactivation;
-        player.PlayerSkills.Add(speedUp);
+        AppendSkill(player, new Skills.SpeedUp());
         player.LastChosenBuff = Buff.SPEED_UP;
     }
 
     public static void FLASH(Player player)
     {
         // 闪现
-        Skills.Flash flash = new();
-        flash.OnActivationEvent += player.OnSkillActivation;
-        flash.OnDeactivationEvent += player.OnSkillDeactivation;
-        player.PlayerSkills.Add(flash);
+        AppendSkill(player, new Skills.Flash());
         player.LastChosenBuff = Buff.FLASH;
     }
 
