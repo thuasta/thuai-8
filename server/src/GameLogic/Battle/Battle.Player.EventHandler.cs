@@ -198,6 +198,7 @@ public partial class Battle
                     // Instant skills do not have deactivation effects.
                     case SkillName.FLASH:
                     case SkillName.DESTROY:
+                    case SkillName.CONSTRUCT:
                         break;
 
                     default:

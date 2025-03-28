@@ -112,10 +112,30 @@ public partial class Battle
         }
     }
 
-    private void RemoveWall(MapGeneration.Wall wall)
+    /// <summary>
+    /// Remove a wall from the map.
+    /// </summary>
+    /// <param name="target">The target. Only the position, not bound to a physical body.</param>
+    private void RemoveWall(MapGeneration.Wall target)
     {
         try
         {
+            if (Map is null)
+            {
+                _logger.Error("Failed to remove wall: Map is null.");
+                return;
+            }
+
+            // Find corresponding wall in the map.
+            MapGeneration.Wall? wall = Map.Walls.FirstOrDefault(w => w == target);
+            if (wall is null)
+            {
+                _logger.Error(
+                    $"Failed to remove wall: Wall at ({target.X}, {target.Y}) with angle {target.Angle} not found."
+                );
+                return;
+            }
+
             if (wall.Body is not null)
             {
                 _env.RemoveBody(wall.Body);
