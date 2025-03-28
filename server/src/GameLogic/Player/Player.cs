@@ -103,7 +103,7 @@ public partial class Player(string token, int playerId)
             _ => throw new ArgumentException("Unknown turn direction.")
         };
 
-        if ((int)tag.AttachedData[Physics.Key.CoveredFields] > 0)
+        if (IsInvulnerable == false && (int)tag.AttachedData[Physics.Key.CoveredFields] > 0)
         {
             linear *= Constants.GRAVITY_FIELD_STRENGTH;
             angular *= Constants.GRAVITY_FIELD_STRENGTH;
@@ -123,7 +123,7 @@ public partial class Player(string token, int playerId)
             return;
         }
 
-        if (PlayerArmor.Knife.IsActivated == true || IsInvulnerable == true)
+        if (IsInvulnerable == true)
         {
             // Invulnerability
             _logger.Information("Player is invulnerable.");
