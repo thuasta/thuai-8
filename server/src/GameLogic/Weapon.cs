@@ -15,12 +15,18 @@ public class Weapon
 
     private int _currentCoolDown = 0;
 
+    /// <summary>
+    /// Fill the weapon with bullets and reset the cooldown.
+    /// </summary>
     public void Recover()
     {
         CurrentBullets = MaxBullets;
         _currentCoolDown = 0;
     }
 
+    /// <summary>
+    /// Update the cooldown of the weapon. Should be called every tick.
+    /// </summary>
     public void Update()
     {
         if (_currentCoolDown > 0)
@@ -29,6 +35,9 @@ public class Weapon
         }
     }
 
+    /// <summary>
+    /// Reset the cooldown of the weapon to the MaximumCooldown.
+    /// </summary>
     public void Reset()
     {
         _currentCoolDown = MaximumCooldown;

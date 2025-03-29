@@ -29,11 +29,20 @@ public abstract class SkillWithDuration(int maxCooldown, int duration) : ISkill
         }
     }
 
-    public void Recover()
+    public void Reset()
     {
         _cooldown.Clear();
         _activation.Clear();
         Deactivate();
+    }
+
+    /// <summary>
+    /// Recovers cooldown of the skill.
+    /// Does not affect the activation state.
+    /// </summary>
+    public void Recover()
+    {
+        _cooldown.Clear();
     }
 
     public void Activate()
@@ -71,6 +80,11 @@ public abstract class InstantSkill(int maxCooldown) : ISkill
     public void Update()
     {
         _cooldown.Decrease();
+    }
+
+    public void Reset()
+    {
+        _cooldown.Clear();
     }
 
     public void Recover()

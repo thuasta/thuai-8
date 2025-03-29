@@ -66,7 +66,7 @@ public partial class Player(string token, int playerId)
         {
             AppendGravityField();
         }
-        Recover();
+        Reset();
     }
 
     public void Update()
@@ -175,10 +175,29 @@ public partial class Player(string token, int playerId)
         }
     }
 
-    public void Recover()
+    public void Reset()
     {
         PlayerArmor.Recover();
         PlayerWeapon.Recover();
+        foreach (ISkill skill in PlayerSkills)
+        {
+            skill.Reset();
+        }
+        _logger.Information("Reset succeed.");
+    }
+
+    public void Recover()
+    {
+        if (IsAlive == false)
+        {
+            _logger.Error("Failed to recover: Player is dead.");
+            return;
+        }
+
+        PlayerArmor.Recover();
+
+        // Weapon does not recover automatically
+
         foreach (ISkill skill in PlayerSkills)
         {
             skill.Recover();
