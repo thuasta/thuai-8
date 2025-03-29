@@ -50,10 +50,10 @@ public static class U_Buff
         player.LastChosenBuff = Buff.TRAP;
     }
 
-    public static void MISSILE(Player player)
+    public static void RECOVER(Player player)
     {
-        // 导弹
-        player.LastChosenBuff = Buff.MISSILE;
+        // TODO: Implement the recover skill
+        player.LastChosenBuff = Buff.RECOVER;
     }
 
     public static void KAMUI(Player player)
