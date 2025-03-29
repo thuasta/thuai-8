@@ -104,6 +104,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
                     SubscribePlayerEvents(player);
                 }
                 ChooseSpawnpoint();
+                UpdateGravityFieldCoverage();
                 _logger.Information("Initialized battle successfully.");
                 return true;
             }
