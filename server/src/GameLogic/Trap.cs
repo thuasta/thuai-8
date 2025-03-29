@@ -7,6 +7,17 @@ public class Trap : Physics.IPhysicalObject
     public Body? Body { get; private set; } = null;
     public bool IsDestroyed => _remainingTicks.IsZero == true || Body?.Enabled == false;
     public required Player Owner { get; init; }
+    public Position TrapPosition
+    {
+        get
+        {
+            if (Body is null)
+            {
+                throw new InvalidOperationException("Trap is not bound to a body.");
+            }
+            return new(Body.Position.X, Body.Position.Y, Body.Rotation);
+        }
+    }
 
     private readonly Counter _remainingTicks;
 
