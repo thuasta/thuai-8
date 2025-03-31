@@ -49,17 +49,37 @@ public partial class AgentServer
                 return;
             }
             List<Protocol.Scheme.Wall> walls = [];
+            List<Protocol.Scheme.Fence> fences = [];
             List<Protocol.Scheme.Bullet> bullets = [];
             foreach (GameLogic.MapGeneration.Wall wall in e.Game.RunningBattle.Map.Walls)
             {
-                walls.Add(
-                    new Protocol.Scheme.Wall()
-                    {
-                        X = wall.X,
-                        Y = wall.Y,
-                        Angle = wall.Angle,
-                    }
-                );
+                if (wall.Breakable == true)
+                {
+                    fences.Add(
+                        new Protocol.Scheme.Fence()
+                        {
+                            Position = new()
+                            {
+                                X = wall.X,
+                                Y = wall.Y,
+                                Angle = wall.Angle,
+                            },
+                            Health = wall.WallDurability
+                        }
+                    );
+                    continue;
+                }
+                else
+                {
+                    walls.Add(
+                        new Protocol.Scheme.Wall()
+                        {
+                            X = wall.X,
+                            Y = wall.Y,
+                            Angle = wall.Angle,
+                        }
+                    );
+                }
             }
             foreach (GameLogic.IBullet bullet in e.Game.RunningBattle.Bullets)
             {
@@ -95,7 +115,7 @@ public partial class AgentServer
                     new Protocol.Messages.EnvironmentInfoMessage()
                     {
                         Walls = [.. walls],
-                        Fences = [],                    // TODO: Implement Fences
+                        Fences = [.. fences],
                         Bullets = [.. bullets],
                         MapSize = e.Game.RunningBattle.Map.Height
                     },

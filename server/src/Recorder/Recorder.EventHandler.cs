@@ -113,14 +113,51 @@ public partial class Recorder
             };
 
             List<Protocol.Scheme.Wall> walls = [];
+            List<Protocol.Scheme.Fence> fences = [];
             foreach (GameLogic.MapGeneration.Wall wall in e.Game.RunningBattle?.Map?.Walls ?? [])
             {
-                walls.Add(
-                    new Protocol.Scheme.Wall()
+                if (wall.Breakable == true)
+                {
+                    fences.Add(
+                        new Protocol.Scheme.Fence()
+                        {
+                            Position = new()
+                            {
+                                // Relavant to the wall length
+                                X = wall.X / GameLogic.Constants.WALL_LENGTH,
+                                Y = wall.Y / GameLogic.Constants.WALL_LENGTH,
+                                Angle = wall.Angle * 180 / Math.PI // Convert to degree
+                            },
+                            Health = wall.WallDurability
+                        }
+                    );
+                }
+                else
+                {
+                    walls.Add(
+                        new Protocol.Scheme.Wall()
+                        {
+                            X = wall.X,
+                            Y = wall.Y,
+                            Angle = wall.Angle
+                        }
+                    );
+                }
+            }
+            List<Protocol.Scheme.Trap> traps = [];
+            foreach (GameLogic.Trap trap in e.Game.RunningBattle?.Traps ?? [])
+            {
+                traps.Add(
+                    new Protocol.Scheme.Trap()
                     {
-                        X = wall.X,
-                        Y = wall.Y,
-                        Angle = wall.Angle
+                        Position = new()
+                        {
+                            // Relavant to the wall length
+                            X = trap.TrapPosition.Xpos / GameLogic.Constants.WALL_LENGTH,
+                            Y = trap.TrapPosition.Ypos / GameLogic.Constants.WALL_LENGTH,
+                            Angle = trap.TrapPosition.Angle * 180 / Math.PI // Convert to degree
+                        },
+                        IsActive = !trap.IsDestroyed
                     }
                 );
             }
@@ -129,8 +166,8 @@ public partial class Recorder
             {
                 Walls = [.. walls],
                 // TODO: Add other map elements
-                Fences = [],
-                Traps = [],
+                Fences = [.. fences],
+                Traps = [.. traps],
                 Laser = []
             };
 
