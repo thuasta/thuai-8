@@ -47,6 +47,7 @@ public static class U_Buff
     public static void TRAP(Player player)
     {
         // 陷阱
+        AppendSkill(player, new Skills.Trap());
         player.LastChosenBuff = Buff.TRAP;
     }
 

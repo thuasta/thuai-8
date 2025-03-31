@@ -37,6 +37,7 @@ public partial class Player
                 case SkillName.BLACK_OUT:
                 case SkillName.DESTROY:
                 case SkillName.CONSTRUCT:
+                case SkillName.TRAP:
                     // Don't have effect on player itself
                     break;
 

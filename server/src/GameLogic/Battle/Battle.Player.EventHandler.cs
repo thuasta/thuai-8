@@ -158,6 +158,9 @@ public partial class Battle
                         }
                         break;
 
+                    case SkillName.TRAP:
+                        // TODO: Implement trap skill
+
                     default:
                         _logger.Error($"[Player {e.Player.ID}] Invalid skill name: {e.SkillName}");
                         break;
@@ -199,6 +202,7 @@ public partial class Battle
                     case SkillName.FLASH:
                     case SkillName.DESTROY:
                     case SkillName.CONSTRUCT:
+                    case SkillName.TRAP:
                         break;
 
                     default:

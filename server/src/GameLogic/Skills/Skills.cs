@@ -133,3 +133,8 @@ public class Construct() : InstantSkill(Constants.SkillCooldown.CONSTRUCT)
 {
     public override SkillName Name => SkillName.CONSTRUCT;
 }
+
+public class Trap() : InstantSkill(Constants.SkillCooldown.TRAP)
+{
+    public override SkillName Name => SkillName.TRAP;
+}

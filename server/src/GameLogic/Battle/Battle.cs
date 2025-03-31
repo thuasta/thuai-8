@@ -137,6 +137,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
 
                     UpdatePlayers();
                     UpdateBullets();
+                    UpdateTraps();
                     UpdateMap();
 
                     ++_currentBattleTick;
