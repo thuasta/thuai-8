@@ -73,6 +73,7 @@ public partial class Player(string token, int playerId)
     {
         PlayerArmor.Knife.Update();
         PlayerWeapon.Update();
+        _stunCounter.Decrease();
         foreach (ISkill skill in PlayerSkills)
         {
             skill.Update();
@@ -88,14 +89,14 @@ public partial class Player(string token, int playerId)
         }
 
         Physics.Tag tag = (Physics.Tag)Body.Tag;
-        float linear = MoveDirection switch
+        float linear = IsStunned ? 0f : MoveDirection switch
         {
             MoveDirection.NONE => 0f,
             MoveDirection.BACK => -(float)tag.AttachedData[Physics.Key.SpeedUpFactor] * Speed,
             MoveDirection.FORTH => (float)tag.AttachedData[Physics.Key.SpeedUpFactor] * Speed,
             _ => throw new ArgumentException("Unknown move direction.")
         };
-        float angular = TurnDirection switch
+        float angular = IsStunned ? 0f : TurnDirection switch
         {
             TurnDirection.NONE => 0f,
             TurnDirection.CLOCKWISE => -(float)tag.AttachedData[Physics.Key.SpeedUpFactor] * TurnSpeed,
@@ -179,6 +180,7 @@ public partial class Player(string token, int playerId)
     {
         PlayerArmor.Recover();
         PlayerWeapon.Recover();
+        _stunCounter.Clear();
         foreach (ISkill skill in PlayerSkills)
         {
             skill.Reset();
@@ -195,6 +197,7 @@ public partial class Player(string token, int playerId)
         }
 
         PlayerArmor.Recover();
+        _stunCounter.Clear(); // Stun effect is removed
 
         // Weapon does not recover automatically
 
@@ -208,7 +211,7 @@ public partial class Player(string token, int playerId)
     /// <summary>
     /// Publish a skill event.
     /// </summary>
-    /// <param name="skill_name">The type of the skill.</param>
+    /// <param name="skillName">The type of the skill.</param>
     public void PlayerPerformSkill(SkillName skillName)
     {
         if (IsAlive == false)
