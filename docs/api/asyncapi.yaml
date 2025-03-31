@@ -566,10 +566,13 @@ components:
           enum:
             - BACK
             - FORTH
+        distance:
+          type: number
       required:
         - messageType
         - token
         - direction
+        - distance
 
     PerformTurn:
       title: "PerformTurn"
@@ -586,10 +589,13 @@ components:
           enum:
             - CLOCKWISE
             - COUNTER_CLOCKWISE
+        angle:
+          type: integer
       required:
         - messageType
         - token
         - direction
+        - angle
 
     PerformAttack:
       title: "PerformAttack"
