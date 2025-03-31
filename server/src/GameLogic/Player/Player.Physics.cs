@@ -119,6 +119,27 @@ public partial class Player : Physics.IPhysicalObject
                     Injured(laserBullet.BulletDamage, laserBullet.AntiArmor, out bool _);
                     return false;
 
+                case Trap trap:
+                    if (trap.Owner.ID == ID)
+                    {
+                        _logger.Debug($"Player won't be affected by its own trap.");
+                        return false;
+                    }
+                    if (IsInvulnerable == true)
+                    {
+                        _logger.Debug($"Player {ID} is invulnerable to trap.");
+                        return false;
+                    }
+
+                    b.Body.Enabled = false;
+                    _logger.Information($"Player {ID} is caught by a trap.");
+                    _stunCounter.Reset();
+                    // Set player's speed to zero
+                    a.Body.LinearVelocity = Vector2.Zero;
+                    a.Body.AngularVelocity = 0f;
+
+                    return true;
+
                 default:
                     return true;
             }
