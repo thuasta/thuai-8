@@ -62,6 +62,14 @@ public partial class Environment
                     case Categories.Laser:
                         throw new InvalidOperationException("Laser should be created with CreateLaser method.");
 
+                    case Categories.GravityField:
+                        throw new InvalidOperationException(
+                            "Gravity field should be created with Player.AppendGravityField method."
+                        );
+
+                    case Categories.Grid:
+                        throw new InvalidOperationException("Grid should be created with GenerateGrid method.");
+
                     default:
                         throw new ArgumentOutOfRangeException(nameof(category), $"Invalid category.");
                 }

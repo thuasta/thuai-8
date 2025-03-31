@@ -159,7 +159,21 @@ public partial class Battle
                         break;
 
                     case SkillName.TRAP:
-                        // TODO: Implement trap skill
+                        Trap trap = new() { Owner = e.Player };
+                        Position trapPosition = new(
+                            e.Player.PlayerPosition.Xpos,
+                            e.Player.PlayerPosition.Ypos,
+                            e.Player.PlayerPosition.Angle
+                        );
+                        trap.Bind(
+                            _env.CreateBody(
+                                Physics.Environment.Categories.Trap,
+                                new(trapPosition.Xpos, trapPosition.Ypos),
+                                trapPosition.Angle
+                            )
+                        );
+                        AddTrap(trap);
+                        break;
 
                     default:
                         _logger.Error($"[Player {e.Player.ID}] Invalid skill name: {e.SkillName}");
