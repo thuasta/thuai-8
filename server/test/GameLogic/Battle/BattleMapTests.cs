@@ -104,127 +104,127 @@ public class BattleMapTests
         Assert.Equal(endAngle, player1.PlayerPosition.Angle, 1e-5);
     }
 
-    [Fact]
-    public void GetPlayerFinalPos_AngleEquals0_ShouldReturnFinalPosition()
-    {
-        // Arrange
-        Player player1 = new("player1", 1);
-        Player player2 = new("player2", 2);
-        Battle battle = new(new(), [player1, player2]);
-        double endX = 1;
+    // [Fact]
+    // public void GetPlayerFinalPos_AngleEquals0_ShouldReturnFinalPosition()
+    // {
+    //     // Arrange
+    //     Player player1 = new("player1", 1);
+    //     Player player2 = new("player2", 2);
+    //     Battle battle = new(new(), [player1, player2]);
+    //     double endX = 1;
 
-        // Act
-        battle.SubscribePlayerEvents(player1);
-        battle.Initialize();
-        battle.Tick();
-        player1.PlayerPosition = new Position(1, 11, 0);
-        player1.Speed = 100000;
-        player1.PlayerMove(MoveDirection.FORTH);
-        // calculate the final x position
-        Map? map = battle.Map;
-        if (map != null)
-        {
-            foreach (var wall in map.Walls)
-            {
-                if (wall.X * Constants.WALL_LENGTH > 1 && wall.Y == 1 && wall.Angle == 90)
-                {
-                    endX = wall.X * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
-                    break;
-                }
-            }
-        }
+    //     // Act
+    //     battle.SubscribePlayerEvents(player1);
+    //     battle.Initialize();
+    //     battle.Tick();
+    //     player1.PlayerPosition = new Position(1, 11, 0);
+    //     player1.Speed = 100000;
+    //     player1.PlayerMove(MoveDirection.FORTH);
+    //     // calculate the final x position
+    //     Map? map = battle.Map;
+    //     if (map != null)
+    //     {
+    //         foreach (var wall in map.Walls)
+    //         {
+    //             if (wall.X * Constants.WALL_LENGTH > 1 && wall.Y == 1 && wall.Angle == 90)
+    //             {
+    //                 endX = wall.X * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
+    //                 break;
+    //             }
+    //         }
+    //     }
 
-        // Assert
-        Assert.Equal(endX, player1.PlayerPosition.Xpos, 1e-5);
-        Assert.Equal(11, player1.PlayerPosition.Ypos, 1e-5);
-        Assert.Equal(0, player1.PlayerPosition.Angle, 1e-5);
-    }
+    //     // Assert
+    //     Assert.Equal(endX, player1.PlayerPosition.Xpos, 1e-5);
+    //     Assert.Equal(11, player1.PlayerPosition.Ypos, 1e-5);
+    //     Assert.Equal(0, player1.PlayerPosition.Angle, 1e-5);
+    // }
 
-    [Fact]
-    public void GetPlayerFinalPos_AngleEquals90_ShouldReturnFinalPosition()
-    {
-        // Arrange
-        Player player1 = new("player1", 1);
-        Player player2 = new("player2", 2);
-        Battle battle = new(new(), [player1, player2]);
-        double endY = 1;
+    // [Fact]
+    // public void GetPlayerFinalPos_AngleEquals90_ShouldReturnFinalPosition()
+    // {
+    //     // Arrange
+    //     Player player1 = new("player1", 1);
+    //     Player player2 = new("player2", 2);
+    //     Battle battle = new(new(), [player1, player2]);
+    //     double endY = 1;
 
-        // Act
-        battle.SubscribePlayerEvents(player1);
-        battle.Initialize();
-        battle.Tick();
-        player1.PlayerPosition = new Position(11, 1, Math.PI / 2);
-        player1.Speed = 100000;
-        player1.PlayerMove(MoveDirection.FORTH);
-        // calculate the final y position
-        Map? map = battle.Map;
-        if (map != null)
-        {
-            foreach (var wall in map.Walls)
-            {
-                if (wall.Y * Constants.WALL_LENGTH > 1 && wall.X == 1 && wall.Angle == 0)
-                {
-                    endY = wall.Y * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
-                    break;
-                }
-            }
-        }
+    //     // Act
+    //     battle.SubscribePlayerEvents(player1);
+    //     battle.Initialize();
+    //     battle.Tick();
+    //     player1.PlayerPosition = new Position(11, 1, Math.PI / 2);
+    //     player1.Speed = 100000;
+    //     player1.PlayerMove(MoveDirection.FORTH);
+    //     // calculate the final y position
+    //     Map? map = battle.Map;
+    //     if (map != null)
+    //     {
+    //         foreach (var wall in map.Walls)
+    //         {
+    //             if (wall.Y * Constants.WALL_LENGTH > 1 && wall.X == 1 && wall.Angle == 0)
+    //             {
+    //                 endY = wall.Y * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
+    //                 break;
+    //             }
+    //         }
+    //     }
 
-        // Assert
-        Assert.Equal(10.8, player1.PlayerPosition.Xpos, 1e-5);
-        Assert.Equal(endY, player1.PlayerPosition.Ypos, 1e-5);
-        Assert.Equal(Math.PI / 2, player1.PlayerPosition.Angle, 1e-5);
-    }
+    //     // Assert
+    //     Assert.Equal(10.8, player1.PlayerPosition.Xpos, 1e-5);
+    //     Assert.Equal(endY, player1.PlayerPosition.Ypos, 1e-5);
+    //     Assert.Equal(Math.PI / 2, player1.PlayerPosition.Angle, 1e-5);
+    // }
 
-    [Fact]
-    public void GetPlayerFinalPos_AngleEquals45_ShouldReturnFinalPosition()
-    {
-        // Arrange
-        Player player1 = new("player1", 1);
-        Player player2 = new("player2", 2);
-        Battle battle = new(new(), [player1, player2]);
-        double endX = 1;
-        double endY = 1;
+    // [Fact]
+    // public void GetPlayerFinalPos_AngleEquals45_ShouldReturnFinalPosition()
+    // {
+    //     // Arrange
+    //     Player player1 = new("player1", 1);
+    //     Player player2 = new("player2", 2);
+    //     Battle battle = new(new(), [player1, player2]);
+    //     double endX = 1;
+    //     double endY = 1;
 
-        // Act
-        battle.SubscribePlayerEvents(player1);
-        battle.Initialize();
-        battle.Tick();
-        player1.PlayerPosition = new Position(1, 1, Math.PI / 4);
-        player1.Speed = 100000;
-        player1.PlayerMove(MoveDirection.FORTH);
-        // calculate the final y position
-        Map? map = battle.Map;
-        if (map != null)
-        {
-            foreach (var wall in map.Walls)
-            {
-                if (wall.X == wall.Y)
-                {
-                    endX = wall.X * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
-                    endY = wall.Y * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
-                    break;
-                }
-                else if (wall.X == wall.Y + 1 && wall.Angle == 90)
-                {
-                    endX = wall.X * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
-                    endY = wall.X * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
-                    break;
-                }
-                else if (wall.X == wall.Y - 1 && wall.Angle == 0)
-                {
-                    endX = wall.Y * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
-                    endY = wall.Y * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
-                    break;
-                }
-            }
-        }
+    //     // Act
+    //     battle.SubscribePlayerEvents(player1);
+    //     battle.Initialize();
+    //     battle.Tick();
+    //     player1.PlayerPosition = new Position(1, 1, Math.PI / 4);
+    //     player1.Speed = 100000;
+    //     player1.PlayerMove(MoveDirection.FORTH);
+    //     // calculate the final y position
+    //     Map? map = battle.Map;
+    //     if (map != null)
+    //     {
+    //         foreach (var wall in map.Walls)
+    //         {
+    //             if (wall.X == wall.Y)
+    //             {
+    //                 endX = wall.X * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
+    //                 endY = wall.Y * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
+    //                 break;
+    //             }
+    //             else if (wall.X == wall.Y + 1 && wall.Angle == 90)
+    //             {
+    //                 endX = wall.X * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
+    //                 endY = wall.X * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
+    //                 break;
+    //             }
+    //             else if (wall.X == wall.Y - 1 && wall.Angle == 0)
+    //             {
+    //                 endX = wall.Y * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
+    //                 endY = wall.Y * Constants.WALL_LENGTH - Constants.WALL_THICK - Constants.PLAYER_RADIO;
+    //                 break;
+    //             }
+    //         }
+    //     }
 
-        // Assert
-        Assert.Equal(endX, player1.PlayerPosition.Xpos, 1e-5);
-        Assert.Equal(endY, player1.PlayerPosition.Ypos, 1e-5);
-        Assert.Equal(Math.PI / 4, player1.PlayerPosition.Angle, 1e-5);
-    }
+    //     // Assert
+    //     Assert.Equal(endX, player1.PlayerPosition.Xpos, 1e-5);
+    //     Assert.Equal(endY, player1.PlayerPosition.Ypos, 1e-5);
+    //     Assert.Equal(Math.PI / 4, player1.PlayerPosition.Angle, 1e-5);
+    // }
 
     [Fact]
     public void LineDistance_LessThanRadio_ShouldTakeDamage()

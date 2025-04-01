@@ -26,23 +26,22 @@ public class BuffActiveCommand : AbstractCommand
         {
             GameObject effectPrefab = null;
 
-            // ¼ÓÔØÌØÐ§Ô¤ÖÆ¼þ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§Ô¤ï¿½Æ¼ï¿½
             effectPrefab = Resources.Load<GameObject>($"Effects/{buffName}");
 
             if (effectPrefab != null)
             {
-                // ÊµÀý»¯ÌØÐ§²¢½«Æä·ÅÖÃÔÚ player's TankObject ÉÏ
+                // Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ player's TankObject ï¿½ï¿½
                 GameObject effectInstance = GameObject.Instantiate(effectPrefab, player.TankObject.transform.position + new Vector3(0,0.2f,0), player.TankObject.transform.rotation, player.TankObject.transform);
 
-                // ¿ÉÑ¡£ºÉèÖÃÌØÐ§ÊµÀýµÄÉúÃüÖÜÆÚ£¬¼ÙÉèÌØÐ§ÔÚ3ÃëºóÏú»Ù
+                // ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 //GameObject.Destroy(effectInstance, 3f);
             }
             else
             {
-                Debug.LogWarning($"ÌØÐ§ {buffName} Î´ÕÒµ½!");
+                Debug.LogWarning($"ï¿½ï¿½Ð§ {buffName} Î´ï¿½Òµï¿½!");
             }
         }
-
         
         /*switch (buffName)
         {

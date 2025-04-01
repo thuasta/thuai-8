@@ -123,6 +123,9 @@ namespace BattleCity
                 return;
             }
 
+            this.SendCommand(new BuffShowCommand(1, roundIndex - 1));
+            this.SendCommand(new BuffShowCommand(2, roundIndex - 1));
+
             // 停止当前播放
             if (updateTickCoroutine != null)
             {
@@ -153,6 +156,14 @@ namespace BattleCity
                     if (message["messageType"].ToString() == "BUFF_SELECT")
                     {
                         hasBuffSelect = true;
+                        JArray details = (JArray)message["details"];
+                        foreach (JObject info in details)
+                        {
+                            int id = info["token"].ToObject<int>();
+                            string buff = info["buff"].ToString();
+                            //TODO
+                            this.SendCommand(new BuffAddCommand(id, currentRound.Count - 1, buff));
+                        }
                         break;
                     }
                 }
@@ -376,7 +387,7 @@ namespace BattleCity
 
         }
 
-        private IEnumerator BuffSelect(JObject buffInfo)
+        private IEnumerator BuffSelect(JObject buffInfo, int currentRound)
         {
             JArray details = (JArray)buffInfo["details"];
             foreach (JObject info in details)
@@ -384,11 +395,14 @@ namespace BattleCity
                 int id = info["token"].ToObject<int>();
                 string buff = info["buff"].ToString();
                 //TODO
+                this.SendCommand(new BuffAddCommand(id, currentRound, buff));
             }
             
             BuffSeclectPanel.SetActive(true);
             yield return new WaitForSeconds(3);
             BuffSeclectPanel.SetActive(false);
+            this.SendCommand(new BuffShowCommand(1, currentRound));
+            this.SendCommand(new BuffShowCommand(2, currentRound));
         }
 
 
@@ -424,7 +438,7 @@ namespace BattleCity
                                 UpdateBattle(message);
                                 break;
                             case "BUFF_SELECT":
-                                yield return BuffSelect(message);
+                                yield return BuffSelect(message, i);
                                 break;
                             default:
                                 Debug.LogWarning("Unknown message type: " + messageType);
