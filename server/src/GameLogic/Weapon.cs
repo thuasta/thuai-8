@@ -4,6 +4,7 @@ public class Weapon
 {
     public float AttackSpeed { get; set; } = Constants.INITIAL_ATTACK_SPEED;
     public float BulletSpeed { get; set; } = Constants.INITIAL_BULLET_SPEED;
+    public float LaserLength { get; set; } = Constants.INITIAL_LASER_LENGTH;
     public bool IsLaser { get; set; } = false;
     public bool AntiArmor { get; set; } = false;
     public int Damage { get; set; } = Constants.INITIAL_DAMAGE;

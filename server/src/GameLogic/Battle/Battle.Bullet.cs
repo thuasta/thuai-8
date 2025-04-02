@@ -5,6 +5,8 @@ public partial class Battle
 
     #region Fields and properties
     public List<IBullet> Bullets { get; } = [];
+    public List<LaserBullet> ActivatedLasers { get; } = [];
+    private readonly List<LaserBullet> _lasersToActivate = [];
 
     #endregion
 
@@ -118,17 +120,39 @@ public partial class Battle
     {
         try
         {
-            lock (_lock)
-            {
-                // TODO: Implement
-            }
+            _lasersToActivate.Add(laserBullet);
         }
         catch (Exception ex)
         {
             _logger.Error($"Laser failed to take damage: {ex.Message}");
             _logger.Debug($"{ex}");
         }
+    }
 
+    private void ActivateLasers(List<LaserBullet> lasers)
+    {
+        foreach (LaserBullet laser in lasers)
+        {
+            ActivateLaser(laser);
+        }
+    }
+
+    private void ActivateLaser(LaserBullet laser)
+    {
+        if (Stage != BattleStage.InBattle)
+        {
+            _logger.Error("Cannot activate laser: The battle hasn't started or has ended.");
+            return;
+        }
+        try
+        {
+            // TODO: Implement laser activation logic
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Laser failed to be activated: {ex.Message}");
+            _logger.Debug($"{ex}");
+        }
     }
 
     #endregion

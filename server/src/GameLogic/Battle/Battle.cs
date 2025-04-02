@@ -131,6 +131,10 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
             {
                 if (Stage == BattleStage.InBattle)
                 {
+                    ActivatedLasers.Clear();
+                    ActivateLasers(_lasersToActivate);
+                    _lasersToActivate.Clear();
+
                     UpdatePlayerSpeed();
 
                     _env.Step();

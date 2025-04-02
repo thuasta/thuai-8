@@ -6,12 +6,14 @@ public static class O_Buff
     {
         // 子弹数量
         player.PlayerWeapon.MaxBullets += Constants.BULLETS_INCREASE;
+        player.PlayerWeapon.LaserLength *= Constants.LASER_LENGTH_INCREASE_FACTOR;
         player.LastChosenBuff = Buff.BULLET_COUNT;
     }
     public static void BULLET_SPEED(Player player)
     {
         // 子弹移速
         player.PlayerWeapon.BulletSpeed *= Constants.BULLET_SPEED_INCREASE_FACTOR;
+        player.PlayerWeapon.LaserLength *= Constants.LASER_LENGTH_INCREASE_FACTOR;
         player.LastChosenBuff = Buff.BULLET_SPEED;
     }
     public static void ATTACK_SPEED(Player player)

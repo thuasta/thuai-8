@@ -278,7 +278,11 @@ public partial class Player(string token, int playerId)
 
         EndKamuiEffect();
 
-        --PlayerWeapon.CurrentBullets;
+        // Laser does not consume bullets because it activates instantly
+        if (PlayerWeapon.IsLaser == false)
+        {
+            --PlayerWeapon.CurrentBullets;
+        }
         PlayerWeapon.Reset();
 
         PlayerAttackEvent?.Invoke(this, new PlayerAttackEventArgs(this));

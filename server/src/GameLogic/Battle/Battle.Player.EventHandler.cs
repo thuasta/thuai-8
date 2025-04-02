@@ -59,7 +59,6 @@ public partial class Battle
                 }
                 else
                 {
-                    // TODO: Implement laser application
                     LaserBullet laserBullet = new(
                         bulletPosition,
                         e.Player.PlayerWeapon.BulletSpeed,
