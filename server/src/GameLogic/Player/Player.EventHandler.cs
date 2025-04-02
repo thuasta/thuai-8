@@ -38,6 +38,10 @@ public partial class Player
                     Recover();
                     break;
 
+                case SkillName.KAMUI:
+                    Kamui = true;
+                    break;
+
                 case SkillName.BLACK_OUT:
                 case SkillName.DESTROY:
                 case SkillName.CONSTRUCT:
@@ -78,9 +82,16 @@ public partial class Player
                     tag.AttachedData[Physics.Key.SpeedUpFactor] = 1f;
                     break;
 
+                case SkillName.KAMUI:
+                    Kamui = false;
+                    break;
+
                 // Instant skills do not have a deactivation event
                 case SkillName.FLASH:
                 case SkillName.DESTROY:
+                case SkillName.CONSTRUCT:
+                case SkillName.TRAP:
+                case SkillName.RECOVER:
                     break;
 
                 default:

@@ -207,13 +207,17 @@ public partial class Battle
                             if (player.ID != e.Player.ID && player.IsBlinded == true)
                             {
                                 player.IsBlinded = false;
-                                _logger.Information($"[Player {player.ID}] recovered from blindness.");
+                                _logger.Information($"[Player {player.ID}] Recovered from blindness.");
                             }
                         }
                         break;
 
                     case SkillName.SPEED_UP:
-                        _logger.Information($"[Player {e.Player.ID}] deactivated SpeedUp skill.");
+                        _logger.Information($"[Player {e.Player.ID}] Deactivated SpeedUp skill.");
+                        break;
+
+                    case SkillName.KAMUI:
+                        _logger.Information($"[Player {e.Player.ID}] Deactivated Kamui skill.");
                         break;
 
                     // Instant skills do not have deactivation effects.
@@ -221,6 +225,7 @@ public partial class Battle
                     case SkillName.DESTROY:
                     case SkillName.CONSTRUCT:
                     case SkillName.TRAP:
+                    case SkillName.RECOVER:
                         break;
 
                     default:

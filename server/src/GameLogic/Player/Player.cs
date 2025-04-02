@@ -278,4 +278,15 @@ public partial class Player(string token, int playerId)
 
         PlayerAttackEvent?.Invoke(this, new PlayerAttackEventArgs(this));
     }
+
+    public void EndKamuiEffect()
+    {
+        ISkill? kamui = PlayerSkills.Find(skill => skill.Name == SkillName.KAMUI);
+        if (kamui is null || kamui is not Skills.Kamui)
+        {
+            _logger.Error("Failed to end Kamui effect: Player does not have the skill.");
+            return;
+        }
+        kamui.Deactivate();
+    }
 }

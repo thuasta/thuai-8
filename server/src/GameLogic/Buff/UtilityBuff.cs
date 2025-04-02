@@ -60,6 +60,7 @@ public static class U_Buff
     public static void KAMUI(Player player)
     {
         // 虚化
+        AppendSkill(player, new Skills.Kamui());
         player.LastChosenBuff = Buff.KAMUI;
     }
 }

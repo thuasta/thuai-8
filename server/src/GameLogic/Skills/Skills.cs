@@ -11,10 +11,10 @@ public abstract class SkillWithDuration(int maxCooldown, int duration) : ISkill
     public bool IsAvailable => _cooldown.IsZero == true;
     public bool IsActive => _activation.IsZero == false;
 
-    private readonly Counter _cooldown = new(maxCooldown);
-    private readonly Counter _activation = new(duration);
+    protected readonly Counter _cooldown = new(maxCooldown);
+    protected readonly Counter _activation = new(duration);
 
-    public void Update()
+    public virtual void Update()
     {
         _cooldown.Decrease();
 
@@ -75,7 +75,7 @@ public abstract class InstantSkill(int maxCooldown) : ISkill
     public bool IsAvailable => _cooldown.IsZero == true;
     public bool IsActive => false;  // Instant skills do not have an active state
 
-    private readonly Counter _cooldown = new(maxCooldown);
+    protected readonly Counter _cooldown = new(maxCooldown);
 
     public void Update()
     {
@@ -142,4 +142,28 @@ public class Trap() : InstantSkill(Constants.SkillCooldown.TRAP)
 public class Recover() : InstantSkill(Constants.SkillCooldown.RECOVER)
 {
     public override SkillName Name => SkillName.RECOVER;
+}
+
+public class Kamui() : SkillWithDuration(Constants.SkillCooldown.KAMUI, Constants.SkillDuration.KAMUI)
+{
+    public override SkillName Name => SkillName.KAMUI;
+
+    public override void Update()
+    {
+        if (IsActive == true)
+        {
+            _activation.Decrease();
+            
+            // We don't cauculate cooldown because Kamui skill cauculates cooldown after effect ends.
+
+            if (IsActive == false)
+            {
+                Deactivate();
+            }
+        }
+        else
+        {
+            _cooldown.Decrease();
+        }
+    }
 }
