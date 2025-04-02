@@ -34,6 +34,10 @@ public partial class Player
                     PlayerPosition = newPosition;
                     break;
 
+                case SkillName.RECOVER:
+                    Recover();
+                    break;
+
                 case SkillName.BLACK_OUT:
                 case SkillName.DESTROY:
                 case SkillName.CONSTRUCT:

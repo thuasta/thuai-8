@@ -175,6 +175,10 @@ public partial class Battle
                         AddTrap(trap);
                         break;
 
+                    case SkillName.RECOVER:
+                        _logger.Information($"[Player {e.Player.ID}] activated Recover skill.");
+                        break;
+
                     default:
                         _logger.Error($"[Player {e.Player.ID}] Invalid skill name: {e.SkillName}");
                         break;

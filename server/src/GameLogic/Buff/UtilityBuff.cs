@@ -53,7 +53,7 @@ public static class U_Buff
 
     public static void RECOVER(Player player)
     {
-        // TODO: Implement the recover skill
+        AppendSkill(player, new Skills.Recover());
         player.LastChosenBuff = Buff.RECOVER;
     }
 

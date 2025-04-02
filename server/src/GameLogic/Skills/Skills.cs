@@ -31,9 +31,9 @@ public abstract class SkillWithDuration(int maxCooldown, int duration) : ISkill
 
     public void Reset()
     {
+        Deactivate();
         _cooldown.Clear();
         _activation.Clear();
-        Deactivate();
     }
 
     /// <summary>
@@ -137,4 +137,9 @@ public class Construct() : InstantSkill(Constants.SkillCooldown.CONSTRUCT)
 public class Trap() : InstantSkill(Constants.SkillCooldown.TRAP)
 {
     public override SkillName Name => SkillName.TRAP;
+}
+
+public class Recover() : InstantSkill(Constants.SkillCooldown.RECOVER)
+{
+    public override SkillName Name => SkillName.RECOVER;
 }

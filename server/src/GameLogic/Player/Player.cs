@@ -188,7 +188,11 @@ public partial class Player(string token, int playerId)
         _logger.Information("Reset succeed.");
     }
 
-    public void Recover()
+    /// <summary>
+    /// Recover the player and all its skills, except the Recover skill itself.
+    /// Only used by Recover skill.
+    /// </summary>
+    private void Recover()
     {
         if (IsAlive == false)
         {
@@ -197,12 +201,17 @@ public partial class Player(string token, int playerId)
         }
 
         PlayerArmor.Recover();
-        _stunCounter.Clear(); // Stun effect is removed
+        _stunCounter.Clear();   // Stun effect is removed
 
         // Weapon does not recover automatically
 
         foreach (ISkill skill in PlayerSkills)
         {
+            if (skill.Name == SkillName.RECOVER)
+            {
+                // Do not recover the skill itself
+                continue;
+            }
             skill.Recover();
         }
         _logger.Information("Recovered.");
