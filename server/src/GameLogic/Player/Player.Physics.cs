@@ -97,6 +97,15 @@ public partial class Player : Physics.IPhysicalObject
             return true;
         }
 
+        // Below handles the case when the fixture is a player
+
+        if (Kamui == true)
+        {
+            // Kamui is active, so the player affected by anything
+            _logger.Debug("Collision will be ignored because Kamui is active.");
+            return false;
+        }
+
         if (b.Body.Tag is Physics.Tag bodyTag)
         {
             switch (bodyTag.Owner)
