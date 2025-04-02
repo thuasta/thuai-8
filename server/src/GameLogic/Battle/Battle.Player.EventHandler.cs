@@ -1,4 +1,4 @@
-using Thuai.Server.GameLogic.MapGeneration;
+using nkast.Aether.Physics2D.Common;
 
 namespace Thuai.Server.GameLogic;
 
@@ -31,11 +31,10 @@ public partial class Battle
         {
             lock (_lock)
             {
-                float delta_x = Constants.BULLET_GENERATE_DISTANCE * (float)Math.Cos(e.Player.PlayerPosition.Angle);
-                float delta_y = Constants.BULLET_GENERATE_DISTANCE * (float)Math.Sin(e.Player.PlayerPosition.Angle);
+                Vector2 delta = e.Player.Orientation * Constants.BULLET_GENERATE_DISTANCE;
                 Position bulletPosition = new(
-                    e.Player.PlayerPosition.Xpos + delta_x,
-                    e.Player.PlayerPosition.Ypos + delta_y,
+                    e.Player.PlayerPosition.Xpos + delta.X,
+                    e.Player.PlayerPosition.Ypos + delta.Y,
                     e.Player.PlayerPosition.Angle
                 );
 
@@ -117,7 +116,7 @@ public partial class Battle
                         break;
 
                     case SkillName.DESTROY:
-                        Wall? target = _env.GetFacingEdge(
+                        MapGeneration.Wall? target = _env.GetFacingEdge(
                             new(e.Player.PlayerPosition.Xpos, e.Player.PlayerPosition.Ypos),
                             e.Player.Orientation
                         );
@@ -137,7 +136,7 @@ public partial class Battle
                         break;
 
                     case SkillName.CONSTRUCT:
-                        Wall? edge = _env.GetFacingEdge(
+                        MapGeneration.Wall? edge = _env.GetFacingEdge(
                             new(e.Player.PlayerPosition.Xpos, e.Player.PlayerPosition.Ypos),
                             e.Player.Orientation
                         );
@@ -153,7 +152,7 @@ public partial class Battle
                                 + $" with angle {edge.Angle}."
                             );
 
-                            Wall wall = new(edge.X, edge.Y, edge.Angle, true);
+                            MapGeneration.Wall wall = new(edge.X, edge.Y, edge.Angle, true);
                             AddWall(wall);
                         }
                         break;

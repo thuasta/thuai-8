@@ -244,6 +244,9 @@ public partial class Player(string token, int playerId)
         try
         {
             _logger.Information($"Performing skill ({skillName})");
+
+            EndKamuiEffect();
+
             skill.Activate();
         }
         catch (Exception ex)
@@ -273,6 +276,8 @@ public partial class Player(string token, int playerId)
 
         _logger.Information($"Attacking.");
 
+        EndKamuiEffect();
+
         --PlayerWeapon.CurrentBullets;
         PlayerWeapon.Reset();
 
@@ -281,12 +286,18 @@ public partial class Player(string token, int playerId)
 
     public void EndKamuiEffect()
     {
-        ISkill? kamui = PlayerSkills.Find(skill => skill.Name == SkillName.KAMUI);
-        if (kamui is null || kamui is not Skills.Kamui)
+        if (Kamui == false)
         {
-            _logger.Error("Failed to end Kamui effect: Player does not have the skill.");
             return;
         }
+
+        ISkill? kamui = PlayerSkills.Find(skill => skill.Name == SkillName.KAMUI);
+        if (kamui is null || kamui is not Skills.Kamui || kamui.IsActive == false)
+        {
+            return;
+        }
+
         kamui.Deactivate();
+        _logger.Information("Kamui effect interrupted by another operation.");
     }
 }
