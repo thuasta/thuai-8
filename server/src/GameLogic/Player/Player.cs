@@ -169,15 +169,18 @@ public partial class Player(string token, int playerId)
             if (realDamage >= PlayerArmor.Health && PlayerArmor.Knife.IsAvailable == true)
             {
                 PlayerArmor.Knife.Activate();
-                realDamage = PlayerArmor.Health - 1;
+                _stunCounter.Clear();       // Stun effect is removed
+                PlayerArmor.Health = Constants.REMAINING_HEALTH_VALUE;
                 _logger.Debug("Invulnerability invoked by taking damage.");
             }
-
-            PlayerArmor.Health -= realDamage;
-            _logger.Information($"Player took {realDamage} damage.");
-            if (PlayerArmor.Health <= 0)
+            else
             {
-                _logger.Information("Player died.");
+                PlayerArmor.Health -= realDamage;
+                _logger.Information($"Player took {realDamage} damage.");
+                if (PlayerArmor.Health <= 0)
+                {
+                    _logger.Information("Player died.");
+                }
             }
         }
     }

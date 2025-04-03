@@ -9,6 +9,7 @@ public static partial class Constants
     public const int INITIAL_ARMOR_VALUE = 0;
     public const int ARMOR_VALUE_INCREASE = 1;
     public const int INITIAL_HEALTH_VALUE = 3;
+    public const int REMAINING_HEALTH_VALUE = 1;
     public const int INITIAL_DODGE_PERCENTAGE = 0;      // 0%
     public const int DODGE_PERCENTAGE_INCREASE = 25;    // 25%
     public const float GRAVITY_FIELD_RADIUS = 10f;
