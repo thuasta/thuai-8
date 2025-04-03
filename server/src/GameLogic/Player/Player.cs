@@ -118,6 +118,12 @@ public partial class Player(string token, int playerId)
     {
         reflected = false;
 
+        if (damage < 0)
+        {
+            _logger.Error("Damage is negative. Please contact the developer.");
+            return;
+        }
+
         if (IsAlive == false)
         {
             _logger.Error("Cannot take damage: Player is already dead.");

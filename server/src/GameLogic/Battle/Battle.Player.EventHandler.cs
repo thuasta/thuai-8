@@ -63,6 +63,7 @@ public partial class Battle
                         bulletPosition,
                         e.Player.PlayerWeapon.BulletSpeed,
                         e.Player.PlayerWeapon.Damage,
+                        e.Player.PlayerWeapon.LaserLength,
                         e.Player.PlayerWeapon.AntiArmor
                     )
                     {
