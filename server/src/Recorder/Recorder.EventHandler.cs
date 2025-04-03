@@ -123,10 +123,9 @@ public partial class Recorder
                         {
                             Position = new()
                             {
-                                // Relavant to the wall length
-                                X = wall.X / GameLogic.Constants.WALL_LENGTH,
-                                Y = wall.Y / GameLogic.Constants.WALL_LENGTH,
-                                Angle = wall.Angle * 180 / Math.PI // Convert to degree
+                                X = wall.X,
+                                Y = wall.Y,
+                                Angle = wall.Angle
                             },
                             Health = wall.WallDurability
                         }
@@ -144,6 +143,7 @@ public partial class Recorder
                     );
                 }
             }
+
             List<Protocol.Scheme.Trap> traps = [];
             foreach (GameLogic.Trap trap in e.Game.RunningBattle?.Traps ?? [])
             {
@@ -162,13 +162,36 @@ public partial class Recorder
                 );
             }
 
+            List<Protocol.Scheme.Laser> lasers = [];
+            foreach (GameLogic.LaserBullet laser in e.Game.RunningBattle?.ActivatedLasers ?? [])
+            {
+                for (int i = 0; i < laser.Trace.Count - 1; ++i)
+                {
+                    lasers.Add(
+                        new()
+                        {
+                            // Position is relavent to wall length
+                            Start = new()
+                            {
+                                X = laser.Trace[i].X / GameLogic.Constants.WALL_LENGTH,
+                                Y = laser.Trace[i].Y / GameLogic.Constants.WALL_LENGTH
+                            },
+                            End = new()
+                            {
+                                X = laser.Trace[i + 1].X / GameLogic.Constants.WALL_LENGTH,
+                                Y = laser.Trace[i + 1].Y / GameLogic.Constants.WALL_LENGTH
+                            }
+                        }
+                    );
+                }
+            }
+
             Protocol.Scheme.MapUpdateEvent mapUpdate = new()
             {
                 Walls = [.. walls],
-                // TODO: Add other map elements
                 Fences = [.. fences],
                 Traps = [.. traps],
-                Laser = []
+                Laser = [.. lasers]
             };
 
             List<Protocol.Scheme.BattleUpdateEvent> battleUpdateEvent = [];
