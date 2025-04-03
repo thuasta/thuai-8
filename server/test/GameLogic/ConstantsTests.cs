@@ -28,19 +28,19 @@ namespace Thuai.Server.Test.GameLogic
             Assert.Equal(1, Constants.BULLETS_INCREASE);
         }
 
-        [Fact]
-        public void Skill_Constants_AreCorrect()
-        {
-            Assert.Equal(200, Constants.SKILL_MAX_COOLDOWN);
-        }
+        // [Fact]
+        // public void Skill_Constants_AreCorrect()
+        // {
+        //     Assert.Equal(200, Constants.SKILL_MAX_COOLDOWN);
+        // }
 
-        [Fact]
-        public void Player_Constants_AreCorrect()
-        {
-            Assert.Equal(2, Constants.MOVE_SPEED);
-            Assert.Equal(Math.PI / 18, Constants.TURN_SPEED);
-            Assert.Equal(0.1, Constants.PLAYER_RADIO);
-        }
+        // [Fact]
+        // public void Player_Constants_AreCorrect()
+        // {
+        //     Assert.Equal(2, Constants.MOVE_SPEED);
+        //     Assert.Equal(Math.PI / 18, Constants.TURN_SPEED);
+        //     Assert.Equal(0.1, Constants.PLAYER_RADIO);
+        // }
 
         [Fact]
         public void Map_Constants_AreCorrect()

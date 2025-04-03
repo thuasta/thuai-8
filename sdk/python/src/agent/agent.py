@@ -3,7 +3,7 @@ import logging
 from typing import List, Optional
 
 from . import messages
-from .environment_info import EnvironmentInfo, Wall, Fence, Bullet, PlayerPosition
+from .environment_info import EnvironmentInfo, Wall, Fence, Bullet
 from .player_info import PlayerInfo, WeaponInfo, ArmorInfo, SkillInfo
 from .position import Position
 from .position_int import PositionInt
@@ -22,7 +22,7 @@ class Agent:
         self._all_player_info: Optional[List[PlayerInfo]] = None
         self._environment_info: Optional[EnvironmentInfo] = None
         self._game_statistics: Optional[GameStatistics] = None
-        self._available_buff: Optional[AvailableBuffs] = None
+        self._available_buffs: Optional[AvailableBuffs] = None
         self._ws_client = WebsocketClient()
         self._loop_task: Optional[asyncio.Task] = None
         self._ws_client.on_message = self._on_message
@@ -47,8 +47,8 @@ class Agent:
         return self._game_statistics
 
     @property
-    def availiable_buff(self) -> Optional[AvailableBuffs]:
-        return self._available_buff
+    def availiable_buffs(self) -> Optional[AvailableBuffs]:
+        return self._available_buffs
 
     @property
     def token(self) -> str:
@@ -71,39 +71,59 @@ class Agent:
         return (
             self._all_player_info is not None
             and self._environment_info is not None
-            # and self._game_statistics is not None
-            # and self._available_buff is not None
+            and self._game_statistics is not None
         )
 
-    # direction is distinguished by the sign of the distance
-    async def move(self, distance: float):
+    async def move_forward(self):
+        logging.info(f"{self}.move_forward")
         await self._ws_client.send(
             messages.MoveMessage(
                 token=self._token,
-                target_distance=distance,
+                direction="FORTH",
             )
         )
 
-    # angle is in degrees, positive for clockwise, negative for counterclockwise
-    async def turn(self, angle: float):
+    async def move_backward(self):
+        logging.info(f"{self}.move_backward")
+        await self._ws_client.send(
+            messages.MoveMessage(
+                token=self._token,
+                direction="BACK",
+            )
+        )
+
+    async def turn_clockwise(self):
+        logging.info(f"{self}.turn_clockwise")
         await self._ws_client.send(
             messages.TurnMessage(
                 token=self._token,
-                target_angle=angle,
+                direction="CLOCKWISE",
+            )
+        )
+
+    async def turn_counter_clockwise(self):
+        logging.info(f"{self}.turn_counter_clockwise")
+        await self._ws_client.send(
+            messages.TurnMessage(
+                token=self._token,
+                direction="COUNTER_CLOCKWISE",
             )
         )
 
     async def attack(self):
+        logging.info(f"{self}.attack")
         await self._ws_client.send(messages.AttackMessage(token=self._token))
 
     async def use_skill(self, skill: SkillName):
+        logging.info(f"{self}.use_skill: {skill}")
         await self._ws_client.send(
             messages.UseSkillMessage(token=self._token, skill_name=skill)
         )
 
-    async def select_skill(self, skill: SkillName):
+    async def select_buff(self, buff: BuffName):
+        logging.info(f"{self}.select_buff: {buff}")
         await self._ws_client.send(
-            messages.SelectSkillMessage(token=self._token, skill_name=skill)
+            messages.SelectBuffMessage(token=self._token, buff_name=buff)
         )
 
     async def get_player_info(self):
@@ -144,12 +164,6 @@ class Agent:
 
                 await self._ws_client.send(
                     messages.GetPlayerInfoMessage(
-                        token=self._token,
-                    )
-                )
-
-                await self._ws_client.send(
-                    messages.GetEnvironmentInfoMessage(
                         token=self._token,
                     )
                 )
@@ -229,6 +243,9 @@ class Agent:
                     ],
                     bullets=[
                         Bullet(
+                            no=bullet["no"],
+                            isMissile=bullet["isMissile"],
+                            isAntiArmor=bullet["isAntiArmor"],
                             position=Position(
                                 x=bullet["position"]["x"],
                                 y=bullet["position"]["y"],

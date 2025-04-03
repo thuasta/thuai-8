@@ -4,13 +4,14 @@
 
 #include <spdlog/fmt/bundled/format.h>
 
+#include <cstdint>
 #include <magic_enum/magic_enum.hpp>
 #include <string>
 #include <vector>
 
 namespace thuai8_agent {
 
-enum class Stage : unsigned char { Rest, Battle, End };
+enum class Stage : std::uint8_t { Rest, Battle, End };
 
 struct OnesScore {
   std::string token;

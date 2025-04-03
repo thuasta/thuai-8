@@ -7,7 +7,7 @@ public record AvailableBuffsMessage : Message
     [JsonPropertyName("messageType")]
     public override string MessageType { get; init; } = "AVAILABLE_BUFFS";
 
-    [JsonPropertyName("AvailableBuffs")]
+    [JsonPropertyName("buffs")]
     public List<string> AvailableBuffs { get; init; } = [];
 
 }

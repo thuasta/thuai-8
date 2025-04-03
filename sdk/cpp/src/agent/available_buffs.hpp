@@ -4,14 +4,15 @@
 
 #include <spdlog/fmt/bundled/format.h>
 
+#include <cstdint>
 #include <magic_enum/magic_enum.hpp>
 #include <vector>
 
 namespace thuai8_agent {
 
-enum class SkillKind : unsigned char;
+enum class SkillKind : std::uint8_t;
 
-enum class BuffKind : unsigned char {
+enum class BuffKind : std::uint8_t {
   BlackOut,
   SpeedUp,
   Flash,
@@ -34,7 +35,7 @@ enum class BuffKind : unsigned char {
 };
 
 constexpr auto operator==(BuffKind lhs, SkillKind rhs) -> bool {
-  return static_cast<unsigned char>(lhs) == static_cast<unsigned char>(rhs);
+  return static_cast<std::uint8_t>(lhs) == static_cast<std::uint8_t>(rhs);
 }
 
 using AvailableBuffs = std::vector<BuffKind>;

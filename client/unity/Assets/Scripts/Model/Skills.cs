@@ -54,14 +54,14 @@ namespace BattleCity
             Skill existingSkill = skills.Find(skill => skill.name == skillEnum);
             if (existingSkill != null)
             {
-                // ÕÒµ½¼¼ÄÜ£¬¸üÐÂÆäÊôÐÔ
+                // ï¿½Òµï¿½ï¿½ï¿½ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 existingSkill.maxCooldown = maxCooldown;
                 existingSkill.currentCooldown = currentCooldown;
                 existingSkill.isActive = isActive;
             }
             else
             {
-                // Ã»ÓÐÕÒµ½¼¼ÄÜ£¬Ìí¼ÓÒ»¸öÐÂµÄ¼¼ÄÜ
+                // Ã»ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ÂµÄ¼ï¿½ï¿½ï¿½
                 Skill newSkill = new Skill(skillEnum, maxCooldown, currentCooldown, isActive);
                 skills.Add(newSkill);
             }

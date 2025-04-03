@@ -99,7 +99,7 @@
                                     "isMissile": false,
                                     "isAntiArmor": true,
                                     "position": {
-                                        "x": 1.2,
+                                        "x": 3.6,
                                         "y": 2.2,
                                         "angle": 30
                                     },
@@ -163,7 +163,13 @@
                                     "angle": 90
                                 }
                             ],
-                            "fences": [],
+                            "fences": [
+                                {
+                                    "x": 5,
+                                    "y": 3,
+                                    "angle": 90
+                                }
+                            ],
                             "traps": [],
                             "laser": []
                         }
@@ -233,8 +239,8 @@
                                         "canReflect": true,
                                         "armorValue": 120,
                                         "health": 90,
-                                        "gravityField": false,
-                                        "knife": "NOT_OWNED",
+                                        "gravityField": true,
+                                        "knife": "ACTIVE",
                                         "dodgeRate": 0.25
                                     },
                                     "skills": [
@@ -285,6 +291,11 @@
                             ]
                         },
                         {
+                            "eventType": "BUFF_ACTIVE_EVENT",
+                            "playerToken": "1",
+                            "buffName": "SPEED_UP"
+                        },
+                        {
                             "eventType": "MAP_UPDATE_EVENT",
                             "walls": [
                                 {
@@ -331,15 +342,25 @@
                                     "x": 5,
                                     "y": 5,
                                     "angle": 0
-                                },
+                                }
+                            ],
+                            "fences": [
                                 {
-                                    "x": 8,
-                                    "y": 4,
+                                    "x": 5.5,
+                                    "y": 3.5,
                                     "angle": 90
                                 }
                             ],
-                            "fences": [],
-                            "traps": [],
+                            "traps": [
+                                {
+                                    "position": {
+                                        "x": 5,
+                                        "y": 3,
+                                        "angle": 90
+                                    },
+                                    "isActive": true
+                                }
+                            ],
                             "laser": []
                         }
                     ]
@@ -351,14 +372,14 @@
                 {
                     "messageType": "STAGE_INFO",
                     "totalTicks": 3,
-                    "currentStage": "END"
+                    "currentStage": "REST"
                 },
                 {
                     "messageType": "BUFF_SELECT",
                     "details": [
                         {
                             "token": 1,
-                            "buff": "DESTROY"
+                            "buff": "CONSTRUCT"
                         },
                         {
                             "token": 2,
@@ -366,6 +387,161 @@
                         }
                     ]
                 }
+            ]
+        },
+
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "REST",
+                "totalTicks": 4
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "MISSILE"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "KAMUI"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "REST",
+                "totalTicks": 5
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "ATTACK_SPEED"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "LASER"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "REST",
+                "totalTicks": 6
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "ANTI_ARMOR"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "ARMOR"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "REST",
+                "totalTicks": 7
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "REFLECT"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "DODGE"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "REST",
+                "totalTicks": 8
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "KNIFE"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "GRAVITY"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "REST",
+                "totalTicks": 9
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "BLACK_OUT"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "SPEED_UP"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "END",
+                "totalTicks": 10
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "FLASH"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "DESTROY"
+                  }
+                ]
+              }
             ]
         }
     ]

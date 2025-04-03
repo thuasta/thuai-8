@@ -21,6 +21,9 @@ struct Fence {
 };
 
 struct Bullet {
+  unsigned int no{};
+  bool isMissile{};
+  bool isAntiArmor{};
   Position<double> position{};
   double speed{};
   double damage{};
@@ -54,10 +57,11 @@ struct fmt::formatter<thuai8_agent::Fence> : fmt::formatter<std::string> {
 template <>
 struct fmt::formatter<thuai8_agent::Bullet> : fmt::formatter<std::string> {
   static auto format(const thuai8_agent::Bullet& obj, format_context& ctx) {
-    return fmt::format_to(
-        ctx.out(),
-        "Bullet: {{{}, Speed: {}, Damage: {}, TraveledDistance: {}}}",
-        obj.position, obj.speed, obj.damage, obj.traveledDistance);
+    return fmt::format_to(ctx.out(),
+                          "Bullet: {{No: {}, IsMissile{}, IsAntiArmor{}, {}, "
+                          "Speed: {}, Damage: {}, TraveledDistance: {}}}",
+                          obj.no, obj.isMissile, obj.isAntiArmor, obj.position,
+                          obj.speed, obj.damage, obj.traveledDistance);
   }
 };
 

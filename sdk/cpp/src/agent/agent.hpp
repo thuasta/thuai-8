@@ -15,7 +15,7 @@
 #include "available_buffs.hpp"
 #include "environment_info.hpp"
 #include "game_statistics.hpp"
-#include "player_info.hpp"
+#include "player.hpp"
 
 namespace thuai8_agent {
 
@@ -38,19 +38,14 @@ class Agent {
   }
 
   [[nodiscard]] auto IsGameReady() const -> bool {
-    return self_info_.has_value() && opponent_info_.has_value() &&
-           game_statistics_.has_value() && environment_info_.has_value() &&
-           available_buffs_.has_value();
+    return players_info_.has_value() && game_statistics_.has_value() &&
+           environment_info_.has_value();
   }
 
   [[nodiscard]] auto token() const -> std::string_view { return token_; }
 
-  [[nodiscard]] auto self_info() const -> const PlayerInfo& {
-    return self_info_.value();
-  }
-
-  [[nodiscard]] auto opponent_info() const -> const PlayerInfo& {
-    return opponent_info_.value();
+  [[nodiscard]] auto players_info() const -> const Players& {
+    return players_info_.value();
   }
 
   [[nodiscard]] auto game_statistics() const -> const GameStatistics& {
@@ -88,8 +83,7 @@ class Agent {
   const std::unique_ptr<hv::WebSocketClient> ws_client_;
   const hv::TimerID timer_id_;
 
-  std::optional<PlayerInfo> self_info_;
-  std::optional<PlayerInfo> opponent_info_;
+  std::optional<Players> players_info_;
   std::optional<GameStatistics> game_statistics_;
   std::optional<EnvironmentInfo> environment_info_;
   std::optional<AvailableBuffs> available_buffs_;

@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using QFramework;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 namespace BattleCity
 {
@@ -17,7 +18,7 @@ namespace BattleCity
         public float FreeMoveSpeed;
         public const float FreeMaxPitch = 80;
 
-        public enum CameraStatus { freeCamera = 0, player };
+        public enum CameraStatus { freeCamera = 0, player, fixedCamera };
         public CameraStatus _cameraStatus;
 
         public UnityEngine.Transform initialTransform;
@@ -39,6 +40,13 @@ namespace BattleCity
         private Vector3 initialPosition;
         private Quaternion initialRotation;
         private Camera myCamera;
+
+        public Transform parentTransform;
+        public Button LockButton;
+
+        // 固定位置和旋转的值
+        private Vector3 fixedPosition = new Vector3(-5.2f, 69.5f, -5.2f);
+        private Quaternion fixedRotation = Quaternion.Euler(91.14f, 0.0f, 0.0f);
 
         // Start is called before the first frame update
         void Start()
@@ -66,6 +74,7 @@ namespace BattleCity
             {
                 ResetCamera();
             });
+            LockButton.onClick.AddListener(LockStatus);
         }
 
         public IArchitecture GetArchitecture()
@@ -80,8 +89,35 @@ namespace BattleCity
                 CameraMove();
             }
         }
+        void LockStatus()
+        {
+            if (_cameraStatus == CameraStatus.fixedCamera)
+            {
+                _cameraStatus = CameraStatus.freeCamera;
+            }
+            else
+            {
+                _cameraStatus = CameraStatus.fixedCamera;
+            }
+        }
+        void FixedCamera()
+        {
+            if (parentTransform != null)
+            {
+                // 将相机的位置和旋转设置为相对于父物体的位置和旋转
+                transform.SetParent(parentTransform);
+                transform.localPosition = fixedPosition; // 设置相对父物体的位置
+                transform.localRotation = fixedRotation; // 设置相对父物体的旋转
+                myCamera.fieldOfView = 50f;
+            }
+            else
+            {
+                Debug.LogWarning("Parent Transform is not set!");
+            }
+        }
         void ResetCamera()
         {
+            _cameraStatus = CameraStatus.freeCamera;
             transform.position = initialPosition;
             transform.rotation = initialRotation;
 
@@ -114,11 +150,15 @@ namespace BattleCity
                 Follow();
                 Zoom();
             }
-            else
+            else if (_cameraStatus == CameraStatus.freeCamera)
             {
                 Move();
                 ExchangeStatus();
                 FreeZoom();
+            }
+            else if (_cameraStatus == CameraStatus.fixedCamera)
+            {
+                FixedCamera();
             }
 
         }
@@ -281,6 +321,15 @@ namespace BattleCity
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 transform.Translate(FreeMoveSpeed * Time.deltaTime * Vector3.down, Space.World);
+            }
+            if (Input.GetMouseButton(2)) // 2表示鼠标中键
+            {
+                float moveX = Input.GetAxis("Mouse X") * FreeMoveSpeed * Time.deltaTime * 5f;
+                float moveY = Input.GetAxis("Mouse Y") * FreeMoveSpeed * Time.deltaTime * 5f;
+
+                // 更新相机位置
+                transform.position -= transform.right * moveX;
+                transform.position -= transform.up * moveY;
             }
 
         }
