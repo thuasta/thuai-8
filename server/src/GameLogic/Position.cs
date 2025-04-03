@@ -5,7 +5,7 @@ public class Position(float x = 0, float y = 0, float angle = 0)
     public float Xpos { get; set; } = x;
     public float Ypos { get; set; } = y;
 
-    public float Angle { get; set; } = angle;
+    public float Angle { get; set; } = angle;   // Angle in radians
 }
 
 public enum MoveDirection

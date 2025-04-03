@@ -60,7 +60,15 @@ public partial class Environment
                         return result;
 
                     case Categories.Laser:
-                        throw new InvalidOperationException("Laser should be created with CreateLaser method.");
+                        throw new InvalidOperationException("Laser should not be created with this method.");
+
+                    case Categories.GravityField:
+                        throw new InvalidOperationException(
+                            "Gravity field should be created with Player.AppendGravityField method."
+                        );
+
+                    case Categories.Grid:
+                        throw new InvalidOperationException("Grid should be created with GenerateGrid method.");
 
                     default:
                         throw new ArgumentOutOfRangeException(nameof(category), $"Invalid category.");
@@ -75,29 +83,24 @@ public partial class Environment
         }
     }
 
-    public Body CreateLaser(Vector2 startPoint, Vector2 direction, float laserLength)
+    /// <summary>
+    /// Activate the laser from the start point in the specified direction.
+    /// </summary>
+    /// <param name="laser">The laser bullet to be activated.</param>
+    /// <returns>Vectices of the laser.</returns>
+    public List<Vector2> ActivateLaser(GameLogic.LaserBullet laser)
     {
-        List<Vector2> vertices = CalculateLaserPath(startPoint, direction, laserLength);
-        return CreateLaser(vertices);
-    }
+        Vector2 startPoint = new(laser.BulletPosition.Xpos, laser.BulletPosition.Ypos);
+        Vector2 direction = new(
+            (float)Math.Cos(laser.BulletPosition.Angle),
+            (float)Math.Sin(laser.BulletPosition.Angle)
+        );
 
-    public Body CreateLaser(List<Vector2> vertices)
-    {
-        Body result = _world.CreateBody(Vector2.Zero, 0f, BodyType.Static);
-        Fixture fixture = result.CreateChainShape([.. vertices]);
-        fixture.CollisionCategories = Categories.Laser;
-        fixture.CollidesWith = CollisionList.LaserCollidesWith;
-        fixture.IsSensor = true;
-        return result;
-    }
-
-    public List<Vector2> CalculateLaserPath(Vector2 startPoint, Vector2 direction, float laserLength)
-    {
         List<Vector2> laserPath = [startPoint];
         Vector2 currentStart = startPoint;
         Vector2 currentDirection = direction;
 
-        float remainingLength = laserLength;
+        float remainingLength = laser.Length;
 
         while (remainingLength > 0f)
         {
@@ -106,9 +109,37 @@ public partial class Environment
 
             _world.RayCast((fixture, point, normal, fraction) =>
             {
-                if (fixture.CollisionCategories != Categories.Wall)
+                // Conditions that will ignore the collision
+                if (
+                    fixture.CollisionCategories != Categories.Wall
+                    && fixture.CollisionCategories != Categories.Player
+                )
                 {
                     return -1f;
+                }
+                if (fixture.CollisionCategories == Categories.Player)
+                {
+                    Tag tag = (Tag)fixture.Body.Tag;
+                    if (tag.Owner is not GameLogic.Player)
+                    {
+                        _logger.Error(
+                            "Collision category doesn't match the expected type. Please contact the developer."
+                        );
+                        return -1f;
+                    }
+
+                    GameLogic.Player player = (GameLogic.Player)tag.Owner;
+                    Vector2.Distance(ref currentStart, ref point, out float distance);
+                    int damage = GameLogic.LaserBullet.CauculateDamage(
+                        laser.BulletDamage,
+                        remainingLength - distance,
+                        laser.Length
+                    );
+                    player.Injured(damage, laser.AntiArmor, out bool reflected);
+                    if (reflected == false)
+                    {
+                        return -1f;
+                    }
                 }
 
                 hitPoint = point;
@@ -135,5 +166,35 @@ public partial class Environment
         }
 
         return laserPath;
+    }
+
+    public GameLogic.MapGeneration.Wall? GetFacingEdge(Vector2 startPoint, Vector2 direction)
+    {
+        Protocol.Scheme.PositionInt? result = null;
+        _world.RayCast((fixture, point, normal, fraction) =>
+        {
+            if (fixture.CollisionCategories != Categories.Grid)
+            {
+                return -1f;
+            }
+
+            Tag tag = (Tag)fixture.Body.Tag;
+            if (
+                tag.AttachedData.TryGetValue(
+                    Key.CorrespondingWallPosition, out object? value
+                ) && value is Protocol.Scheme.PositionInt position
+            )
+            {
+                result = position;
+            }
+            return 0;
+        }, startPoint, startPoint + direction * 2 * GameLogic.Constants.WALL_LENGTH);
+
+        if (result is null)
+        {
+            _logger.Error("Failed to find the wall in front of the player.");
+            return null;
+        }
+        return new(result.X, result.Y, result.Angle);
     }
 }

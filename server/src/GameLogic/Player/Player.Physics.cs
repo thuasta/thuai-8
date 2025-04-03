@@ -97,6 +97,15 @@ public partial class Player : Physics.IPhysicalObject
             return true;
         }
 
+        // Below handles the case when the fixture is a player
+
+        if (Kamui == true)
+        {
+            // Kamui is active, so the player affected by anything
+            _logger.Debug("Collision will be ignored because Kamui is active.");
+            return false;
+        }
+
         if (b.Body.Tag is Physics.Tag bodyTag)
         {
             switch (bodyTag.Owner)
@@ -118,6 +127,27 @@ public partial class Player : Physics.IPhysicalObject
                 case LaserBullet laserBullet:
                     Injured(laserBullet.BulletDamage, laserBullet.AntiArmor, out bool _);
                     return false;
+
+                case Trap trap:
+                    if (trap.Owner.ID == ID)
+                    {
+                        _logger.Debug($"Player won't be affected by its own trap.");
+                        return false;
+                    }
+                    if (IsInvulnerable == true)
+                    {
+                        _logger.Debug($"Player {ID} is invulnerable to trap.");
+                        return false;
+                    }
+
+                    b.Body.Enabled = false;
+                    _logger.Information($"Player {ID} is caught by a trap.");
+                    _stunCounter.Reset();
+                    // Set player's speed to zero
+                    a.Body.LinearVelocity = Vector2.Zero;
+                    a.Body.AngularVelocity = 0f;
+
+                    return true;
 
                 default:
                     return true;
@@ -158,11 +188,13 @@ public partial class Player : Physics.IPhysicalObject
 
             if (tag.Owner is Player player && player.IsInvulnerable == true)
             {
+                // Object was not affected by the gravity field before separation
                 _logger.Debug($"Target player {player.ID} is invulnerable to gravity field.");
                 return;
             }
             if ((int)tag.AttachedData[Physics.Key.CoveredFields] == 0)
             {
+                // Object has been affected by the gravity field before separation
                 b.Body.LinearVelocity /= Constants.GRAVITY_FIELD_STRENGTH;
                 b.Body.AngularVelocity /= Constants.GRAVITY_FIELD_STRENGTH;
             }

@@ -1,3 +1,5 @@
+using nkast.Aether.Physics2D.Common;
+
 namespace Thuai.Server.GameLogic;
 
 public partial class Battle
@@ -29,11 +31,10 @@ public partial class Battle
         {
             lock (_lock)
             {
-                float delta_x = Constants.BULLET_GENERATE_DISTANCE * (float)Math.Cos(e.Player.PlayerPosition.Angle);
-                float delta_y = Constants.BULLET_GENERATE_DISTANCE * (float)Math.Sin(e.Player.PlayerPosition.Angle);
+                Vector2 delta = e.Player.Orientation * Constants.BULLET_GENERATE_DISTANCE;
                 Position bulletPosition = new(
-                    e.Player.PlayerPosition.Xpos + delta_x,
-                    e.Player.PlayerPosition.Ypos + delta_y,
+                    e.Player.PlayerPosition.Xpos + delta.X,
+                    e.Player.PlayerPosition.Ypos + delta.Y,
                     e.Player.PlayerPosition.Angle
                 );
 
@@ -58,11 +59,11 @@ public partial class Battle
                 }
                 else
                 {
-                    // TODO: Implement laser application
                     LaserBullet laserBullet = new(
                         bulletPosition,
                         e.Player.PlayerWeapon.BulletSpeed,
                         e.Player.PlayerWeapon.Damage,
+                        e.Player.PlayerWeapon.LaserLength,
                         e.Player.PlayerWeapon.AntiArmor
                     )
                     {
@@ -106,6 +107,77 @@ public partial class Battle
                         }
                         break;
 
+                    case SkillName.SPEED_UP:
+                        _logger.Information($"[Player {e.Player.ID}] activated SpeedUp skill.");
+                        break;
+
+                    case SkillName.FLASH:
+                        UpdateGravityFieldCoverage();
+                        break;
+
+                    case SkillName.DESTROY:
+                        MapGeneration.Wall? target = _env.GetFacingEdge(
+                            new(e.Player.PlayerPosition.Xpos, e.Player.PlayerPosition.Ypos),
+                            e.Player.Orientation
+                        );
+                        if (target is null)
+                        {
+                            _logger.Error($"[Player {e.Player.ID}] No edge found to destroy.");
+                        }
+                        else
+                        {
+                            _logger.Information(
+                                $"[Player {e.Player.ID}] Destroy skill"
+                                + $" targeted edge at ({target.X}, {target.Y})"
+                                + $" with angle {target.Angle}."
+                            );
+                            RemoveWall(target);
+                        }
+                        break;
+
+                    case SkillName.CONSTRUCT:
+                        MapGeneration.Wall? edge = _env.GetFacingEdge(
+                            new(e.Player.PlayerPosition.Xpos, e.Player.PlayerPosition.Ypos),
+                            e.Player.Orientation
+                        );
+                        if (edge is null)
+                        {
+                            _logger.Error($"[Player {e.Player.ID}] No edge found to construct.");
+                        }
+                        else
+                        {
+                            _logger.Information(
+                                $"[Player {e.Player.ID}] Construct skill"
+                                + $" targeted edge at ({edge.X}, {edge.Y})"
+                                + $" with angle {edge.Angle}."
+                            );
+
+                            MapGeneration.Wall wall = new(edge.X, edge.Y, edge.Angle, true);
+                            AddWall(wall);
+                        }
+                        break;
+
+                    case SkillName.TRAP:
+                        Trap trap = new() { Owner = e.Player };
+                        Position trapPosition = new(
+                            e.Player.PlayerPosition.Xpos,
+                            e.Player.PlayerPosition.Ypos,
+                            e.Player.PlayerPosition.Angle
+                        );
+                        trap.Bind(
+                            _env.CreateBody(
+                                Physics.Environment.Categories.Trap,
+                                new(trapPosition.Xpos, trapPosition.Ypos),
+                                trapPosition.Angle
+                            )
+                        );
+                        AddTrap(trap);
+                        break;
+
+                    case SkillName.RECOVER:
+                        _logger.Information($"[Player {e.Player.ID}] activated Recover skill.");
+                        break;
+
                     default:
                         _logger.Error($"[Player {e.Player.ID}] Invalid skill name: {e.SkillName}");
                         break;
@@ -134,9 +206,25 @@ public partial class Battle
                             if (player.ID != e.Player.ID && player.IsBlinded == true)
                             {
                                 player.IsBlinded = false;
-                                _logger.Information($"[Player {player.ID}] recovered from blindness.");
+                                _logger.Information($"[Player {player.ID}] Recovered from blindness.");
                             }
                         }
+                        break;
+
+                    case SkillName.SPEED_UP:
+                        _logger.Information($"[Player {e.Player.ID}] Deactivated SpeedUp skill.");
+                        break;
+
+                    case SkillName.KAMUI:
+                        _logger.Information($"[Player {e.Player.ID}] Deactivated Kamui skill.");
+                        break;
+
+                    // Instant skills do not have deactivation effects.
+                    case SkillName.FLASH:
+                    case SkillName.DESTROY:
+                    case SkillName.CONSTRUCT:
+                    case SkillName.TRAP:
+                    case SkillName.RECOVER:
                         break;
 
                     default:

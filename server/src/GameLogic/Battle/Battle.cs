@@ -89,7 +89,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
                     throw new Exception("Generate Map Failed.");
                 }
 
-                AddWall(Map?.Walls ?? throw new Exception("Map is null."));
+                BindWall(Map?.Walls ?? throw new Exception("Map is null."));
 
                 foreach (Player player in AllPlayers)
                 {
@@ -104,6 +104,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
                     SubscribePlayerEvents(player);
                 }
                 ChooseSpawnpoint();
+                UpdateGravityFieldCoverage();
                 _logger.Information("Initialized battle successfully.");
                 return true;
             }
@@ -130,12 +131,17 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
             {
                 if (Stage == BattleStage.InBattle)
                 {
+                    ActivatedLasers.Clear();
+                    ActivateLasers(_lasersToActivate);
+                    _lasersToActivate.Clear();
+
                     UpdatePlayerSpeed();
 
                     _env.Step();
 
                     UpdatePlayers();
                     UpdateBullets();
+                    UpdateTraps();
                     UpdateMap();
 
                     ++_currentBattleTick;

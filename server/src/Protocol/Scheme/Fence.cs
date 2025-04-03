@@ -5,8 +5,8 @@ namespace Thuai.Server.Protocol.Scheme;
 public record Fence
 {
     [JsonPropertyName("position")]
-    public Position Position { get; init; } = new();
+    public required Position Position { get; init; } = new();
 
     [JsonPropertyName("health")]
-    public int Health { get; init; }
+    public required int Health { get; init; }
 }

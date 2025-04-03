@@ -39,7 +39,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     public bool HasAwardBeforeBattle => BattleNumber > 0 && BattleNumber <= AwardCount;
     public bool HasAwardAfterBattle => BattleNumber < AwardCount;
 
-    private Random _random = new();
+    private readonly Random _random = new();
 
     private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Game");
@@ -181,8 +181,12 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
 
     private bool NeedAdditionalBattle()
     {
-        // return GetHighScorePlayer() == null;
-        return false;
+        if (BattleNumber >= GameSettings.BattleCount + GameSettings.MaxExtraBattleCount)
+        {
+            return false;
+        }
+
+        return GetHighScorePlayer() == null;
     }
 
     #endregion

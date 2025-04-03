@@ -10,7 +10,7 @@ public static partial class Constants
         public const int DESTROY = 200;
         public const int CONSTRUCT = 100;
         public const int TRAP = 200;
-        public const int MISSILE = 20;
+        public const int RECOVER = 600;
         public const int KAMUI = 200;
     }
 
@@ -19,7 +19,6 @@ public static partial class Constants
         public const int BLACK_OUT = 10;
         public const int SPEED_UP = 20;
         public const int TRAP = 400;
-        public const int MISSILE = 40;
         public const int KAMUI = 20;
     }
 
