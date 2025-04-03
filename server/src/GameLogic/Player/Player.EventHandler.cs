@@ -40,6 +40,7 @@ public partial class Player
 
                 case SkillName.KAMUI:
                     Kamui = true;
+                    _stunCounter.Clear();   // Remove stun effects
                     break;
 
                 case SkillName.BLACK_OUT:
