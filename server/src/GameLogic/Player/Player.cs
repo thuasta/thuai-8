@@ -114,6 +114,16 @@ public partial class Player(string token, int playerId)
         Body.AngularVelocity = angular;
     }
 
+    /// <summary>
+    /// Kill the player instantly.
+    /// Used when the player is out of the map.
+    /// </summary>
+    public void KillInstantly()
+    {
+        _logger.Warning("KillInstantly is only called when invalid behavior is detected.");
+        PlayerArmor.Health = 0;
+    }
+
     public void Injured(int damage, bool antiArmor, out bool reflected)
     {
         reflected = false;
@@ -123,7 +133,6 @@ public partial class Player(string token, int playerId)
             _logger.Error("Damage is negative. Please contact the developer.");
             return;
         }
-
         if (IsAlive == false)
         {
             _logger.Error("Cannot take damage: Player is already dead.");
