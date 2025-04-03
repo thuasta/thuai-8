@@ -9,7 +9,6 @@ namespace BattleCity
     {
         private readonly int _tankId;
         private readonly string _skill;
-
         public SkillsAddCommand(int tankId, string skill)
         {
             _tankId = tankId;
