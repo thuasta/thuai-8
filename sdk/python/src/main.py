@@ -3,8 +3,9 @@ import asyncio
 import logging
 import os
 
+from agent.stage import Stage
 from agent.agent import Agent
-from logic import loop, setup
+from logic import loop, selectBuff
 
 
 class Options:
@@ -33,7 +34,7 @@ async def main():
 
     is_previous_connected = False
     is_previous_game_ready = False
-    is_setup = False
+    is_buff_selected = False
 
     while True:
         await asyncio.sleep(DEFAULT_LOOP_INTERVAL)
@@ -57,14 +58,24 @@ async def main():
 
             logging.debug(f"{agent} is waiting for the game to be ready")
             continue
+
         if not is_previous_game_ready:
             logging.info(f"{agent} is in a ready game")
             is_previous_game_ready = True
 
-        if not is_setup:
-            await setup(agent)
-            logging.info(f"{agent} is set up")
-            is_setup = True
+        if (
+            agent.game_statistics is not None
+            and agent.game_statistics.current_stage is Stage.REST
+        ):
+            if not is_buff_selected:
+                await selectBuff(agent)
+            logging.debug(f"{agent} is waiting for next battle")
+            is_buff_selected = True
+            continue
+
+        if is_buff_selected:
+            logging.info(f"{agent} is in a new battle")
+            is_buff_selected = False
 
         await loop(agent)
 

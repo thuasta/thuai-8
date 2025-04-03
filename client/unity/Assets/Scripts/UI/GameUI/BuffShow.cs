@@ -8,16 +8,13 @@ namespace BattleCity
 {
     public class BuffShow : AbstractModel
     {
-        public Dictionary<int, Dictionary<int, Image>> buffImage = new Dictionary<int, Dictionary<int, Image>>();
-        public Dictionary<int, List<string>> buffList = new Dictionary<int, List<string>>();
+        public List<List<Image>> buffImage = new List<List<Image>>();
+        public List<List<string>> buffList = new List<List<string>>();
 
         protected override void OnInit()
         {
+            InitializeListStructure();
             // Initialize inner dictionaries for buffImage
-            for (int i = 1; i <= 2; i++) // Assuming you have 2 buff slots, adjust as necessary
-            {
-                buffImage[i] = new Dictionary<int, Image>();
-            }
 
             for (int i = 1; i <= 8; i++)
             {
@@ -26,7 +23,8 @@ namespace BattleCity
 
                 if (Buff_1 != null)
                 {
-                    buffImage[1][i] = Buff_1;
+                    buffImage[0].Add(Buff_1);
+                    buffList[0].Add("");
                 }
                 else
                 {
@@ -35,7 +33,8 @@ namespace BattleCity
 
                 if (Buff_2 != null)
                 {
-                    buffImage[2][i] = Buff_2;
+                    buffImage[1].Add(Buff_2);
+                    buffList[1].Add("");
                 }
                 else
                 {
@@ -43,5 +42,20 @@ namespace BattleCity
                 }
             }
         }
+
+        private void InitializeListStructure()
+        {
+            // 初始化buffImage（2x8）
+            for (int i = 0; i < 2; i++)
+            {
+                buffImage.Add(new List<Image>());
+            }
+            // 初始化buffList（2x8）
+            for (int i = 0; i < 2; i++)
+            {
+                buffList.Add(new List<string>());
+            }
+        }
+        
     }
 }

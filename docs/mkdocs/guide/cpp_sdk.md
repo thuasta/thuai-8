@@ -96,31 +96,21 @@ auto token{agent.token()};
 
 `token` 方法将返回玩家自身的令牌。
 
-#### 获取自身玩家信息
+#### 获取所有玩家信息
 
 ```cpp
-const auto& self_info{agent.self_info()};
+const auto& self_info{agent.players_info()};
 ```
 
-- **返回类型：** `const PlayerInfo&`
+- **返回类型：** `const Players& /*using Players = std::vector<Player>*/`
 
-`self_info` 方法将返回自身玩家信息。玩家信息包括玩家的 Token、位置、武器、护甲和技能库等。
+`players_info` 方法将返回所有玩家信息。玩家信息包括玩家的 Token、位置、武器、护甲和技能库等。
 
 - Token `token` 是玩家的唯一标识。
 - 位置 `position` 包括坦克的坐标和朝向。
 - 武器 `weapon` 包括武器和武器类技能的基本情况。
 - 护甲 `armor` 包括护甲和护甲类技能的基本情况。
 - 技能库 `skills` 包括所拥有的技能类别、技能的冷却时间、技能的剩余冷却时间等。
-
-#### 获取对方玩家信息
-
-```cpp
-const auto& opponent_info{agent.opponent_info()};
-```
-
-- **返回类型：** `const PlayerInfo&`
-
-`opponent_info` 方法将返回对方玩家信息。玩家信息同上。
 
 #### 获取环境信息
 

@@ -12,7 +12,7 @@
 #include "available_buffs.hpp"
 #include "environment_info.hpp"
 #include "game_statistics.hpp"
-#include "player_info.hpp"
+#include "player.hpp"
 
 namespace glz {
 
@@ -77,7 +77,7 @@ class Message {
     } else {
       if (glz::read_jmespath<Path, GetOpts(Partial)>(value, message))
           [[unlikely]] {
-        throw;
+        throw std::runtime_error(std::string{message});
       }
     }
   }
@@ -167,10 +167,12 @@ class Message {
 
  private:
   // NOLINTBEGIN(readability-implicit-bool-conversion)
-  static constexpr glz::opts readopts{.error_on_unknown_keys = false,
-                                      .raw_string = true};
-  static constexpr glz::opts partial_readopts{
-      .error_on_unknown_keys = false, .raw_string = true, .partial_read = true};
+  static constexpr glz::opts readopts{
+      .error_on_unknown_keys = false, .minified = true, .raw_string = true};
+  static constexpr glz::opts partial_readopts{.error_on_unknown_keys = false,
+                                              .minified = true,
+                                              .raw_string = true,
+                                              .partial_read = true};
   static constexpr glz::opts writeopts{.raw_string = true};
   // NOLINTEND(readability-implicit-bool-conversion)
 
