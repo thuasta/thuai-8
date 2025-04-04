@@ -90,6 +90,7 @@ public partial class Environment
     /// <returns>Vectices of the laser.</returns>
     public List<Vector2> ActivateLaser(GameLogic.LaserBullet laser)
     {
+        // TODO: Optimize memory usage
         Vector2 startPoint = new(laser.BulletPosition.Xpos, laser.BulletPosition.Ypos);
         Vector2 direction = new(
             (float)Math.Cos(laser.BulletPosition.Angle),
@@ -177,6 +178,13 @@ public partial class Environment
             {
                 return -1f;
             }
+            if (fixture.Body.Tag is not Tag)
+            {
+                _logger.Error(
+                    "The fixture doesn't have a tag. Please contact the developer."
+                );
+                return -1f;
+            }
 
             Tag tag = (Tag)fixture.Body.Tag;
             if (
@@ -186,8 +194,14 @@ public partial class Environment
             )
             {
                 result = position;
+                return fraction;
             }
-            return 0;
+
+            _logger.Error(
+                "Failed to get the wall position from the fixture tag. Please contact the developer."
+            );
+            return -1f;
+
         }, startPoint, startPoint + direction * 2 * GameLogic.Constants.WALL_LENGTH);
 
         if (result is null)
