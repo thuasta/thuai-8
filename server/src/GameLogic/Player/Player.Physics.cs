@@ -7,6 +7,8 @@ namespace Thuai.Server.GameLogic;
 public partial class Player : Physics.IPhysicalObject
 {
     public Body? Body { get; private set; }
+    public bool Enabled { get; set; } = true;
+
     public Vector2 Orientation => new(
         (float)Math.Cos(Body?.Rotation ?? 0),
         (float)Math.Sin(Body?.Rotation ?? 0)

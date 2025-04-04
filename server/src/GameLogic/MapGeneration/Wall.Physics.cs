@@ -6,6 +6,7 @@ namespace Thuai.Server.GameLogic.MapGeneration;
 public partial class Wall : Physics.IPhysicalObject
 {
     public Body? Body { get; private set; }
+    public bool Enabled { get; set; } = true;
 
     public void Bind(Body body)
     {
