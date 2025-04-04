@@ -115,6 +115,7 @@ public partial class Player : Physics.IPhysicalObject
                     if (reflected == false)
                     {
                         b.Body.LinearVelocity = Vector2.Zero;
+                        // TODO: Change Enabled is not allowed in callback function and should be fixed.
                         b.Body.Enabled = false;
                     }
                     else
@@ -124,8 +125,8 @@ public partial class Player : Physics.IPhysicalObject
                     }
                     return false;
 
-                case LaserBullet laserBullet:
-                    Injured(laserBullet.BulletDamage, laserBullet.AntiArmor, out bool _);
+                case LaserBullet:
+                    _logger.Error("Unexpected collision with laser bullet. Please contact the developer.");
                     return false;
 
                 case Trap trap:
@@ -140,9 +141,11 @@ public partial class Player : Physics.IPhysicalObject
                         return false;
                     }
 
+                    // TODO: Change Enabled is not allowed in callback function and should be fixed.
                     b.Body.Enabled = false;
                     _logger.Information($"Player {ID} is caught by a trap.");
                     _stunCounter.Reset();
+
                     // Set player's speed to zero
                     a.Body.LinearVelocity = Vector2.Zero;
                     a.Body.AngularVelocity = 0f;
