@@ -102,8 +102,9 @@ public partial class Environment
         Vector2 currentDirection = direction;
 
         float remainingLength = laser.Length;
+        int reflectionCount = 0;
 
-        while (remainingLength > 0f)
+        while (remainingLength > 0f && reflectionCount <= GameLogic.Constants.MAXIMUM_LASER_REFLECTION)
         {
             Vector2? hitPoint = null;
             Vector2? hitNormal = null;
@@ -156,7 +157,12 @@ public partial class Environment
                 remainingLength -= distance;
 
                 currentDirection = Reflect(currentDirection, hitNormal.Value);
-                currentStart = hitPoint.Value;
+
+                // Fix the start point to avoid the laser being stuck in the wall
+                currentStart = hitPoint.Value + currentDirection * RAYCAST_FIX_DELTA;
+                remainingLength -= RAYCAST_FIX_DELTA;
+
+                reflectionCount++;
             }
             else
             {
