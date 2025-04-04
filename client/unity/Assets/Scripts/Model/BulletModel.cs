@@ -35,9 +35,11 @@ namespace BattleCity
 
             if (prefab != null)
             {
-                Vector3 position = new Vector3((float)bulletPosition.X, (float)(bulletPosition.Y + 0.2), (float)bulletPosition.Z);
+                Vector3 position = new Vector3(
+                    (float)(bulletPosition.X + Constants.GENERAL_XBIAS), (float)(bulletPosition.Y + 0.2), (float)(bulletPosition.Z + Constants.GENERAL_ZBIAS)
+                );
 
-                Quaternion rotation = Quaternion.Euler(0, (float)bulletPosition.Angle, 0); // 假设 Y 轴旋转
+                Quaternion rotation = Quaternion.Euler(0, -(float)bulletPosition.Angle, 0); // Server's Clockwise is negative
 
                 BulletObject = Object.Instantiate(prefab, wallController.transform);
                 BulletObject.transform.localPosition = position;
@@ -55,10 +57,12 @@ namespace BattleCity
 
             if (BulletObject != null)
             {
-                Vector3 targetPosition = new Vector3((float)bulletPosition.X, (float)bulletPosition.Y, (float)bulletPosition.Z);
+                Vector3 targetPosition = new Vector3(
+                    (float)(bulletPosition.X + Constants.GENERAL_XBIAS), (float)bulletPosition.Y, (float)(bulletPosition.Z + Constants.GENERAL_ZBIAS)
+                );
                 BulletObject.transform.localPosition = Vector3.Lerp(BulletObject.transform.localPosition, targetPosition, 10 * Time.deltaTime);
 
-                Quaternion targetRotation = Quaternion.Euler(0, (float)bulletPosition.Angle, 0); // 假设 Y 轴旋转
+                Quaternion targetRotation = Quaternion.Euler(0, -(float)bulletPosition.Angle, 0); // Server's Clockwise is negative
                 BulletObject.transform.localRotation = Quaternion.RotateTowards(BulletObject.transform.localRotation, targetRotation, 10 * Time.deltaTime);
             }
             else

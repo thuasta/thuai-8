@@ -25,11 +25,7 @@ public partial class Battle
         {
             Bullets.Add(bullet);
 
-            _logger.Debug(
-                $"A bullet has been added at ({bullet.BulletPosition.Xpos:F2}, {bullet.BulletPosition.Ypos:F2})"
-                + $" with angle {bullet.BulletPosition.Angle:F2}"
-            );
-            _logger.Verbose("Type: " + bullet.Type.ToString());
+            _logger.Debug($"Bullet {bullet.Id} has been added.");
             _logger.Verbose("Speed: " + bullet.BulletSpeed);
             _logger.Verbose("Damage: " + bullet.BulletDamage);
             _logger.Verbose("AntiArmor: " + bullet.AntiArmor);
@@ -38,8 +34,8 @@ public partial class Battle
         }
         catch (Exception e)
         {
-            _logger.Error($"Cannot add bullet: {e.Message}");
-            _logger.Debug($"{e}");
+            _logger.Error($"Cannot add bullet:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
             return false;
         }
     }
@@ -72,12 +68,12 @@ public partial class Battle
             }
             Bullets.Remove(bullet);
 
-            _logger.Debug($"A bullet at ({bullet.BulletPosition.Xpos:F2}, {bullet.BulletPosition.Ypos:F2}) has been removed.");
+            _logger.Debug($"Bullet {bullet.Id} has been removed.");
         }
         catch (Exception e)
         {
-            _logger.Error($"Cannot remove bullet: {e.Message}");
-            _logger.Debug($"{e}");
+            _logger.Error($"Cannot remove bullet:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
         }
     }
 
@@ -106,8 +102,8 @@ public partial class Battle
             }
             catch (Exception ex)
             {
-                _logger.Error($"Bullet Failed to be updated: {ex.Message}");
-                _logger.Debug($"{ex}");
+                _logger.Error($"Bullet Failed to be updated:");
+                Utility.Tools.LogHandler.LogException(_logger, ex);
             }
         }
 
@@ -124,8 +120,8 @@ public partial class Battle
         }
         catch (Exception ex)
         {
-            _logger.Error($"Laser failed to take damage: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"Failed to apply laser:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
     }
 
@@ -148,12 +144,13 @@ public partial class Battle
         {
             List<Vector2> trace = _env.ActivateLaser(laser);
             laser.Trace = [.. trace];
+            _logger.Information($"A laser has been activated and reflected {trace.Count - 2} times.");
             ActivatedLasers.Add(laser);
         }
         catch (Exception ex)
         {
-            _logger.Error($"Laser failed to be activated: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"Failed to activate laser:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
     }
 

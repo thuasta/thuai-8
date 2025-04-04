@@ -62,7 +62,7 @@ public class Armor
     public int Health { get; set; } = Constants.INITIAL_HEALTH_VALUE;
     public bool GravityField { get; set; } = false;
     public ArmorKnife Knife = new();
-    public int DodgeRate { get; set; } = Constants.INITIAL_DODGE_PERCENTAGE;
+    public int DodgeRate { get; set; } = Constants.INITIAL_DODGE_PERCENTAGE;    // In percentage
 
     public void Recover()
     {

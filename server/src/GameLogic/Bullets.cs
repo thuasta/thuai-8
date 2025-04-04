@@ -56,10 +56,11 @@ public class Bullet : IBullet, Physics.IPhysicalObject
     public int BulletDamage { get; }
     public bool IsMissile => false;     // TODO: Implement missile
     public bool AntiArmor { get; }
-    public bool IsDestroyed => _remainingTicks.IsZero == true || Body?.Enabled == false;
+    public bool IsDestroyed => _remainingTicks.IsZero == true || Enabled == false;
     public required Weapon Owner { get; init; }
 
     public Body? Body { get; private set; }
+    public bool Enabled { get; set; } = true;
 
     private readonly Counter _remainingTicks;
 

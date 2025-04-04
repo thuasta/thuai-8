@@ -25,6 +25,7 @@ public static partial class Constants
     public const float BULLET_SPEED_INCREASE_FACTOR = 2;
     public const float INITIAL_LASER_LENGTH = INITIAL_BULLET_SPEED * LASER_LENGTH_EQUAVALENT_BULLET_FLYING_TICKS;
     public const float LASER_LENGTH_INCREASE_FACTOR = 2;
+    public const int MAXIMUM_LASER_REFLECTION = 100;
     public const int INITIAL_DAMAGE = 1 * HEALTH_VALUE_BASE;
     public const int DAMAGE_INCREASE = 1 * HEALTH_VALUE_BASE;
     public const int INITIAL_BULLETS = 5;

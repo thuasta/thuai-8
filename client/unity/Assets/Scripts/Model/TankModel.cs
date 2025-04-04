@@ -55,9 +55,11 @@ namespace BattleCity
             GameObject prefab = Resources.Load<GameObject>($"Model/Tank/{Id}");
             if (prefab != null)
             {
-                Vector3 position = new Vector3((float)TankPosition.X, (float)TankPosition.Y, (float)TankPosition.Z);
+                Vector3 position = new Vector3(
+                    (float)(TankPosition.X + Constants.GENERAL_XBIAS), (float)TankPosition.Y, (float)(TankPosition.Z + Constants.GENERAL_ZBIAS)
+                );
 
-                Quaternion rotation = Quaternion.Euler(0, (float)TankPosition.Angle, 0); // 假设 Y 轴旋转
+                Quaternion rotation = Quaternion.Euler(0, -(float)TankPosition.Angle, 0); // Server's Clockwise is negative
 
                 TankObject = Object.Instantiate(prefab, wallController.transform);
                 TankObject.transform.localPosition = position;
@@ -80,7 +82,7 @@ namespace BattleCity
                 );
                 TankObject.transform.localPosition =  Vector3.Lerp(TankObject.transform.localPosition, newPosition, 10 * Time.deltaTime);
 
-                Quaternion newRotation = Quaternion.Euler(0, (float)tankPosition.Angle, 0); // 假设 Y 轴旋转
+                Quaternion newRotation = Quaternion.Euler(0, -(float)tankPosition.Angle, 0); // Server's Clockwise is negative
                 TankObject.transform.localRotation = Quaternion.RotateTowards(TankObject.transform.localRotation, newRotation, 10 * Time.deltaTime);
             }
             else

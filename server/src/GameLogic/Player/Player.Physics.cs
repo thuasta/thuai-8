@@ -7,6 +7,8 @@ namespace Thuai.Server.GameLogic;
 public partial class Player : Physics.IPhysicalObject
 {
     public Body? Body { get; private set; }
+    public bool Enabled { get; set; } = true;
+
     public Vector2 Orientation => new(
         (float)Math.Cos(Body?.Rotation ?? 0),
         (float)Math.Sin(Body?.Rotation ?? 0)
@@ -111,11 +113,17 @@ public partial class Player : Physics.IPhysicalObject
             switch (bodyTag.Owner)
             {
                 case Bullet bullet:
+                    if (bullet.IsDestroyed == true)
+                    {
+                        _logger.Debug($"Bullet {bullet.Id} is already destroyed.");
+                        return false;
+                    }
+
                     Injured(bullet.BulletDamage, bullet.AntiArmor, out bool reflected);
                     if (reflected == false)
                     {
                         b.Body.LinearVelocity = Vector2.Zero;
-                        b.Body.Enabled = false;
+                        bullet.Enabled = false;
                     }
                     else
                     {
@@ -124,8 +132,8 @@ public partial class Player : Physics.IPhysicalObject
                     }
                     return false;
 
-                case LaserBullet laserBullet:
-                    Injured(laserBullet.BulletDamage, laserBullet.AntiArmor, out bool _);
+                case LaserBullet:
+                    _logger.Error("Unexpected collision with laser bullet. Please contact the developer.");
                     return false;
 
                 case Trap trap:
@@ -134,15 +142,22 @@ public partial class Player : Physics.IPhysicalObject
                         _logger.Debug($"Player won't be affected by its own trap.");
                         return false;
                     }
+                    if (trap.IsDestroyed == true)
+                    {
+                        _logger.Debug($"Trap is already destroyed.");
+                        return false;
+                    }
+
                     if (IsInvulnerable == true)
                     {
                         _logger.Debug($"Player {ID} is invulnerable to trap.");
                         return false;
                     }
 
-                    b.Body.Enabled = false;
+                    trap.Enabled = false;
                     _logger.Information($"Player {ID} is caught by a trap.");
                     _stunCounter.Reset();
+
                     // Set player's speed to zero
                     a.Body.LinearVelocity = Vector2.Zero;
                     a.Body.AngularVelocity = 0f;

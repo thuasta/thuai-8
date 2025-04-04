@@ -48,6 +48,8 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     /// </summary>
     public Utility.Config.GameSettings GameSettings { get; init; } = setting;
 
+    public bool IsBattleOver => _currentBattleTick > GameSettings.MaxBattleTicks || AlivePlayers() <= 1;
+
     private int _currentAwardChoosingTick = 0;
     private int _currentBattleTick = 0;
 
@@ -131,6 +133,8 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
             {
                 if (Stage == BattleStage.InBattle)
                 {
+                    RemoveOutsideObjects();
+
                     ActivatedLasers.Clear();
                     ActivateLasers(_lasersToActivate);
                     _lasersToActivate.Clear();
@@ -161,9 +165,43 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
         }
     }
 
-    public bool IsBattleOver()
+    private void RemoveOutsideObjects()
     {
-        return _currentBattleTick > GameSettings.MaxBattleTicks || AlivePlayers() <= 1;
+        if (Map is null)
+        {
+            throw new Exception("Map is null.");
+        }
+
+        foreach (Player player in AllPlayers)
+        {
+            if (!Map.IsInsideMap(player.PlayerPosition.Xpos, player.PlayerPosition.Ypos))
+            {
+                player.KillInstantly();
+                _logger.Warning($"Player {player.ID} is outside the map and killed.");
+            }
+        }
+
+        List<Bullet> bulletsToRemove = [];
+        foreach (Bullet bullet in Bullets)
+        {
+            if (!Map.IsInsideMap(bullet.BulletPosition.Xpos, bullet.BulletPosition.Ypos))
+            {
+                bulletsToRemove.Add(bullet);
+                _logger.Warning($"Bullet {bullet.Id} is outside the map and removed.");
+            }
+        }
+        RemoveBullet(bulletsToRemove);
+
+        List<Trap> trapsToRemove = [];
+        foreach (Trap trap in Traps)
+        {
+            if (!Map.IsInsideMap(trap.TrapPosition.Xpos, trap.TrapPosition.Ypos))
+            {
+                trapsToRemove.Add(trap);
+                _logger.Warning($"A trap is outside the map and removed.");
+            }
+        }
+        RemoveTrap(trapsToRemove);
     }
 
     /// <summary>
@@ -180,7 +218,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
         }
         else if (Stage == BattleStage.InBattle)
         {
-            if (IsBattleOver())
+            if (IsBattleOver)
             {
                 foreach (Player player in AllPlayers)
                 {

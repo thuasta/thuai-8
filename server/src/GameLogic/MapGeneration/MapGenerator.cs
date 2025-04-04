@@ -20,6 +20,13 @@ public class Map
     public int Height { get; }
     public List<Wall> Walls { get; } = [];
     private static readonly Random random = new();
+
+    public bool IsInsideMap(float x, float y)
+    {
+        return x >= 0 && x <= Width * Constants.WALL_LENGTH
+            && y >= 0 && y <= Height * Constants.WALL_LENGTH;
+    }
+
     private void GenerateRandomWalls()
     {
         // lines on the path, should be maintained

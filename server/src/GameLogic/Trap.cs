@@ -5,7 +5,9 @@ namespace Thuai.Server.GameLogic;
 public class Trap : Physics.IPhysicalObject
 {
     public Body? Body { get; private set; } = null;
-    public bool IsDestroyed => _remainingTicks.IsZero == true || Body?.Enabled == false;
+    public bool Enabled { get; set; } = true;
+
+    public bool IsDestroyed => _remainingTicks.IsZero == true || Enabled == false;
     public required Player Owner { get; init; }
     public Position TrapPosition
     {

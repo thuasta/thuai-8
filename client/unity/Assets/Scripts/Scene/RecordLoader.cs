@@ -142,6 +142,7 @@ namespace BattleCity
             _gameRounds.Clear();
             List<JObject> currentRound = new List<JObject>();
             bool isFirstRound = true;
+            int currentEpisode = 0;
 
             foreach (JObject recordObj in _recordArray)
             {
@@ -161,9 +162,9 @@ namespace BattleCity
                         {
                             int id = info["token"].ToObject<int>();
                             string buff = info["buff"].ToString();
-                            //TODO
-                            this.SendCommand(new BuffAddCommand(id, currentRound.Count - 1, buff));
+                            this.SendCommand(new BuffAddCommand(id, currentEpisode, buff));
                         }
+                        ++currentEpisode;
                         break;
                     }
                 }

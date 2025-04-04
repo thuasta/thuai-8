@@ -6,6 +6,7 @@ namespace Thuai.Server.GameLogic.MapGeneration;
 public partial class Wall : Physics.IPhysicalObject
 {
     public Body? Body { get; private set; }
+    public bool Enabled { get; set; } = true;
 
     public void Bind(Body body)
     {
@@ -13,7 +14,8 @@ public partial class Wall : Physics.IPhysicalObject
         Body.Tag = new Physics.Tag() { Owner = this };
 
         Physics.Tag tag = (Physics.Tag)Body.Tag;
-        tag.AttachedData[Physics.Key.CorrespondingWallPosition] = new Protocol.Scheme.PositionInt() {
+        tag.AttachedData[Physics.Key.CorrespondingWallPosition] = new Protocol.Scheme.PositionInt()
+        {
             X = X,
             Y = Y,
             Angle = Angle,
