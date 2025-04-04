@@ -2,7 +2,6 @@ namespace Thuai.Server.GameLogic;
 
 public partial class Battle
 {
-
     #region Fields and properties
     public List<Trap> Traps { get; } = [];
 
@@ -21,16 +20,14 @@ public partial class Battle
         {
             Traps.Add(trap);
 
-            _logger.Debug(
-                $"A Trap has been added at ({trap.TrapPosition.Xpos:F2}, {trap.TrapPosition.Ypos:F2})."
-            );
+            _logger.Debug("A trap has been added.");
 
             return true;
         }
         catch (Exception e)
         {
             _logger.Error($"Cannot add Trap: {e.Message}");
-            _logger.Debug($"{e}");
+            Utility.Tools.LogHandler.LogException(_logger, e);
             return false;
         }
     }
@@ -59,14 +56,12 @@ public partial class Battle
 
             Traps.Remove(trap);
 
-            _logger.Debug(
-                $"A Trap at ({trap.TrapPosition.Xpos:F2}, {trap.TrapPosition.Ypos:F2}) has been removed."
-            );
+            _logger.Debug("A trap has been removed.");
         }
         catch (Exception e)
         {
             _logger.Error($"Cannot remove Trap: {e.Message}");
-            _logger.Debug($"{e}");
+            Utility.Tools.LogHandler.LogException(_logger, e);
         }
     }
 

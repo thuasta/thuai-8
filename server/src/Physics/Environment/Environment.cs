@@ -120,7 +120,7 @@ public partial class Environment
     /// Remove a body from the world.
     /// </summary>
     /// <param name="body">Body to remove.</param>
-    public void RemoveBody(Body body)   // TODO: Apply this method to delete methods in battle.
+    public void RemoveBody(Body body)
     {
         lock (_lock)
         {

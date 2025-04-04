@@ -153,7 +153,7 @@ public class Kamui() : SkillWithDuration(Constants.SkillCooldown.KAMUI, Constant
         if (IsActive == true)
         {
             _activation.Decrease();
-            
+
             // We don't cauculate cooldown because Kamui skill cauculates cooldown after effect ends.
 
             if (IsActive == false)

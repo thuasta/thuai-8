@@ -25,11 +25,7 @@ public partial class Battle
         {
             Bullets.Add(bullet);
 
-            _logger.Debug(
-                $"A bullet has been added at ({bullet.BulletPosition.Xpos:F2}, {bullet.BulletPosition.Ypos:F2})"
-                + $" with angle {bullet.BulletPosition.Angle:F2}"
-            );
-            _logger.Verbose("Type: " + bullet.Type.ToString());
+            _logger.Debug($"Bullet {bullet.Id} has been added.");
             _logger.Verbose("Speed: " + bullet.BulletSpeed);
             _logger.Verbose("Damage: " + bullet.BulletDamage);
             _logger.Verbose("AntiArmor: " + bullet.AntiArmor);
@@ -39,7 +35,7 @@ public partial class Battle
         catch (Exception e)
         {
             _logger.Error($"Cannot add bullet: {e.Message}");
-            _logger.Debug($"{e}");
+            Utility.Tools.LogHandler.LogException(_logger, e);
             return false;
         }
     }
@@ -72,12 +68,12 @@ public partial class Battle
             }
             Bullets.Remove(bullet);
 
-            _logger.Debug($"A bullet at ({bullet.BulletPosition.Xpos:F2}, {bullet.BulletPosition.Ypos:F2}) has been removed.");
+            _logger.Debug($"Bullet {bullet.Id} has been removed.");
         }
         catch (Exception e)
         {
             _logger.Error($"Cannot remove bullet: {e.Message}");
-            _logger.Debug($"{e}");
+            Utility.Tools.LogHandler.LogException(_logger, e);
         }
     }
 
