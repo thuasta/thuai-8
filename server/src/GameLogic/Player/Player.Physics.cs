@@ -113,12 +113,17 @@ public partial class Player : Physics.IPhysicalObject
             switch (bodyTag.Owner)
             {
                 case Bullet bullet:
+                    if (bullet.IsDestroyed == true)
+                    {
+                        _logger.Debug($"Bullet {bullet.Id} is already destroyed.");
+                        return false;
+                    }
+
                     Injured(bullet.BulletDamage, bullet.AntiArmor, out bool reflected);
                     if (reflected == false)
                     {
                         b.Body.LinearVelocity = Vector2.Zero;
-                        // TODO: Change Enabled is not allowed in callback function and should be fixed.
-                        b.Body.Enabled = false;
+                        bullet.Enabled = false;
                     }
                     else
                     {
@@ -137,14 +142,19 @@ public partial class Player : Physics.IPhysicalObject
                         _logger.Debug($"Player won't be affected by its own trap.");
                         return false;
                     }
+                    if (trap.IsDestroyed == true)
+                    {
+                        _logger.Debug($"Trap is already destroyed.");
+                        return false;
+                    }
+
                     if (IsInvulnerable == true)
                     {
                         _logger.Debug($"Player {ID} is invulnerable to trap.");
                         return false;
                     }
 
-                    // TODO: Change Enabled is not allowed in callback function and should be fixed.
-                    b.Body.Enabled = false;
+                    trap.Enabled = false;
                     _logger.Information($"Player {ID} is caught by a trap.");
                     _stunCounter.Reset();
 
