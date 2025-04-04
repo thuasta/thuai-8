@@ -12,7 +12,7 @@ public partial class Environment
     public const int TOI_VELOCITY_ITERATIONS = 100;
     public const int TOI_POSITION_ITERATIONS = 100;
     public static class Density
-    {
+    {    
         public const float DEFAULT_DENSITY = 1f;
         public const float PLAYER_DENSITY = 50f;
         public const float BULLET_DENSITY = 0.05f;
