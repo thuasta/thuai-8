@@ -117,13 +117,12 @@ public partial class Player : Physics.IPhysicalObject
                     if (reflected == false)
                     {
                         b.Body.Enabled = false;
-                        return false;
                     }
                     else
                     {
                         // Reflection should be handled by the physics engine itself
-                        return true;
                     }
+                    return false;
 
                 case LaserBullet:
                     // We handle lasers with ActivateLaser method
