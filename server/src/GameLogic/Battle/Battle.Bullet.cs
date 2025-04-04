@@ -144,6 +144,7 @@ public partial class Battle
         {
             List<Vector2> trace = _env.ActivateLaser(laser);
             laser.Trace = [.. trace];
+            _logger.Information($"A laser has been activated and reflected {trace.Count - 1} times.");
             ActivatedLasers.Add(laser);
         }
         catch (Exception ex)
