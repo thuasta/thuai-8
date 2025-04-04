@@ -119,66 +119,66 @@ public partial class GameRunner
                     _logger.Debug(
                         $"[Player {player.ID}] Requested player info."
                     );
-                    if (
-                        Game.Stage != GameLogic.Game.GameStage.InBattle
-                        || Game.RunningBattle is null
-                        || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.InBattle
-                    )
-                    {
-                        _logger.Debug("No battle is running. PlayerInfo will not be provided.");
-                        return;
-                    }
+                    // if (
+                    //     Game.Stage != GameLogic.Game.GameStage.InBattle
+                    //     || Game.RunningBattle is null
+                    //     || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.InBattle
+                    // )
+                    // {
+                    //     _logger.Debug("No battle is running. PlayerInfo will not be provided.");
+                    //     return;
+                    // }
 
-                    List<Protocol.Scheme.Player> players = [];
-                    foreach (GameLogic.Player p in Game.AllPlayers)
-                    {
-                        List<Protocol.Scheme.Skill> skills = [];
-                        foreach (GameLogic.ISkill s in p.PlayerSkills)
-                        {
-                            skills.Add(new Protocol.Scheme.Skill
-                            {
-                                Name = s.Name.ToString(),
-                                MaxCooldown = s.MaxCooldown,
-                                CurrentCooldown = s.CurrentCooldown,
-                                IsActive = s.IsActive
-                            });
-                        }
-                        players.Add(new Protocol.Scheme.Player
-                        {
-                            Token = player.Token == p.Token ? p.Token : "",
-                            Weapon = new()
-                            {
-                                AttackSpeed = p.PlayerWeapon.AttackSpeed,
-                                BulletSpeed = p.PlayerWeapon.BulletSpeed,
-                                IsLaser = p.PlayerWeapon.IsLaser,
-                                AntiArmor = p.PlayerWeapon.AntiArmor,
-                                Damage = p.PlayerWeapon.Damage,
-                                MaxBullets = p.PlayerWeapon.MaxBullets,
-                                CurrentBullets = p.PlayerWeapon.CurrentBullets
-                            },
-                            Armor = new()
-                            {
-                                CanReflect = p.PlayerArmor.CanReflect,
-                                ArmorValue = p.PlayerArmor.ArmorValue,
-                                Health = p.PlayerArmor.Health,
-                                GravityField = p.PlayerArmor.GravityField,
-                                Knife = p.PlayerArmor.Knife.State.ToString(),
-                                DodgeRate = p.PlayerArmor.DodgeRate
-                            },
-                            Skills = [.. skills],
-                            Position = new()
-                            {
-                                X = p.PlayerPosition.Xpos,
-                                Y = p.PlayerPosition.Ypos,
-                                Angle = p.PlayerPosition.Angle
-                            },
-                        });
-                    }
-                    Protocol.Messages.AllPlayerInfoMessage response = new()
-                    {
-                        Players = [.. players]
-                    };
-                    AfterPlayerRequestEvent?.Invoke(this, new AfterPlayerRequestEventArgs(player.Token, response));
+                    // List<Protocol.Scheme.Player> players = [];
+                    // foreach (GameLogic.Player p in Game.AllPlayers)
+                    // {
+                    //     List<Protocol.Scheme.Skill> skills = [];
+                    //     foreach (GameLogic.ISkill s in p.PlayerSkills)
+                    //     {
+                    //         skills.Add(new Protocol.Scheme.Skill
+                    //         {
+                    //             Name = s.Name.ToString(),
+                    //             MaxCooldown = s.MaxCooldown,
+                    //             CurrentCooldown = s.CurrentCooldown,
+                    //             IsActive = s.IsActive
+                    //         });
+                    //     }
+                    //     players.Add(new Protocol.Scheme.Player
+                    //     {
+                    //         Token = player.Token == p.Token ? p.Token : "",
+                    //         Weapon = new()
+                    //         {
+                    //             AttackSpeed = p.PlayerWeapon.AttackSpeed,
+                    //             BulletSpeed = p.PlayerWeapon.BulletSpeed,
+                    //             IsLaser = p.PlayerWeapon.IsLaser,
+                    //             AntiArmor = p.PlayerWeapon.AntiArmor,
+                    //             Damage = p.PlayerWeapon.Damage,
+                    //             MaxBullets = p.PlayerWeapon.MaxBullets,
+                    //             CurrentBullets = p.PlayerWeapon.CurrentBullets
+                    //         },
+                    //         Armor = new()
+                    //         {
+                    //             CanReflect = p.PlayerArmor.CanReflect,
+                    //             ArmorValue = p.PlayerArmor.ArmorValue,
+                    //             Health = p.PlayerArmor.Health,
+                    //             GravityField = p.PlayerArmor.GravityField,
+                    //             Knife = p.PlayerArmor.Knife.State.ToString(),
+                    //             DodgeRate = p.PlayerArmor.DodgeRate
+                    //         },
+                    //         Skills = [.. skills],
+                    //         Position = new()
+                    //         {
+                    //             X = p.PlayerPosition.Xpos,
+                    //             Y = p.PlayerPosition.Ypos,
+                    //             Angle = p.PlayerPosition.Angle
+                    //         },
+                    //     });
+                    // }
+                    // Protocol.Messages.AllPlayerInfoMessage response = new()
+                    // {
+                    //     Players = [.. players]
+                    // };
+                    // AfterPlayerRequestEvent?.Invoke(this, new AfterPlayerRequestEventArgs(player.Token, response));
                     break;
 
                 default:
