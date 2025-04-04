@@ -33,8 +33,8 @@ public static partial class Constants
     public const int ANTI_ARMOR_FACTOR = 2;
 
     //Player
-    public const float MOVE_SPEED = 0.1f;
-    public const float TURN_SPEED = (float)Math.PI / 60;
+    public const float MOVE_SPEED = 1f;
+    public const float TURN_SPEED = (float)Math.PI / 40;    // 4.5 degrees per tick
     public const float PLAYER_RADIUS = 0.5f;
     public const float BULLET_GENERATE_DISTANCE = 0.8f;
 
