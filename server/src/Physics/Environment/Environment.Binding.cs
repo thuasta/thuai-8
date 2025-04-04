@@ -27,7 +27,7 @@ public partial class Environment
                 {
                     case Categories.Player:
                         result = _world.CreateBody(position, rotation, BodyType.Dynamic);
-                        fixture = result.CreateCircle(GameLogic.Constants.PLAYER_RADIUS, DEFAULT_DENSITY);
+                        fixture = result.CreateCircle(GameLogic.Constants.PLAYER_RADIUS, Density.PLAYER_DENSITY);
                         fixture.CollisionCategories = Categories.Player;
                         fixture.CollidesWith = CollisionList.PlayerCollidesWith;
                         fixture.Friction = 0f;
@@ -44,7 +44,7 @@ public partial class Environment
 
                     case Categories.Bullet:
                         result = _world.CreateBody(position, rotation, BodyType.Dynamic);
-                        fixture = result.CreateCircle(GameLogic.Constants.BULLET_RADIUS, DEFAULT_DENSITY);
+                        fixture = result.CreateCircle(GameLogic.Constants.BULLET_RADIUS, Density.BULLET_DENSITY);
                         fixture.CollisionCategories = Categories.Bullet;
                         fixture.CollidesWith = CollisionList.BulletCollidesWith;
                         fixture.Friction = 0f;
@@ -53,7 +53,7 @@ public partial class Environment
 
                     case Categories.Trap:
                         result = _world.CreateBody(position, rotation, BodyType.Static);
-                        fixture = result.CreateCircle(GameLogic.Constants.PLAYER_RADIUS, DEFAULT_DENSITY);
+                        fixture = result.CreateCircle(GameLogic.Constants.PLAYER_RADIUS, Density.DEFAULT_DENSITY);
                         fixture.CollisionCategories = Categories.Trap;
                         fixture.CollidesWith = CollisionList.TrapCollidesWith;
                         fixture.IsSensor = true;

@@ -56,7 +56,9 @@ public partial class Player : Physics.IPhysicalObject
             }
         }
 
-        Fixture fixture = Body.CreateCircle(Constants.GRAVITY_FIELD_RADIUS, Physics.Environment.DEFAULT_DENSITY);
+        Fixture fixture = Body.CreateCircle(
+            Constants.GRAVITY_FIELD_RADIUS, Physics.Environment.Density.DEFAULT_DENSITY
+        );
         fixture.CollisionCategories = Physics.Environment.Categories.GravityField;
         fixture.CollidesWith = Physics.Environment.CollisionList.GravityFieldCollidesWith;
         fixture.IsSensor = true;
@@ -114,18 +116,17 @@ public partial class Player : Physics.IPhysicalObject
                     Injured(bullet.BulletDamage, bullet.AntiArmor, out bool reflected);
                     if (reflected == false)
                     {
-                        b.Body.LinearVelocity = Vector2.Zero;
                         b.Body.Enabled = false;
                     }
                     else
                     {
-                        Vector2 normal = contact.Manifold.LocalNormal;
-                        b.Body.LinearVelocity = Physics.Environment.Reflect(b.Body.LinearVelocity, normal);
+                        // Reflection should be handled by the physics engine itself
                     }
                     return false;
 
-                case LaserBullet laserBullet:
-                    Injured(laserBullet.BulletDamage, laserBullet.AntiArmor, out bool _);
+                case LaserBullet:
+                    // We handle lasers with ActivateLaser method
+                    _logger.Error("Unexpected collision. Please contact developers.");
                     return false;
 
                 case Trap trap:
