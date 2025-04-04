@@ -380,7 +380,7 @@ components:
         - DESTROY # 破坏墙体
         - CONSTRUCT # 建造墙体
         - TRAP # 陷阱
-        - MISSILE # 导弹
+        - RECOVER
         - KAMUI # 虚化
 
     SkillName: 
