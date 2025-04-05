@@ -24,9 +24,7 @@ public partial class Battle
 
         Map.Walls.Add(wall);
         BindWall(wall);
-        _logger.Debug(
-            $"Added wall at ({wall.X}, {wall.Y}) with angle {wall.Angle}"
-        );
+        _logger.Information($"Added wall at ({wall.X}, {wall.Y}) with angle {wall.Angle}");
     }
 
     public void BindWall(MapGeneration.Wall wall)
@@ -142,7 +140,7 @@ public partial class Battle
                 wall.Unbind();
             }
             Map?.Walls.Remove(wall);
-            _logger.Debug($"Removed wall at ({wall.X}, {wall.Y}) with angle {wall.Angle}");
+            _logger.Information($"Removed wall at ({wall.X}, {wall.Y}) with angle {wall.Angle}");
         }
         catch (Exception e)
         {

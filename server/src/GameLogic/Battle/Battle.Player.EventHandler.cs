@@ -21,7 +21,7 @@ public partial class Battle
     {
         if (Stage != BattleStage.InBattle)
         {
-            _logger.Error(
+            _logger.Debug(
                 $"[Player {e.Player.ID}] Cannot attack when the battle is at stage {Stage}."
             );
             return;
@@ -85,7 +85,7 @@ public partial class Battle
     {
         if (Stage != BattleStage.InBattle)
         {
-            _logger.Error(
+            _logger.Debug(
                 $"[Player {e.Player.ID}] Cannot activate skill when battle is at state {Stage}."
             );
             return;
@@ -102,13 +102,13 @@ public partial class Battle
                             if (player.ID != e.Player.ID && player.IsAlive == true && player.IsBlinded == false)
                             {
                                 player.IsBlinded = true;
-                                _logger.Information($"[Player {player.ID}] is blinded.");
+                                _logger.Information($"[Player {player.ID}] Player is blinded.");
                             }
                         }
                         break;
 
                     case SkillName.SPEED_UP:
-                        _logger.Information($"[Player {e.Player.ID}] activated SpeedUp skill.");
+                        _logger.Information($"[Player {e.Player.ID}] Player activated SpeedUp skill.");
                         break;
 
                     case SkillName.FLASH:
@@ -212,11 +212,11 @@ public partial class Battle
                         break;
 
                     case SkillName.SPEED_UP:
-                        _logger.Information($"[Player {e.Player.ID}] Deactivated SpeedUp skill.");
+                        _logger.Information($"[Player {e.Player.ID}] Effect of SpeedUp skill ends.");
                         break;
 
                     case SkillName.KAMUI:
-                        _logger.Information($"[Player {e.Player.ID}] Deactivated Kamui skill.");
+                        _logger.Information($"[Player {e.Player.ID}] Effect of Kamui skill ends.");
                         break;
 
                     // Instant skills do not have deactivation effects.

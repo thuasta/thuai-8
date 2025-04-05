@@ -83,7 +83,7 @@ public partial class GameRunner
                         || Game.RunningBattle == null
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.InBattle)
                     {
-                        _logger.Error($"[Player {player.ID}] Cannot attack when not in battle.");
+                        _logger.Debug($"[Player {player.ID}] Cannot attack when not in battle.");
                         return;
                     }
                     player.PlayerAttack();
@@ -94,7 +94,7 @@ public partial class GameRunner
                         || Game.RunningBattle == null
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.InBattle)
                     {
-                        _logger.Error($"[Player {player.ID}] Cannot use skill when not in battle.");
+                        _logger.Debug($"[Player {player.ID}] Cannot use skill when not in battle.");
                         return;
                     }
                     player.PlayerPerformSkill(GameLogic.ISkill.SkillNameFromString(skillMessage.SkillName));
@@ -105,7 +105,7 @@ public partial class GameRunner
                         || Game.RunningBattle == null
                         || Game.RunningBattle.Stage != GameLogic.Battle.BattleStage.ChoosingAward)
                     {
-                        _logger.Error(
+                        _logger.Debug(
                             $"[Player {player.ID}] Cannot select award when not in battle or battle stage is not ChoosingAward."
                         );
                         return;

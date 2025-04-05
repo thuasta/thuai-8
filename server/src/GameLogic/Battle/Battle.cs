@@ -124,8 +124,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
     /// </summary>
     public void Tick()
     {
-        _logger.Debug("Running a new tick in battle.");
-        _logger.Debug($"Current battle stage: {Stage}");
+        _logger.Debug($"Running tick {CurrentTick} in battle. Current stage: {Stage}.");
 
         try
         {
