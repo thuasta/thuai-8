@@ -130,7 +130,7 @@ public partial class AgentServer
                     if (_socketRawTextReceivingQueue[socket.ConnectionInfo.Id].Count
                          > MAXIMUM_MESSAGE_QUEUE_SIZE)
                     {
-                        _logger.Warning(
+                        _logger.Debug(
                             $"Received too many messages from {GetAddress(socket)}. Messages in queue will be cleared."
                         );
                         _socketRawTextReceivingQueue[socket.ConnectionInfo.Id].Clear();
@@ -154,7 +154,7 @@ public partial class AgentServer
                     if (_socketRawTextReceivingQueue[socket.ConnectionInfo.Id].Count
                          > MAXIMUM_MESSAGE_QUEUE_SIZE)
                     {
-                        _logger.Warning(
+                        _logger.Debug(
                             $"Received too many messages from {GetAddress(socket)}. Messages in queue will be cleared."
                         );
                         _socketRawTextReceivingQueue[socket.ConnectionInfo.Id].Clear();
