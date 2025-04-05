@@ -15,6 +15,9 @@ public record PerformMoveMessage : PerformMessage
 
     [JsonPropertyName("direction")]
     public string Direction { get; init; } = "";
+
+    [JsonPropertyName("distance")]
+    public double Distance { get; init; } = 0;
 }
 
 public record PerformTurnMessage : PerformMessage
@@ -24,6 +27,9 @@ public record PerformTurnMessage : PerformMessage
 
     [JsonPropertyName("direction")]
     public string Direction { get; init; } = "";
+
+    [JsonPropertyName("angle")]
+    public int Angle { get; init; } = 0;    // In degrees
 }
 
 public record PerformAttackMessage : PerformMessage

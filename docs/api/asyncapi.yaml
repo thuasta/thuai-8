@@ -1,7 +1,7 @@
 asyncapi: 3.0.0
 info:
   title: THUAI8 API
-  version: '0.3.0'
+  version: '0.1.0'
 # channels:
 # "用于玩家 SDK 与后端的通信频道。"
 channels:
