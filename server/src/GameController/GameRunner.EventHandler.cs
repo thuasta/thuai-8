@@ -42,7 +42,16 @@ public partial class GameRunner
                     };
                     player.MoveDirection = moveDirection;
 
-                    _logger.Information($"[Player {player.ID}] Move direction set to {moveDirection}.");
+                    if (double.IsNaN(moveMessage.Distance) || double.IsInfinity(moveMessage.Distance))
+                    {
+                        _logger.Error($"[Player {player.ID}] Invalid speed: {moveMessage.Distance}.");
+                        player.Speed = 0;
+                        return;
+                    }
+                    player.Speed = Math.Clamp((float)moveMessage.Distance, 0, player.MaxSpeed);
+
+                    _logger.Debug($"[Player {player.ID}] Move direction set to {moveDirection}.");
+                    _logger.Debug($"[Player {player.ID}] Speed set to {player.Speed}.");
 
                     break;
 
@@ -55,7 +64,17 @@ public partial class GameRunner
                     };
                     player.TurnDirection = turnDirection;
 
-                    _logger.Information($"[Player {player.ID}] Turn direction set to {turnDirection}.");
+                    double angle = turnMessage.Angle * Math.PI / 180.0; // Convert to radians
+                    if (double.IsNaN(angle) || double.IsInfinity(angle))
+                    {
+                        _logger.Error($"[Player {player.ID}] Invalid angular speed: {angle}.");
+                        player.TurnSpeed = 0;
+                        return;
+                    }
+                    player.TurnSpeed = Math.Clamp((float)angle, 0, player.MaxTurnSpeed);
+
+                    _logger.Debug($"[Player {player.ID}] Turn direction set to {turnDirection}.");
+                    _logger.Debug($"[Player {player.ID}] Turn speed set to {player.TurnSpeed}.");
 
                     break;
 

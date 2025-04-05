@@ -148,13 +148,12 @@ public partial class Player : Physics.IPhysicalObject
                         return false;
                     }
 
+                    trap.Enabled = false;
                     if (IsInvulnerable == true)
                     {
                         _logger.Debug($"Player {ID} is invulnerable to trap.");
                         return false;
                     }
-
-                    trap.Enabled = false;
                     _logger.Information($"Player {ID} is caught by a trap.");
                     _stunCounter.Reset();
 

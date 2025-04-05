@@ -13,8 +13,10 @@ public partial class Player(string token, int playerId)
     public string RecordToken => (playerId + 1).ToString(); // Because client actually reads ID and it starts from 1 ...
     public int ID => playerId;
 
-    public float Speed => Constants.MOVE_SPEED;
-    public float TurnSpeed => Constants.TURN_SPEED;
+    public float MaxSpeed => Constants.MAXIMUM_MOVE_SPEED;
+    public float MaxTurnSpeed => Constants.MAXIMUM_TURN_SPEED;
+    public float Speed { get; set; } = Constants.MAXIMUM_MOVE_SPEED;
+    public float TurnSpeed { get; set; } = Constants.MAXIMUM_TURN_SPEED;
 
     public MoveDirection MoveDirection { get; set; } = MoveDirection.NONE;
     public TurnDirection TurnDirection { get; set; } = TurnDirection.NONE;
