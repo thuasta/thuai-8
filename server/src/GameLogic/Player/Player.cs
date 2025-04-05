@@ -163,17 +163,17 @@ public partial class Player(string token, int playerId)
 
         if (PlayerArmor.ArmorValue > 0)
         {
-            if (PlayerArmor.CanReflect == true && realDamage <= PlayerArmor.ArmorValue)
+            // Damage absorbed by armor
+            realDamage = Math.Min(realDamage, PlayerArmor.ArmorValue);
+            PlayerArmor.ArmorValue -= realDamage;
+            _logger.Information($"Armor absorbed {realDamage} damage.");
+
+            if (PlayerArmor.CanReflect == true)
             {
                 // The bullet will be reflected
                 reflected = true;
                 _logger.Information("Armor reflected the bullet.");
             }
-
-            // Damage absorbed by armor
-            realDamage = Math.Min(realDamage, PlayerArmor.ArmorValue);
-            PlayerArmor.ArmorValue -= realDamage;
-            _logger.Information($"Armor absorbed {realDamage} damage.");
         }
         else
         {
@@ -182,7 +182,7 @@ public partial class Player(string token, int playerId)
                 PlayerArmor.Knife.Activate();
                 _stunCounter.Clear();       // Stun effect is removed
                 PlayerArmor.Health = Constants.REMAINING_HEALTH_VALUE;
-                _logger.Debug("Invulnerability invoked by taking damage.");
+                _logger.Information("Invulnerability invoked by taking damage.");
             }
             else
             {
@@ -245,19 +245,19 @@ public partial class Player(string token, int playerId)
     {
         if (IsAlive == false)
         {
-            _logger.Error("Failed to perform skill: Player is dead.");
+            _logger.Debug("Failed to perform skill: Player is dead.");
             return;
         }
 
         ISkill? skill = PlayerSkills.Find(skill => skill.Name == skillName);
         if (skill is null)
         {
-            _logger.Error($"Failed to perform skill: Player does not have the skill ({skillName}).");
+            _logger.Debug($"Failed to perform skill: Player does not have the skill ({skillName}).");
             return;
         }
         if (skill.IsAvailable == false)
         {
-            _logger.Error($"Failed to perform skill: Skill ({skillName}) is on cooldown.");
+            _logger.Debug($"Failed to perform skill: Skill ({skillName}) is on cooldown.");
             return;
         }
 
@@ -280,17 +280,17 @@ public partial class Player(string token, int playerId)
     {
         if (IsAlive == false)
         {
-            _logger.Error("Failed to attack: Player is dead.");
+            _logger.Debug("Failed to attack: Player is dead.");
             return;
         }
         if (PlayerWeapon.HasEnoughBullets == false)
         {
-            _logger.Error("Failed to attack: No bullets.");
+            _logger.Debug("Failed to attack: No bullets.");
             return;
         }
         if (PlayerWeapon.CanAttack == false)
         {
-            _logger.Error("Failed to attack: Weapon is on cooldown.");
+            _logger.Debug("Failed to attack: Weapon is on cooldown.");
             return;
         }
 

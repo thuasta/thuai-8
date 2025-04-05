@@ -61,8 +61,8 @@ public partial class AgentServer
         }
         catch (Exception ex)
         {
-            _logger.Error($"Failed to add {GetAddress(socket)}: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"Failed to add {GetAddress(socket)}:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
     }
 
@@ -89,8 +89,8 @@ public partial class AgentServer
         }
         catch (Exception ex)
         {
-            _logger.Error($"Failed to remove {GetAddress(socketId)}: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"Failed to remove {GetAddress(socketId)}:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
     }
 

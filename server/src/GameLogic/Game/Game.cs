@@ -75,8 +75,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     /// </remarks>
     public void Tick()
     {
-        _logger.Debug("Running a new tick.");
-        _logger.Debug($"Current stage: {Stage}");
+        _logger.Debug($"Running tick {CurrentTick}. Current stage: {Stage}.");
         try
         {
             lock (_lock)

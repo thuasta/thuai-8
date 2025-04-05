@@ -57,9 +57,7 @@ public partial class Game
                 AllPlayers.Add(player);
                 Scoreboard.Add(player, 0);
 
-                _logger.Information(
-                    $"Player {player.TruncatedToken} joined with id {player.ID}."
-                );
+                _logger.Information($"Player {player.TruncatedToken} joined with id {player.ID}.");
 
                 ++_playerId;
 

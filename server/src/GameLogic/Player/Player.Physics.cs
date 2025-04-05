@@ -101,9 +101,14 @@ public partial class Player : Physics.IPhysicalObject
 
         // Below handles the case when the fixture is a player
 
+        if (IsAlive == false)
+        {
+            _logger.Debug($"Player {ID} is dead. Collision will be ignored.");
+            return false;
+        }
         if (Kamui == true)
         {
-            // Kamui is active, so the player affected by anything
+            // Kamui is active, so the player won't be affected by anything
             _logger.Debug("Collision will be ignored because Kamui is active.");
             return false;
         }
@@ -148,10 +153,11 @@ public partial class Player : Physics.IPhysicalObject
                         return false;
                     }
 
+                    // Trap is activated even if the player is invulnerable
                     trap.Enabled = false;
                     if (IsInvulnerable == true)
                     {
-                        _logger.Debug($"Player {ID} is invulnerable to trap.");
+                        _logger.Information($"Player {ID} is invulnerable to trap.");
                         return false;
                     }
                     _logger.Information($"Player {ID} is caught by a trap.");

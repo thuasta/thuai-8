@@ -20,7 +20,7 @@ public partial class Battle
         {
             Traps.Add(trap);
 
-            _logger.Debug("A trap has been added.");
+            _logger.Information("A trap has been added.");
 
             return true;
         }
@@ -56,7 +56,7 @@ public partial class Battle
 
             Traps.Remove(trap);
 
-            _logger.Debug("A trap has been removed.");
+            _logger.Information("A trap has been removed.");
         }
         catch (Exception e)
         {
@@ -89,8 +89,8 @@ public partial class Battle
             }
             catch (Exception ex)
             {
-                _logger.Error($"Trap Failed to be updated: {ex.Message}");
-                _logger.Debug($"{ex}");
+                _logger.Error($"Failed to update trap: {ex.Message}");
+                Utility.Tools.LogHandler.LogException(_logger, ex);
             }
         }
 

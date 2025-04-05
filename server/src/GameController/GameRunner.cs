@@ -41,7 +41,7 @@ public partial class GameRunner(Utility.Config.GameSettings gameSettings)
                     lastCheckTime = DateTime.Now;
                     lastCheckedTick = Game.CurrentTick;
 
-                    _logger.Debug($"TPS: {tps:F2} Expected: {GameSettings.TicksPerSecond:F2}");
+                    _logger.Information($"TPS: {tps:F2} Expected: {GameSettings.TicksPerSecond:F2}");
                     if (tps > GameSettings.TicksPerSecond * TpsUpperBoundRatio)
                     {
                         _logger.Warning($"TPS is too high: {tps:F2} > {GameSettings.TicksPerSecond:F2}");

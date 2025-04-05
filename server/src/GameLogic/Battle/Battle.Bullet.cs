@@ -25,10 +25,10 @@ public partial class Battle
         {
             Bullets.Add(bullet);
 
-            _logger.Debug($"Bullet {bullet.Id} has been added.");
-            _logger.Verbose("Speed: " + bullet.BulletSpeed);
-            _logger.Verbose("Damage: " + bullet.BulletDamage);
-            _logger.Verbose("AntiArmor: " + bullet.AntiArmor);
+            _logger.Information($"Bullet {bullet.Id} has been added.");
+            _logger.Debug("Speed: " + bullet.BulletSpeed);
+            _logger.Debug("Damage: " + bullet.BulletDamage);
+            _logger.Debug("AntiArmor: " + bullet.AntiArmor);
 
             return true;
         }
@@ -68,7 +68,7 @@ public partial class Battle
             }
             Bullets.Remove(bullet);
 
-            _logger.Debug($"Bullet {bullet.Id} has been removed.");
+            _logger.Information($"Bullet {bullet.Id} has been removed.");
         }
         catch (Exception e)
         {
@@ -102,7 +102,7 @@ public partial class Battle
             }
             catch (Exception ex)
             {
-                _logger.Error($"Bullet Failed to be updated:");
+                _logger.Error($"Failed to update bullet:");
                 Utility.Tools.LogHandler.LogException(_logger, ex);
             }
         }
@@ -144,8 +144,13 @@ public partial class Battle
         {
             List<Vector2> trace = _env.ActivateLaser(laser);
             laser.Trace = [.. trace];
-            _logger.Information($"A laser has been activated and reflected {trace.Count - 2} times.");
             ActivatedLasers.Add(laser);
+
+            _logger.Information($"A laser has been activated and reflected {trace.Count - 2} times.");
+            _logger.Debug("Length: " + laser.Length);
+            _logger.Debug("Damage: " + laser.BulletDamage);
+            _logger.Debug("AntiArmor: " + laser.AntiArmor);
+            _logger.Debug("Trace: " + string.Join(", ", trace.Select(v => v.ToString())));
         }
         catch (Exception ex)
         {

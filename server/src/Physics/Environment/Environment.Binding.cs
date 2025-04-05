@@ -40,6 +40,7 @@ public partial class Environment
                         fixture.CollisionCategories = Categories.Wall;
                         fixture.CollidesWith = CollisionList.WallCollidesWith;
                         fixture.Friction = 0f;
+                        fixture.Restitution = 0f;
                         return result;
 
                     case Categories.Bullet:
@@ -90,7 +91,6 @@ public partial class Environment
     /// <returns>Vectices of the laser.</returns>
     public List<Vector2> ActivateLaser(GameLogic.LaserBullet laser)
     {
-        // TODO: Optimize memory usage
         Vector2 startPoint = new(laser.BulletPosition.Xpos, laser.BulletPosition.Ypos);
         Vector2 direction = new(
             (float)Math.Cos(laser.BulletPosition.Angle),
@@ -212,7 +212,7 @@ public partial class Environment
 
         if (result is null)
         {
-            _logger.Error("Failed to find the wall in front of the player.");
+            _logger.Error("Failed to find target wall.");
             return null;
         }
         return new(result.X, result.Y, result.Angle);
