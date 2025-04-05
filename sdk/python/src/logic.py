@@ -36,15 +36,13 @@ async def loop(agent: Agent):
     walls = environment_info.walls
     bullets = environment_info.bullets
 
-    await agent.move_forward()
-
     px = self_info.position.x
     py = self_info.position.y
     player_angle = self_info.position.angle
 
-    # avoid walls
-    wall_safe_distance = 1.0
+    is_safe = True
 
+    wall_safe_distance = 1.0
     for wall in walls:
         wall_pos = wall.position
         wx = wall_pos.x
@@ -54,22 +52,20 @@ async def loop(agent: Agent):
         if wall_angle == 0:
             distance = wy - py
             if abs(distance) < wall_safe_distance:
+                is_safe = False
                 if math.tan(player_angle) > 0:
                     await agent.turn_clockwise()
                 else:
                     await agent.turn_counter_clockwise()
-            elif self_info.weapon.current_bullets > 0:
-                await agent.attack()
 
         elif wall_angle == 90:
             distance = wx - px
             if abs(distance) < wall_safe_distance:
+                is_safe = False
                 if math.tan(player_angle) > 0:
                     await agent.turn_counter_clockwise()
                 else:
                     await agent.turn_clockwise()
-            elif self_info.weapon.current_bullets > 0:
-                await agent.attack()
         else:
             continue
 
@@ -79,6 +75,7 @@ async def loop(agent: Agent):
         by = bullet.position.y
         distance = math.hypot(px - bx, py - by)
         if distance < bullet_danger_distance:
+            is_safe = False
             if math.tan(player_angle) > math.tan(bullet.position.angle): 
                 await agent.turn_clockwise()
             else:
@@ -86,7 +83,10 @@ async def loop(agent: Agent):
             await agent.move_forward()
             break
 
-    # for skill in self_info.skills:
-    #     if skill.current_cooldown == 0:
-    #         await agent.use_skill(skill.name)
-    #         break
+    if is_safe and self_info.weapon.current_bullets > 0:
+        await agent.attack()
+
+    for skill in self_info.skills:
+        if skill.current_cooldown == 0:
+            await agent.use_skill(skill.name)
+            break

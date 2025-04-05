@@ -28,7 +28,7 @@ enum class SkillKind : std::uint8_t {
   Destroy,
   Construct,
   Trap,
-  Missile,
+  Recover,
   Kamui
 };
 

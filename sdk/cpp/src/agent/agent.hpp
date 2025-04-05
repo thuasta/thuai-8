@@ -31,7 +31,7 @@ class Agent {
 
   ~Agent();
 
-  void Connect(const std::string& server_address);
+  void Connect(const std::string& server);
 
   [[nodiscard]] auto IsConnected() const -> bool {
     return ws_client_->isConnected();
@@ -44,8 +44,14 @@ class Agent {
 
   [[nodiscard]] auto token() const -> std::string_view { return token_; }
 
-  [[nodiscard]] auto players_info() const -> const Players& {
-    return players_info_.value();
+  [[nodiscard]] auto self_info() const -> const Player& {
+    return players_info_.value().at(0).token == token_ ? players_info_->front()
+                                                       : players_info_->at(1);
+  }
+
+  [[nodiscard]] auto opponent_info() const -> const Player& {
+    return players_info_.value().at(0).token == token_ ? players_info_->at(1)
+                                                       : players_info_->front();
   }
 
   [[nodiscard]] auto game_statistics() const -> const GameStatistics& {
@@ -60,19 +66,22 @@ class Agent {
     return available_buffs_.value();
   }
 
-  void MoveForward() const;
+  void MoveForward(float distance = MAX_MOVE_SPEED) const;
 
-  void MoveBackward() const;
+  void MoveBackward(float distance = MAX_MOVE_SPEED) const;
 
-  void TurnClockwise() const;
+  void TurnClockwise(int angle = MAX_TURN_SPEED) const;
 
-  void TurnCounterClockwise() const;
+  void TurnCounterClockwise(int angle = MAX_TURN_SPEED) const;
 
   void Attack() const;
 
   void UseSkill(SkillKind skill) const;
 
   void SelectBuff(BuffKind buff) const;
+
+  static constexpr float MAX_MOVE_SPEED{1.0F};
+  static constexpr int MAX_TURN_SPEED{45};
 
  private:
   void Loop() const;
@@ -81,7 +90,7 @@ class Agent {
   const std::string token_;
   const hv::EventLoopPtr event_loop_;
   const std::unique_ptr<hv::WebSocketClient> ws_client_;
-  const hv::TimerID timer_id_;
+  const hv::TimerID timer_id_{};
 
   std::optional<Players> players_info_;
   std::optional<GameStatistics> game_statistics_;
