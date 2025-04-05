@@ -41,7 +41,7 @@ public class BuffSelector
         Buff.BULLET_COUNT,
         Buff.BULLET_COUNT,
         Buff.BULLET_SPEED,
-        Buff.ATTACK_SPEED,
+        Buff.BULLET_SPEED,
         Buff.ATTACK_SPEED,
         Buff.DAMAGE,
         Buff.LASER,
