@@ -19,7 +19,7 @@ enum class BuffKind : std::uint8_t {
   Destroy,
   Construct,
   Trap,
-  Missile,
+  Recover,
   Kamui,
   BulletCount,
   BulletSpeed,

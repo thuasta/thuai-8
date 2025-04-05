@@ -30,7 +30,7 @@ struct meta<thuai8_agent::SkillKind> {
   static constexpr auto value =
       enumerate("BLACK_OUT", BlackOut, "SPEED_UP", SpeedUp, "FLASH", Flash,
                 "DESTROY", Destroy, "CONSTRUCT", Construct, "TRAP", Trap,
-                "MISSILE", Missile, "KAMUI", Kamui);
+                "RECOVER", Recover, "KAMUI", Kamui);
 };
 
 template <>
@@ -38,7 +38,7 @@ struct meta<thuai8_agent::BuffKind> {
   using enum thuai8_agent::BuffKind;
   static constexpr auto value = enumerate(
       "BLACK_OUT", BlackOut, "SPEED_UP", SpeedUp, "FLASH", Flash, "DESTROY",
-      Destroy, "CONSTRUCT", Construct, "TRAP", Trap, "MISSILE", Missile,
+      Destroy, "CONSTRUCT", Construct, "TRAP", Trap, "RECOVER", Recover,
       "KAMUI", Kamui, "BULLET_COUNT", BulletCount, "BULLET_SPEED", BulletSpeed,
       "ATTACK_SPEED", AttackSpeed, "LASER", Laser, "DAMAGE", Damage,
       "ANTI_ARMOR", AntiArmor, "ARMOR", Armor, "REFLECT", Reflect, "DODGE",
@@ -94,21 +94,9 @@ class Message {
     return glz::write<writeopts>(std::forward<T>(value)).value();
   }
 
-  // NOLINTBEGIN
-  template <class T, class... Args>
-  [[nodiscard]] static auto Write(Args&&... args) -> std::string {
-    return glz::write<writeopts>(T{std::forward<Args>(args)...}).value();
-  }
-  // NOLINTEND
-
   [[nodiscard]] static auto ReadMessageType(std::string_view message)
       -> std::string_view {
     return Read<MessageType, true>(message).messageType;
-  }
-
-  [[nodiscard]] static auto ReadToken(std::string_view message)
-      -> std::string_view {
-    return Read<std::string_view, true, "token">(message);
   }
 
   [[nodiscard]] static auto ReadError(std::string_view message)
@@ -117,56 +105,62 @@ class Message {
     return {value.errorCode, value.message};
   }
 
-  [[nodiscard]] static auto GetPlayerInfo(std::string_view token,
-                                          std::string_view request)
+  [[nodiscard]] static auto GetPlayerInfo(std::string_view token)
       -> std::string {
-    return Write<addRequest>("GET_PLAYER_INFO", token, request);
+    return Write(basic{.messageType = "GET_PLAYER_INFO", .token = token});
   }
 
   [[nodiscard]] static auto GetEnvironmentInfo(std::string_view token)
       -> std::string {
-    return Write<basic>("GET_ENVIRONMENT_INFO", token);
+    return Write(basic{.messageType = "GET_ENVIRONMENT_INFO", .token = token});
   }
 
   [[nodiscard]] static auto GetGameStatistics(std::string_view token)
       -> std::string {
-    return Write<basic>("GET_GAME_STATISTICS", token);
+    return Write(basic{.messageType = "GET_GAME_STATISTICS", .token = token});
   }
 
   [[nodiscard]] static auto GetAvailableBuffs(std::string_view token)
       -> std::string {
-    return Write<basic>("GET_AVAILABLE_BUFFS", token);
+    return Write(basic{.messageType = "GET_AVAILABLE_BUFFS", .token = token});
   }
 
   [[nodiscard]] static auto PerformMove(std::string_view token,
-                                        std::string_view direction)
-      -> std::string {
-    return Write<addDirection>("PERFORM_MOVE", token, direction);
+                                        std::string_view direction,
+                                        float distance) -> std::string {
+    return Write(addDistance{.messageType = "PERFORM_MOVE",
+                             .token = token,
+                             .direction = direction,
+                             .distance = distance});
   }
 
   [[nodiscard]] static auto PerformTurn(std::string_view token,
-                                        std::string_view direction)
+                                        std::string_view direction, int angle)
       -> std::string {
-    return Write<addDirection>("PERFORM_TURN", token, direction);
+    return Write(addAngle{.messageType = "PERFORM_TURN",
+                          .token = token,
+                          .direction = direction,
+                          .angle = angle});
   }
 
   [[nodiscard]] static auto PerformAttack(std::string_view token)
       -> std::string {
-    return Write<basic>("PERFORM_ATTACK", token);
+    return Write(basic{.messageType = "PERFORM_ATTACK", .token = token});
   }
 
   [[nodiscard]] static auto PerformSkill(std::string_view token,
                                          SkillKind skill) -> std::string {
-    return Write<addSkill>("PERFORM_SKILL", token, skill);
+    return Write(addSkill{
+        .messageType = "PERFORM_SKILL", .token = token, .skillName = skill});
   }
 
   [[nodiscard]] static auto PerformSelect(std::string_view token, BuffKind buff)
       -> std::string {
-    return Write<addBuff>("PERFORM_SELECT", token, buff);
+    return Write(addBuff{
+        .messageType = "PERFORM_SELECT", .token = token, .buffName = buff});
   }
 
  private:
-  // NOLINTBEGIN(readability-implicit-bool-conversion)
   static constexpr glz::opts readopts{
       .error_on_unknown_keys = false, .minified = true, .raw_string = true};
   static constexpr glz::opts partial_readopts{.error_on_unknown_keys = false,
@@ -174,7 +168,6 @@ class Message {
                                               .raw_string = true,
                                               .partial_read = true};
   static constexpr glz::opts writeopts{.raw_string = true};
-  // NOLINTEND(readability-implicit-bool-conversion)
 
   static consteval auto GetOpts(bool is_partial) -> glz::opts {
     return is_partial ? partial_readopts : readopts;
@@ -182,10 +175,6 @@ class Message {
 
   struct MessageType {
     std::string_view messageType;
-  };
-
-  struct Token {
-    std::string_view token;
   };
 
   struct Error {
@@ -198,16 +187,18 @@ class Message {
     std::string_view token;
   };
 
-  struct addRequest {
-    std::string_view messageType;
-    std::string_view token;
-    std::string_view request;
-  };
-
-  struct addDirection {
+  struct addDistance {
     std::string_view messageType;
     std::string_view token;
     std::string_view direction;
+    float distance;
+  };
+
+  struct addAngle {
+    std::string_view messageType;
+    std::string_view token;
+    std::string_view direction;
+    int angle;
   };
 
   struct addSkill {

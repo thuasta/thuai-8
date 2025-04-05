@@ -96,21 +96,31 @@ auto token{agent.token()};
 
 `token` 方法将返回玩家自身的令牌。
 
-#### 获取所有玩家信息
+#### 获取自身玩家信息
 
 ```cpp
-const auto& self_info{agent.players_info()};
+const auto& self_info{agent.self_info()};
 ```
 
-- **返回类型：** `const Players& /*using Players = std::vector<Player>*/`
+- **返回类型：** `const Player&`
 
-`players_info` 方法将返回所有玩家信息。玩家信息包括玩家的 Token、位置、武器、护甲和技能库等。
+`self_info` 方法将返回自身玩家信息。玩家信息包括玩家的 Token、位置、武器、护甲和技能库等。
 
 - Token `token` 是玩家的唯一标识。
 - 位置 `position` 包括坦克的坐标和朝向。
 - 武器 `weapon` 包括武器和武器类技能的基本情况。
 - 护甲 `armor` 包括护甲和护甲类技能的基本情况。
 - 技能库 `skills` 包括所拥有的技能类别、技能的冷却时间、技能的剩余冷却时间等。
+
+#### 获取对方玩家信息
+
+```cpp
+const auto& opponent_info{agent.opponent_info()};
+```
+
+- **返回类型：** `const Player&`
+
+`opponent_info` 方法将返回对方玩家信息。玩家信息同上。
 
 #### 获取环境信息
 
@@ -151,42 +161,50 @@ const auto& available_buffs{agent.available_buffs()};
 #### 向前移动
 
 ```cpp
-agent.MoveForward();
+agent.MoveForward(float distance = 1.0f);
 ```
 
+- **参数：**
+  - `distance`：移动距离，默认为 1.0f。
 - **返回类型：** 无
 
-使用 `MoveForward` 方法使坦克向前移动。
+使用 `MoveForward` 方法使坦克向前移动指定距离。
 
 #### 向后移动
 
 ```cpp
-agent.MoveBackward();
+agent.MoveBackward(float distance = 1.0f);
 ```
 
+- **参数：**
+  - `distance`：移动距离，默认为 1.0f。
 - **返回类型：** 无
 
-使用 `MoveBackward` 方法使坦克向后移动。
+使用 `MoveBackward` 方法使坦克向后移动指定距离。
 
 #### 顺时针旋转
 
 ```cpp
-agent.TurnClockwise();
+agent.TurnClockwise(int angle = 45);
 ```
 
+- **参数：**
+  - `angle`：旋转角度，默认为 45 度。
 - **返回类型：** 无
 
-使用 `TurnClockwise` 方法使坦克顺时针旋转。
+使用 `TurnClockwise` 方法使坦克顺时针旋转指定角度。
 
 #### 逆时针旋转
 
 ```cpp
-agent.TurnCounterClockwise();
+agent.TurnCounterClockwise(int angle = 45);
 ```
 
+- **参数：**
+  - `angle`：旋转角度，默认为 45 度。
 - **返回类型：** 无
 
-使用 `TurnCounterClockwise` 方法使坦克逆时针旋转。
+使用 `TurnCounterClockwise` 方法使坦克逆时针旋转指定角度。
 
 #### 攻击
 

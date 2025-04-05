@@ -19,9 +19,7 @@ namespace {
 void SelectBuff(const thuai8_agent::Agent& agent) {
   // Your code here
   // Here is an example of how to select a buff that is not in your skills
-  const auto& self_info{agent.players_info().at(0).token == agent.token()
-                            ? agent.players_info().at(0)
-                            : agent.players_info().at(1)};
+  const auto& self_info{agent.self_info()};
   const auto& available_buffs{agent.available_buffs()};
 
   spdlog::debug("AvailableBuffs: {}", available_buffs);
@@ -39,12 +37,8 @@ void SelectBuff(const thuai8_agent::Agent& agent) {
 void Loop(const thuai8_agent::Agent& agent) {
   // Your code here
   // Here is an example of how to use the agent's functions
-  const auto& self_info = agent.players_info().at(0).token == agent.token()
-                              ? agent.players_info().at(0)
-                              : agent.players_info().at(1);
-  const auto& opponent_info = agent.players_info().at(0).token == agent.token()
-                                  ? agent.players_info().at(1)
-                                  : agent.players_info().at(0);
+  const auto& self_info{agent.self_info()};
+  const auto& opponent_info{agent.opponent_info()};
 
   spdlog::debug("Self {}, Opponent {}", self_info.position,
                 opponent_info.position);

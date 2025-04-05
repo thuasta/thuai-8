@@ -19,7 +19,7 @@ class BuffName(Enum):
     DESTROY = "DESTROY"
     CONSTRUCT = "CONSTRUCT"
     TRAP = "TRAP"
-    MISSILE = "MISSILE"
+    RECOVER = "RECOVER"
     KAMUI = "KAMUI"
 
     def __str__(self):

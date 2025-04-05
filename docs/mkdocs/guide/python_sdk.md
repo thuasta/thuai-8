@@ -34,8 +34,6 @@ python main.py --server ws://localhost:14514 --token 1919810
 
 ## 接口介绍
 
-
-
 ### 获取游戏状态信息
 
 #### 获取玩家信息
@@ -105,27 +103,49 @@ token = agent.token
 
 ### 操作坦克
 
-#### 移动
+#### 向前移动
 
 ```python
-agent.move(distance: float)
+agent.move_forward(distance: float = 1.0)
 ```
 
-* 参数类型：distance: float - 需要移动的距离
+* 参数类型：distance: float - 需要移动的距离，默认为1.0
 * 返回类型：None
 
-使用`move`方法让坦克前后移动，正数表示前进、负数表示后退。
+使用`move_forward`方法让坦克向前移动指定的距离。
 
-#### 转向
+#### 向后移动
 
 ```python
-agent.turn(angle: float)
+agent.move_backward(distance: float = 1.0)
 ```
 
-* 参数类型：angle: float - 转动的角度
+* 参数类型：distance: float - 需要移动的距离，默认为1.0
 * 返回类型：None
 
-使用`turn`方法让坦克原地转向，正数表示顺时针旋转、负数表示逆时针旋转。
+使用`move_backward`方法让坦克向后移动指定的距离。
+
+#### 顺时针转动
+
+```python
+agent.turn_clockwise(angle: int = 45)
+```
+
+* 参数类型：angle: int - 转动的角度，默认为45度
+* 返回类型：None
+
+使用`turn_clockwise`方法让坦克顺时针转动指定的角度。
+
+#### 逆时针转动
+
+```python
+agent.turn_counterclockwise(angle: int = 45)
+```
+
+* 参数类型：angle: int - 转动的角度，默认为45度
+* 返回类型：None
+
+使用`turn_counterclockwise`方法让坦克逆时针转动指定的角度。
 
 #### 攻击
 
@@ -152,10 +172,10 @@ agent.use_skill(skill: SkillName)
 #### 选择资源
 
 ```python
-agent.select_skill(skill: SkillName)
+agent.select_buff(buff: BuffName)
 ```
 
-* 参数类型：skill: SkillName - 资源的种类
+* 参数类型：buff: BuffName - 资源的种类
 * 返回类型：None
 
-使用 `select_skill`方法为坦克选择某一资源。
+使用 `select_buff`方法为坦克选择某一资源。
