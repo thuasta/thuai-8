@@ -76,7 +76,7 @@ async def loop(agent: Agent):
         distance = math.hypot(px - bx, py - by)
         if distance < bullet_danger_distance:
             is_safe = False
-            if math.tan(player_angle) > math.tan(bullet.position.angle): 
+            if math.tan(player_angle) > math.tan(bullet.position.angle):
                 await agent.turn_clockwise()
             else:
                 await agent.turn_counter_clockwise()
