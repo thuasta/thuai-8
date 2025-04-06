@@ -17,19 +17,21 @@ class Message:
 
 class MoveMessage(Message):
 
-    def __init__(self, token: str, direction: str):
+    def __init__(self, token: str, direction: str, distance: float):
         super().__init__()
         self.msg["messageType"] = "PERFORM_MOVE"
         self.msg["token"] = token
         self.msg["direction"] = direction
+        self.msg["distance"] = distance
 
 
 class TurnMessage(Message):
-    def __init__(self, token: str, direction: str):
+    def __init__(self, token: str, direction: str, angle: int):
         super().__init__()
         self.msg["messageType"] = "PERFORM_TURN"
         self.msg["token"] = token
         self.msg["direction"] = direction
+        self.msg["angle"] = angle
 
 
 class AttackMessage(Message):

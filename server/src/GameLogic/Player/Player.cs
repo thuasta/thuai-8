@@ -13,8 +13,10 @@ public partial class Player(string token, int playerId)
     public string RecordToken => (playerId + 1).ToString(); // Because client actually reads ID and it starts from 1 ...
     public int ID => playerId;
 
-    public float Speed => Constants.MOVE_SPEED;
-    public float TurnSpeed => Constants.TURN_SPEED;
+    public float MaxSpeed => Constants.MAXIMUM_MOVE_SPEED;
+    public float MaxTurnSpeed => Constants.MAXIMUM_TURN_SPEED;
+    public float Speed { get; set; } = Constants.MAXIMUM_MOVE_SPEED;
+    public float TurnSpeed { get; set; } = Constants.MAXIMUM_TURN_SPEED;
 
     public MoveDirection MoveDirection { get; set; } = MoveDirection.NONE;
     public TurnDirection TurnDirection { get; set; } = TurnDirection.NONE;
@@ -66,13 +68,14 @@ public partial class Player(string token, int playerId)
         {
             AppendGravityField();
         }
-        Recover();
+        Reset();
     }
 
     public void Update()
     {
         PlayerArmor.Knife.Update();
         PlayerWeapon.Update();
+        _stunCounter.Decrease();
         foreach (ISkill skill in PlayerSkills)
         {
             skill.Update();
@@ -88,14 +91,14 @@ public partial class Player(string token, int playerId)
         }
 
         Physics.Tag tag = (Physics.Tag)Body.Tag;
-        float linear = MoveDirection switch
+        float linear = IsStunned ? 0f : MoveDirection switch
         {
             MoveDirection.NONE => 0f,
             MoveDirection.BACK => -(float)tag.AttachedData[Physics.Key.SpeedUpFactor] * Speed,
             MoveDirection.FORTH => (float)tag.AttachedData[Physics.Key.SpeedUpFactor] * Speed,
             _ => throw new ArgumentException("Unknown move direction.")
         };
-        float angular = TurnDirection switch
+        float angular = IsStunned ? 0f : TurnDirection switch
         {
             TurnDirection.NONE => 0f,
             TurnDirection.CLOCKWISE => -(float)tag.AttachedData[Physics.Key.SpeedUpFactor] * TurnSpeed,
@@ -103,7 +106,7 @@ public partial class Player(string token, int playerId)
             _ => throw new ArgumentException("Unknown turn direction.")
         };
 
-        if ((int)tag.AttachedData[Physics.Key.CoveredFields] > 0)
+        if (IsInvulnerable == false && (int)tag.AttachedData[Physics.Key.CoveredFields] > 0)
         {
             linear *= Constants.GRAVITY_FIELD_STRENGTH;
             angular *= Constants.GRAVITY_FIELD_STRENGTH;
@@ -113,17 +116,32 @@ public partial class Player(string token, int playerId)
         Body.AngularVelocity = angular;
     }
 
+    /// <summary>
+    /// Kill the player instantly.
+    /// Used when the player is out of the map.
+    /// </summary>
+    public void KillInstantly()
+    {
+        _logger.Warning("KillInstantly is only called when invalid behavior is detected.");
+        PlayerArmor.Health = 0;
+    }
+
     public void Injured(int damage, bool antiArmor, out bool reflected)
     {
         reflected = false;
 
+        if (damage < 0)
+        {
+            _logger.Error("Damage is negative. Please contact the developer.");
+            return;
+        }
         if (IsAlive == false)
         {
             _logger.Error("Cannot take damage: Player is already dead.");
             return;
         }
 
-        if (PlayerArmor.Knife.IsActivated == true || IsInvulnerable == true)
+        if (IsInvulnerable == true)
         {
             // Invulnerability
             _logger.Information("Player is invulnerable.");
@@ -145,42 +163,75 @@ public partial class Player(string token, int playerId)
 
         if (PlayerArmor.ArmorValue > 0)
         {
-            if (PlayerArmor.CanReflect == true && realDamage <= PlayerArmor.ArmorValue)
+            // Damage absorbed by armor
+            realDamage = Math.Min(realDamage, PlayerArmor.ArmorValue);
+            PlayerArmor.ArmorValue -= realDamage;
+            _logger.Information($"Armor absorbed {realDamage} damage.");
+
+            if (PlayerArmor.CanReflect == true)
             {
                 // The bullet will be reflected
                 reflected = true;
                 _logger.Information("Armor reflected the bullet.");
             }
-
-            // Damage absorbed by armor
-            realDamage = Math.Min(realDamage, PlayerArmor.ArmorValue);
-            PlayerArmor.ArmorValue -= realDamage;
-            _logger.Information($"Armor absorbed {realDamage} damage.");
         }
         else
         {
             if (realDamage >= PlayerArmor.Health && PlayerArmor.Knife.IsAvailable == true)
             {
                 PlayerArmor.Knife.Activate();
-                realDamage = PlayerArmor.Health - 1;
-                _logger.Debug("Invulnerability invoked by taking damage.");
+                _stunCounter.Clear();       // Stun effect is removed
+                PlayerArmor.Health = Constants.REMAINING_HEALTH_VALUE;
+                _logger.Information("Invulnerability invoked by taking damage.");
             }
-
-            PlayerArmor.Health -= realDamage;
-            _logger.Information($"Player took {realDamage} damage.");
-            if (PlayerArmor.Health <= 0)
+            else
             {
-                _logger.Information("Player died.");
+                PlayerArmor.Health -= realDamage;
+                _logger.Information($"Player took {realDamage} damage.");
+                if (PlayerArmor.Health <= 0)
+                {
+                    _logger.Information("Player died.");
+                }
             }
         }
     }
 
-    public void Recover()
+    public void Reset()
     {
         PlayerArmor.Recover();
         PlayerWeapon.Recover();
+        _stunCounter.Clear();
         foreach (ISkill skill in PlayerSkills)
         {
+            skill.Reset();
+        }
+        _logger.Information("Reset succeed.");
+    }
+
+    /// <summary>
+    /// Recover the player and all its skills, except the Recover skill itself.
+    /// Only used by Recover skill.
+    /// </summary>
+    private void Recover()
+    {
+        if (IsAlive == false)
+        {
+            _logger.Error("Failed to recover: Player is dead.");
+            return;
+        }
+
+        PlayerArmor.Recover();
+        _stunCounter.Clear();   // Stun effect is removed
+
+        // Weapon does not recover automatically
+
+        foreach (ISkill skill in PlayerSkills)
+        {
+            if (skill.Name == SkillName.RECOVER)
+            {
+                // Do not recover the skill itself
+                continue;
+            }
             skill.Recover();
         }
         _logger.Information("Recovered.");
@@ -189,30 +240,33 @@ public partial class Player(string token, int playerId)
     /// <summary>
     /// Publish a skill event.
     /// </summary>
-    /// <param name="skill_name">The type of the skill.</param>
+    /// <param name="skillName">The type of the skill.</param>
     public void PlayerPerformSkill(SkillName skillName)
     {
         if (IsAlive == false)
         {
-            _logger.Error("Failed to perform skill: Player is dead.");
+            _logger.Debug("Failed to perform skill: Player is dead.");
             return;
         }
 
         ISkill? skill = PlayerSkills.Find(skill => skill.Name == skillName);
         if (skill is null)
         {
-            _logger.Error($"Failed to perform skill: Player does not have the skill ({skillName}).");
+            _logger.Debug($"Failed to perform skill: Player does not have the skill ({skillName}).");
             return;
         }
         if (skill.IsAvailable == false)
         {
-            _logger.Error($"Failed to perform skill: Skill ({skillName}) is on cooldown.");
+            _logger.Debug($"Failed to perform skill: Skill ({skillName}) is on cooldown.");
             return;
         }
 
         try
         {
             _logger.Information($"Performing skill ({skillName})");
+
+            EndKamuiEffect();
+
             skill.Activate();
         }
         catch (Exception ex)
@@ -226,25 +280,48 @@ public partial class Player(string token, int playerId)
     {
         if (IsAlive == false)
         {
-            _logger.Error("Failed to attack: Player is dead.");
+            _logger.Debug("Failed to attack: Player is dead.");
             return;
         }
         if (PlayerWeapon.HasEnoughBullets == false)
         {
-            _logger.Error("Failed to attack: No bullets.");
+            _logger.Debug("Failed to attack: No bullets.");
             return;
         }
         if (PlayerWeapon.CanAttack == false)
         {
-            _logger.Error("Failed to attack: Weapon is on cooldown.");
+            _logger.Debug("Failed to attack: Weapon is on cooldown.");
             return;
         }
 
         _logger.Information($"Attacking.");
 
-        --PlayerWeapon.CurrentBullets;
+        EndKamuiEffect();
+
+        // Laser does not consume bullets because it activates instantly
+        if (PlayerWeapon.IsLaser == false)
+        {
+            --PlayerWeapon.CurrentBullets;
+        }
         PlayerWeapon.Reset();
 
         PlayerAttackEvent?.Invoke(this, new PlayerAttackEventArgs(this));
+    }
+
+    public void EndKamuiEffect()
+    {
+        if (Kamui == false)
+        {
+            return;
+        }
+
+        ISkill? kamui = PlayerSkills.Find(skill => skill.Name == SkillName.KAMUI);
+        if (kamui is null || kamui is not Skills.Kamui || kamui.IsActive == false)
+        {
+            return;
+        }
+
+        kamui.Deactivate();
+        _logger.Information("Kamui effect interrupted by another operation.");
     }
 }

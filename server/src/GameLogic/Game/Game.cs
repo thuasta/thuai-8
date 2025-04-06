@@ -39,7 +39,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     public bool HasAwardBeforeBattle => BattleNumber > 0 && BattleNumber <= AwardCount;
     public bool HasAwardAfterBattle => BattleNumber < AwardCount;
 
-    private Random _random = new();
+    private readonly Random _random = new();
 
     private readonly ILogger _logger =
         Utility.Tools.LogHandler.CreateLogger("Game");
@@ -75,8 +75,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     /// </remarks>
     public void Tick()
     {
-        _logger.Debug("Running a new tick.");
-        _logger.Debug($"Current stage: {Stage}");
+        _logger.Debug($"Running tick {CurrentTick}. Current stage: {Stage}.");
         try
         {
             lock (_lock)
@@ -181,8 +180,12 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
 
     private bool NeedAdditionalBattle()
     {
-        // return GetHighScorePlayer() == null;
-        return false;
+        if (BattleNumber >= GameSettings.BattleCount + GameSettings.MaxExtraBattleCount)
+        {
+            return false;
+        }
+
+        return GetHighScorePlayer() == null;
     }
 
     #endregion

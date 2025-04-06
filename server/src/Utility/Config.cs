@@ -123,6 +123,9 @@ public record Config
 
         [JsonPropertyName("battleCount")]
         public int BattleCount { get; init; } = 9;
+
+        [JsonPropertyName("maxExtraBattleCount")]
+        public int MaxExtraBattleCount { get; init; } = 1;
     }
     public record RecorderSettings()
     {

@@ -372,14 +372,14 @@
                 {
                     "messageType": "STAGE_INFO",
                     "totalTicks": 3,
-                    "currentStage": "END"
+                    "currentStage": "REST"
                 },
                 {
                     "messageType": "BUFF_SELECT",
                     "details": [
                         {
                             "token": 1,
-                            "buff": "DESTROY"
+                            "buff": "CONSTRUCT"
                         },
                         {
                             "token": 2,
@@ -387,6 +387,161 @@
                         }
                     ]
                 }
+            ]
+        },
+
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "REST",
+                "totalTicks": 4
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "MISSILE"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "KAMUI"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "REST",
+                "totalTicks": 5
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "ATTACK_SPEED"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "LASER"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "REST",
+                "totalTicks": 6
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "ANTI_ARMOR"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "ARMOR"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "REST",
+                "totalTicks": 7
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "REFLECT"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "DODGE"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "REST",
+                "totalTicks": 8
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "KNIFE"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "GRAVITY"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "REST",
+                "totalTicks": 9
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "BLACK_OUT"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "SPEED_UP"
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "record": [
+              {
+                "messageType": "STAGE_INFO",
+                "currentStage": "END",
+                "totalTicks": 10
+              },
+              {
+                "messageType": "BUFF_SELECT",
+                "details": [
+                  {
+                    "token": "1",
+                    "buff": "FLASH"
+                  },
+                  {
+                    "token": "2",
+                    "buff": "DESTROY"
+                  }
+                ]
+              }
             ]
         }
     ]

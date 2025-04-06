@@ -99,7 +99,7 @@ public class Program
 
         _logger.Information("--------------------------------");
         _logger.Information($"THUAI8 Server v{version}");
-        _logger.Information("Copyright (c) 2024 THUASTA");
+        _logger.Information("Copyright (c) 2024-2025 THUASTA");
         _logger.Information("--------------------------------");
 
         return config;

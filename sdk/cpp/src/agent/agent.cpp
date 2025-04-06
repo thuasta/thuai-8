@@ -36,28 +36,28 @@ Agent::Agent(std::string_view token, const hv::EventLoopPtr& event_loop,
 
 Agent::~Agent() { event_loop_->killTimer(timer_id_); }
 
-void Agent::Connect(const std::string& server_address) {
-  ws_client_->open(server_address.data());
+void Agent::Connect(const std::string& server) {
+  ws_client_->open(server.data());
 }
 
-void Agent::MoveForward() const {
-  spdlog::info("{}.MoveForward", *this);
-  ws_client_->send(Message::PerformMove(token_, "FORTH"));
+void Agent::MoveForward(float distance) const {
+  spdlog::info("{}.MoveForward({})", *this, distance);
+  ws_client_->send(Message::PerformMove(token_, "FORTH", distance));
 }
 
-void Agent::MoveBackward() const {
-  spdlog::info("{}.MoveBackward", *this);
-  ws_client_->send(Message::PerformMove(token_, "BACK"));
+void Agent::MoveBackward(float distance) const {
+  spdlog::info("{}.MoveBackward({})", *this, distance);
+  ws_client_->send(Message::PerformMove(token_, "BACK", distance));
 }
 
-void Agent::TurnClockwise() const {
-  spdlog::info("{}.TurnClockwise", *this);
-  ws_client_->send(Message::PerformTurn(token_, "CLOCKWISE"));
+void Agent::TurnClockwise(int angle) const {
+  spdlog::info("{}.TurnClockwise({})", *this, angle);
+  ws_client_->send(Message::PerformTurn(token_, "CLOCKWISE", angle));
 }
 
-void Agent::TurnCounterClockwise() const {
-  spdlog::info("{}.TurnCounterClockwise", *this);
-  ws_client_->send(Message::PerformTurn(token_, "COUNTER_CLOCKWISE"));
+void Agent::TurnCounterClockwise(int angle) const {
+  spdlog::info("{}.TurnCounterClockwise({})", *this, angle);
+  ws_client_->send(Message::PerformTurn(token_, "COUNTER_CLOCKWISE", angle));
 }
 
 void Agent::Attack() const {
@@ -79,7 +79,7 @@ void Agent::Loop() const {
   if (!IsConnected()) {
     return;
   }
-  ws_client_->send(Message::GetPlayerInfo(token_, "SELF"));
+  ws_client_->send(Message::GetPlayerInfo(token_));
 }
 
 void Agent::OnMessage(std::string_view message) {

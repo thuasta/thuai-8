@@ -36,13 +36,13 @@ namespace BattleCity
         {
             if (bullet == null || BulletsList.Exists(b => b.Id == bullet.Id))
             {
-                // Èç¹û×Óµ¯Ä£ÐÍÎªnull»òIDÒÑ´æÔÚ£¬Ôò·µ»Øfalse
+                // ï¿½ï¿½ï¿½ï¿½Óµï¿½Ä£ï¿½ï¿½Îªnullï¿½ï¿½IDï¿½Ñ´ï¿½ï¿½Ú£ï¿½ï¿½ò·µ»ï¿½false
                 return false;
             }
 
             BulletsList.Add(bullet);
             BulletsId.Add(bullet.Id);
-            return true; // ³É¹¦Ìí¼Ó
+            return true; // ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½
         }
 
         public bool DelBulletModel(int id)
@@ -54,10 +54,10 @@ namespace BattleCity
                 BulletsList.Remove(bullet);
                 BulletsId.Remove(bullet.Id);
                 bullet.SelfDestruct();
-                return true; // ³É¹¦É¾³ý
+                return true; // ï¿½É¹ï¿½É¾ï¿½ï¿½
             }
 
-            return false; // Ã»ÓÐÕÒµ½¸ÃIDµÄ×Óµ¯Ä£ÐÍ
+            return false; // Ã»ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½Óµï¿½Ä£ï¿½ï¿½
         }
 
         public void DelBulletEffect(GameObject bullet)
@@ -65,20 +65,20 @@ namespace BattleCity
             GameObject wallController = GameObject.Find("WallController");
             GameObject effectPrefab = null;
 
-            // ¼ÓÔØÌØÐ§Ô¤ÖÆ¼þ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§Ô¤ï¿½Æ¼ï¿½
             effectPrefab = Resources.Load<GameObject>($"Effects/HURT");
 
             if (effectPrefab != null)
             {
-                // ÊµÀý»¯ÌØÐ§²¢½«Æä·ÅÖÃÔÚ player's TankObject ÉÏ
+                // Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ player's TankObject ï¿½ï¿½
                 GameObject effectInstance = GameObject.Instantiate(effectPrefab, bullet.transform.position, Quaternion.identity, wallController.transform);
 
-                // ¿ÉÑ¡£ºÉèÖÃÌØÐ§ÊµÀýµÄÉúÃüÖÜÆÚ£¬¼ÙÉèÌØÐ§ÔÚ3ÃëºóÏú»Ù
+                // ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 //GameObject.Destroy(effectInstance, 3f);
             }
             else
             {
-                Debug.LogWarning($"ÌØÐ§ HURT Î´ÕÒµ½!");
+                Debug.LogWarning($"ï¿½ï¿½Ð§ HURT Î´ï¿½Òµï¿½!");
             }
         }
 

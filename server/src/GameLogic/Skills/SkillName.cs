@@ -8,7 +8,6 @@ public enum SkillName
     DESTROY,
     CONSTRUCT,
     TRAP,
-    MISSILE,
+    RECOVER,
     KAMUI
 }
-

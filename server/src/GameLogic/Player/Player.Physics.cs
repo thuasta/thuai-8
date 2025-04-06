@@ -7,6 +7,8 @@ namespace Thuai.Server.GameLogic;
 public partial class Player : Physics.IPhysicalObject
 {
     public Body? Body { get; private set; }
+    public bool Enabled { get; set; } = true;
+
     public Vector2 Orientation => new(
         (float)Math.Cos(Body?.Rotation ?? 0),
         (float)Math.Sin(Body?.Rotation ?? 0)
@@ -97,16 +99,36 @@ public partial class Player : Physics.IPhysicalObject
             return true;
         }
 
+        // Below handles the case when the fixture is a player
+
+        if (IsAlive == false)
+        {
+            _logger.Debug($"Player {ID} is dead. Collision will be ignored.");
+            return false;
+        }
+        if (Kamui == true)
+        {
+            // Kamui is active, so the player won't be affected by anything
+            _logger.Debug("Collision will be ignored because Kamui is active.");
+            return false;
+        }
+
         if (b.Body.Tag is Physics.Tag bodyTag)
         {
             switch (bodyTag.Owner)
             {
                 case Bullet bullet:
+                    if (bullet.IsDestroyed == true)
+                    {
+                        _logger.Debug($"Bullet {bullet.Id} is already destroyed.");
+                        return false;
+                    }
+
                     Injured(bullet.BulletDamage, bullet.AntiArmor, out bool reflected);
                     if (reflected == false)
                     {
                         b.Body.LinearVelocity = Vector2.Zero;
-                        b.Body.Enabled = false;
+                        bullet.Enabled = false;
                     }
                     else
                     {
@@ -115,9 +137,37 @@ public partial class Player : Physics.IPhysicalObject
                     }
                     return false;
 
-                case LaserBullet laserBullet:
-                    Injured(laserBullet.BulletDamage, laserBullet.AntiArmor, out bool _);
+                case LaserBullet:
+                    _logger.Error("Unexpected collision with laser bullet. Please contact the developer.");
                     return false;
+
+                case Trap trap:
+                    if (trap.Owner.ID == ID)
+                    {
+                        _logger.Debug($"Player won't be affected by its own trap.");
+                        return false;
+                    }
+                    if (trap.IsDestroyed == true)
+                    {
+                        _logger.Debug($"Trap is already destroyed.");
+                        return false;
+                    }
+
+                    // Trap is activated even if the player is invulnerable
+                    trap.Enabled = false;
+                    if (IsInvulnerable == true)
+                    {
+                        _logger.Information($"Player {ID} is invulnerable to trap.");
+                        return false;
+                    }
+                    _logger.Information($"Player {ID} is caught by a trap.");
+                    _stunCounter.Reset();
+
+                    // Set player's speed to zero
+                    a.Body.LinearVelocity = Vector2.Zero;
+                    a.Body.AngularVelocity = 0f;
+
+                    return true;
 
                 default:
                     return true;
@@ -158,11 +208,13 @@ public partial class Player : Physics.IPhysicalObject
 
             if (tag.Owner is Player player && player.IsInvulnerable == true)
             {
+                // Object was not affected by the gravity field before separation
                 _logger.Debug($"Target player {player.ID} is invulnerable to gravity field.");
                 return;
             }
             if ((int)tag.AttachedData[Physics.Key.CoveredFields] == 0)
             {
+                // Object has been affected by the gravity field before separation
                 b.Body.LinearVelocity /= Constants.GRAVITY_FIELD_STRENGTH;
                 b.Body.AngularVelocity /= Constants.GRAVITY_FIELD_STRENGTH;
             }

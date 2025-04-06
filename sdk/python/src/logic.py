@@ -1,4 +1,5 @@
 import logging
+import math
 
 from agent.agent import Agent
 
@@ -30,15 +31,62 @@ async def loop(agent: Agent):
 
     logging.debug(f"Self: {self_info.position}, Opponent: {opponent_info.position}")
 
-    await agent.move_forward()
-    await agent.move_backward()
-    await agent.turn_clockwise()
-    await agent.turn_counter_clockwise()
+    environment_info = agent.environment_info
+    assert environment_info is not None
+    walls = environment_info.walls
+    bullets = environment_info.bullets
 
-    if self_info.weapon.current_bullets > 0:
+    px = self_info.position.x
+    py = self_info.position.y
+    player_angle = self_info.position.angle
+
+    is_safe = True
+
+    wall_safe_distance = 1.0
+    for wall in walls:
+        wall_pos = wall.position
+        wx = wall_pos.x
+        wy = wall_pos.y
+        wall_angle = wall_pos.angle
+
+        if wall_angle == 0:
+            distance = wy - py
+            if abs(distance) < wall_safe_distance:
+                is_safe = False
+                if math.tan(player_angle) > 0:
+                    await agent.turn_clockwise()
+                else:
+                    await agent.turn_counter_clockwise()
+
+        elif wall_angle == 90:
+            distance = wx - px
+            if abs(distance) < wall_safe_distance:
+                is_safe = False
+                if math.tan(player_angle) > 0:
+                    await agent.turn_counter_clockwise()
+                else:
+                    await agent.turn_clockwise()
+        else:
+            continue
+
+    bullet_danger_distance = 3.0
+    for bullet in bullets:
+        bx = bullet.position.x
+        by = bullet.position.y
+        distance = math.hypot(px - bx, py - by)
+        if distance < bullet_danger_distance:
+            is_safe = False
+            if math.tan(player_angle) > math.tan(bullet.position.angle):
+                await agent.turn_clockwise()
+            else:
+                await agent.turn_counter_clockwise()
+            await agent.move_forward()
+            break
+
+    if is_safe and self_info.weapon.current_bullets > 0:
         await agent.attack()
 
     for skill in self_info.skills:
         if skill.current_cooldown == 0:
-            await agent.use_skill(skill)
+            await agent.use_skill(skill.name)
             break

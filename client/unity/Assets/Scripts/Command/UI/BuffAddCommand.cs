@@ -9,19 +9,20 @@ namespace BattleCity
     {
         private readonly int _tankId;
         private readonly string _buff;
+        private readonly int _episodes;
 
-        public BuffAddCommand(int tankId, string buff)
+        public BuffAddCommand(int tankId, int episodes, string buff)
         {
-            _tankId = tankId;
+            Debug.Log($"Current episode: {episodes}");
+            _tankId = tankId - 1;
             _buff = buff;
+            _episodes = episodes;
         }
 
         protected override void OnExecute()
         {
-            var buff_image = this.GetModel<BuffShow>().buffImage[_tankId];
             var buff_list = this.GetModel<BuffShow>().buffList[_tankId];
-            buff_list.Add(_buff);
-            buff_image[buff_list.Count - 1].sprite = Resources.Load<Sprite>(_buff); 
+            buff_list[_episodes] = _buff;
         }
         
     }

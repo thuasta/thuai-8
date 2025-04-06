@@ -74,39 +74,43 @@ class Agent:
             and self._game_statistics is not None
         )
 
-    async def move_forward(self):
-        logging.info(f"{self}.move_forward")
+    async def move_forward(self, distance: float = 1.0):
+        logging.info(f"{self}.move_forward({distance})")
         await self._ws_client.send(
             messages.MoveMessage(
                 token=self._token,
                 direction="FORTH",
+                distance=distance,
             )
         )
 
-    async def move_backward(self):
-        logging.info(f"{self}.move_backward")
+    async def move_backward(self, distance: float = 1.0):
+        logging.info(f"{self}.move_backward({distance})")
         await self._ws_client.send(
             messages.MoveMessage(
                 token=self._token,
                 direction="BACK",
+                distance=distance,
             )
         )
 
-    async def turn_clockwise(self):
-        logging.info(f"{self}.turn_clockwise")
+    async def turn_clockwise(self, angle: int = 45):
+        logging.info(f"{self}.turn_clockwise({angle})")
         await self._ws_client.send(
             messages.TurnMessage(
                 token=self._token,
                 direction="CLOCKWISE",
+                angle=angle,
             )
         )
 
-    async def turn_counter_clockwise(self):
-        logging.info(f"{self}.turn_counter_clockwise")
+    async def turn_counter_clockwise(self, angle: int = 45):
+        logging.info(f"{self}.turn_counter_clockwise({angle})")
         await self._ws_client.send(
             messages.TurnMessage(
                 token=self._token,
                 direction="COUNTER_CLOCKWISE",
+                angle=angle,
             )
         )
 

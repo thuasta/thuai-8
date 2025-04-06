@@ -22,7 +22,7 @@ public enum Buff
     DESTROY, // 破坏墙体
     CONSTRUCT, // 建造墙体
     TRAP, // 陷阱
-    MISSILE, // 导弹
+    RECOVER,
     KAMUI, // 虚化
 }
 
@@ -41,7 +41,7 @@ public class BuffSelector
         Buff.BULLET_COUNT,
         Buff.BULLET_COUNT,
         Buff.BULLET_SPEED,
-        Buff.ATTACK_SPEED,
+        Buff.BULLET_SPEED,
         Buff.ATTACK_SPEED,
         Buff.DAMAGE,
         Buff.LASER,
@@ -66,7 +66,7 @@ public class BuffSelector
         Buff.DESTROY,
         Buff.CONSTRUCT,
         Buff.KAMUI,
-        Buff.MISSILE,
+        Buff.RECOVER,
         Buff.TRAP
     ];
 
@@ -219,8 +219,8 @@ public class BuffSelector
             case Buff.TRAP:
                 U_Buff.TRAP(player);
                 break;
-            case Buff.MISSILE:
-                U_Buff.MISSILE(player);
+            case Buff.RECOVER:
+                U_Buff.RECOVER(player);
                 break;
             case Buff.KAMUI:
                 U_Buff.KAMUI(player);

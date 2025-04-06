@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class GameUIController : MonoBehaviour, IController
 {
-    public GameObject uiElement; // ÍÏ×§ÄãµÄ UI ¶ÔÏóµ½ÕâÀï
+    public GameObject uiElement; // ï¿½ï¿½×§ï¿½ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public RecordInfo _recordInfo;
     public Button Episode;
     public GameObject Episodes;
@@ -46,12 +46,12 @@ public class GameUIController : MonoBehaviour, IController
         _recordInfo = this.GetModel<RecordInfo>();
         Episodes.SetActive(!Episodes.activeSelf);
         int gameRounds = _recordInfo.GameRounds;
-        // ½«ËùÓÐ°´Å¥´æÈëÊý×é£¬·½±ãÅúÁ¿²Ù×÷
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ð°ï¿½Å¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-        // ±éÀú°´Å¥Êý×é£¬¸ù¾ÝË÷ÒýÉèÖÃ¼¤»î×´Ì¬
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½ï¿½é£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½×´Ì¬
         for (int i = 0; i < episodes.Length; i++)
         {
-            // ÅÐ¶ÏÌõ¼þ£º°´Å¥±àºÅ£¨i+1£©ÊÇ·ñÐ¡ÓÚµÈÓÚ gameRounds
+            // ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½Å£ï¿½i+1ï¿½ï¿½ï¿½Ç·ï¿½Ð¡ï¿½Úµï¿½ï¿½ï¿½ gameRounds
             bool isActive = (i + 1) <= gameRounds;
             episodes[i].gameObject.SetActive(isActive);
         }
@@ -63,11 +63,11 @@ public class GameUIController : MonoBehaviour, IController
         {
             if (SceneData.GameStage == "Battle")
             {
-                // ÇÐ»» UI µÄ¼¤»î×´Ì¬
+                // ï¿½Ð»ï¿½ UI ï¿½Ä¼ï¿½ï¿½ï¿½×´Ì¬
                 if (uiElement != null)
                 {
                     uiElement.SetActive(!uiElement.activeSelf);
-                    Debug.Log("µ±Ç° UI ×´Ì¬: " + uiElement.activeSelf);
+                    Debug.Log("ï¿½ï¿½Ç° UI ×´Ì¬: " + uiElement.activeSelf);
                 }
             }
         }

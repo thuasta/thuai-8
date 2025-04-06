@@ -1,3 +1,4 @@
+using nkast.Aether.Physics2D.Common;
 using nkast.Aether.Physics2D.Dynamics;
 
 namespace Thuai.Server.GameLogic;
@@ -55,10 +56,11 @@ public class Bullet : IBullet, Physics.IPhysicalObject
     public int BulletDamage { get; }
     public bool IsMissile => false;     // TODO: Implement missile
     public bool AntiArmor { get; }
-    public bool IsDestroyed => _remainingTicks.IsZero == true || Body?.Enabled == false;
+    public bool IsDestroyed => _remainingTicks.IsZero == true || Enabled == false;
     public required Weapon Owner { get; init; }
 
     public Body? Body { get; private set; }
+    public bool Enabled { get; set; } = true;
 
     private readonly Counter _remainingTicks;
 
@@ -100,11 +102,18 @@ public class Bullet : IBullet, Physics.IPhysicalObject
     }
 }
 
-public class LaserBullet(Position position, float speed, int damage, bool antiArmor = false) : IBullet
+public class LaserBullet(Position position, float speed, int damage, float length, bool antiArmor = false) : IBullet
 {
+    public static int CauculateDamage(int initialDamage, float remainingLength, float maximumLength)
+    {
+        return (int)Math.Ceiling(initialDamage * remainingLength / maximumLength);
+    }
+
     public IBullet.BulletType Type => IBullet.BulletType.LaserBullet;
 
     public Position BulletPosition { get; } = position;
+    public float Length { get; } = length;
+    public List<Vector2> Trace { get; set; } = [];
 
     public int Id => -1;    // TODO: Implement laser bullet ID
     public float BulletSpeed { get; } = speed;

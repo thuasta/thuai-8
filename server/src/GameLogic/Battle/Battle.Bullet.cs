@@ -1,16 +1,20 @@
+using nkast.Aether.Physics2D.Common;
+
 namespace Thuai.Server.GameLogic;
 
 public partial class Battle
 {
 
     #region Fields and properties
-    public List<IBullet> Bullets { get; } = [];
+    public List<Bullet> Bullets { get; } = [];
+    public List<LaserBullet> ActivatedLasers { get; } = [];
+    private readonly List<LaserBullet> _lasersToActivate = [];
 
     #endregion
 
     #region Methods
 
-    private bool AddBullet(IBullet bullet)
+    private bool AddBullet(Bullet bullet)
     {
         if (Stage != BattleStage.InBattle)
         {
@@ -21,34 +25,30 @@ public partial class Battle
         {
             Bullets.Add(bullet);
 
-            _logger.Debug(
-                $"A bullet has been added at ({bullet.BulletPosition.Xpos:F2}, {bullet.BulletPosition.Ypos:F2})"
-                + $" with angle {bullet.BulletPosition.Angle:F2}"
-            );
-            _logger.Verbose("Type: " + bullet.Type.ToString());
-            _logger.Verbose("Speed: " + bullet.BulletSpeed);
-            _logger.Verbose("Damage: " + bullet.BulletDamage);
-            _logger.Verbose("AntiArmor: " + bullet.AntiArmor);
+            _logger.Information($"Bullet {bullet.Id} has been added.");
+            _logger.Debug("Speed: " + bullet.BulletSpeed);
+            _logger.Debug("Damage: " + bullet.BulletDamage);
+            _logger.Debug("AntiArmor: " + bullet.AntiArmor);
 
             return true;
         }
         catch (Exception e)
         {
-            _logger.Error($"Cannot add bullet: {e.Message}");
-            _logger.Debug($"{e}");
+            _logger.Error($"Cannot add bullet:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
             return false;
         }
     }
 
-    private void RemoveBullet(List<IBullet> bullets)
+    private void RemoveBullet(List<Bullet> bullets)
     {
-        foreach (IBullet bullet in bullets)
+        foreach (Bullet bullet in bullets)
         {
             RemoveBullet(bullet);
         }
     }
 
-    private void RemoveBullet(IBullet bullet)
+    private void RemoveBullet(Bullet bullet)
     {
         try
         {
@@ -61,14 +61,19 @@ public partial class Battle
                 ++bullet.Owner.CurrentBullets;
             }
 
+            if (bullet.Body is not null)
+            {
+                _env.RemoveBody(bullet.Body);
+                bullet.Unbind();
+            }
             Bullets.Remove(bullet);
 
-            _logger.Debug($"A bullet at ({bullet.BulletPosition.Xpos:F2}, {bullet.BulletPosition.Ypos:F2}) has been removed.");
+            _logger.Information($"Bullet {bullet.Id} has been removed.");
         }
         catch (Exception e)
         {
-            _logger.Error($"Cannot remove bullet: {e.Message}");
-            _logger.Debug($"{e}");
+            _logger.Error($"Cannot remove bullet:");
+            Utility.Tools.LogHandler.LogException(_logger, e);
         }
     }
 
@@ -82,25 +87,23 @@ public partial class Battle
             return;
         }
 
-        List<IBullet> toDelete = [];
+        List<Bullet> toDelete = [];
 
-        foreach (IBullet bullet in Bullets)
+        foreach (Bullet bullet in Bullets)
         {
             try
             {
-                if (bullet is Bullet b)
+                bullet.Update();
+                if (bullet.IsDestroyed == true)
                 {
-                    b.Update();
-                    if (b.IsDestroyed == true)
-                    {
-                        toDelete.Add(b);
-                    }
+                    toDelete.Add(bullet);
                 }
+
             }
             catch (Exception ex)
             {
-                _logger.Error($"Bullet Failed to be updated: {ex.Message}");
-                _logger.Debug($"{ex}");
+                _logger.Error($"Failed to update bullet:");
+                Utility.Tools.LogHandler.LogException(_logger, ex);
             }
         }
 
@@ -113,17 +116,47 @@ public partial class Battle
     {
         try
         {
-            lock (_lock)
-            {
-                // TODO: Implement
-            }
+            _lasersToActivate.Add(laserBullet);
         }
         catch (Exception ex)
         {
-            _logger.Error($"Laser failed to take damage: {ex.Message}");
-            _logger.Debug($"{ex}");
+            _logger.Error($"Failed to apply laser:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
         }
+    }
 
+    private void ActivateLasers(List<LaserBullet> lasers)
+    {
+        foreach (LaserBullet laser in lasers)
+        {
+            ActivateLaser(laser);
+        }
+    }
+
+    private void ActivateLaser(LaserBullet laser)
+    {
+        if (Stage != BattleStage.InBattle)
+        {
+            _logger.Error("Cannot activate laser: The battle hasn't started or has ended.");
+            return;
+        }
+        try
+        {
+            List<Vector2> trace = _env.ActivateLaser(laser);
+            laser.Trace = [.. trace];
+            ActivatedLasers.Add(laser);
+
+            _logger.Information($"A laser has been activated and reflected {trace.Count - 2} times.");
+            _logger.Debug("Length: " + laser.Length);
+            _logger.Debug("Damage: " + laser.BulletDamage);
+            _logger.Debug("AntiArmor: " + laser.AntiArmor);
+            _logger.Debug("Trace: " + string.Join(", ", trace.Select(v => v.ToString())));
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Failed to activate laser:");
+            Utility.Tools.LogHandler.LogException(_logger, ex);
+        }
     }
 
     #endregion

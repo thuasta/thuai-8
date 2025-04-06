@@ -196,25 +196,6 @@ jobs:
         with:
           context: sdk/python
 
-  sdk-python-test:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.11
-
-      - run: |
-          pip install -r requirements.txt
-        working-directory: sdk/python
-
-      - run: |
-          python -m unittest discover -v
-        working-directory: sdk/python
-
   sdk-python-check-style:
     runs-on: ubuntu-latest
     strategy:

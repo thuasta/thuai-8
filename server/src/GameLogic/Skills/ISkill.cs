@@ -14,6 +14,7 @@ public partial interface ISkill
     }
 
     public void Update();
+    public void Reset();
     public void Recover();
     public void Activate();
     public void Deactivate();
