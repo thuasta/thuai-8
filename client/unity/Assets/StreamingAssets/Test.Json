@@ -361,7 +361,32 @@
                                     "isActive": true
                                 }
                             ],
-                            "laser": []
+                            "laser": [
+                                {
+                                    "start": {
+                                        "x": 2,
+                                        "y": 3,
+                                        "angle": 0
+                                    },
+                                    "end": {
+                                        "x": 4,
+                                        "y": 5,
+                                        "angle": 90
+                                    }
+                                },
+                                {
+                                    "start": {
+                                        "x": 4,
+                                        "y": 5,
+                                        "angle": 90
+                                    },
+                                    "end": {
+                                        "x": 7,
+                                        "y": 8,
+                                        "angle": 0
+                                    }
+                                }
+                            ]
                         }
                     ]
                 }
@@ -389,159 +414,158 @@
                 }
             ]
         },
-
         {
             "record": [
-              {
-                "messageType": "STAGE_INFO",
-                "currentStage": "REST",
-                "totalTicks": 4
-              },
-              {
-                "messageType": "BUFF_SELECT",
-                "details": [
-                  {
-                    "token": "1",
-                    "buff": "MISSILE"
-                  },
-                  {
-                    "token": "2",
-                    "buff": "KAMUI"
-                  }
-                ]
-              }
+                {
+                    "messageType": "STAGE_INFO",
+                    "currentStage": "REST",
+                    "totalTicks": 4
+                },
+                {
+                    "messageType": "BUFF_SELECT",
+                    "details": [
+                        {
+                            "token": "1",
+                            "buff": "MISSILE"
+                        },
+                        {
+                            "token": "2",
+                            "buff": "KAMUI"
+                        }
+                    ]
+                }
             ]
         },
         {
             "record": [
-              {
-                "messageType": "STAGE_INFO",
-                "currentStage": "REST",
-                "totalTicks": 5
-              },
-              {
-                "messageType": "BUFF_SELECT",
-                "details": [
-                  {
-                    "token": "1",
-                    "buff": "ATTACK_SPEED"
-                  },
-                  {
-                    "token": "2",
-                    "buff": "LASER"
-                  }
-                ]
-              }
+                {
+                    "messageType": "STAGE_INFO",
+                    "currentStage": "REST",
+                    "totalTicks": 5
+                },
+                {
+                    "messageType": "BUFF_SELECT",
+                    "details": [
+                        {
+                            "token": "1",
+                            "buff": "ATTACK_SPEED"
+                        },
+                        {
+                            "token": "2",
+                            "buff": "LASER"
+                        }
+                    ]
+                }
             ]
         },
         {
             "record": [
-              {
-                "messageType": "STAGE_INFO",
-                "currentStage": "REST",
-                "totalTicks": 6
-              },
-              {
-                "messageType": "BUFF_SELECT",
-                "details": [
-                  {
-                    "token": "1",
-                    "buff": "ANTI_ARMOR"
-                  },
-                  {
-                    "token": "2",
-                    "buff": "ARMOR"
-                  }
-                ]
-              }
+                {
+                    "messageType": "STAGE_INFO",
+                    "currentStage": "REST",
+                    "totalTicks": 6
+                },
+                {
+                    "messageType": "BUFF_SELECT",
+                    "details": [
+                        {
+                            "token": "1",
+                            "buff": "ANTI_ARMOR"
+                        },
+                        {
+                            "token": "2",
+                            "buff": "ARMOR"
+                        }
+                    ]
+                }
             ]
         },
         {
             "record": [
-              {
-                "messageType": "STAGE_INFO",
-                "currentStage": "REST",
-                "totalTicks": 7
-              },
-              {
-                "messageType": "BUFF_SELECT",
-                "details": [
-                  {
-                    "token": "1",
-                    "buff": "REFLECT"
-                  },
-                  {
-                    "token": "2",
-                    "buff": "DODGE"
-                  }
-                ]
-              }
+                {
+                    "messageType": "STAGE_INFO",
+                    "currentStage": "REST",
+                    "totalTicks": 7
+                },
+                {
+                    "messageType": "BUFF_SELECT",
+                    "details": [
+                        {
+                            "token": "1",
+                            "buff": "REFLECT"
+                        },
+                        {
+                            "token": "2",
+                            "buff": "DODGE"
+                        }
+                    ]
+                }
             ]
         },
         {
             "record": [
-              {
-                "messageType": "STAGE_INFO",
-                "currentStage": "REST",
-                "totalTicks": 8
-              },
-              {
-                "messageType": "BUFF_SELECT",
-                "details": [
-                  {
-                    "token": "1",
-                    "buff": "KNIFE"
-                  },
-                  {
-                    "token": "2",
-                    "buff": "GRAVITY"
-                  }
-                ]
-              }
+                {
+                    "messageType": "STAGE_INFO",
+                    "currentStage": "REST",
+                    "totalTicks": 8
+                },
+                {
+                    "messageType": "BUFF_SELECT",
+                    "details": [
+                        {
+                            "token": "1",
+                            "buff": "KNIFE"
+                        },
+                        {
+                            "token": "2",
+                            "buff": "GRAVITY"
+                        }
+                    ]
+                }
             ]
         },
         {
             "record": [
-              {
-                "messageType": "STAGE_INFO",
-                "currentStage": "REST",
-                "totalTicks": 9
-              },
-              {
-                "messageType": "BUFF_SELECT",
-                "details": [
-                  {
-                    "token": "1",
-                    "buff": "BLACK_OUT"
-                  },
-                  {
-                    "token": "2",
-                    "buff": "SPEED_UP"
-                  }
-                ]
-              }
+                {
+                    "messageType": "STAGE_INFO",
+                    "currentStage": "REST",
+                    "totalTicks": 9
+                },
+                {
+                    "messageType": "BUFF_SELECT",
+                    "details": [
+                        {
+                            "token": "1",
+                            "buff": "BLACK_OUT"
+                        },
+                        {
+                            "token": "2",
+                            "buff": "SPEED_UP"
+                        }
+                    ]
+                }
             ]
         },
         {
             "record": [
-              {
-                "messageType": "STAGE_INFO",
-                "currentStage": "END",
-                "totalTicks": 10
-              },
-              {
-                "messageType": "BUFF_SELECT",
-                "details": [
-                  {
-                    "token": "1",
-                    "buff": "FLASH"
-                  },
-                  {
-                    "token": "2",
-                    "buff": "DESTROY"
-                  }
-                ]
-              }
+                {
+                    "messageType": "STAGE_INFO",
+                    "currentStage": "END",
+                    "totalTicks": 10
+                },
+                {
+                    "messageType": "BUFF_SELECT",
+                    "details": [
+                        {
+                            "token": "1",
+                            "buff": "FLASH"
+                        },
+                        {
+                            "token": "2",
+                            "buff": "DESTROY"
+                        }
+                    ]
+                }
             ]
         }
     ]
