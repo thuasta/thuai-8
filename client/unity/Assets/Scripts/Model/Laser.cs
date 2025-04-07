@@ -23,14 +23,14 @@ namespace BattleCity
             // 加载并实例化激光预制体
             GameObject LaserPrefab = Resources.Load<GameObject>("Effects/Laser");
             startPos = new Vector3(
-                (float)(start.X + Constants.WALL_XBIAS),
+                (float)(start.X + Constants.GENERAL_XBIAS),
                 (float)(start.Y + Constants.Y_BIAS + 0.05f),
-                (float)(start.Z + Constants.WALL_ZFIX)
+                (float)(start.Z + Constants.GENERAL_ZBIAS)
             );
             endPos = new Vector3(
-                (float)(end.X + Constants.WALL_XBIAS),
+                (float)(end.X + Constants.GENERAL_XBIAS),
                 (float)(end.Y + Constants.Y_BIAS + 0.05f),
-                (float)(end.Z + Constants.WALL_ZFIX)
+                (float)(end.Z + Constants.GENERAL_ZBIAS)
             );
 
             LaserObject = Object.Instantiate(LaserPrefab, wallController.transform);

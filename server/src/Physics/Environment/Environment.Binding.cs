@@ -45,6 +45,7 @@ public partial class Environment
 
                     case Categories.Bullet:
                         result = _world.CreateBody(position, rotation, BodyType.Dynamic);
+                        result.IsBullet = true;
                         fixture = result.CreateCircle(GameLogic.Constants.BULLET_RADIUS, DEFAULT_DENSITY);
                         fixture.CollisionCategories = Categories.Bullet;
                         fixture.CollidesWith = CollisionList.BulletCollidesWith;
@@ -145,7 +146,7 @@ public partial class Environment
                 }
 
                 hitPoint = point;
-                hitNormal = normal;
+                hitNormal = fixture.Body.GetWorldVector(normal);
                 return fraction;
             }, currentStart, currentStart + currentDirection * remainingLength);
 
