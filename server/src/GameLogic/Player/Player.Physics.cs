@@ -132,8 +132,12 @@ public partial class Player : Physics.IPhysicalObject
                     }
                     else
                     {
-                        Vector2 normal = contact.Manifold.LocalNormal;
-                        b.Body.LinearVelocity = Physics.Environment.Reflect(b.Body.LinearVelocity, normal);
+                        Vector2 relativeVelocity = b.Body.LinearVelocity - a.Body.LinearVelocity;
+                        contact.GetWorldManifold(out Vector2 normal, out _);
+                        relativeVelocity = Physics.Environment.Reflect(relativeVelocity, normal);
+                        b.Body.LinearVelocity = relativeVelocity + a.Body.LinearVelocity;
+                        // TODO: There exists a method to speed up a bullet to a extremely high speed.
+                        // This should be fixed (or just make it an easter egg?).
                     }
                     return false;
 
