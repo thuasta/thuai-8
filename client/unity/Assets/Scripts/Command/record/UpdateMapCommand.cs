@@ -40,7 +40,6 @@ public class UpdateMapCommand : AbstractCommand
         UpdateFences();
         UpdateTraps();
         ShowLaser();
-
     }
 
     private void UpdateWalls()
@@ -162,7 +161,7 @@ public class UpdateMapCommand : AbstractCommand
 
     private void ShowLaser()
     {
-        foreach(JToken laserData in laser)
+        foreach (JToken laserData in laser)
         {
             JToken startData = laserData["start"];
             JToken endData = laserData["end"];
