@@ -13,7 +13,7 @@ namespace BattleCity
 
         public BuffAddCommand(int tankId, int episodes, string buff)
         {
-            Debug.Log($"Current episode: {episodes}");
+            // Debug.Log($"Current episode: {episodes}");
             _tankId = tankId - 1;
             _buff = buff;
             _episodes = episodes;

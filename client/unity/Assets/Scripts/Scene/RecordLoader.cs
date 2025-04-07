@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Pool;
 
 namespace BattleCity
 {
@@ -83,7 +84,6 @@ namespace BattleCity
             }
             else
             {
-                _recordFile = Path.Combine("Assets/Scripts/", "BattleInfo.json");
                 Debug.LogError("文件路径未提供！");
             }
             if (_recordFile == null)
@@ -91,8 +91,8 @@ namespace BattleCity
                 Debug.Log("Loading file error!");
                 return;
             }
+            Debug.Log("Stsrt Load Record!");
             _recordArray = LoadRecordData();
-            PreprocessGameRounds();
             Fast.onClick.AddListener(() =>
             {
                 _recordInfo.FastSpeed();
@@ -112,7 +112,8 @@ namespace BattleCity
                     TypeEventSystem.Global.Send(new ResumeEvent());
 
             });
-            updateTickCoroutine = StartCoroutine(UpdateTick());
+            Debug.Log("start preprocess");
+            StartCoroutine(PreprocessGameRounds());
         }
 
         public void PlaySpecificRound(int roundIndex)
@@ -136,21 +137,21 @@ namespace BattleCity
             // 启动新协程
             updateTickCoroutine = StartCoroutine(UpdateTick(roundIndex));
         }
-
-        private void PreprocessGameRounds()
+        private IEnumerator PreprocessGameRounds()
         {
             _gameRounds.Clear();
             List<JObject> currentRound = new List<JObject>();
-            bool isFirstRound = true;
             int currentEpisode = 0;
+            bool updateTickStarted = false;
 
-            foreach (JObject recordObj in _recordArray)
+            int totalCount = _recordArray.Count;
+
+            for (int i = 0; i < totalCount; i++)
             {
-                // 将当前recordObj加入当前局
+                JObject recordObj = (JObject)_recordArray[i];
                 currentRound.Add(recordObj);
-
-                // 检查是否包含BUFF_SELECT消息
                 bool hasBuffSelect = false;
+
                 JArray record = (JArray)recordObj["record"];
                 foreach (JObject message in record)
                 {
@@ -169,30 +170,29 @@ namespace BattleCity
                     }
                 }
 
-                // 遇到BUFF_SELECT时分割（前8局）
                 if (hasBuffSelect)
                 {
-                    // 第一局需要包含初始数据
-                    if (isFirstRound)
+                    _gameRounds.Add(new List<JObject>(currentRound));
+                    currentRound.Clear();
+
+                    if (!updateTickStarted)
                     {
-                        _gameRounds.Add(new List<JObject>(currentRound));
-                        currentRound.Clear();
-                        isFirstRound = false;
+                        Debug.Log("start update ticks");
+                        updateTickCoroutine = StartCoroutine(UpdateTick(0));
+                        updateTickStarted = true;
                     }
-                    else
-                    {
-                        _gameRounds.Add(new List<JObject>(currentRound));
-                        currentRound.Clear();
-                    }
+                    _recordInfo.GameRounds = _gameRounds.Count;
+                    Debug.Log("Current Counts" + _recordInfo.GameRounds);
+                    yield return null;
                 }
             }
 
-            // 添加最后一局（没有BUFF_SELECT）
             if (currentRound.Count > 0)
             {
                 _gameRounds.Add(new List<JObject>(currentRound));
+                _recordInfo.GameRounds = _gameRounds.Count;
             }
-            _recordInfo.GameRounds = _gameRounds.Count;
+
             for (int i = 0; i < _gameRounds.Count; i++)
             {
                 int currentIndex = i;
@@ -404,28 +404,28 @@ namespace BattleCity
             BuffSeclectPanel.SetActive(false);
             this.SendCommand(new BuffShowCommand(1, currentRound));
             this.SendCommand(new BuffShowCommand(2, currentRound));
+            TypeEventSystem.Global.Send(new BattleEndEvent());
         }
 
 
         #endregion
 
-        IEnumerator UpdateTick(int i = 0)
+        IEnumerator UpdateTick(int startIndex = 0)
         {
-            for (;i< _gameRounds.Count;i++)
+            for (int i = startIndex;i< _gameRounds.Count;i++)
             {
                 _recordInfo.CurrentBattle = i;
                 foreach (JObject recordObj in _gameRounds[i])
                 {
                     while (isPaused)
                     {
-                        yield return null; // 暂停时挂起协程
+                        yield return null; 
                     }
                     if (_recordInfo == null)
                     {
                         Debug.LogError("RecordInfo 未初始化！");
                         yield break; // 或尝试重新初始化
                     }
-                    //Debug.Log("NowRecordNum：" + _recordInfo.NowRecordNum);
                     JArray record = (JArray)recordObj["record"];
                     foreach (JObject message in record)
                     {
@@ -448,6 +448,14 @@ namespace BattleCity
                     }
                     _recordInfo.NowRecordNum++;
                     yield return new WaitForSeconds(_recordInfo.FrameTime);
+                }
+                if (i + 1 >= _gameRounds.Count)
+                {
+                    int lastCount = _gameRounds.Count;
+                    while (_gameRounds.Count == lastCount)
+                    {
+                        yield return null;
+                    }
                 }
             }             
         }

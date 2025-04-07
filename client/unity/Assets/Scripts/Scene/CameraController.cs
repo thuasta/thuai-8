@@ -245,14 +245,14 @@ namespace BattleCity
             // 使用更精确的移动计算
             float moveAmount = scroll * zoomSpeed;
 
-            Debug.Log($"Scroll: {scroll} | Origin Move: {moveAmount} | zoom speed: {zoomSpeed}");
+            //Debug.Log($"Scroll: {scroll} | Origin Move: {moveAmount} | zoom speed: {zoomSpeed}");
 
             // 直接限制移动量而非累计值
             moveAmount = Mathf.Clamp(moveAmount, -10f, 10f);
 
             // 使用世界坐标系移动（更稳定）
             transform.position += transform.forward * moveAmount;
-            Debug.Log($"Scroll: {scroll} | Move: {moveAmount}");
+            //Debug.Log($"Scroll: {scroll} | Move: {moveAmount}");
         }
 
         void Rotate()
