@@ -13,6 +13,7 @@ public partial class Environment
     public const int TOI_POSITION_ITERATIONS = 100;
     public const float DEFAULT_DENSITY = 1f;
     public const float RAYCAST_FIX_DELTA = 0.001f;    // To fix the bug of stuck in wall.
+    public const int SIMULATION_PER_STEP = 60; // Number of simulation steps per tick.
 
     // A tick in game is equivalent to a second in physics simulation.
     public const float TIME_STEP = 1f;
@@ -107,7 +108,10 @@ public partial class Environment
         {
             try
             {
-                _world.Step(TIME_STEP, ref _solverIterations);
+                for (int i = 0; i < SIMULATION_PER_STEP; ++i)
+                {
+                    _world.Step(TIME_STEP / SIMULATION_PER_STEP, ref _solverIterations);
+                }
             }
             catch (Exception ex)
             {

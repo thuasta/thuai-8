@@ -145,7 +145,7 @@ public partial class Environment
                 }
 
                 hitPoint = point;
-                hitNormal = normal;
+                hitNormal = fixture.Body.GetWorldVector(normal);
                 return fraction;
             }, currentStart, currentStart + currentDirection * remainingLength);
 
