@@ -11,7 +11,11 @@ public partial class Recorder
         }
         else if (e.Game.Stage == GameLogic.Game.GameStage.InBattle
             && e.Game.RunningBattle != null
-            && e.Game.RunningBattle.Stage == GameLogic.Battle.BattleStage.InBattle)
+            && (
+                e.Game.RunningBattle.Stage == GameLogic.Battle.BattleStage.InBattle
+                || e.Game.RunningBattle.Stage == GameLogic.Battle.BattleStage.ChoosingAward
+            )   //ChoosingAward is added to record last tick of the battle
+        )
         {
             currentStage = Protocol.Scheme.Stage.BATTLE;
         }
