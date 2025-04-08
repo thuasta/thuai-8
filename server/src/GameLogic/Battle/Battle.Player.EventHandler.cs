@@ -108,7 +108,7 @@ public partial class Battle
                         break;
 
                     case SkillName.SPEED_UP:
-                        _logger.Information($"[Player {e.Player.ID}] Player activated SpeedUp skill.");
+                        _logger.Information($"[Player {e.Player.ID}] Activated SpeedUp skill.");
                         break;
 
                     case SkillName.FLASH:
@@ -175,7 +175,11 @@ public partial class Battle
                         break;
 
                     case SkillName.RECOVER:
-                        _logger.Information($"[Player {e.Player.ID}] activated Recover skill.");
+                        _logger.Information($"[Player {e.Player.ID}] Activated Recover skill.");
+                        break;
+
+                    case SkillName.KAMUI:
+                        _logger.Information($"[Player {e.Player.ID}] Activated Kamui skill.");
                         break;
 
                     default:

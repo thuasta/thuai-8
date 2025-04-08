@@ -92,6 +92,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
                 }
 
                 BindWall(Map?.Walls ?? throw new Exception("Map is null."));
+                _env.GenerateGrid(Map.Width, Map.Height);
 
                 foreach (Player player in AllPlayers)
                 {
@@ -151,6 +152,7 @@ public partial class Battle(Utility.Config.GameSettings setting, List<Player> pl
                 }
                 else if (Stage == BattleStage.ChoosingAward)
                 {
+                    ActivatedLasers.Clear();    // To avoid recording error
                     ++_currentAwardChoosingTick;
                 }
                 StageControl();
