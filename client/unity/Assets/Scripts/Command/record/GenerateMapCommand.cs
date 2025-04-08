@@ -61,7 +61,7 @@ public class GenerateMapCommand : AbstractCommand
             float y = wall["y"]?.Value<float>() ?? 0f;
             float angle = wall["angle"]?.Value<float>() ?? 0f;
 
-            Debug.Log($"Wall Position: x={x}, y={y}, angle={angle}");
+            // Debug.Log($"Wall Position: x={x}, y={y}, angle={angle}");
 
             // 创建 Position 对象并添加到 cityMap
             Position position = new Position(x, y, angle);
