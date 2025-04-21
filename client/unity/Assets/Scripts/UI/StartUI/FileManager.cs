@@ -15,6 +15,8 @@ public class FileManager : MonoBehaviour
     private Button AddFile;
     private Button Remove;
     private Button Exit;
+    public GameObject UIPlane;
+    public GameObject LoadingPlane;
     public GameObject GameCanvas;
     public GameObject StartCanvas;
     // public GameObject RecordPlay;
@@ -26,6 +28,7 @@ public class FileManager : MonoBehaviour
     private Image removeButtonImage; // 新增Image组件引用
     private Color originalColor = Color.white; // 初始颜色
     public CameraController cameraController;
+
 
     private string GetStreamingAssetPath(string relativePath)
     {
@@ -42,10 +45,10 @@ public class FileManager : MonoBehaviour
             cameraController = mainCamera.GetComponent<CameraController>();
         }
         StartCanvas = GameObject.Find("StartCanvas");
-        AddFile = GameObject.Find("StartCanvas/Window/AddFile").GetComponent<Button>();
-        Remove = GameObject.Find("StartCanvas/Window/Remove").GetComponent<Button>();
-        Exit = GameObject.Find("StartCanvas/Window/Exit").GetComponent<Button>();
-        contentParent = GameObject.Find("StartCanvas/Window/Scroll View/Viewport/Content").GetComponentInParent<Transform>();
+        AddFile = GameObject.Find("StartCanvas/Window/UIPlane/AddFile").GetComponent<Button>();
+        Remove = GameObject.Find("StartCanvas/Window/UIPlane/Remove").GetComponent<Button>();
+        Exit = GameObject.Find("StartCanvas/Window/UIPlane/Exit").GetComponent<Button>();
+        contentParent = GameObject.Find("StartCanvas/Window/UIPlane/Scroll View/Viewport/Content").GetComponentInParent<Transform>();
         fileButtonPrefab = Resources.Load<GameObject>("UI/Buttons/recordButton");
         Transform backgroundChild = Remove.transform.Find("Background");
 
@@ -67,6 +70,16 @@ public class FileManager : MonoBehaviour
             UpdateRemoveButtonColor();
         });
         Exit.onClick.AddListener(() => ExitFileManager());
+        TypeEventSystem.Global.Register<LoadingEvent>(e =>
+        {
+            HidePlane();
+        });
+    }
+
+    void HidePlane()
+    {
+        UIPlane.SetActive(!UIPlane.activeSelf);
+        LoadingPlane.SetActive(!LoadingPlane.activeSelf);
     }
 
     IEnumerator SelectFileAndUpdate()
@@ -88,8 +101,9 @@ public class FileManager : MonoBehaviour
         {
             GameObject buttonObj = Instantiate(fileButtonPrefab, contentParent);
             string fileName = Path.GetFileNameWithoutExtension(filePath);
-            Transform textChild = buttonObj.transform.Find("Background/Label");
-            textChild.GetComponentInChildren<Text>().text = fileName;
+            Transform textChild = buttonObj.transform.Find("Background/Test");
+            string displayName = fileName.Length > 6 ? fileName.Substring(0, 6) : fileName;
+            textChild.GetComponentInChildren<TMP_Text>().text = displayName;
 
             // 添加点击事件
             buttonObj.GetComponent<Button>().onClick.AddListener(() =>
@@ -132,10 +146,8 @@ public class FileManager : MonoBehaviour
     void OnFileSelected(string filePath)
     {
         SceneData.FilePath = filePath;
-        StartCanvas.SetActive(false);
-        GameCanvas.SetActive(true);
-        SceneData.GameStage = "Battle";
-        TypeEventSystem.Global.Send( new BattleStageEvent());
+        SceneData.GameStage = "Loading";
+        TypeEventSystem.Global.Send( new LoadingEvent());
         // RecordPlay.SetActive(true);
         // cameraController.enabled = !cameraController.enabled;
     }

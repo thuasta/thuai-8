@@ -14,17 +14,28 @@ namespace BattleCity
         protected override void Init()
         {
             RegisterBattleModels();
-            TypeEventSystem.Global.Register<BattleStageEvent>(e =>
+            TypeEventSystem.Global.Register<LoadingEvent>(e =>
             {
                 UnregisterAllModels(); // 清空所有已注册模型
+                RegisterBattleModels();
+            });
+            TypeEventSystem.Global.Register<BattleStageEvent>(e =>
+            {
                 RegisterBattleModels();
             });
         }
 
         private void RegisterBattleModels()
         {         
-
-            if (SceneData.GameStage == "Battle")
+            if (SceneData.GameStage == "Loading")
+            {
+                this.RegisterModel(new Tanks());
+                this.RegisterModel(new Bullets());
+                this.RegisterModel(new Map());
+                this.RegisterModel(new RecordInfo());
+                Debug.Log("Loading Models Registered!");
+            }
+            else if (SceneData.GameStage == "Battle")
             {
                 this.RegisterModel(new AmmoText());
                 this.RegisterModel(new CountdownText());
@@ -34,10 +45,6 @@ namespace BattleCity
                 this.RegisterModel(new ScoresShow());
                 this.RegisterModel(new RoundsShow());
                 this.RegisterModel(new SkillsShow());
-                this.RegisterModel(new Tanks());
-                this.RegisterModel(new Bullets());
-                this.RegisterModel(new Map());
-                this.RegisterModel(new RecordInfo());
                 Debug.Log("Battle Models Registered!");
             }
             else if (SceneData.GameStage == "End")

@@ -9,6 +9,8 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Pool;
+using TMPro;
+using System.Threading.Tasks;
 
 namespace BattleCity
 {
@@ -37,10 +39,16 @@ namespace BattleCity
         public Button Slow;
         public Button Pause;
 
+
+        public Slider progressBar;
+        public TMP_Text statusText;
+
+        private bool isLoading = false;
+
         // Start is called before the first frame update
         void Start()
         {
-            TypeEventSystem.Global.Register<BattleStageEvent>(e =>
+            TypeEventSystem.Global.Register<LoadingEvent>(e =>
             {
                 PlayRecord();
             });
@@ -51,18 +59,96 @@ namespace BattleCity
             return GameApp.Interface;
         }
 
-        private JArray LoadRecordData()
+        public IEnumerator StartLoading()
         {
-            JObject recordJsonObject = JsonUtility.UnzipRecord(_recordFile);
-            // Load the record array
-            JArray recordArray = (JArray)recordJsonObject["records"];
+            if (isLoading) yield break;
+            isLoading = true;
 
-            if (recordArray == null)
+            if (string.IsNullOrEmpty(SceneData.FilePath))
+            {
+                Debug.LogError("文件路径未提供！");
+                isLoading = false;
+                yield break;
+            }
+            _recordFile = SceneData.FilePath;
+
+            progressBar.value = 0;
+            statusText.text = "Loading...";
+
+            JObject recordJsonObject = null;
+            bool isLoaded = false;
+            Exception loadException = null;
+
+            // 在后台线程加载数据
+            Task.Run(() =>
+            {
+                try
+                {
+                    var progress = new Progress<float>(value =>
+                    {
+                        // 通过主线程分发器更新 UI
+                        UnityMainThreadDispatcher.Instance.Enqueue(() =>
+                        {
+                            progressBar.value = value;
+                            statusText.text = $"Loading... {value * 100:F2}%";
+                        });
+                    });
+                    recordJsonObject = JsonUtility.LoadRecord(_recordFile, progress);
+                }
+                catch (Exception e)
+                {
+                    loadException = e;
+                }
+                finally
+                {
+                    isLoaded = true;
+                }
+            });
+
+            // 等待加载完成
+            while (!isLoaded)
+            {
+                yield return null;
+            }
+
+            // 错误处理
+            if (loadException != null)
+            {
+                Debug.LogError($"加载错误: {loadException.Message}");
+                isLoading = false;
+                yield break;
+            }
+
+            if (recordJsonObject == null)
+            {
+                Debug.LogError("Initialize Failed!");
+                isLoading = false;
+                yield break;
+            }
+
+            _recordArray = (JArray)recordJsonObject["records"];
+            if (_recordArray == null)
             {
                 Debug.Log("Record file is empty!");
-                return null;
+                isLoading = false;
+                yield break;
             }
-            return recordArray;
+
+            // 加载完成后的操作
+            StartCanvas.SetActive(false);
+            GameCanvas.SetActive(true);
+            SceneData.GameStage = "Battle";
+            TypeEventSystem.Global.Send(new BattleStageEvent());
+            isLoading = false;
+        }
+
+        private IEnumerator StartLoadingAndPreprocess()
+        {
+            // 等待加载完成
+            yield return StartCoroutine(StartLoading());
+
+            Debug.Log("start preprocess");
+            StartCoroutine(PreprocessGameRounds());
         }
 
         public void PlayRecord()
@@ -72,27 +158,14 @@ namespace BattleCity
             mMap = this.GetModel<Map>();
 
             //UI
-            exitButton = GameObject.Find("Canvas/Exit").GetComponent<Button>();
             exitButton.onClick.AddListener(() => OnExitButtonClicked());
 
             //record
             BattleStart = true;
             _recordInfo = this.GetModel<RecordInfo>();
-            if (!string.IsNullOrEmpty(SceneData.FilePath))
-            {
-                _recordFile = SceneData.FilePath;
-            }
-            else
-            {
-                Debug.LogError("文件路径未提供！");
-            }
-            if (_recordFile == null)
-            {
-                Debug.Log("Loading file error!");
-                return;
-            }
+
             Debug.Log("Stsrt Load Record!");
-            _recordArray = LoadRecordData();
+            
             Fast.onClick.AddListener(() =>
             {
                 _recordInfo.FastSpeed();
@@ -113,7 +186,7 @@ namespace BattleCity
 
             });
             Debug.Log("start preprocess");
-            StartCoroutine(PreprocessGameRounds());
+            StartCoroutine(StartLoadingAndPreprocess());
         }
 
         public void PlaySpecificRound(int roundIndex)
@@ -447,7 +520,7 @@ namespace BattleCity
                         }
                     }
                     _recordInfo.NowRecordNum++;
-                    yield return new WaitForSeconds(_recordInfo.FrameTime);
+                    yield return new WaitForSecondsRealtime(_recordInfo.FrameTime);
                 }
                 if (i + 1 >= _gameRounds.Count)
                 {
