@@ -236,6 +236,10 @@ namespace BattleCity
                 JArray record = (JArray)recordObj["record"];
                 foreach (JObject message in record)
                 {
+                    if (!updateTickStarted && (message["currentStage"]?.ToString() ?? "") == "REST")
+                    {
+                        currentRound.Remove(recordObj);
+                    }
                     if (message["messageType"].ToString() == "BUFF_SELECT")
                     {
                         hasBuffSelect = true;
