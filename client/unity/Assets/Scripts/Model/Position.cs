@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,12 +28,5 @@ public class Position
     }
 
     public override int GetHashCode()
-    {
-        // 生成一个基于 X, Y 和 Angle 的哈希码
-        int hashCode = 17; // 一个任意的常数
-        hashCode = hashCode * 23 + X.GetHashCode();
-        hashCode = hashCode * 23 + Y.GetHashCode();
-        hashCode = hashCode * 23 + Angle.GetHashCode();
-        return hashCode;
-    }
+        => HashCode.Combine(X, Z, Angle);
 }

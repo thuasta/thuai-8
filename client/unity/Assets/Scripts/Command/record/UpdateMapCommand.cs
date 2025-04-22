@@ -54,8 +54,11 @@ public class UpdateMapCommand : AbstractCommand
                       
             Position position = new Position(x, y, angle);
             currentWalls.Add(position);
-            
-            var existingWall = map.CityWall.FirstOrDefault(w => w.wallPos == position);
+
+            var existingWall = map.CityWall.FirstOrDefault(w =>
+                w.wallPos.X == position.X &&
+                w.wallPos.Y == position.Y &&
+                w.wallPos.Angle == position.Angle);
 
             if (existingWall == null)
             { 
@@ -76,7 +79,6 @@ public class UpdateMapCommand : AbstractCommand
         {
             map.RemoveWall(wall);
         }
-        // map.CityWall.RemoveAll(w => !currentWalls.Contains(w.wallPos));
     }
 
     private void UpdateFences()
