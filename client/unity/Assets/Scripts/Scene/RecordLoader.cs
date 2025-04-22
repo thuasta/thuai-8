@@ -52,6 +52,13 @@ namespace BattleCity
             {
                 PlayRecord();
             });
+            /*TypeEventSystem.Global.Register<BattleEndEvent>(e =>
+            {
+                mTanks.DelAllTanks();
+                mBullets.DelAllBullets();
+                mMap.DeleteMap();
+                BattleStart = true;
+            });*/
         }
 
         public IArchitecture GetArchitecture()
@@ -287,6 +294,7 @@ namespace BattleCity
                 StopCoroutine(updateTickCoroutine);
                 updateTickCoroutine = null;
             }
+
             mTanks.DelAllTanks();
             mBullets.DelAllBullets();
             mMap.DeleteMap();
