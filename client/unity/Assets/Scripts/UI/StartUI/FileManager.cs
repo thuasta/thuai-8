@@ -74,12 +74,22 @@ public class FileManager : MonoBehaviour
         {
             HidePlane();
         });
+        TypeEventSystem.Global.Register<BattleEndEvent>(e =>
+        {
+            ShowPlane();
+        });
     }
 
     void HidePlane()
     {
-        UIPlane.SetActive(!UIPlane.activeSelf);
-        LoadingPlane.SetActive(!LoadingPlane.activeSelf);
+        UIPlane.SetActive(false);
+        LoadingPlane.SetActive(true);
+    }
+
+    void ShowPlane()
+    {
+        UIPlane.SetActive(true);
+        LoadingPlane.SetActive(false);
     }
 
     IEnumerator SelectFileAndUpdate()

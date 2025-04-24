@@ -11,6 +11,7 @@ using UnityEngine.UI;
 using UnityEngine.Pool;
 using TMPro;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace BattleCity
 {
@@ -235,6 +236,10 @@ namespace BattleCity
                 JArray record = (JArray)recordObj["record"];
                 foreach (JObject message in record)
                 {
+                    if (!updateTickStarted && (message["currentStage"]?.ToString() ?? "") == "REST")
+                    {
+                        currentRound.Remove(recordObj);
+                    }
                     if (message["messageType"].ToString() == "BUFF_SELECT")
                     {
                         hasBuffSelect = true;
@@ -276,7 +281,11 @@ namespace BattleCity
             for (int i = 0; i < _gameRounds.Count; i++)
             {
                 int currentIndex = i;
-                Episodes[i].onClick.AddListener(() => PlaySpecificRound(currentIndex));
+                if (SceneData.GameStage == "Battle")
+                {
+                    Episodes[i].onClick.AddListener(() => PlaySpecificRound(currentIndex));
+                }
+                
             }
         }
 
@@ -304,12 +313,14 @@ namespace BattleCity
             SceneData.GameStage = "Start";
             GameCanvas.SetActive(false);
             StartCanvas.SetActive(true);
-            
+
         }
 
 
 
         #region Event Definition
+
+        
 
         private void UpdateMap(JObject MapData)
         {
@@ -323,6 +334,10 @@ namespace BattleCity
                 this.SendCommand(new UpdateMapCommand(MapData));
             }
         }
+
+        private static readonly object _syncRoot = new object();
+        private static readonly ConditionalWeakTable<TankModel, JToken> _positionHistory = new ConditionalWeakTable<TankModel, JToken>();
+
 
         private void UpdateTanks(JArray tanks)
         {
@@ -346,6 +361,26 @@ namespace BattleCity
                 this.SendCommand(new UpdateArmorCommand(tank, ArmorData));
                 this.SendCommand(new UpdateSkillsCommand(tank, SkillsData));
                 this.SendCommand(new UpdatePositionCommand(tank, PositionData));
+                lock (_syncRoot)
+                {
+                    // 获取上次位置并比较
+                    bool hasHistory = _positionHistory.TryGetValue(tank, out JToken lastPosition);
+                    bool shouldMove = !hasHistory || !JToken.DeepEquals(PositionData, lastPosition);
+
+                    // 更新位置存储（无论是否变化都需要更新）
+                    if (hasHistory) _positionHistory.Remove(tank);
+                    _positionHistory.Add(tank, PositionData.DeepClone()); // 使用深拷贝保证数据隔离
+
+                    // 根据比较结果发送命令
+                    if (shouldMove)
+                    {
+                        this.SendCommand(new MoveTankCommand(tank));
+                    }
+                    else
+                    {
+                        this.SendCommand(new StopTankCommand(tank));
+                    }
+                }
             }
         }
 
