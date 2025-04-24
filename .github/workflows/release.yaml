@@ -1,0 +1,141 @@
+name: Release Production Build
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  client-unity-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        targetPlatform: 
+          - StandaloneLinux64
+          - StandaloneOSX
+          - StandaloneWindows64
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: client/unity
+          targetPlatform: ${{ matrix.targetPlatform }}
+          unityVersion: 2022.3.9f1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unity-client-${{ matrix.targetPlatform }}-${{ github.ref_name }}
+          path: build/${{ matrix.targetPlatform }}
+
+  client-web-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - run: npm ci
+        working-directory: client/web
+
+      - run: npm run build
+        working-directory: client/web
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-client-${{ github.ref_name }}
+          path: client/web/build
+
+  sdk-cpp-build:
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      matrix:
+        include:
+          - architecture: x86_64
+            platform: linux
+            runs-on: ubuntu-latest
+          - architecture: arm64
+            platform: macosx
+            runs-on: macos-latest
+          - architecture: x64
+            platform: windows
+            runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: xmake-io/github-action-setup-xmake@v1
+
+      - run: |
+          xmake repo -u -y
+          xmake f -m release -v -y
+          xmake -v -y
+        working-directory: sdk/cpp
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cpp-sdk-${{ matrix.platform }}-${{ github.ref_name }}
+          path: sdk/cpp/build/${{ matrix.platform }}/${{ matrix.architecture }}/release/
+
+  server-build:
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      matrix:
+        runtime: [linux-x64, win-x64, osx-x64]
+        include:
+          - runtime: linux-x64
+            runs-on: ubuntu-latest
+          - runtime: win-x64
+            runs-on: windows-latest
+          - runtime: osx-x64
+            runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - run: |
+          dotnet publish src -c Release -o bin \
+          -r ${{ matrix.runtime }} \
+          -p:PublishSingleFile=true
+        working-directory: server
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: server-${{ matrix.runtime }}-${{ github.ref_name }}
+          path: server/bin
+
+  release-assets:
+    needs: 
+      - client-unity-build
+      - client-web-build
+      - sdk-cpp-build
+      - server-build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            release-assets/**/*
+          draft: false
+          prerelease: false
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
