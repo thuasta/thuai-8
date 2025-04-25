@@ -1,3 +1,4 @@
+using QFramework;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace BattleCity
 {
-    public class TankModel
+    public class TankModel: IController
     {
         public int Id { get; set; }
 
@@ -43,6 +44,7 @@ namespace BattleCity
             {
                 Debug.LogError($"Tank model {Id} not found in Resources/Model/Tank");
             }
+            TankObject.AddComponent<Movement>();
         }
         public TankModel(int id)
         {
@@ -69,18 +71,21 @@ namespace BattleCity
             {
                 Debug.LogError($"Tank model {Id} not found in Resources/Model/Tank");
             }
+            TankObject.AddComponent<Movement>();
         }
 
         public void UpdateTankPosition( Position tankPosition)
         {
             TankPosition = tankPosition;
+            RecordInfo _recordInfo = this.GetModel<RecordInfo>();
 
             if (TankObject != null)
             {
                 Vector3 newPosition = new Vector3(
                     (float)(tankPosition.X + Constants.GENERAL_XBIAS), (float)tankPosition.Y, (float)(tankPosition.Z + Constants.GENERAL_ZBIAS)
                 );
-                TankObject.transform.localPosition =  Vector3.Lerp(TankObject.transform.localPosition, newPosition, 10 * Time.deltaTime);
+
+                TankObject.GetComponent<Movement>().MoveTo(newPosition, _recordInfo.FrameTime);
 
                 Quaternion newRotation = Quaternion.Euler(0, -(float)tankPosition.Angle, 0); // Server's Clockwise is negative
                 TankObject.transform.localRotation = Quaternion.RotateTowards(TankObject.transform.localRotation, newRotation, 10 * Time.deltaTime);
@@ -119,6 +124,11 @@ namespace BattleCity
             {
                 Debug.LogWarning($"TankObject already destroyed for tank ID: {Id}");
             }
+        }
+
+        public IArchitecture GetArchitecture()
+        {
+            return GameApp.Interface;
         }
     }
 }
