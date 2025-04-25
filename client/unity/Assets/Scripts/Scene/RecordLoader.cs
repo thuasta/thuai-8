@@ -236,10 +236,10 @@ namespace BattleCity
                 JArray record = (JArray)recordObj["record"];
                 foreach (JObject message in record)
                 {
-                    if (!updateTickStarted && (message["currentStage"]?.ToString() ?? "") == "REST")
-                    {
-                        currentRound.Remove(recordObj);
-                    }
+                    //if (!updateTickStarted && (message["currentStage"]?.ToString() ?? "") == "REST")
+                    //{
+                    //    currentRound.Remove(recordObj);
+                    //}
                     if (message["messageType"].ToString() == "BUFF_SELECT")
                     {
                         hasBuffSelect = true;
@@ -361,26 +361,26 @@ namespace BattleCity
                 this.SendCommand(new UpdateArmorCommand(tank, ArmorData));
                 this.SendCommand(new UpdateSkillsCommand(tank, SkillsData));
                 this.SendCommand(new UpdatePositionCommand(tank, PositionData));
-                lock (_syncRoot)
-                {
-                    // 获取上次位置并比较
-                    bool hasHistory = _positionHistory.TryGetValue(tank, out JToken lastPosition);
-                    bool shouldMove = !hasHistory || !JToken.DeepEquals(PositionData, lastPosition);
+                //lock (_syncRoot)
+                //{
+                //    // 获取上次位置并比较
+                //    bool hasHistory = _positionHistory.TryGetValue(tank, out JToken lastPosition);
+                //    bool shouldMove = !hasHistory || !JToken.DeepEquals(PositionData, lastPosition);
 
-                    // 更新位置存储（无论是否变化都需要更新）
-                    if (hasHistory) _positionHistory.Remove(tank);
-                    _positionHistory.Add(tank, PositionData.DeepClone()); // 使用深拷贝保证数据隔离
+                //    // 更新位置存储（无论是否变化都需要更新）
+                //    if (hasHistory) _positionHistory.Remove(tank);
+                //    _positionHistory.Add(tank, PositionData.DeepClone()); // 使用深拷贝保证数据隔离
 
-                    // 根据比较结果发送命令
-                    if (shouldMove)
-                    {
-                        this.SendCommand(new MoveTankCommand(tank));
-                    }
-                    else
-                    {
-                        this.SendCommand(new StopTankCommand(tank));
-                    }
-                }
+                //    // 根据比较结果发送命令
+                //    if (shouldMove)
+                //    {
+                //        this.SendCommand(new MoveTankCommand(tank));
+                //    }
+                //    else
+                //    {
+                //        this.SendCommand(new StopTankCommand(tank));
+                //    }
+                //}
             }
         }
 

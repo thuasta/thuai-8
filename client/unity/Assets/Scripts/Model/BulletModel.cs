@@ -60,8 +60,8 @@ namespace BattleCity
                 Vector3 targetPosition = new Vector3(
                     (float)(bulletPosition.X + Constants.GENERAL_XBIAS), (float)bulletPosition.Y, (float)(bulletPosition.Z + Constants.GENERAL_ZBIAS)
                 );
-                BulletObject.transform.localPosition = Vector3.Lerp(BulletObject.transform.localPosition, targetPosition, 10 * Time.deltaTime);
-
+                //BulletObject.transform.localPosition = Vector3.Lerp(BulletObject.transform.localPosition, targetPosition, 10 * Time.deltaTime);
+                BulletObject.transform.localPosition = targetPosition;
                 Quaternion targetRotation = Quaternion.Euler(0, -(float)bulletPosition.Angle, 0); // Server's Clockwise is negative
                 BulletObject.transform.localRotation = Quaternion.RotateTowards(BulletObject.transform.localRotation, targetRotation, 10 * Time.deltaTime);
             }
