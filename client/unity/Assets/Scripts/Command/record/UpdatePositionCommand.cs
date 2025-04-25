@@ -6,6 +6,7 @@ using BattleCity;
 using UnityEngine.UIElements;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Runtime.CompilerServices;
 
 public class UpdatePositionCommand : AbstractCommand
 {
@@ -19,6 +20,7 @@ public class UpdatePositionCommand : AbstractCommand
         player = tank ?? throw new ArgumentNullException(nameof(tank)); ;
         bullet = null;
         positionDate = position;
+
     }
 
     public UpdatePositionCommand(BulletModel bullet, JToken position)

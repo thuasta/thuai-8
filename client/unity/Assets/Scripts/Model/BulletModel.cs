@@ -1,10 +1,11 @@
+using QFramework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace BattleCity
 {
-    public class BulletModel
+    public class BulletModel: IController
     {
         public int Id { get; set; }
 
@@ -49,11 +50,14 @@ namespace BattleCity
             {
                 Debug.LogError($"Bullet model not found in Resources/Model/Bullet");
             }
+
+            BulletObject.AddComponent<Movement>();
         }
 
         public void UpdateBulletPosition(Position bulletPosition)
         {
             BulletPosition = bulletPosition;
+            RecordInfo _recordInfo = this.GetModel<RecordInfo>();
 
             if (BulletObject != null)
             {
@@ -63,7 +67,7 @@ namespace BattleCity
                 //BulletObject.transform.localPosition = Vector3.Lerp(BulletObject.transform.localPosition, targetPosition, 10 * Time.deltaTime);
                 BulletObject.transform.localPosition = targetPosition;
                 Quaternion targetRotation = Quaternion.Euler(0, -(float)bulletPosition.Angle, 0); // Server's Clockwise is negative
-                BulletObject.transform.localRotation = Quaternion.RotateTowards(BulletObject.transform.localRotation, targetRotation, 10 * Time.deltaTime);
+                BulletObject.transform.localRotation = Quaternion.RotateTowards(BulletObject.transform.localRotation, targetRotation, 1 * Time.deltaTime);
             }
             else
             {
@@ -84,6 +88,11 @@ namespace BattleCity
                 Object.Destroy(BulletObject);
                 BulletObject = null;
             }
+        }
+
+        public IArchitecture GetArchitecture()
+        {
+            return GameApp.Interface;
         }
     }
 }

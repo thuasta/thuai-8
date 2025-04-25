@@ -267,8 +267,8 @@
                                     "isMissile": true,
                                     "isAntiArmor": false,
                                     "position": {
-                                        "x": 2.8,
-                                        "y": 3.2,
+                                        "x": 3,
+                                        "y": 2,
                                         "angle": 315
                                     },
                                     "speed": 280,
@@ -280,8 +280,8 @@
                                     "isMissile": false,
                                     "isAntiArmor": true,
                                     "position": {
-                                        "x": 3.7,
-                                        "y": 1.8,
+                                        "x": 4,
+                                        "y": 1,
                                         "angle": 90
                                     },
                                     "speed": 350,
@@ -420,19 +420,6 @@
                     "messageType": "STAGE_INFO",
                     "currentStage": "REST",
                     "totalTicks": 4
-                },
-                {
-                    "messageType": "BUFF_SELECT",
-                    "details": [
-                        {
-                            "token": "1",
-                            "buff": "MISSILE"
-                        },
-                        {
-                            "token": "2",
-                            "buff": "KAMUI"
-                        }
-                    ]
                 }
             ]
         },
@@ -442,19 +429,6 @@
                     "messageType": "STAGE_INFO",
                     "currentStage": "REST",
                     "totalTicks": 5
-                },
-                {
-                    "messageType": "BUFF_SELECT",
-                    "details": [
-                        {
-                            "token": "1",
-                            "buff": "ATTACK_SPEED"
-                        },
-                        {
-                            "token": "2",
-                            "buff": "LASER"
-                        }
-                    ]
                 }
             ]
         },
@@ -464,19 +438,6 @@
                     "messageType": "STAGE_INFO",
                     "currentStage": "REST",
                     "totalTicks": 6
-                },
-                {
-                    "messageType": "BUFF_SELECT",
-                    "details": [
-                        {
-                            "token": "1",
-                            "buff": "ANTI_ARMOR"
-                        },
-                        {
-                            "token": "2",
-                            "buff": "ARMOR"
-                        }
-                    ]
                 }
             ]
         },
@@ -486,19 +447,6 @@
                     "messageType": "STAGE_INFO",
                     "currentStage": "REST",
                     "totalTicks": 7
-                },
-                {
-                    "messageType": "BUFF_SELECT",
-                    "details": [
-                        {
-                            "token": "1",
-                            "buff": "REFLECT"
-                        },
-                        {
-                            "token": "2",
-                            "buff": "DODGE"
-                        }
-                    ]
                 }
             ]
         },
@@ -508,19 +456,6 @@
                     "messageType": "STAGE_INFO",
                     "currentStage": "REST",
                     "totalTicks": 8
-                },
-                {
-                    "messageType": "BUFF_SELECT",
-                    "details": [
-                        {
-                            "token": "1",
-                            "buff": "KNIFE"
-                        },
-                        {
-                            "token": "2",
-                            "buff": "GRAVITY"
-                        }
-                    ]
                 }
             ]
         },
@@ -530,19 +465,6 @@
                     "messageType": "STAGE_INFO",
                     "currentStage": "REST",
                     "totalTicks": 9
-                },
-                {
-                    "messageType": "BUFF_SELECT",
-                    "details": [
-                        {
-                            "token": "1",
-                            "buff": "BLACK_OUT"
-                        },
-                        {
-                            "token": "2",
-                            "buff": "SPEED_UP"
-                        }
-                    ]
                 }
             ]
         },
@@ -552,19 +474,6 @@
                     "messageType": "STAGE_INFO",
                     "currentStage": "END",
                     "totalTicks": 10
-                },
-                {
-                    "messageType": "BUFF_SELECT",
-                    "details": [
-                        {
-                            "token": "1",
-                            "buff": "FLASH"
-                        },
-                        {
-                            "token": "2",
-                            "buff": "DESTROY"
-                        }
-                    ]
                 }
             ]
         }
