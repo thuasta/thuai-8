@@ -15,7 +15,7 @@ This platform consists of several components:
 
 Checkout `README.md` in corresponding directories for usage of different components.
 
-Visit [the documentation site](https://thuai-8.thuasta.org) for details.
+Visit [the documentation site](https://thuasta.org/contests/THUAI8/) for details.
 
 ## Contributing
 

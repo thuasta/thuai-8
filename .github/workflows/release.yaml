@@ -46,7 +46,7 @@ jobs:
 
       - run: |
           mkdir -p release
-          cp CHANGELOG.md COPYING README.md release/
+          cp CHANGELOG.md COPYING client/unity/README.md release/
           cp -r build/${{ matrix.targetPlatform }}/* release/
 
       - run: |
@@ -101,7 +101,7 @@ jobs:
 
       - run: |
           mkdir -p release
-          cp CHANGELOG.md COPYING README.md release/
+          cp CHANGELOG.md COPYING server/README.md release/
           cp -r server/bin/* release/
 
       - run: |
