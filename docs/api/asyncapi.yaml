@@ -417,12 +417,15 @@ components:
             $ref: '#/components/schemas/Skill'
         position:
           $ref: '#/components/schemas/Position'
+        speed:
+          type: integer
       required:
         - token
         - weapon
         - armor
         - skills
         - position
+        - speed
 
     Wall: # 普通墙体类
       title: "Wall"
