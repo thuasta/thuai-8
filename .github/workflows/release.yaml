@@ -155,8 +155,14 @@ jobs:
       - uses: actions/checkout@v4
 
       - run: |
-          zip -r ../${{ github.event.repository.name }}-agent-${{ matrix.language }}.zip ${{ matrix.language }} *
+          zip -r ../${{ github.event.repository.name }}-agent-${{ matrix.language }}.zip ${{ matrix.language }}
         working-directory: sdk
+
+      - run: |
+          if [ ! -f "${{ github.event.repository.name }}-agent-${{ matrix.language }}.zip" ]; then
+            echo "Zip file not found!"
+            exit 1
+          fi
 
       - uses: softprops/action-gh-release@v2
         with:
