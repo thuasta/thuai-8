@@ -144,7 +144,7 @@ jobs:
   pack-agent:
     needs: create-release-notes
     permissions:
-      packages: write
+      contents: write
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -155,10 +155,10 @@ jobs:
       - uses: actions/checkout@v4
 
       - run: |
-          zip -r ./${{ github.event.repository.name }}-agent-${{ matrix.language }}.zip ${{ matrix.language }}
+          zip -r ../${{ github.event.repository.name }}-agent-${{ matrix.language }}.zip ${{ matrix.language }}
         working-directory: sdk
 
       - uses: softprops/action-gh-release@v2
         with:
           files: |
-            sdk/${{ github.event.repository.name }}-agent-${{ matrix.language }}.zip
+            ${{ github.event.repository.name }}-agent-${{ matrix.language }}.zip
