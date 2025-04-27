@@ -1,23 +1,38 @@
-name: Release Production Build
-
 on:
   release:
-    types: [published]
-  workflow_dispatch:
+    types:
+      - published
 
 jobs:
-  client-unity-build:
+  create-release-notes:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: extract-release-notes
+        uses: ffurrer2/extract-release-notes@v2
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          body: |
+            ${{ steps.extract-release-notes.outputs.release_notes }}
+
+  build-unity-client:
+    needs: create-release-notes
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        targetPlatform: 
+        targetPlatform:
           - StandaloneLinux64
           - StandaloneOSX
           - StandaloneWindows64
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: game-ci/unity-builder@v4
         env:
@@ -29,74 +44,48 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           unityVersion: 2022.3.9f1
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: unity-client-${{ matrix.targetPlatform }}-${{ github.ref_name }}
-          path: build/${{ matrix.targetPlatform }}
-
-  client-web-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
-
-      - run: npm ci
-        working-directory: client/web
-
-      - run: npm run build
-        working-directory: client/web
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: web-client-${{ github.ref_name }}
-          path: client/web/build
-
-  sdk-cpp-build:
-    runs-on: ${{ matrix.runs-on }}
-    strategy:
-      matrix:
-        include:
-          - architecture: x86_64
-            platform: linux
-            runs-on: ubuntu-latest
-          - architecture: arm64
-            platform: macosx
-            runs-on: macos-latest
-          - architecture: x64
-            platform: windows
-            runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: xmake-io/github-action-setup-xmake@v1
+      - run: |
+          mkdir -p release
+          cp CHANGELOG.md COPYING README.md release/
+          cp -r build/${{ matrix.targetPlatform }}/* release/
 
       - run: |
-          xmake repo -u -y
-          xmake f -m release -v -y
-          xmake -v -y
-        working-directory: sdk/cpp
+          zip -r ../${{ github.event.repository.name }}-client-${{ matrix.targetPlatform }}.zip *
+        working-directory: release
 
-      - uses: actions/upload-artifact@v4
+      - uses: softprops/action-gh-release@v2
         with:
-          name: cpp-sdk-${{ matrix.platform }}-${{ github.ref_name }}
-          path: sdk/cpp/build/${{ matrix.platform }}/${{ matrix.architecture }}/release/
+          files: |
+            ${{ github.event.repository.name }}-client-${{ matrix.targetPlatform }}.zip
 
-  server-build:
+  # TODO: Build web client
+
+  build-server:
+    needs: create-release-notes
+    permissions:
+      contents: write
     runs-on: ${{ matrix.runs-on }}
     strategy:
+      fail-fast: false
       matrix:
-        runtime: [linux-x64, win-x64, osx-x64]
+        runtime:
+          - linux-arm
+          - linux-arm64
+          - linux-x64
+          - linux-musl-arm
+          - linux-musl-arm64
+          - linux-musl-x64
+          - osx-arm64
+          - osx-x64
+          - win-arm64
+          - win-x64
+          - win-x86
         include:
-          - runtime: linux-x64
-            runs-on: ubuntu-latest
-          - runtime: win-x64
-            runs-on: windows-latest
-          - runtime: osx-x64
-            runs-on: macos-latest
+          - runs-on: ubuntu-latest
+          - runs-on: macos-latest
+            runtime: osx-x64
+          - runs-on: macos-latest
+            runtime: osx-arm64
     steps:
       - uses: actions/checkout@v4
 
@@ -106,36 +95,70 @@ jobs:
 
       - run: |
           dotnet publish src -c Release -o bin \
-          -r ${{ matrix.runtime }} \
+          --sc true -r ${{ matrix.runtime }} -p:DebugType=none \
           -p:PublishSingleFile=true
         working-directory: server
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: server-${{ matrix.runtime }}-${{ github.ref_name }}
-          path: server/bin
+      - run: |
+          mkdir -p release
+          cp CHANGELOG.md COPYING README.md release/
+          cp -r server/bin/* release/
 
-  release-assets:
-    needs: 
-      - client-unity-build
-      - client-web-build
-      - sdk-cpp-build
-      - server-build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          path: release-assets
+      - run: |
+          zip -r ../${{ github.event.repository.name }}-server-${{ matrix.runtime }}.zip *
+        working-directory: release
 
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           files: |
-            release-assets/**/*
-          draft: false
-          prerelease: false
-          tag_name: ${{ github.ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            ${{ github.event.repository.name }}-server-${{ matrix.runtime }}.zip
+
+  build-server-docker:
+    permissions:
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: get-version
+        uses: frabert/replace-string-action@v2
+        with:
+          pattern: '^v'
+          string: ${{ github.event.release.tag_name }}
+          replace-with: ''
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: server
+          push: true
+          tags: |
+            ghcr.io/thuasta/thuai-8-server:${{ steps.get-version.outputs.replaced }}
+            ghcr.io/thuasta/thuai-8-server:latest
+
+  pack-agent:
+    needs: create-release-notes
+    permissions:
+      packages: write
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        language:
+          - cpp
+          - python
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          zip -r ../${{ github.event.repository.name }}-agent-${{ matrix.language }}.zip ${{ matrix.language }} *
+        working-directory: sdk
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ github.event.repository.name }}-agent-${{ matrix.language }}.zip
