@@ -233,15 +233,17 @@ components:
         additionalProperties: false
         required:
           - messageType
-          - details
+          - chosenBuffs
+          - availableBuffs
         properties:
           messageType:
             type: string
             const: BUFF_SELECT
-          details:
+          chosenBuffs:
             type: array
             items:
               type: object
+              additionalProperties: false
               required:
                 - token
                 - buff
@@ -251,6 +253,10 @@ components:
                 buff:
                   $ref: "#/components/schemas/BuffName"
             description: 每个玩家的token及选择的buff
+          availableBuffs:
+            type: array
+            items:
+              $ref: "#/components/schemas/BuffName"
 
     Error:
       title: "Error"
