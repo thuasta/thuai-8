@@ -507,15 +507,19 @@ namespace BattleCity
         private IEnumerator BuffSelect(JObject buffInfo, int currentRound)
         {
             JArray details = (JArray)buffInfo["details"];
+            BuffSeclectPanel.SetActive(true);
             foreach (JObject info in details)
             {
                 int id = info["token"].ToObject<int>();
                 string buff = info["buff"].ToString();
-                //TODO
+                Debug.Log("Player" + id + " select a buff");
+                Image Player_Buff = GameObject.Find($"Canvas/BuffSelect/Player_{id}_Buff_1")?.GetComponent<Image>();
+                Player_Buff.sprite = Resources.Load<Sprite>($"UI/Icons/{buff}");
+                Color new_color = Player_Buff.color;
+                new_color.a = 1;
+                Player_Buff.color = new_color;
                 this.SendCommand(new BuffAddCommand(id, currentRound, buff));
             }
-            
-            BuffSeclectPanel.SetActive(true);
             yield return new WaitForSeconds(3);
             BuffSeclectPanel.SetActive(false);
             this.SendCommand(new BuffShowCommand(1, currentRound));
