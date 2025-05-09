@@ -5,12 +5,14 @@ from agent.agent import Agent
 
 
 async def selectBuff(agent: Agent):
+    available_buffs = agent.availiable_buffs
+    if (available_buffs is None) or (len(available_buffs.buffs) == 0):
+        logging.warning("No available buffs")
+        return
+
     # Your code here.
     # Here is an example of how to select a buff.
     # Always select the first buff in the available buff list.
-    available_buffs = agent.availiable_buffs
-    assert available_buffs is not None
-
     await agent.select_buff(available_buffs.buffs[0].name)
 
 

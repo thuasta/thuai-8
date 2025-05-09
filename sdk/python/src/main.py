@@ -68,6 +68,7 @@ async def main():
             and agent.game_statistics.current_stage is Stage.REST
         ):
             if not is_buff_selected:
+                await asyncio.sleep(DEFAULT_LOOP_INTERVAL)  # Wait for the buff list to be updated
                 await selectBuff(agent)
             logging.debug(f"{agent} is waiting for next battle")
             is_buff_selected = True
