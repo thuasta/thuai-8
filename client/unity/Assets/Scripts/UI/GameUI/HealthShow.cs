@@ -16,6 +16,8 @@ namespace BattleCity
             Slider Health_2 = GameObject.Find("Canvas/Health_2").GetComponent<Slider>();
             health[1] = Health_1;
             health[2] = Health_2;
+            Health_1.maxValue = 100;
+            Health_2.maxValue = 100;
         }
     }
 }
