@@ -12,25 +12,25 @@ public class TooltipHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private Vector2 offset = new Vector2(0, -35); // 提示框偏移量
     private readonly Dictionary<string, string> _constantDict = new Dictionary<string, string>
     {
-        {"BULLET_COUNT", "子弹数量增加"},
-        {"BULLET_SPEED", "子弹移速增加"},
-        {"ATTACK_SPEED", "攻速增加"},
+        {"BULLET_COUNT", "整备"},
+        {"BULLET_SPEED", "鹰眼"},
+        {"ATTACK_SPEED", "连弩"},
         {"LASER", "激光"},
-        {"DAMAGE", "伤害增加"},
+        {"DAMAGE", "重击"},
         {"ANTI_ARMOR", "破甲"},
-        {"ARMOR", "护盾"},
-        {"REFLECT", "反弹盾"},
-        {"DODGE", "闪避率增加"},
+        {"ARMOR", "铁壁"},
+        {"REFLECT", "借箭"},
+        {"DODGE", "八卦"},
         {"KNIFE", "名刀"},
-        {"GRAVITY", "重力场"},
-        {"BLACK_OUT", "视野限制"},
-        {"SPEED_UP", "加速"},
+        {"GRAVITY", "力场"},
+        {"BLACK_OUT", "磁暴"},
+        {"SPEED_UP", "疾跑"},
         {"FLASH", "闪现"},
-        {"DESTROY", "破坏墙体"},
-        {"CONSTRUCT", "建造墙体"},
-        {"TRAP", "陷阱"},
-        {"MISSILE", "导弹"},
-        {"KAMUI", "虚化"}
+        {"DESTROY", "破竹"},
+        {"CONSTRUCT", "围界"},
+        {"TRAP", "网罗"},
+        {"RECOVER", "复苏"},
+        {"KAMUI", "神威"}
     };
 
     // 鼠标进入时触发
