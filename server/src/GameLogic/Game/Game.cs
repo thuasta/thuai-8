@@ -33,6 +33,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
     public int AwardCount => GameSettings.BattleCount - 1;
     public GameStage Stage { get; private set; } = GameStage.Waiting;
     public int WaitingTick { get; private set; } = 0;
+    public List<Buff.Buff> AvailableBuffsBeforeCurrentBattle { get; private set; } = [];
     public List<Buff.Buff> AvailableBuffsAfterCurrentBattle { get; private set; } = [];
     public BuffSelector BuffSelector { get; private set; } = new();
 
@@ -129,6 +130,8 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
                 }
             }
 
+            // Update available buffs
+            AvailableBuffsBeforeCurrentBattle = [.. AvailableBuffsAfterCurrentBattle];
             if (HasAwardAfterBattle)
             {
                 AvailableBuffsAfterCurrentBattle = [.. BuffSelector.ShowBuff(BattleNumber + 1)];
@@ -138,6 +141,7 @@ public partial class Game(Utility.Config.GameSettings gameSettings)
                 AvailableBuffsAfterCurrentBattle = [];
             }
 
+            // Create new battle
             if (BattleNumber < GameSettings.BattleCount || NeedAdditionalBattle())
             {
                 RunningBattle = new Battle(GameSettings, AllPlayers)

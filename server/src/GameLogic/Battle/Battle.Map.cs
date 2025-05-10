@@ -13,7 +13,7 @@ public partial class Battle
             _logger.Error("Cannot add wall: Map is null.");
             return;
         }
-        if (Map.Walls.Any(w => w == wall))
+        if (Map.Walls.Any(w => w.Equals(wall)))
         {
             _logger.Error(
                 "Cannot add wall:"
@@ -125,11 +125,12 @@ public partial class Battle
             }
 
             // Find corresponding wall in the map.
-            MapGeneration.Wall? wall = Map.Walls.FirstOrDefault(w => w == target);
+            MapGeneration.Wall? wall = Map.Walls.FirstOrDefault(w => w.Equals(target));
             if (wall is null)
             {
                 _logger.Error(
-                    $"Failed to remove wall: Wall at ({target.X}, {target.Y}) with angle {target.Angle} not found."
+                    "Failed to remove wall: "
+                    + $"Wall at ({target.X}, {target.Y}) with angle {target.Angle} doesn't exist."
                 );
                 return;
             }
