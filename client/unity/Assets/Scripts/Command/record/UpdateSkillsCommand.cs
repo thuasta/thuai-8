@@ -6,6 +6,7 @@ using BattleCity;
 using UnityEngine.UIElements;
 using Newtonsoft.Json.Linq;
 using System;
+using UnityEditor;
 
 public class UpdateSkillsCommand : AbstractCommand
 {
@@ -29,7 +30,18 @@ public class UpdateSkillsCommand : AbstractCommand
                     int maxCooldown = skill["maxCooldown"].ToObject<int>();
                     int currentCooldown = skill["currentCooldown"].ToObject<int>();
                     bool isActive = skill["isActive"].ToObject<bool>();
-                    player.TankSkills.UpdateSkill(skillName, maxCooldown, currentCooldown, isActive);
+                    if (currentCooldown != 0)
+                    {
+                        Debug.LogWarning($"A skill is used");
+                    }
+                    if (!player.TankSkills.UpdateSkill(skillName, maxCooldown, currentCooldown, isActive))
+                    {
+                        this.SendCommand(new SkillsAddCommand(player.Id, skillName));
+                    }
+                    else
+                    {
+                        this.SendCommand(new SkillsCDChangeCommand(player.Id, skillName, currentCooldown, maxCooldown));
+                    }
                 }
                 catch
                 {

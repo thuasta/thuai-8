@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static BattleCity.Skills;
 
 
 namespace BattleCity
@@ -51,13 +52,14 @@ namespace BattleCity
                 return false; 
             }
             SkillName skillEnum = (SkillName)result;
-            Skill existingSkill = skills.Find(skill => skill.name == skillEnum);
+            Skill existingSkill = skills.Find(skill => skill.name.Equals(skillEnum));
             if (existingSkill != null)
             {
                 // �ҵ����ܣ�����������
                 existingSkill.maxCooldown = maxCooldown;
                 existingSkill.currentCooldown = currentCooldown;
                 existingSkill.isActive = isActive;
+                return true;
             }
             else
             {
@@ -65,7 +67,7 @@ namespace BattleCity
                 Skill newSkill = new Skill(skillEnum, maxCooldown, currentCooldown, isActive);
                 skills.Add(newSkill);
             }
-            return true;
+            return false;
         }
 
         

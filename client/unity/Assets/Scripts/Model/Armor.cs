@@ -65,6 +65,10 @@ namespace BattleCity
             {
                 GravityFieldEffect(player);
             }
+            else
+            {
+                CancelGravityFieldEffect(player);
+            }
             try
             {
                 SetKnife(knife);
@@ -95,7 +99,7 @@ namespace BattleCity
             {
                 // 实例化特效并将其放置在 player's TankObject 上
                 Quaternion rotation = Quaternion.Euler(-90f, 0f, 0f);
-                GameObject GravityInstance = GameObject.Instantiate(effectPrefab, player.transform.position + new Vector3(0,0.1f,0), rotation, player.transform);
+                GravityInstance = GameObject.Instantiate(effectPrefab, player.transform.position, rotation, player.transform);
 
                 // 可选：设置特效实例的生命周期，假设特效在3秒后销毁
                 //GameObject.Destroy(effectInstance, 3f);
@@ -104,6 +108,13 @@ namespace BattleCity
             {
                 Debug.LogWarning($"特效 GRAVITY 未找到!");
             }
+        }
+
+        public void CancelGravityFieldEffect(GameObject player)
+        {
+            if (GravityInstance == null)
+                return;
+            GameObject.Destroy(GravityInstance);
         }
 
         public void UpdateArmor(Armor armor, GameObject player)
