@@ -1,17 +1,19 @@
 using System.IO.Compression;
 using System.Text.Json;
 using Serilog;
-using Thuai.Server.Utility;
 
 namespace Thuai.Server.Recorder;
 
 public partial class Recorder : IDisposable
 {
-    public const int MaxRecordsBeforeSave = 10000;
+    public const int MaxRecordsBeforeSave = 100_000;
+
+    public required bool KeepRecord { get; init; }
 
     private readonly RecordPage _recordPage = new();
 
-    private readonly ILogger _logger = Tools.LogHandler.CreateLogger("Recorder");
+    private readonly Utility.IdProvider _idProvider = new();
+    private readonly ILogger _logger = Utility.Tools.LogHandler.CreateLogger("Recorder");
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         WriteIndented = true
@@ -100,7 +102,7 @@ public partial class Recorder : IDisposable
                     string recordFilePath = Path.Combine(_recordsDir, _targetRecordFileName);
 
                     long timestamp = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds * 1000;
-                    string pageName = $"{timestamp}-{Guid.NewGuid()}.json";
+                    string pageName = $"{_idProvider.GetNextId()}.json";
 
                     _logger.Debug($"Adding new record {pageName} to {_targetRecordFileName}.");
 
@@ -120,10 +122,10 @@ public partial class Recorder : IDisposable
 
                     // Create a copy of the record file.
                     using FileStream copyZipFile
-                        = new(Path.Combine(_copyRecordDir, $"{timestamp}.dat"), FileMode.Create);
+                        = new(Path.Combine(_copyRecordDir, $"record_copy.dat"), FileMode.Create);
                     using ZipArchive copyArchive = new(copyZipFile, ZipArchiveMode.Create);
                     ZipArchiveEntry copyEntry
-                        = copyArchive.CreateEntry("record.json", CompressionLevel.SmallestSize);
+                        = copyArchive.CreateEntry($"{timestamp}.json", CompressionLevel.SmallestSize);
                     using StreamWriter copyWriter = new(copyEntry.Open());
                     copyWriter.Write(recordJson);
                     copyWriter.Close();

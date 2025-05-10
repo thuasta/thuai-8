@@ -35,7 +35,7 @@ public class RecordPage
     }
 
     /// <summary>
-    /// Export the records and clear the records.
+    /// Export and clear the records.
     /// </summary>
     /// <returns>Serialized record.</returns>
     public string Export()

@@ -129,6 +129,10 @@ public record Config
     }
     public record RecorderSettings()
     {
-
+        /// <summary>
+        /// Whether to keep history of records.
+        /// </summary>
+        [JsonPropertyName("keepRecord")]
+        public bool KeepRecord { get; init; } = false;
     }
 }
