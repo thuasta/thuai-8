@@ -120,15 +120,18 @@ public partial class Recorder : IDisposable
                     writer.Write(recordJson);
                     writer.Close();
 
-                    // Create a copy of the record file.
-                    using FileStream copyZipFile
-                        = new(Path.Combine(_copyRecordDir, $"record_copy.dat"), FileMode.Create);
-                    using ZipArchive copyArchive = new(copyZipFile, ZipArchiveMode.Create);
-                    ZipArchiveEntry copyEntry
-                        = copyArchive.CreateEntry($"{timestamp}.json", CompressionLevel.SmallestSize);
-                    using StreamWriter copyWriter = new(copyEntry.Open());
-                    copyWriter.Write(recordJson);
-                    copyWriter.Close();
+                    if (KeepRecord == true)
+                    {
+                        // Create a copy of the record file.
+                        using FileStream copyZipFile
+                            = new(Path.Combine(_copyRecordDir, $"record_copy.dat"), FileMode.Create);
+                        using ZipArchive copyArchive = new(copyZipFile, ZipArchiveMode.Create);
+                        ZipArchiveEntry copyEntry
+                            = copyArchive.CreateEntry($"{timestamp}.json", CompressionLevel.SmallestSize);
+                        using StreamWriter copyWriter = new(copyEntry.Open());
+                        copyWriter.Write(recordJson);
+                        copyWriter.Close();
+                    }
                 }
             }
             catch (Exception ex)
