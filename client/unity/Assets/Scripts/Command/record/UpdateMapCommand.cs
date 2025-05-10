@@ -55,7 +55,7 @@ public class UpdateMapCommand : AbstractCommand
             Position position = new Position(x, y, angle);
             currentWalls.Add(position);
 
-            var existingWall = map.CityWall.FirstOrDefault(w => w.wallPos == position);
+            var existingWall = map.CityWall.FirstOrDefault(w => w.wallPos.Equals(position));
 
             if (existingWall == null)
             { 
