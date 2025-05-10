@@ -215,10 +215,10 @@ public partial class Recorder
             && e.Game.RunningBattle?.Stage == GameLogic.Battle.BattleStage.Waiting
             && e.Game.HasAwardBeforeBattle == true)
         {
-            List<Protocol.Messages.Detail> buffDetails = [];
+            List<Protocol.Messages.ChosenBuff> chosenBuffs = [];
             foreach (GameLogic.Player player in e.Game.AllPlayers)
             {
-                buffDetails.Add(
+                chosenBuffs.Add(
                     new()
                     {
                         Token = player.RecordToken,
@@ -228,7 +228,8 @@ public partial class Recorder
             }
             Protocol.Messages.BuffSelectMessage buffSelect = new()
             {
-                Details = [.. buffDetails]
+                ChosenBuffs = [.. chosenBuffs],
+                AvailableBuffs = [.. e.Game.AvailableBuffsBeforeCurrentBattle.Select(x => x.ToString())]
             };
             Record(stageInfo, buffSelect);
         }

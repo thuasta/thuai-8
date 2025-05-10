@@ -17,7 +17,10 @@ public class Program
 
             Connection.AgentServer agentServer = new() { Port = config.Server.Port };
             GameController.GameRunner gameRunner = new(config.Game);
-            Recorder.Recorder recorder = new("./data", "replay.dat", "result.json");
+            Recorder.Recorder recorder = new("./data", "replay.dat", "result.json")
+            {
+                KeepRecord = config.Recorder.KeepRecord,
+            };
 
             string[] tokens = [];
 
