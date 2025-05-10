@@ -15,7 +15,7 @@ namespace BattleCity
             DESTROY,
             CONSTRUCT,
             TRAP,
-            MISSILE,
+            RECOVER,
             KAMUI
         }
 

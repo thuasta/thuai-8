@@ -19,7 +19,8 @@ namespace BattleCity
         protected override void OnExecute()
         {
             var Health = this.GetModel<HealthShow>().health[_tankId];
-            Health.value = _health;        }
+            Health.value = _health;        
+        }
         
     }
 }
