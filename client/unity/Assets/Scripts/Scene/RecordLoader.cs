@@ -243,7 +243,7 @@ namespace BattleCity
                     if (message["messageType"].ToString() == "BUFF_SELECT")
                     {
                         hasBuffSelect = true;
-                        JArray details = (JArray)message["details"];
+                        JArray details = (JArray)message["chosenBuffs"];
                         foreach (JObject info in details)
                         {
                             int id = info["token"].ToObject<int>();
@@ -506,18 +506,36 @@ namespace BattleCity
 
         private IEnumerator BuffSelect(JObject buffInfo, int currentRound)
         {
-            JArray details = (JArray)buffInfo["details"];
+            JArray chosenBuffs = (JArray)buffInfo["chosenBuffs"];
+            var available = buffInfo["availableBuffs"].ToObject<List<string>>();
             BuffSeclectPanel.SetActive(true);
-            foreach (JObject info in details)
+            for (int i = 0; i < 3; ++i)
+            {
+                for (int id = 1; id <= 2; ++id)
+                {
+                    Image Player_Buff = GameObject.Find($"Canvas/BuffSelect/Player_{id}_Buff_{i + 1}")?.GetComponent<Image>();
+                    Player_Buff.sprite = Resources.Load<Sprite>($"UI/Icons/{available[i]}");
+                }
+            }
+            foreach (JObject info in chosenBuffs)
             {
                 int id = info["token"].ToObject<int>();
                 string buff = info["buff"].ToString();
-                Debug.Log("Player" + id + " select a buff");
-                Image Player_Buff = GameObject.Find($"Canvas/BuffSelect/Player_{id}_Buff_1")?.GetComponent<Image>();
-                Player_Buff.sprite = Resources.Load<Sprite>($"UI/Icons/{buff}");
-                Color new_color = Player_Buff.color;
-                new_color.a = 1;
-                Player_Buff.color = new_color;
+                int chosen = available.IndexOf(buff);
+                for (int i = 0; i < 3; ++i)
+                {
+                    Image Player_Buff = GameObject.Find($"Canvas/BuffSelect/Player_{id}_Buff_{i + 1}")?.GetComponent<Image>();
+                    Color new_color = Player_Buff.color;
+                    if (i == chosen)
+                    {
+                        new_color.a = 1;
+                    }
+                    else
+                    {
+                        new_color.a = 0.5f;
+                    }
+                    Player_Buff.color = new_color;
+                }
                 this.SendCommand(new BuffAddCommand(id, currentRound, buff));
             }
             yield return new WaitForSeconds(3);
