@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.IO.Compression;
 using System.Text.Json;
 using Serilog;
@@ -55,6 +56,8 @@ public partial class Recorder : IDisposable
         {
             Directory.CreateDirectory(_copyRecordDir);
         }
+
+        RecordVersion();
     }
     #endregion
 
@@ -170,4 +173,56 @@ public partial class Recorder : IDisposable
         );
     }
     #endregion
+
+    private void RecordVersion()
+    {
+        if (Monitor.TryEnter(_saveLock))
+        {
+            try
+            {
+                lock (_saveLock)
+                {
+                    Version version = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0, 0, 0);
+
+                    string recordFilePath = Path.Combine(_recordsDir, _targetRecordFileName);
+
+                    // Create directory if it doesn't exist.
+                    if (!Directory.Exists(_recordsDir))
+                    {
+                        Directory.CreateDirectory(_recordsDir);
+                    }
+
+                    // Write version.
+                    using FileStream zipFile = new(recordFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+                    using ZipArchive archive = new(zipFile, ZipArchiveMode.Update);
+                    ZipArchiveEntry entry = archive.CreateEntry($"ver{version}", CompressionLevel.SmallestSize);
+                    if (KeepRecord == true)
+                    {
+                        // Create a copy of the record file.
+                        using FileStream copyZipFile
+                            = new(Path.Combine(_copyRecordDir, $"record_copy.dat"), FileMode.Create);
+                        using ZipArchive copyArchive = new(copyZipFile, ZipArchiveMode.Create);
+                        ZipArchiveEntry copyEntry
+                            = copyArchive.CreateEntry($"ver{version}", CompressionLevel.SmallestSize);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Failed to save records: {ex.Message}");
+                _logger.Debug($"{ex}");
+            }
+            finally
+            {
+                Monitor.Exit(_saveLock);
+            }
+
+        }
+        else
+        {
+            // If the lock is not acquired, it means that another thread is saving the records.
+            // In this case, we just return.
+            return;
+        }
+    }
 }
