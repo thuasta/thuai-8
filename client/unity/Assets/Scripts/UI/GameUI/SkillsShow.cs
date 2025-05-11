@@ -19,6 +19,8 @@ namespace BattleCity
             skills_cd[2] = new Dictionary<int, Image>();
             skills_image[1] = new Dictionary<int, Image>();
             skills_image[2] = new Dictionary<int, Image>();
+            skills_list[1] = new List<string>();
+            skills_list[2] = new List<string>();
 
             for(int i = 1; i <= 8; i++)
             {
