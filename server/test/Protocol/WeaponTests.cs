@@ -5,7 +5,7 @@ using Xunit;
 namespace Thuai.Server.Protocol.Scheme.Tests;
 
 public class WeaponTests
-{ 
+{
     [Fact]
     public void SerializeAndDeserialize_ShouldMaintainAllProperties()
     {
@@ -35,7 +35,7 @@ public class WeaponTests
         // Assert.Equal(original.MaxBullets, deserialized?.MaxBullets);
         // Assert.Equal(original.CurrentBullets, deserialized?.CurrentBullets);
     }
-    
+
     [Fact]
     public void Deserialize_FromJsonFile_ShouldMatchExactly()
     {
@@ -52,10 +52,10 @@ public class WeaponTests
             "currentBullets": 15
         }
         """;
-    
+
         // Act
         var weapon = JsonSerializer.Deserialize<Weapon>(json);
-    
+
         // Assert
         Assert.Equal(2.5, weapon?.AttackSpeed);
         Assert.Equal(10.0, weapon?.BulletSpeed);

@@ -9,7 +9,7 @@ public class ArmorTests
     [Fact]
     public void SerializeAndDeserialize_ShouldBeEquivalent()
     {
-        
+
         // Arrange
         var original = new Armor
         {
@@ -43,10 +43,10 @@ public class ArmorTests
             "dodgeRate": 0.82
         }
         """;
-    
+
         // Act
         var armor = JsonSerializer.Deserialize<Armor>(json);
-    
+
         // Assert
         Assert.True(armor?.CanReflect);
         Assert.Equal(100, armor?.ArmorValue);

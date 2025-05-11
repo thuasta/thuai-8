@@ -9,12 +9,12 @@ public class ScoreTests
     [Fact]
     public void SerializeAndDeserialize_ShouldBeEquivalent()
     {
-        
+
         // Arrange
         var original = new Score
         {
             Token = "",
-            score = 0           
+            score = 0
         };
 
         // Act
@@ -35,10 +35,10 @@ public class ScoreTests
             "score": 0
         }
         """;
-    
+
         // Act
         var score = JsonSerializer.Deserialize<Score>(json);
-    
+
         // Assert
         Assert.Equal("", score?.Token);
         Assert.Equal(0, score?.score);

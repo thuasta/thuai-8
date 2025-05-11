@@ -15,7 +15,7 @@ public class PlayerPositionTests
         // Arrange
         var original = new PlayerPositions
         {
-            Position = new Position{ X = 0, Y = 0 },
+            Position = new Position { X = 0, Y = 0 },
             Token = ""
         };
 
@@ -28,7 +28,7 @@ public class PlayerPositionTests
         // Assert.Equal(original.Position.X, deserialized?.Position.X);
         // Assert.Equal(original.Position.Y, deserialized?.Position.Y);
         // Assert.Equal(original.Position.Angle, deserialized?.Position.Angle);
-    }   
+    }
 
     [Fact]
     public void Deserialize_FromJsonFile_ShouldMatchExactly()

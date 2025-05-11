@@ -13,8 +13,8 @@ public class WallTests
         // Arrange
         var original = new Wall
         {
-            X = 5, 
-            Y = 10, 
+            X = 5,
+            Y = 10,
             Angle = 45.0
         };
 
@@ -27,7 +27,7 @@ public class WallTests
         // Assert.Equal(original.Position.X, deserialized?.Position.X);
         // Assert.Equal(original.Position.Y, deserialized?.Position.Y);
         // Assert.Equal(original.Position.Angle, deserialized?.Position.Angle);
-    }   
+    }
 
     [Fact]
     public void Deserialize_FromJsonFile_ShouldMatchExactly()
