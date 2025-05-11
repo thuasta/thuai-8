@@ -140,7 +140,7 @@ public class PlayerTests
 
         Assert.Equal(2.5, player?.Weapon.AttackSpeed);
         Assert.Equal(10.0, player?.Weapon.BulletSpeed);
-        Assert.Equal(true ,player?.Weapon.IsLaser);
+        Assert.Equal(true, player?.Weapon.IsLaser);
         Assert.Equal(false, player?.Weapon.AntiArmor);
         Assert.Equal(50, player?.Weapon.Damage);
         Assert.Equal(30, player?.Weapon.MaxBullets);

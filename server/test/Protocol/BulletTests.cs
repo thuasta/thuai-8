@@ -38,10 +38,10 @@ public class BulletTests
             "traveledDistance": 100.0
         }
         """;
-    
+
         // Act
         var bullet = JsonSerializer.Deserialize<Bullet>(json);
-    
+
         // Assert
         Assert.Equal(5, bullet?.Position.X);
         Assert.Equal(10, bullet?.Position.Y);

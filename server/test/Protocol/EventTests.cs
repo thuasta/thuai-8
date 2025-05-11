@@ -8,7 +8,7 @@ public class EventTests
 {
     private readonly BattleUpdateEventConverter _converter = new();
     private readonly JsonSerializerOptions _options = new();
-    
+
     // PlayerUpdateEvent
     [Fact]
     public void PlayerUpdateEvent_ShouldSerializeCorrectly()
@@ -85,10 +85,13 @@ public class EventTests
     public void MapUpdateEvent_ShouldSerializeCorrectly()
     {
         // Arrange
-        var original = new MapUpdateEvent { Walls = new List<Wall>(), 
-        Fences = new List<Fence>(),
-        Traps = new List<Trap>(),
-        Laser = new List<Laser>() };
+        var original = new MapUpdateEvent
+        {
+            Walls = new List<Wall>(),
+            Fences = new List<Fence>(),
+            Traps = new List<Trap>(),
+            Laser = new List<Laser>()
+        };
 
         // Act
         var json = JsonSerializer.Serialize(original);
@@ -131,10 +134,11 @@ public class EventTests
     public void BuffActivateEvent_ShouldSerializeCorrectly()
     {
         // Arrange
-        var original = new BuffActivateEvent { 
+        var original = new BuffActivateEvent
+        {
             BuffName = "BULLET_COUNT",
             PlayerToken = "player_123"
-         };
+        };
 
         // Act
         var json = JsonSerializer.Serialize(original);
@@ -170,10 +174,11 @@ public class EventTests
     public void BuffDisactivateEvent_ShouldSerializeCorrectly()
     {
         // Arrange
-        var original = new BuffDisactivateEvent { 
+        var original = new BuffDisactivateEvent
+        {
             BuffName = "BULLET_COUNT",
             PlayerToken = "player_123"
-         };
+        };
 
         // Act
         var json = JsonSerializer.Serialize(original);
@@ -255,11 +260,11 @@ public class EventTests
     {
         // Arrange
         var @event = CreateTestEvent(eventType);
-        
+
         // Act
         var json = Serialize(@event);
         using var doc = JsonDocument.Parse(json);
-        
+
         // Assert
         Assert.Equal(@event.EventType, doc.RootElement.GetProperty("eventType").GetString());
     }
@@ -289,22 +294,22 @@ public class EventTests
         {
             nameof(PlayerUpdateEvent) => new PlayerUpdateEvent { Players = new List<Player>() },
             nameof(BulletsUpdateEvent) => new BulletsUpdateEvent { Bullets = new List<Bullet>() },
-            nameof(MapUpdateEvent) => new MapUpdateEvent 
-            { 
-                Walls = new List<Wall>(), 
+            nameof(MapUpdateEvent) => new MapUpdateEvent
+            {
+                Walls = new List<Wall>(),
                 Fences = new List<Fence>(),
                 Traps = new List<Trap>(),
                 Laser = new List<Laser>()
             },
-            nameof(BuffActivateEvent) => new BuffActivateEvent 
-            { 
-                BuffName = "TEST", 
-                PlayerToken = "TOKEN" 
+            nameof(BuffActivateEvent) => new BuffActivateEvent
+            {
+                BuffName = "TEST",
+                PlayerToken = "TOKEN"
             },
-            nameof(BuffDisactivateEvent) => new BuffDisactivateEvent 
-            { 
-                BuffName = "TEST", 
-                PlayerToken = "TOKEN" 
+            nameof(BuffDisactivateEvent) => new BuffDisactivateEvent
+            {
+                BuffName = "TEST",
+                PlayerToken = "TOKEN"
             },
             _ => throw new NotImplementedException()
         };
