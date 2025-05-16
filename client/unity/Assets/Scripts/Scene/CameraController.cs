@@ -72,7 +72,7 @@ namespace BattleCity
             });
             TypeEventSystem.Global.Register<BattleEndEvent>(e =>
             {
-                ResetCamera();
+                //ResetCamera();
             });
             LockButton.onClick.AddListener(LockStatus);
         }
