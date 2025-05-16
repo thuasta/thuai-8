@@ -7,7 +7,7 @@ namespace Thuai.Server.Recorder;
 
 public partial class Recorder : IDisposable
 {
-    public const int MaxRecordsBeforeSave = 100_000;
+    public const int MaxRecordsBeforeSave = 1000;
 
     public required bool KeepRecord { get; init; }
 

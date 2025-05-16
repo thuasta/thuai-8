@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public static class JsonUtility
 {
@@ -70,29 +71,34 @@ public static class JsonUtility
             e.Length > 0
         ).ToList();
 
+        int completed = 0;
         var result = new List<JObject>(entries.Count);
-
-        // 调整并行度为物理核心数
-        Parallel.ForEach(entries, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, (entry, state, index) =>
+        object target_obj = new();
+        foreach (var entry in entries)
         {
+            if (Path.GetExtension(entry.FullName).ToLower() != ".json")
+            {
+                continue;
+            }
             try
             {
                 using var stream = entry.Open();
                 using var reader = new StreamReader(stream);
                 var json = reader.ReadToEnd();
                 if (JObject.Parse(json) is JObject obj)
-                    lock (result) { result.Add(obj); }
+                {
+                    result.Add(obj); 
+                }
 
                 // 更新进度
-                float progressValue = (float)(index + 1) / entries.Count;
+                float progressValue = (float)(++completed) / entries.Count;
                 progress?.Report(progressValue);
             }
             catch (Exception ex)
             {
                 Debug.LogWarning($"Failed to process {entry.FullName}: {ex.Message}");
             }
-        });
-
+        };
         return result;
     }
 
