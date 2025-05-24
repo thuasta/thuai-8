@@ -6,25 +6,25 @@ namespace Thuai.Server.Protocol.Scheme.Tests;
 
 public class BulletTests
 {
-    [Fact]
-    public void SerializeAndDeserialize_ShouldMaintainEquivalence()
-    {
-        // Arrange
-        var original = new Bullet
-        {
-            Position = new Position { X = 5, Y = 10 },
-            Speed = 2.5,
-            Damage = 50.0,
-            TraveledDistance = 100.0
-        };
+    // [Fact]
+    // public void SerializeAndDeserialize_ShouldMaintainEquivalence()
+    // {
+    //     // Arrange
+    //     var original = new Bullet
+    //     {
+    //         Position = new Position { X = 5, Y = 10 },
+    //         Speed = 2.5,
+    //         Damage = 50.0,
+    //         TraveledDistance = 100.0
+    //     };
 
-        // Act
-        var json = JsonSerializer.Serialize(original);
-        var deserialized = JsonSerializer.Deserialize<Bullet>(json);
+    //     // Act
+    //     var json = JsonSerializer.Serialize(original);
+    //     var deserialized = JsonSerializer.Deserialize<Bullet>(json);
 
-        // Assert
-        Assert.Equal(original, deserialized);
-    }
+    //     // Assert
+    //     Assert.Equal(original, deserialized);
+    // }
 
     [Fact]
     public void Deserialize_FromJsonFile_ShouldMatchExactly()

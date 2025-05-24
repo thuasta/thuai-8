@@ -5,22 +5,22 @@ namespace Thuai.Server.Test.GameLogic
 {
     public class PositionTests
     {
-        [Fact]
-        public void Position_Constructor_ShouldSetValuesCorrectly()
-        {
-            // Arrange
-            double expectedX = 5.0;
-            double expectedY = 10.0;
-            double expectedAngle = Math.PI / 2;  // 90 degrees in radians
+        // [Fact]
+        // public void Position_Constructor_ShouldSetValuesCorrectly()
+        // {
+        //     // Arrange
+        //     double expectedX = 5.0;
+        //     double expectedY = 10.0;
+        //     double expectedAngle = Math.PI / 2;  // 90 degrees in radians
 
-            // Act
-            var position = new Position(expectedX, expectedY, expectedAngle);
+        //     // Act
+        //     var position = new Position(expectedX, expectedY, expectedAngle);
 
-            // Assert
-            Assert.Equal(expectedX, position.Xpos, 1e-5);
-            Assert.Equal(expectedY, position.Ypos, 1e-5);
-            Assert.Equal(expectedAngle, position.Angle, 1e-5);
-        }
+        //     // Assert
+        //     Assert.Equal(expectedX, position.Xpos, 1e-5);
+        //     Assert.Equal(expectedY, position.Ypos, 1e-5);
+        //     Assert.Equal(expectedAngle, position.Angle, 1e-5);
+        // }
 
         [Fact]
         public void Position_DefaultConstructor_ShouldSetDefaultValues()

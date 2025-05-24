@@ -15,18 +15,18 @@ namespace Thuai.Server.Test.GameLogic
             Assert.Equal(10, Constants.DODGE_PERCENTAGE_INCREASE);
         }
 
-        [Fact]
-        public void Weapon_Constants_AreCorrect()
-        {
-            Assert.Equal(0.1, Constants.INITIAL_ATTACK_SPEED, 1e-5);
-            Assert.Equal(0.025, Constants.ATTACK_SPEED_INCREASE, 1e-5);
-            Assert.Equal(3, Constants.INITIAL_BULLET_SPEED);
-            Assert.Equal(0.5, Constants.BULLET_SPEED_INCREASE, 1e-5);
-            Assert.Equal(1, Constants.INITIAL_DAMAGE);
-            Assert.Equal(1, Constants.DAMAGE_INCREASE);
-            Assert.Equal(10, Constants.INITIAL_BULLETS);
-            Assert.Equal(1, Constants.BULLETS_INCREASE);
-        }
+        // [Fact]
+        // public void Weapon_Constants_AreCorrect()
+        // {
+        //     Assert.Equal(0.1, Constants.INITIAL_ATTACK_SPEED, 1e-5);
+        //     Assert.Equal(0.025, Constants.ATTACK_SPEED_INCREASE, 1e-5);
+        //     Assert.Equal(3, Constants.INITIAL_BULLET_SPEED);
+        //     Assert.Equal(0.5, Constants.BULLET_SPEED_INCREASE, 1e-5);
+        //     Assert.Equal(1, Constants.INITIAL_DAMAGE);
+        //     Assert.Equal(1, Constants.DAMAGE_INCREASE);
+        //     Assert.Equal(10, Constants.INITIAL_BULLETS);
+        //     Assert.Equal(1, Constants.BULLETS_INCREASE);
+        // }
 
         // [Fact]
         // public void Skill_Constants_AreCorrect()

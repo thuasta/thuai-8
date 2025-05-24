@@ -1,4 +1,4 @@
-using Thuai.Server.GameLogic.MapGenerator;
+using Thuai.Server.GameLogic.MapGeneration;
 using Xunit;
 
 //Checked original tests 03/17/2025(although the tests are weak)
