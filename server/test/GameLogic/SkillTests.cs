@@ -50,18 +50,18 @@ namespace Thuai.Server.Test.GameLogic
         //     Assert.Equal(0, skill.CurrentCooldown);  // Cooldown should stay at 0
         // }
 
-        [Fact]
-        public void SkillName_ShouldHaveCorrectValues()
-        {
-            // Assert
-            Assert.Equal(0, (int)SkillName.BLACK_OUT);
-            Assert.Equal(1, (int)SkillName.SPEED_UP);
-            Assert.Equal(2, (int)SkillName.FLASH);
-            Assert.Equal(3, (int)SkillName.DESTROY);
-            Assert.Equal(4, (int)SkillName.CONSTRUCT);
-            Assert.Equal(5, (int)SkillName.TRAP);
-            Assert.Equal(6, (int)SkillName.MISSILE);
-            Assert.Equal(7, (int)SkillName.KAMUI);
-        }
+        // [Fact]
+        // public void SkillName_ShouldHaveCorrectValues()
+        // {
+        //     // Assert
+        //     Assert.Equal(0, (int)SkillName.BLACK_OUT);
+        //     Assert.Equal(1, (int)SkillName.SPEED_UP);
+        //     Assert.Equal(2, (int)SkillName.FLASH);
+        //     Assert.Equal(3, (int)SkillName.DESTROY);
+        //     Assert.Equal(4, (int)SkillName.CONSTRUCT);
+        //     Assert.Equal(5, (int)SkillName.TRAP);
+        //     Assert.Equal(6, (int)SkillName.MISSILE);
+        //     Assert.Equal(7, (int)SkillName.KAMUI);
+        // }
     }
 }

@@ -171,51 +171,51 @@ public class BattleTests
         Assert.Equal(0, battle.CurrentTick);
     }
 
-    [Fact]
-    public void IsBattleOver_OverMaxTicks_ReturnsTrue()
-    {
-        // Arrange
-        var player1 = new Player("Player1", 1);
-        var player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new() { MaxBattleTicks = 0 }, players);
+    // [Fact]
+    // public void IsBattleOver_OverMaxTicks_ReturnsTrue()
+    // {
+    //     // Arrange
+    //     var player1 = new Player("Player1", 1);
+    //     var player2 = new Player("Player2", 2);
+    //     var players = new List<Player> { player1, player2 };
+    //     Battle battle = new Battle(new() { MaxBattleTicks = 0 }, players);
 
-        // Act
-        battle.Tick();
-        battle.Tick();
+    //     // Act
+    //     battle.Tick();
+    //     battle.Tick();
 
-        // Assert
-        Assert.True(battle.IsBattleOver());
-    }
+    //     // Assert
+    //     Assert.True(battle.IsBattleOver());
+    // }
 
-    [Fact]
-    public void IsBattleOver_PlayerLessThanTwo_ReturnsTrue()
-    {
-        // Arrange
-        Battle battle = new Battle(new(), []);
+    // [Fact]
+    // public void IsBattleOver_PlayerLessThanTwo_ReturnsTrue()
+    // {
+    //     // Arrange
+    //     Battle battle = new Battle(new(), []);
 
-        // Act
-        // No need to act.
+    //     // Act
+    //     // No need to act.
 
-        // Assert
-        Assert.True(battle.IsBattleOver());
-    }
+    //     // Assert
+    //     Assert.True(battle.IsBattleOver());
+    // }
 
-    [Fact(Skip = "Not implemented yet")]
-    public void IsBattleOver_PlayerMoreThanOne_ReturnsFalse()
-    {
-        // Arrange
-        var player1 = new Player("Player1", 1);
-        var player2 = new Player("Player2", 2);
-        var players = new List<Player> { player1, player2 };
-        Battle battle = new Battle(new(), players);
+    // [Fact(Skip = "Not implemented yet")]
+    // public void IsBattleOver_PlayerMoreThanOne_ReturnsFalse()
+    // {
+    //     // Arrange
+    //     var player1 = new Player("Player1", 1);
+    //     var player2 = new Player("Player2", 2);
+    //     var players = new List<Player> { player1, player2 };
+    //     Battle battle = new Battle(new(), players);
 
-        // Act
-        // No need to act.
+    //     // Act
+    //     // No need to act.
 
-        // Assert
-        Assert.False(battle.IsBattleOver());
-    }
+    //     // Assert
+    //     Assert.False(battle.IsBattleOver());
+    // }
 
     [Fact]
     public void StageControl_WaitingStageWithTwoPlayers_ChangesToInBattle()

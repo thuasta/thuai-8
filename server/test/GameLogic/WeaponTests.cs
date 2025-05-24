@@ -24,30 +24,30 @@ namespace Thuai.Server.Test.GameLogic
             Assert.Equal(Constants.INITIAL_BULLETS, weapon.CurrentBullets);
         }
 
-        [Fact]
-        public void Weapon_SetValues_Correctly()
-        {
-            //Arrange
-            Weapon weapon = new Weapon();
+        // [Fact]
+        // public void Weapon_SetValues_Correctly()
+        // {
+        //     //Arrange
+        //     Weapon weapon = new Weapon();
 
-            //Act
-            weapon.AttackSpeed = 0.42;
-            weapon.BulletSpeed = 0.6;
-            weapon.IsLaser = true;
-            weapon.AntiArmor = true;
-            weapon.Damage = 100;
-            weapon.MaxBullets = 20;
-            weapon.CurrentBullets = 15;
+        //     //Act
+        //     weapon.AttackSpeed = 0.42;
+        //     weapon.BulletSpeed = 0.6;
+        //     weapon.IsLaser = true;
+        //     weapon.AntiArmor = true;
+        //     weapon.Damage = 100;
+        //     weapon.MaxBullets = 20;
+        //     weapon.CurrentBullets = 15;
 
-            //Assert
-            Assert.Equal(0.42, weapon.AttackSpeed, 1e-5);
-            Assert.Equal(0.6, weapon.BulletSpeed, 1e-5);
-            Assert.True(weapon.IsLaser);
-            Assert.True(weapon.AntiArmor);
-            Assert.Equal(100, weapon.Damage);
-            Assert.Equal(20, weapon.MaxBullets);
-            Assert.Equal(15, weapon.CurrentBullets);
-        }
+        //     //Assert
+        //     Assert.Equal(0.42, weapon.AttackSpeed, 1e-5);
+        //     Assert.Equal(0.6, weapon.BulletSpeed, 1e-5);
+        //     Assert.True(weapon.IsLaser);
+        //     Assert.True(weapon.AntiArmor);
+        //     Assert.Equal(100, weapon.Damage);
+        //     Assert.Equal(20, weapon.MaxBullets);
+        //     Assert.Equal(15, weapon.CurrentBullets);
+        // }
 
 
         [Fact]

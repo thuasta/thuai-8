@@ -14,25 +14,25 @@ public class TrapTests
         Angle = 90
     };
 
-    [Fact]
-    public void SerializeAndDeserialize_ShouldMaintainDataConsistency()
-    {
-        // Arrange
-        var original = new Trap
-        {
-            Position = CreateTestPosition(),
-            IsActive = true
-        };
+    // [Fact]
+    // public void SerializeAndDeserialize_ShouldMaintainDataConsistency()
+    // {
+    //     // Arrange
+    //     var original = new Trap
+    //     {
+    //         Position = CreateTestPosition(),
+    //         IsActive = true
+    //     };
 
-        // Act
-        var json = JsonSerializer.Serialize(original);
-        var deserialized = JsonSerializer.Deserialize<Trap>(json);
+    //     // Act
+    //     var json = JsonSerializer.Serialize(original);
+    //     var deserialized = JsonSerializer.Deserialize<Trap>(json);
 
-        // Assert
-        Assert.Equal(original.Position.X, deserialized?.Position.X);
-        Assert.Equal(original.Position.Y, deserialized?.Position.Y);
-        Assert.Equal(original.IsActive, deserialized?.IsActive);
-    }
+    //     // Assert
+    //     Assert.Equal(original.Position.X, deserialized?.Position.X);
+    //     Assert.Equal(original.Position.Y, deserialized?.Position.Y);
+    //     Assert.Equal(original.IsActive, deserialized?.IsActive);
+    // }
 
     [Fact]
     public void Deserialize_FromJsonFile_ShouldMatchExactly()

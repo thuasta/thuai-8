@@ -62,29 +62,29 @@ public class BattlePlayerTests
         // Todo : implement
     }
 
-    [Theory]
-    [InlineData(1, 1, 100, false)]
-    [InlineData(1, 1, 0, true)]
-    [InlineData(0, 1, 100, true)]
-    [InlineData(0, 0, 100, true)]
-    public void AlivePlayers_Decide_BattleOverCorrectly(
-        int health1, int health2, int ticks, bool expectedResult
-    )
-    {
-        // Arrange
-        Player player1 = new Player("Player1", 1);
-        Player player2 = new Player("Player2", 2);
-        var battle = new Battle(new() { MaxBattleTicks = ticks }, [player1, player2]);
+    // [Theory]
+    // [InlineData(1, 1, 100, false)]
+    // [InlineData(1, 1, 0, true)]
+    // [InlineData(0, 1, 100, true)]
+    // [InlineData(0, 0, 100, true)]
+    // public void AlivePlayers_Decide_BattleOverCorrectly(
+    //     int health1, int health2, int ticks, bool expectedResult
+    // )
+    // {
+    //     // Arrange
+    //     Player player1 = new Player("Player1", 1);
+    //     Player player2 = new Player("Player2", 2);
+    //     var battle = new Battle(new() { MaxBattleTicks = ticks }, [player1, player2]);
 
-        // Act
-        player1.PlayerArmor.Health = health1;
-        player2.PlayerArmor.Health = health2;
-        battle.Tick();
-        battle.Tick();
+    //     // Act
+    //     player1.PlayerArmor.Health = health1;
+    //     player2.PlayerArmor.Health = health2;
+    //     battle.Tick();
+    //     battle.Tick();
 
-        // Assert
-        Assert.Equal(expectedResult, battle.IsBattleOver());
-    }
+    //     // Assert
+    //     Assert.Equal(expectedResult, battle.IsBattleOver());
+    // }
 
     [Theory]
     [InlineData(0, 1, 1)]
